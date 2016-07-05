@@ -95,11 +95,11 @@ The **evaluator** role is the role for **users** who can do an **evaluation** fo
 
 * Evaluation
   * Create evaluation for a **user** (pre-requisite: the user must have logged into the system at least once and selected a template)
-  * Evaluate skill
+  * Evaluate **skill**
     * mark as 'needs work' & add comment
     * mark as 'demonstrated'
-    * skip skill
-  * Return to previous skill
+    * skip **skill**
+  * Return to previous **skill**
   * Add an **evaluation** comment
 
 **Could Have:**
