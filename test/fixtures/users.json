@@ -1,0 +1,9 @@
+[
+  {
+    "email": "admin@magic.com",
+    "isAdmin": true
+  },
+  {
+    "email": "user@magic.com"
+  }
+]

@@ -1,0 +1,38 @@
+{
+  "name": "app-skills-matrix",
+  "version": "1.0.0",
+  "description": "OSS tool to manage employees skills",
+  "main": "backend/index.js",
+  "scripts": {
+    "start": "nodemon",
+    "debug": "nodemon --debug",
+    "base": "node $npm_package_main",
+    "lint": "standard --verbose | snazzy",
+    "test": "faucet"
+  },
+  "repository": {
+    "url": "git@github.com:tes/app-skills-matrix.git",
+    "type": "git"
+  },
+  "author": "Federico Rampazzo <frampone@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "faucet": "^0.0.1",
+    "nodemon": "^1.11.0",
+    "snazzy": "^5.0.0",
+    "standard": "^8.5.0",
+    "supertest": "^2.0.1",
+    "tape": "^4.6.2"
+  },
+  "dependencies": {
+    "authom": "^0.4.36",
+    "body-parser": "^1.15.2",
+    "cookie-parser": "^1.4.3",
+    "debug": "^2.2.0",
+    "express": "^4.14.0",
+    "jsonwebtoken": "^7.1.9",
+    "mongodb": "^2.2.11",
+    "morgan": "^1.7.0",
+    "ramda": "^0.22.1"
+  }
+}
