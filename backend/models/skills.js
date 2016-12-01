@@ -1,5 +1,5 @@
-const database = require('../database')
-const collection = database.collection('skills')
+const database = require('../database');
+const collection = database.collection('skills');
 
 module.exports = {
   list: (filter) => collection.find(filter).then(result => result.toArray()),
@@ -7,4 +7,4 @@ module.exports = {
   read: (id) => collection.findOne({ _id: database.ObjectId(id) }),
   update: (id, data) => collection.update({ _id: database.ObjectId(id) }, { set: data }, { upsert: true }),
   delete: (id) => collection.deleteOne({ _id: database.ObjectId(id) })
-}
+};

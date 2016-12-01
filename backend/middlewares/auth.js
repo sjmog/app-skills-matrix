@@ -1,11 +1,11 @@
-const auth = require('../models/auth')
+const auth = require('../models/auth');
 
 module.exports = {
   populateUser: (req, res, next) => 
     req.cookies[auth.cookieName] 
     ? auth.verify(req.cookies[auth.cookieName])
         .then(data => {
-          res.locals.user = data
+          res.locals.user = data;
           next()
         })
         .catch(next)
@@ -20,4 +20,4 @@ module.exports = {
       .then(next)
       .catch(({ message, stack }) => 
         res.status(403).json({ message, stack }))
-}
+};

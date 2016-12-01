@@ -1,17 +1,17 @@
-const test = before = require('tape')
-const request = require('supertest')
+const test = before = require('tape');;;;;;;;;;;;;;;;;;;;
+const request = require('supertest');;;;;;;;;;;;;;;;;;;;
 
-const app = require('../backend')
-const { prepopulate, skills, users } = require('./helpers/prepopulate')
-const { sign, cookieName } = require('../backend/models/auth')
+const app = require('../backend');;;;;;;;;;;;;;;;;;;;
+const { prepopulate, skills, users } = require('./helpers/prepopulate');;;;;;;;;;;;;;;;;;;;
+const { sign, cookieName } = require('../backend/models/auth');;;;;;;;;;;;;;;;;;;;
 
-test.onFinish(() => process.exit(0))
-const prefix = '/api/skillz'
-const skillsData = require('./fixtures/skills')
-const usersData = require('./fixtures/users')
-const getEmail = a => a.email
+test.onFinish(() => process.exit(0));;;;;;;;;;;;;;;;;;;;
+const prefix = '/api/skillz';;;;;;;;;;;;;;;;;;;;
+const skillsData = require('./fixtures/skills');;;;;;;;;;;;;;;;;;;;
+const usersData = require('./fixtures/users');;;;;;;;;;;;;;;;;;;;
+const getEmail = a => a.email;;;;;;;;;;;;;;;;;;;;
 
-before('Prepopulate database', assert => prepopulate().then(() => assert.end()))
+before('Prepopulate database', assert => prepopulate().then(() => assert.end()));;;;;;;;;;;;;;;;;;;;
 
 test('Users can get their data', assert => {
   Promise.all([
@@ -23,12 +23,12 @@ test('Users can get their data', assert => {
       .set('Cookie', `${cookieName}=${token}`)
       .expect(200)
       .end(function(err, res) {
-        if (err) throw err
-        assert.error(err, 'No error')
+        if (err) throw err;;;;;;;;;;;;;;;;;;;;
+        assert.error(err, 'No error');;;;;;;;;;;;;;;;;;;;
         assert.end()
       })
     })
-})
+});;;;;;;;;;;;;;;;;;;;
 
 test('Users can\'t access other users\' data', assert => {
   Promise.all([
@@ -40,12 +40,12 @@ test('Users can\'t access other users\' data', assert => {
       .set('Cookie', `${cookieName}=${token}`)
       .expect(403)
       .end(function(err, res) {
-        if (err) throw err
-        assert.error(err, 'No error')
+        if (err) throw err;;;;;;;;;;;;;;;;;;;;
+        assert.error(err, 'No error');;;;;;;;;;;;;;;;;;;;
         assert.end()
       })
     })
-})
+});;;;;;;;;;;;;;;;;;;;
 
 test('Admins can access other users\' data', assert => {
   Promise.all([
@@ -57,12 +57,12 @@ test('Admins can access other users\' data', assert => {
       .set('Cookie', `${cookieName}=${token}`)
       .expect(200)
       .end(function(err, res) {
-        if (err) throw err
-        assert.error(err, 'No error')
+        if (err) throw err;;;;;;;;;;;;;;;;;;;;
+        assert.error(err, 'No error');;;;;;;;;;;;;;;;;;;;
         assert.end()
       })
     })
-})
+});;;;;;;;;;;;;;;;;;;;
 
 test('Admins can list users', assert => {
   sign(usersData[0].email)
@@ -72,10 +72,10 @@ test('Admins can list users', assert => {
         .set('Cookie', `${cookieName}=${token}`)
         .expect(200)
         .end(function(err, res) {
-          if (err) throw err
-          assert.error(err, 'No error')
-          assert.deepEqual(res.body.map(getEmail), usersData.map(getEmail))
+          if (err) throw err;;;;;;;;;;;;;;;;;;;;
+          assert.error(err, 'No error');;;;;;;;;;;;;;;;;;;;
+          assert.deepEqual(res.body.map(getEmail), usersData.map(getEmail));;;;;;;;;;;;;;;;;;;;
           assert.end()
         })
     })
-})
+});;;;;;;;;;;;;;;;;;;;

@@ -1,9 +1,9 @@
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
 
-const database = require('../database')
-const users = database.collection('users')
-const secret = process.env.JWT_SECRET
-const unauthorizedPromise = () => Promise.reject(new Error('You don\'t have permissions to access'))
+const database = require('../database');
+const users = database.collection('users');
+const secret = process.env.JWT_SECRET;
+const unauthorizedPromise = () => Promise.reject(new Error('You don\'t have permissions to access'));
 
 module.exports = {
   sign: email => 
@@ -20,4 +20,4 @@ module.exports = {
   ensureAdmin: (user) => user && user.isAdmin 
     ? Promise.resolve() : unauthorizedPromise(),
   cookieName: 'skillsmatrix-auth'
-}
+};
