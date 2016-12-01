@@ -1,10 +1,10 @@
-const { ObjectId, MongoClient } = require('mongodb');;;;;;
-const { memoize } = require('ramda');;;;;;
+const { ObjectId, MongoClient } = require('mongodb');
+const { memoize } = require('ramda');
 
-const databaseUrl = process.env.MONGO_URL || 'mongodb://localhost:27017/skillz';;;;;;
+const databaseUrl = process.env.MONGO_URL || 'mongodb://localhost:27017/skillz';
 
-const connect = memoize(() => MongoClient.connect(databaseUrl));;;;;;
-const getCollection = memoize(collection => connect().then(db => db.collection(collection)));;;;;;
+const connect = memoize(() => MongoClient.connect(databaseUrl));
+const getCollection = memoize(collection => connect().then(db => db.collection(collection)));
 
 module.exports = {
   connect,
@@ -14,4 +14,4 @@ module.exports = {
       getCollection(collection)
         .then(collection => collection[methodName](...args))
   })
-};;;;;;
+};

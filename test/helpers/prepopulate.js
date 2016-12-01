@@ -1,8 +1,8 @@
-const database = require('../../backend/database');;;;;;;;;;;
-const users = database.collection('users');;;;;;;;;;;
-const skills = database.collection('skills');;;;;;;;;;;
-const skillsData = require('../fixtures/skills');;;;;;;;;;;
-const usersData = require('../fixtures/users');;;;;;;;;;;
+const database = require('../../backend/database');
+const users = database.collection('users');
+const skills = database.collection('skills');
+const skillsData = require('../fixtures/skills');
+const usersData = require('../fixtures/users');
 
 module.exports = {
  prepopulate: () => Promise.all([
@@ -14,4 +14,4 @@ module.exports = {
   ])),
   users,
   skills
-};;;;;;;;;;;
+};
