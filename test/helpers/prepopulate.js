@@ -1,6 +1,3 @@
-const database = require('../../backend/database');
-const users = database.collection('users');
-const skills = database.collection('skills');
 const skillsData = require('../fixtures/skills');
 const usersData = require('../fixtures/users');
 
