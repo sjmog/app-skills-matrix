@@ -33,12 +33,28 @@ JWT_SECRET=MyJWTSecret
 Make sure to use a different database for testing, as tests will clean the database.
 
 # Backend
-The backend is just a simple REST API written in node which let users authenticate with a Github account.
-Skills are public, but only admins can edit them.
 
-Users can only edit their own user document (which contains the encrypted skills matrix).
+POST /users
+```json
+{ // Input
+  "action": "create",
+  "body": 
+  {
+    "email": "...",
+    "firstname": "...",
+    "lastname": "..."
+  }
+}
+```
 
-Admins' public keys are available publicly.
+```json
+{ // Output
+  "id": 123,
+  "email": "...",
+  "firstname": "...",
+  "lastname": "..."
+}
+```
 
 # Frontend
 Still WIP

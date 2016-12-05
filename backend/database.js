@@ -1,4 +1,4 @@
-const { ObjectId, MongoClient } = require('mongodb');
+const { MongoClient } = require('mongodb');
 const { memoize } = require('ramda');
 
 const databaseUrl = process.env.MONGO_URL || 'mongodb://localhost:27017/skillz';
@@ -8,7 +8,6 @@ const getCollection = memoize(collection => connect().then(db => db.collection(c
 
 module.exports = {
   connect,
-  ObjectId,
   collection: (collection) => new Proxy({}, {
     get: (object, methodName) => (...args) =>
       getCollection(collection)
