@@ -1,6 +1,9 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { TodoList } from './components';
+import { Router, Route, hashHistory } from 'react-router'
+import { TodoList } from './components/TodoList';
+import { UserList } from './components/UserList';
+import { Home } from './components/Home';
 
 //  id, firstName, lastName, email
 
@@ -12,6 +15,11 @@ const dummyUsers = [
 ];
 
 render(
-<TodoList todos={dummyUsers} />,
+  <Router history={hashHistory}>
+    <Route path="/" component={Home}>
+      <Route path="/todos" component={TodoList}/>
+      <Route path="/users" component={UserList}/>
+    </Route>
+  </Router>,
   document.getElementById('app')
 );

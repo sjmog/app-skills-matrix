@@ -43,3 +43,4 @@ $RECYCLE.BIN/
 
 .env
 .env.test
+frontend/dist/bundle.js
