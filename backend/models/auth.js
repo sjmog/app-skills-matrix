@@ -3,7 +3,6 @@ const adminUsers  = require('../config.json').adminUsers;
 const R = require('ramda');
 
 const users = database.collection('users');
-const secret = process.env.JWT_SECRET;
 
 const isAdmin = (user) => R.contains(user.email, adminUsers);
 const unauthorizedPromise = () => Promise.reject(new Error('You don\'t have permissions to access'));
