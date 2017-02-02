@@ -12,7 +12,6 @@ export class Home extends React.Component {
         <h1>Hello World</h1>
         <ul role="nav">
           <li><Link to="/users">User Management</Link></li>
-          <li><Link to="/todos">Some other link</Link></li>
         </ul>
 
         {this.props.children}
