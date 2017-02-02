@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { addUser } from '../actions';
+import { addUser } from '../../actions';
 
 //  id, firstName, lastName, email
 
@@ -38,7 +38,6 @@ class UserListComponent extends React.Component {
 
   render() {
     return (
-<<<<<<< HEAD:frontend/components/UserList.js
       <div className='users'>
         <input type='text' placeholder='First Name' ref='firstName'/>
         <input type='text' placeholder='Last Name' ref='lastName'/>
@@ -48,9 +47,6 @@ class UserListComponent extends React.Component {
           {this.users.map((user) => (<UserItem user={user} key={user.id}/>))}
         </ul>
       </div>
-=======
-      <h1 className="header">Users</h1>
->>>>>>> Restructure frontend and add navbar:frontend/components/Users/UserList.js
     );
   }
 }
