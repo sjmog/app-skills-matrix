@@ -2,22 +2,22 @@ import React from 'react';
 
 //  id, firstName, lastName, email
 
-const dummyUsers = [
-  { id: 0, firstName: 'David', lastName: 'Morgantini', email: '' },
-  { id: 1, isDone: false, text: 'design actions' },
-  { id: 2, isDone: false, text: 'implement reducer' },
-  { id: 3, isDone: false, text: 'connect components' }
-];
+function UserItem(props) {
+  return (<li>
+    <span>{props.user.id}</span>
+    <span>{props.user.firstName}</span>
+    <span>{props.user.lastName}</span>
+    <span>{props.user.email}</span>
+  </li>);
+}
 
 export class UserList extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
       <div className='users'>
-        Users
+        <ul>
+          {this.props.route.users.map((user) => (<UserItem user={user} key={user.id}/>))}
+        </ul>
       </div>
     );
   }
