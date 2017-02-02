@@ -1,4 +1,7 @@
 import React from 'react';
+import { connect } from 'react-redux';
+
+import { addUser } from '../actions';
 
 //  id, firstName, lastName, email
 
@@ -11,14 +14,51 @@ function UserItem(props) {
   </li>);
 }
 
-export class UserList extends React.Component {
+class UserListComponent extends React.Component {
+  constructor(props) {
+    super(props);
+    const { addUser, users } = props;
+    this.addUser = addUser;
+    this.users = users;
+    this.onSubmit = this.onSubmit.bind(this);
+  }
+
+  onSubmit() {
+    const firstName = this.refs.firstName.value;
+    const lastName = this.refs.lastName.value;
+    const email = this.refs.email.value;
+    if (firstName.length !== 0 && lastName.length !== 0 && email.length !== 0) {
+      this.refs.firstName.value = '';
+      this.refs.lastName.value = '';
+      this.refs.email.value = '';
+
+      this.addUser(firstName, lastName, email);
+    }
+  };
+
   render() {
     return (
       <div className='users'>
+        <input type='text' placeholder='First Name' ref='firstName'/>
+        <input type='text' placeholder='Last Name' ref='lastName'/>
+        <input type='text' placeholder='Email Address' ref='email'/>
+        <button onClick={this.onSubmit}>New User</button>
         <ul>
-          {this.props.route.users.map((user) => (<UserItem user={user} key={user.id}/>))}
+          {this.users.map((user) => (<UserItem user={user} key={user.id}/>))}
         </ul>
       </div>
     );
   }
 }
+
+export const UserList = connect(
+  function mapStateToProps(state) {
+    console.log(state);
+    return { users: state }
+  },
+  function mapDispatchToProps(dispatch) {
+    return {
+      addUser: (firstName, lastName, email) => dispatch(addUser(firstName, lastName, email)),
+    };
+  }
+)(UserListComponent);
