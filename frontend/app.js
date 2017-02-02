@@ -3,6 +3,8 @@ import { render } from 'react-dom';
 import { Router, Route, hashHistory } from 'react-router'
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
+import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap/dist/css/bootstrap-theme.css';
 
 import { UserList } from './components/UserList';
 import { Home } from './components/Home/Home';
