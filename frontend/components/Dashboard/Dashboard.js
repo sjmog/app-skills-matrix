@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router';
 
-export class Home extends React.Component {
+export class Dashboard extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -9,11 +9,7 @@ export class Home extends React.Component {
   render() {
     return (
       <div>
-        <h1>Hello World</h1>
-        <ul role="nav">
-          <li><Link to="/users">User Management</Link></li>
-        </ul>
-
+        <h1 className="header">Dashboard</h1>
         {this.props.children}
       </div>
     );
