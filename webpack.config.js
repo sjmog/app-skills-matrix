@@ -1,9 +1,15 @@
+const HtmlWebpackPlugin = require ('html-webpack-plugin');
+
 module.exports = {
-  entry: './frontend/app.js',
+  entry: './frontend/index.js',
   output: {
     path: __dirname + '/frontend/dist',
     filename: 'bundle.js'
   },
+  plugins: [new HtmlWebpackPlugin({
+    title: "Skills Matrix",
+    template: 'index.ejs'
+  })],
   module: {
     loaders: [
       {
