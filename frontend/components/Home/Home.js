@@ -10,7 +10,7 @@ export class Home extends React.Component {
   render() {
     return (
       <div>
-        <h1 className="Home">Hello WorldI </h1>
+        <h1 className="Home">Hello World</h1>
         <ul role="nav">
           <li><Link to="/users">User Management</Link></li>
         </ul>
