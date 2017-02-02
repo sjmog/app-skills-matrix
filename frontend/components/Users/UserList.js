@@ -1,51 +1,95 @@
 import React from 'react';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { Panel, FormGroup, FormControl, Button, Glyphicon, Table } from 'react-bootstrap';
+import * as Actions from '../../actions';
 
-import { addUser } from '../../actions';
-
-//  id, firstName, lastName, email
-
-function UserItem(props) {
-  const { user } = props;
-  return (<li>
-    <span>{user.firstName}</span>
-    <span>{user.lastName}</span>
-    <span>{user.email}</span>
-  </li>);
+function userDetailsRow({ id, firstName, lastName, email }) {
+ return (
+   <tr key={email}>
+     <td>{id}</td>
+     <td>{firstName}</td>
+     <td>{lastName}</td>
+     <td>{email}</td>
+   </tr>
+ );
 }
 
 class UserListComponent extends React.Component {
   constructor(props) {
     super(props);
-    const { addUser, users } = props;
-    this.addUser = addUser;
-    this.users = users;
-    this.onSubmit = this.onSubmit.bind(this);
+    this.state = {
+      user: {}
+    };
+
+    this.updateUserState = this.updateUserState.bind(this);
+    this.onSave = this.onSave.bind(this);
+    this.clearUserForm = this.clearUserForm.bind(this);
   }
 
-  onSubmit() {
-    const firstName = this.refs.firstName.value;
-    const lastName = this.refs.lastName.value;
-    const email = this.refs.email.value;
-    if (firstName.length !== 0 && lastName.length !== 0 && email.length !== 0) {
-      this.refs.firstName.value = '';
-      this.refs.lastName.value = '';
-      this.refs.email.value = '';
+  updateUserState(e) {
+    const field = e.target.name;
+    let user = this.state.user;
+    user[field] = e.target.value;
+    return this.setState({ user });
+  }
 
-      this.addUser(firstName, lastName, email);
-    }
+  clearUserForm() {
+    this.setState({ user: {} });
+  }
+
+  onSave(e) {
+    e.preventDefault();
+    this.props.actions.saveUser(this.state.user)
+      .then(() => this.clearUserForm())
   };
 
   render() {
     return (
-      <div className='users'>
-        <input type='text' placeholder='First Name' ref='firstName'/>
-        <input type='text' placeholder='Last Name' ref='lastName'/>
-        <input type='text' placeholder='Email Address' ref='email'/>
-        <button onClick={this.onSubmit}>New User</button>
-        <ul>
-          {this.users.map((user) => (<UserItem user={user} key={user.id}/>))}
-        </ul>
+      <div>
+        <Panel header="Add a new user">
+          <form onSubmit={this.onSave} >
+            <FormGroup>
+              <FormControl
+                type='text'
+                placeholder='First name'
+                name='firstName'
+                onChange={this.updateUserState}
+              />
+            </FormGroup>
+            <FormGroup>
+              <FormControl
+                type='text'
+                placeholder='Last name'
+                name='lastName'
+                onChange={this.updateUserState}
+              />
+            </FormGroup>
+            <FormGroup>
+              <FormControl
+                type='text'
+                placeholder='Email address'
+                name='email'
+                onChange={this.updateUserState}
+              />
+            </FormGroup>
+            <Button bsStyle='primary' type="submit">
+              <Glyphicon glyph='plus' /> Add user</Button>
+          </form>
+        </Panel>
+        <Table striped bordered condensed hover>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>First name</th>
+              <th>Last name</th>
+              <th>Email</th>
+            </tr>
+          </thead>
+          <tbody>
+           {this.props.users.map(user => userDetailsRow(user))}
+          </tbody>
+        </Table>
       </div>
     );
   }
@@ -57,7 +101,7 @@ export const UserList = connect(
   },
   function mapDispatchToProps(dispatch) {
     return {
-      addUser: (firstName, lastName, email) => dispatch(addUser(firstName, lastName, email)),
+      actions: bindActionCreators(Actions, dispatch)
     };
   }
 )(UserListComponent);
