@@ -13,6 +13,7 @@ const before = [
   cookieParser(),
   populateUser
 ];
+
 const after = [
   (req, res, next) => res.status(404).end()
 ];

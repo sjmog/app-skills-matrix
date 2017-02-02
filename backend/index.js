@@ -1,5 +1,6 @@
 const express = require('express');
 const { compose } = require('ramda');
+const exphbs  = require('express-handlebars');
 
 const [before, after] = require('./middlewares');
 const routes = require('./routes');
@@ -9,6 +10,12 @@ const basePath = process.env.basePath || '/skillz';
 const port = process.env.PORT || 3000;
 const listen = app => app.listen(port, () =>
     console.log(`Skills Matrix listening on port ${port}`));
-const app = compose(listen, after, routes(basePath), before);
+const addMiddleware = compose(listen, after, routes(basePath), before);
 
-module.exports = database.connect() && app(express());
+let app = express();
+
+app.engine('.hbs', exphbs({extname: '.hbs'}));
+app.set('view engine', '.hbs');
+app.set('views', __dirname + '/views');
+
+module.exports = database.connect() && addMiddleware(app);

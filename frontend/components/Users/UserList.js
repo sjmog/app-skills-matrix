@@ -53,7 +53,6 @@ class UserListComponent extends React.Component {
 
 export const UserList = connect(
   function mapStateToProps(state) {
-    console.log(state);
     return { users: state }
   },
   function mapDispatchToProps(dispatch) {

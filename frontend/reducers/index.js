@@ -1,11 +1,7 @@
 import { handleActions } from 'redux-actions';
 
-const init = [
-  { id: 0, firstName: 'David', lastName: 'Morgantini', email: 'david@tes.com' },
-  { id: 1, firstName: 'Charlie', lastName: 'Harris', email: 'charlie.harris@tesglobal.com' },
-  { id: 2, firstName: 'Federico', lastName: 'Rampazzo', email: 'federico.rampazzo@tesglobal.com' },
-];
+const init = [];
 
 export default handleActions({
-  ADD_USER: (users = init, action) => { return users.push(action.payload) },
+  ADD_USER: (stateyarn = init, action) => { return state.push(action.payload) },
 }, init);

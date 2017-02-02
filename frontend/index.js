@@ -9,7 +9,8 @@ import 'bootstrap/dist/css/bootstrap-theme.css';
 import routes from './routes';
 import reducer from './reducers';
 
-const store = createStore(reducer);
+const state = window.$REDUX_STATE;
+const store = createStore(reducer, state);
 
 render(
   <Provider store={store}>
