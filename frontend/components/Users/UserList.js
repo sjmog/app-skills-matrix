@@ -1,8 +1,9 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Panel, FormGroup, FormControl, Button, Glyphicon, Table } from 'react-bootstrap';
+import { Panel, Row, Form, FormGroup, FormControl, Button, Glyphicon, Table} from 'react-bootstrap';
 import * as Actions from '../../actions';
+import './form.scss'
 
 function userDetailsRow({ id, firstName, lastName, email }) {
  return (
@@ -47,8 +48,8 @@ class UserListComponent extends React.Component {
   render() {
     return (
       <div>
-        <Panel header="Add a new user">
-          <form onSubmit={this.onSave} >
+        <Row className='show-grid'>
+          <Form inline onSubmit={this.onSave}>
             <FormGroup>
               <FormControl
                 type='text'
@@ -57,6 +58,7 @@ class UserListComponent extends React.Component {
                 onChange={this.updateUserState}
               />
             </FormGroup>
+            {' '}
             <FormGroup>
               <FormControl
                 type='text'
@@ -65,6 +67,7 @@ class UserListComponent extends React.Component {
                 onChange={this.updateUserState}
               />
             </FormGroup>
+            {' '}
             <FormGroup>
               <FormControl
                 type='text'
@@ -73,23 +76,26 @@ class UserListComponent extends React.Component {
                 onChange={this.updateUserState}
               />
             </FormGroup>
+            {' '}
             <Button bsStyle='primary' type="submit">
               <Glyphicon glyph='plus' /> Add user</Button>
-          </form>
-        </Panel>
-        <Table striped bordered condensed hover>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>First name</th>
-              <th>Last name</th>
-              <th>Email</th>
-            </tr>
-          </thead>
-          <tbody>
-           {this.props.users.map(user => userDetailsRow(user))}
-          </tbody>
-        </Table>
+          </Form>
+        </Row>
+        <Row>
+          <Table responsive bordered>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>First name</th>
+                <th>Last name</th>
+                <th>Email</th>
+              </tr>
+            </thead>
+            <tbody>
+             {this.props.users.map(user => userDetailsRow(user))}
+            </tbody>
+          </Table>
+        </Row>
       </div>
     );
   }

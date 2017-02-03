@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Grid } from 'react-bootstrap';
 
 import Header from './common/Header';
 
@@ -10,7 +11,9 @@ class Full extends Component {
         <div className="app-body">
           <main className="main">
             <div className="container-fluid">
-              {this.props.children}
+              <Grid>
+                {this.props.children}
+              </Grid>
             </div>
           </main>
         </div>
