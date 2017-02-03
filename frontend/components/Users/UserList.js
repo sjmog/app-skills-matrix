@@ -1,63 +1,38 @@
 import React from 'react';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { Row, Table } from 'react-bootstrap';
+import * as Actions from '../../actions';
+import './users.scss'
 
-import { addUser } from '../../actions';
-
-//  id, firstName, lastName, email
-
-function UserItem(props) {
-  const { user } = props;
-  return (<li>
-    <span>{user.firstName}</span>
-    <span>{user.lastName}</span>
-    <span>{user.email}</span>
-  </li>);
+function userDetailsRow({ id, firstName, lastName, email }) {
+  return (
+    <tr key={id}>
+      <td>{id}</td>
+      <td>{firstName}</td>
+      <td>{lastName}</td>
+      <td>{email}</td>
+    </tr>
+  );
 }
 
-class UserListComponent extends React.Component {
-  constructor(props) {
-    super(props);
-    const { addUser, users } = props;
-    this.addUser = addUser;
-    this.users = users;
-    this.onSubmit = this.onSubmit.bind(this);
-  }
+const UserList = ({ users  }) =>
+  (
+    <Row>
+      <Table responsive bordered>
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>First name</th>
+          <th>Last name</th>
+          <th>Email</th>
+        </tr>
+        </thead>
+        <tbody>
+        {users.map(user => userDetailsRow(user))}
+        </tbody>
+      </Table>
+    </Row>
+  );
 
-  onSubmit() {
-    const firstName = this.refs.firstName.value;
-    const lastName = this.refs.lastName.value;
-    const email = this.refs.email.value;
-    if (firstName.length !== 0 && lastName.length !== 0 && email.length !== 0) {
-      this.refs.firstName.value = '';
-      this.refs.lastName.value = '';
-      this.refs.email.value = '';
-
-      this.addUser(firstName, lastName, email);
-    }
-  };
-
-  render() {
-    return (
-      <div className='users'>
-        <input type='text' placeholder='First Name' ref='firstName'/>
-        <input type='text' placeholder='Last Name' ref='lastName'/>
-        <input type='text' placeholder='Email Address' ref='email'/>
-        <button onClick={this.onSubmit}>New User</button>
-        <ul>
-          {this.users.map((user) => (<UserItem user={user} key={user.id}/>))}
-        </ul>
-      </div>
-    );
-  }
-}
-
-export const UserList = connect(
-  function mapStateToProps(state) {
-    return { users: state }
-  },
-  function mapDispatchToProps(dispatch) {
-    return {
-      addUser: (firstName, lastName, email) => dispatch(addUser(firstName, lastName, email)),
-    };
-  }
-)(UserListComponent);
+export default UserList;
