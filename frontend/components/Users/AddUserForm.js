@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Row, Form, FormGroup, FormControl, Button, Glyphicon, Label } from 'react-bootstrap';
+import { Row, Form, FormGroup, FormControl, Button, Glyphicon, Alert } from 'react-bootstrap';
 import './users.scss'
 
 const AddUserForm = ({ error, user, updateUserState, onSave }) =>
@@ -39,8 +39,10 @@ const AddUserForm = ({ error, user, updateUserState, onSave }) =>
           {' '}
           <Button bsStyle='primary' type="submit">
             <Glyphicon glyph='plus' /> Add user</Button>
-          { error ? <Label bsStyle='danger'>Something went wrong '{ error.message }'</Label> : null }
         </Form>
+      </Row>
+      <Row>
+        <Alert bsStyle='danger'>Something went wrong</Alert>
       </Row>
     </div>
   );

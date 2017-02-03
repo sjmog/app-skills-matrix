@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { actions } from '../../modules/manageUsers';
+import { Row } from 'react-bootstrap';
 import AddUserForm from './AddUserForm';
 import UserList from './UserList';
 
@@ -43,6 +44,9 @@ class ManageUsersPageComponent extends React.Component {
   render() {
     return (
       <div>
+        <Row>
+          <h1 className="header">Users</h1>
+        </Row>
         <AddUserForm
           user={this.state.user}
           updateUserState={this.updateUserState}
