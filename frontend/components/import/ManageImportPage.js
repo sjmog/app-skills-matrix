@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Row, Form, FormGroup, FormControl, ControlLabel, Radio, Button, Glyphicon, Alert } from 'react-bootstrap';
-import { actions } from '../../modules/import';
+import { actions } from '../../modules/manageImport';
 
 class ManageImportComponent extends React.Component {
   constructor(props) {
@@ -68,7 +68,7 @@ class ManageImportComponent extends React.Component {
           </Form>
           </Row>
           <Row>
-            { this.props.import && this.props.import.success
+            { this.props.success
               ? <Alert bsStyle='success'>Import successful</Alert>
               : false
             }
@@ -80,9 +80,7 @@ class ManageImportComponent extends React.Component {
 
 export const ManageImportPage = connect(
   function mapStateToProps(state) {
-    return {
-      import: state.import,
-    }
+    return state.manageImport
   },
   function mapDispatchToProps(dispatch) {
     return {

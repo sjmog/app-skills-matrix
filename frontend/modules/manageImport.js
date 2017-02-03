@@ -19,7 +19,5 @@ export const actions = {
 };
 
 export const reducers = handleActions({
-  [actions.SUBMIT_IMPORT_SUCCESS]: (state, action) => {
-    return Object.assign({}, state, action.payload);
-  },
+  [actions.SUBMIT_IMPORT_SUCCESS]: (state, action) => Object.assign({}, state, action.payload)
 }, {});

@@ -9,9 +9,9 @@ import 'bootstrap/dist/css/bootstrap-theme.css';
 
 import routes from './routes';
 import { reducers as manageUsersReducers } from './modules/manageUsers';
-import { reducers as manageImportReducers } from './modules/import';
+import { reducers as manageImportReducers } from './modules/manageImport';
 
-const reducers = combineReducers({ manageUsers: manageUsersReducers, import: manageImportReducers });
+const reducers = combineReducers({ manageUsers: manageUsersReducers, manageImport: manageImportReducers });
 
 const state = window.$REDUX_STATE;
 const store = createStore(reducers, state, applyMiddleware(thunk));
