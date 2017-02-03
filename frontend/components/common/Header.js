@@ -22,9 +22,10 @@ class Header extends Component {
               <NavItem eventKey={1}>Templates</NavItem>
             </LinkContainer>
           </Nav>
+          <Navbar.Link pullRight href="/auth/github">Login</Navbar.Link>
         </Navbar.Collapse>
       </Navbar>
-   )
+    )
   }
 }
 

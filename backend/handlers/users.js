@@ -8,12 +8,4 @@ module.exports = Object.freeze({
         .catch((err) => next(err));
     }
   },
-  get: function (req, res) {
-    return res.status(200).send([
-      { id: 0, firstName: 'David', lastName: 'Morgantini', email: 'david@tes.com' },
-      { id: 1, firstName: 'Charlie', lastName: 'Harris', email: 'charlie.harris@tesglobal.com' },
-      { id: 2, firstName: 'Federico', lastName: 'Rampazzo', email: 'federico.rampazzo@tesglobal.com' },
-    ]);
-  }
 });
-
