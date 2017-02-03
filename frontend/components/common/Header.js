@@ -19,7 +19,7 @@ class Header extends Component {
               <NavItem eventKey={1}>Users</NavItem>
             </LinkContainer>
             <LinkContainer to="/import">
-              <NavItem eventKey={1}>Import</NavItem>
+              <NavItem eventKey={1}>Templates</NavItem>
             </LinkContainer>
           </Nav>
         </Navbar.Collapse>

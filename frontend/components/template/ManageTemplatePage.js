@@ -2,9 +2,9 @@ import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Row, Form, FormGroup, FormControl, ControlLabel, Radio, Button, Glyphicon, Alert } from 'react-bootstrap';
-import { actions } from '../../modules/manageImport';
+import { actions } from '../../modules/manageTemplates';
 
-class ManageImportComponent extends React.Component {
+class ManageTemplateComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -31,7 +31,7 @@ class ManageImportComponent extends React.Component {
     return (
       <div>
         <Row>
-          <h1 className="header">Import</h1>
+          <h1 className="header">Templates</h1>
         </Row>
         <Row className='show-grid'>
           <Form onSubmit={this.onSubmit}>
@@ -78,13 +78,13 @@ class ManageImportComponent extends React.Component {
   }
 }
 
-export const ManageImportPage = connect(
+export const ManageTemplatePage = connect(
   function mapStateToProps(state) {
-    return state.manageImport
+    return state.manageTemplates
   },
   function mapDispatchToProps(dispatch) {
     return {
       actions: bindActionCreators(actions, dispatch)
     };
   }
-)(ManageImportComponent);
+)(ManageTemplateComponent);
