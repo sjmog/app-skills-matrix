@@ -42,13 +42,13 @@ const AddUserForm = ({ error, user, updateUserState, onSave }) =>
         </Form>
       </Row>
       <Row>
-        <Alert bsStyle='danger'>Something went wrong</Alert>
+        { error ? <Alert bsStyle='danger'>Something went wrong: {error.message}</Alert> : false }
       </Row>
     </div>
   );
 
 AddUserForm.propTypes = {
-  error: PropTypes.boolean,
+  error: PropTypes.object,
   user: PropTypes.shape({
     firstName: PropTypes.string,
     lastName: PropTypes.string,
