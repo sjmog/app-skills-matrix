@@ -1,8 +1,5 @@
 import React, { PropTypes } from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import { Panel, Row, Form, FormGroup, FormControl, Button, Glyphicon } from 'react-bootstrap';
-import * as Actions from '../../actions';
+import { Row, Form, FormGroup, FormControl, Button, Glyphicon } from 'react-bootstrap';
 import './users.scss'
 
 const AddUserForm = ({ user, updateUserState, onSave }) =>

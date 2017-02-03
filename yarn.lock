@@ -592,6 +592,14 @@ babel-plugin-transform-strict-mode@^6.22.0:
     babel-runtime "^6.22.0"
     babel-types "^6.22.0"
 
+babel-polyfill@^6.22.0:
+  version "6.22.0"
+  resolved "http://npm.tescloud.com/babel-polyfill/-/babel-polyfill-6.22.0.tgz#1ac99ebdcc6ba4db1e2618c387b2084a82154a3b"
+  dependencies:
+    babel-runtime "^6.22.0"
+    core-js "^2.4.0"
+    regenerator-runtime "^0.10.0"
+
 babel-preset-es2015@^6.18.0:
   version "6.22.0"
   resolved "http://npm.tescloud.com/babel-preset-es2015/-/babel-preset-es2015-6.22.0.tgz#af5a98ecb35eb8af764ad8a5a05eb36dc4386835"
@@ -2660,6 +2668,10 @@ keycode@^2.1.2:
   version "2.1.8"
   resolved "http://npm.tescloud.com/keycode/-/keycode-2.1.8.tgz#94d2b7098215eff0e8f9a8931d5a59076c4532fb"
 
+keymirror@^0.1.1:
+  version "0.1.1"
+  resolved "http://npm.tescloud.com/keymirror/-/keymirror-0.1.1.tgz#918889ea13f8d0a42e7c557250eee713adc95c35"
+
 kind-of@^3.0.2:
   version "3.1.0"
   resolved "http://npm.tescloud.com/kind-of/-/kind-of-3.1.0.tgz#475d698a5e49ff5e53d14e3e732429dc8bf4cf47"
@@ -3969,6 +3981,10 @@ redux-actions@^1.2.1:
     invariant "^2.2.1"
     lodash "^4.13.1"
     reduce-reducers "^0.1.0"
+
+redux-saga@^0.14.3:
+  version "0.14.3"
+  resolved "http://npm.tescloud.com/redux-saga/-/redux-saga-0.14.3.tgz#28cd2c5b49cf780a1de25875765724150c630513"
 
 redux-thunk@^2.2.0:
   version "2.2.0"

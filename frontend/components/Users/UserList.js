@@ -1,8 +1,5 @@
 import React from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
 import { Row, Table } from 'react-bootstrap';
-import * as Actions from '../../actions';
 import './users.scss'
 
 function userDetailsRow({ id, firstName, lastName, email }) {

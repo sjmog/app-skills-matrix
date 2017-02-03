@@ -1,7 +1,10 @@
 import axios from 'axios';
 
+const handleError = (error) => error.response ? error.response.data : { message: error.message };
+const getData = (response) => response.data;
+
 export default ({
-  getUsers: function() {
-    return axios.get('/skillz/users')
+  saveUserSuccess: function (firstName, lastName, email) {
+    return axios.post('/skillz/users', { firstName, lastName, email }).then(getData, handleError);
   }
 });

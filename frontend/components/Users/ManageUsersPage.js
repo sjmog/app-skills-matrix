@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as Actions from '../../actions';
+import { actions } from '../../modules/users';
 import AddUserForm from './AddUserForm';
 import UserList from './UserList';
 
@@ -57,12 +57,12 @@ ManageUsersPageComponent.propTypes = {
 export const ManageUsersPage = connect(
   function mapStateToProps(state) {
     return {
-      users: state,
+      users: state.users,
     }
   },
   function mapDispatchToProps(dispatch) {
     return {
-      actions: bindActionCreators(Actions, dispatch)
+      actions: bindActionCreators(actions, dispatch)
     };
   }
 )(ManageUsersPageComponent);
