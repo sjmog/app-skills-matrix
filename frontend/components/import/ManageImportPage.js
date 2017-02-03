@@ -1,9 +1,8 @@
 import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Row, Form, FormGroup, FormControl, ControlLabel, Radio, Button, Glyphicon } from 'react-bootstrap';
-
-import { actions } from '../../modules/users';
+import { Row, Form, FormGroup, FormControl, ControlLabel, Radio, Button, Glyphicon, Alert } from 'react-bootstrap';
+import { actions } from '../../modules/import';
 
 class ManageImportComponent extends React.Component {
   constructor(props) {
@@ -14,7 +13,6 @@ class ManageImportComponent extends React.Component {
 
     this.updateImportState = this.updateImportState.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
-    this.clearUserForm =this.clearUserForm.bind(this);
   }
 
   updateImportState(e) {
@@ -24,13 +22,9 @@ class ManageImportComponent extends React.Component {
     return this.setState({ import: importState });
   }
 
-  clearUserForm() {
-    this.setState({ user: {} });
-  }
-
   onSubmit(e) {
     e.preventDefault();
-    console.log('SUBMIT>>>', this.state.import)
+    this.props.actions.submitImport(this.state.import)
   }
 
   render() {
@@ -42,7 +36,7 @@ class ManageImportComponent extends React.Component {
         <Row className='show-grid'>
           <Form onSubmit={this.onSubmit}>
             <FormGroup>
-              <ControlLabel>I'm importing...</ControlLabel>
+              <ControlLabel>I am importing...</ControlLabel>
               <Radio
                 name="type"
                 value="template"
@@ -73,12 +67,23 @@ class ManageImportComponent extends React.Component {
             <Button bsStyle='primary' type="submit"><Glyphicon glyph='upload' /></Button>
           </Form>
           </Row>
+          <Row>
+            { this.props.import && this.props.import.success
+              ? <Alert bsStyle='success'>Import successful</Alert>
+              : false
+            }
+          </Row>
         </div>
       );
   }
 }
 
 export const ManageImportPage = connect(
+  function mapStateToProps(state) {
+    return {
+      import: state.import,
+    }
+  },
   function mapDispatchToProps(dispatch) {
     return {
       actions: bindActionCreators(actions, dispatch)
