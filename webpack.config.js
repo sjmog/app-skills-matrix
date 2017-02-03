@@ -1,5 +1,5 @@
 module.exports = {
-  entry: ['babel-polyfill', './frontend/index.js'],
+  entry: './frontend/index.js',
   devtool: 'source-map',
   output: {
     path: __dirname + '/frontend/dist',

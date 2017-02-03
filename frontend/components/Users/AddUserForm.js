@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
-import { Row, Form, FormGroup, FormControl, Button, Glyphicon } from 'react-bootstrap';
+import { Row, Form, FormGroup, FormControl, Button, Glyphicon, Label } from 'react-bootstrap';
 import './users.scss'
 
-const AddUserForm = ({ user, updateUserState, onSave }) =>
+const AddUserForm = ({ error, user, updateUserState, onSave }) =>
   (
     <div>
       <Row className='show-grid'>
@@ -39,12 +39,14 @@ const AddUserForm = ({ user, updateUserState, onSave }) =>
           {' '}
           <Button bsStyle='primary' type="submit">
             <Glyphicon glyph='plus' /> Add user</Button>
+          { error ? <Label bsStyle='danger'>Something went wrong '{ error.message }'</Label> : null }
         </Form>
       </Row>
     </div>
   );
 
 AddUserForm.propTypes = {
+  error: PropTypes.boolean,
   user: PropTypes.shape({
     firstName: PropTypes.string,
     lastName: PropTypes.string,
