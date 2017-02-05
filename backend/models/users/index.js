@@ -10,6 +10,11 @@ module.exports = {
   },
   getUser: function (email) {
     return collection.findOne({ email })
-      .then((res) => user(res));
+      .then((res) => res ? user(res) : null);
+  },
+  getAll: function () {
+    return collection.find()
+      .then((results) => results.toArray())
+      .then((results) => results.map((doc) => user(doc)));
   }
 };

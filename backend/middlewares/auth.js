@@ -1,23 +1,20 @@
 const auth = require('../models/auth');
+const users = require('../models/users');
 
 module.exports = {
-  populateUser: (req, res, next) => 
-    req.cookies[auth.cookieName] 
-    ? auth.verify(req.cookies[auth.cookieName])
+  populateUser: (req, res, next) =>
+    req.cookies[auth.cookieName] ?
+      auth.verify(req.cookies[auth.cookieName])
         .then(data => {
-          res.locals.user = data;
-          next()
+          users.getUser(data.email)
+            .then((user) => {
+              res.locals.user = user;
+              next()
+            })
         })
-        .catch(next)
-    : next(),
-  ensureAdmin: (req, res, next) => 
-    auth.ensureAdmin(res.locals.user)
-      .then(next)
-      .catch(({ message, stack }) => 
-        res.status(403).json({ message, stack })),
-  ensureOwner: (req, res, next) =>
-    auth.ensureOwner(req.params.id, res.locals.user)
-      .then(next)
-      .catch(({ message, stack }) => 
-        res.status(403).json({ message, stack }))
+        .catch(next) :
+      next(),
+  ensureAdmin: (req, res, next) => res.locals.user.isAdmin ?
+    next() :
+    res.status(403).json({ message: `User '${res.locals.user}' does not have admin access` }),
 };
