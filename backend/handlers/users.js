@@ -1,6 +1,7 @@
 const users = require('../models/users');
+const createHandler = require('./createHandler');
 
-module.exports = Object.freeze({
+const handlerFunctions =  Object.freeze({
   post: {
     create: function (req, res, next) {
       users.add(req.body)
@@ -9,3 +10,5 @@ module.exports = Object.freeze({
     }
   },
 });
+
+module.exports = createHandler(handlerFunctions);
