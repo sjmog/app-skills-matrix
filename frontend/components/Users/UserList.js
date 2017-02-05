@@ -2,12 +2,11 @@ import React from 'react';
 import { Row, Table } from 'react-bootstrap';
 import './users.scss'
 
-function userDetailsRow({ id, firstName, lastName, email }) {
+function userDetailsRow({ id, name, email }) {
   return (
     <tr key={id}>
       <td>{id}</td>
-      <td>{firstName}</td>
-      <td>{lastName}</td>
+      <td>{name}</td>
       <td>{email}</td>
     </tr>
   );
@@ -20,8 +19,7 @@ const UserList = ({ users  }) =>
         <thead>
         <tr>
           <th>ID</th>
-          <th>First name</th>
-          <th>Last name</th>
+          <th>Name</th>
           <th>Email</th>
         </tr>
         </thead>

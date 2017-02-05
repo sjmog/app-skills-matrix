@@ -11,7 +11,7 @@ authom.createServer({
 });
 
 authom.on('auth', (req, res, data) =>
-  users.loginViaOauth(data.data.email)
+  users.addUser({ email: data.data.email, name: data.data.name })
     .then((user) => auth.sign(user.signingData))
     .then(token => {
       res.cookie(auth.cookieName, token);

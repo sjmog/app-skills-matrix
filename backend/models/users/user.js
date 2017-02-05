@@ -1,6 +1,6 @@
-module.exports = ({ _id, firstName, lastName, email }) => ({
+module.exports = ({ _id, name, email }) => ({
   get viewModel() {
-    return ({ id: _id, firstName, lastName, email });
+    return ({ id: _id, name, email });
   },
   get signingData() {
     return ({ id: _id, email });

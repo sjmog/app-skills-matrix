@@ -10,19 +10,9 @@ const AddUserForm = ({ error, user, updateUserState, onSave }) =>
           <FormGroup>
             <FormControl
               type='text'
-              placeholder='First name'
-              name='firstName'
-              value={user.firstName || ''}
-              onChange={updateUserState}
-            />
-          </FormGroup>
-          {' '}
-          <FormGroup>
-            <FormControl
-              type='text'
-              placeholder='Last name'
-              name='lastName'
-              value={user.lastName || ''}
+              placeholder='Name'
+              name='name'
+              value={user.name || ''}
               onChange={updateUserState}
             />
           </FormGroup>
@@ -50,8 +40,7 @@ const AddUserForm = ({ error, user, updateUserState, onSave }) =>
 AddUserForm.propTypes = {
   error: PropTypes.object,
   user: PropTypes.shape({
-    firstName: PropTypes.string,
-    lastName: PropTypes.string,
+    name: PropTypes.string,
     email: PropTypes.string
   }),
   updateUserState: PropTypes.func.isRequired,
