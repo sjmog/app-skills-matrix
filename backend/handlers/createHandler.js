@@ -8,4 +8,4 @@ const defaultHandler = {
   }
 };
 
-module.exports = (handlerFunctions) => R.map((handler) => new Proxy({}, defaultHandler, handler), handlerFunctions);
+module.exports = (handlerFunctions) => R.map((handler) => new Proxy(handler, defaultHandler), handlerFunctions);
