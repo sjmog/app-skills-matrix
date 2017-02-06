@@ -2,18 +2,18 @@ import React, { PropTypes } from 'react';
 import { Row, Form, FormGroup, FormControl, Button, Glyphicon, Alert } from 'react-bootstrap';
 import './users.scss'
 
-const AddUserForm = ({ error, user, updateUserState, onSave }) =>
+const AddUserForm = ({ error, newUser, updateNewUserState, onAddUser }) =>
   (
     <div>
       <Row className='show-grid'>
-        <Form inline onSubmit={onSave}>
+        <Form inline onSubmit={onAddUser}>
           <FormGroup>
             <FormControl
               type='text'
               placeholder='Name'
               name='name'
-              value={user.name || ''}
-              onChange={updateUserState}
+              value={newUser.name || ''}
+              onChange={updateNewUserState}
             />
           </FormGroup>
           {' '}
@@ -22,8 +22,8 @@ const AddUserForm = ({ error, user, updateUserState, onSave }) =>
               type='text'
               placeholder='Email address'
               name='email'
-              value={user.email || ''}
-              onChange={updateUserState}
+              value={newUser.email || ''}
+              onChange={updateNewUserState}
             />
           </FormGroup>
           {' '}
@@ -39,12 +39,12 @@ const AddUserForm = ({ error, user, updateUserState, onSave }) =>
 
 AddUserForm.propTypes = {
   error: PropTypes.object,
-  user: PropTypes.shape({
+  newUser: PropTypes.shape({
     name: PropTypes.string,
     email: PropTypes.string
   }),
-  updateUserState: PropTypes.func.isRequired,
-  onSave: PropTypes.func.isRequired
+  updateNewUserState: PropTypes.func.isRequired,
+  onAddUser: PropTypes.func.isRequired
 };
 
 export default AddUserForm;

@@ -10,11 +10,11 @@ class ManageUsersPageComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: {}
+      newUser: {}
     };
 
-    this.updateUserState = this.updateUserState.bind(this);
-    this.onSave = this.onSave.bind(this);
+    this.updateNewUserState = this.updateNewUserState.bind(this);
+    this.onAddUser = this.onAddUser.bind(this);
     this.clearUserForm = this.clearUserForm.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
   }
@@ -25,20 +25,20 @@ class ManageUsersPageComponent extends React.Component {
     }
   }
 
-  updateUserState(e) {
+  updateNewUserState(e) {
     const field = e.target.name;
-    let user = this.state.user;
-    user[field] = e.target.value;
-    return this.setState({ user });
+    let newUser = this.state.newUser;
+    newUser[field] = e.target.value;
+    return this.setState({ newUser });
   }
 
   clearUserForm() {
-    this.setState({ user: {} });
+    this.setState({ newUser: {} });
   }
 
-  onSave(e) {
+  onAddUser(e) {
     e.preventDefault();
-    this.props.actions.saveUser(this.state.user);
+    this.props.actions.saveUser(this.state.newUser);
   };
 
   render() {
@@ -48,9 +48,9 @@ class ManageUsersPageComponent extends React.Component {
           <h1 className="header">Users</h1>
         </Row>
         <AddUserForm
-          user={this.state.user}
-          updateUserState={this.updateUserState}
-          onSave={this.onSave}
+          newUser={this.state.newUser}
+          updateNewUserState={this.updateNewUserState}
+          onAddUser={this.onAddUser}
           error={this.props.error}
         />
         <UserList
