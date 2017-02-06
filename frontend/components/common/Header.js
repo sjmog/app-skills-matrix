@@ -18,7 +18,7 @@ class Header extends Component {
             <LinkContainer to="/users">
               <NavItem eventKey={1}>Users</NavItem>
             </LinkContainer>
-            <LinkContainer to="/import">
+            <LinkContainer to="/templates">
               <NavItem eventKey={1}>Templates</NavItem>
             </LinkContainer>
           </Nav>

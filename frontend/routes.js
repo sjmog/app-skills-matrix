@@ -12,7 +12,7 @@ export default (
       <IndexRoute component={Dashboard}/>
       <Route path="dashboard" name="Dashboard" component={Dashboard}/>
       <Route path="users" component={ManageUsersPage} />
-      <Route path="import" component={ManageTemplatePage} />
+      <Route path="templates" component={ManageTemplatePage} />
     </Route>
   </Router>
 );
