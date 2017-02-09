@@ -10,13 +10,14 @@ class ManageUsersPageComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      newUser: {}
+      newUser: {},
     };
 
     this.updateNewUserState = this.updateNewUserState.bind(this);
     this.onAddUser = this.onAddUser.bind(this);
     this.clearUserForm = this.clearUserForm.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
+    this.onSelectMentor = this.onSelectMentor.bind(this);
   }
 
   componentDidMount() {
@@ -38,8 +39,13 @@ class ManageUsersPageComponent extends React.Component {
 
   onAddUser(e) {
     e.preventDefault();
-    this.props.actions.saveUser(this.state.newUser);
+    this.props.actions.addUser(this.state.newUser);
   };
+
+  onSelectMentor(e, user) {
+    e.preventDefault();
+    this.props.actions.selectMentor(e.target.value, user);
+  }
 
   render() {
     return (
@@ -55,6 +61,7 @@ class ManageUsersPageComponent extends React.Component {
         />
         <UserList
           users={this.props.users}
+          onSelectMentor={this.onSelectMentor}
         />
       </div>
     );

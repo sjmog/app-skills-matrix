@@ -5,7 +5,12 @@ const getData = (response) => response.data;
 
 export default ({
   saveUser: function ({ name, email }) {
-    return axios.post('/skillz/users', { name, email, action: 'create' })
+    return axios.post('/skillz/users', { action: 'create', name, email })
+      .then(getData)
+      .catch(handleError);
+  },
+  selectMentor: function(mentorId, userId) {
+    return axios.post(`/skillz/users/${userId}`, { action: 'selectMentor', mentorId })
       .then(getData)
       .catch(handleError);
   }

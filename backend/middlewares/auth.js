@@ -6,7 +6,7 @@ module.exports = {
     req.cookies[auth.cookieName] ?
       auth.verify(req.cookies[auth.cookieName])
         .then(data => {
-          users.getUser(data.email)
+          users.getUserByEmail(data.email)
             .then((user) => {
               res.locals.user = user;
               next()

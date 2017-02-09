@@ -10,7 +10,7 @@ const clientState = (user, userList = []) => ({
 });
 
 module.exports = function (user) {
-  if (user.isAdmin) {
+  if (user && user.isAdmin) {
     return users.getAll()
       .then((allUsers) => clientState(user, allUsers));
   }
