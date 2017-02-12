@@ -4,6 +4,7 @@ import { Router, hashHistory } from 'react-router'
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
+import { composeWithDevTools } from 'redux-devtools-extension';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/css/bootstrap-theme.css';
 
@@ -14,7 +15,7 @@ import { reducers as manageTemplatesReducers } from './modules/manageTemplates';
 const reducers = combineReducers({ manageUsers: manageUsersReducers, manageTemplates: manageTemplatesReducers });
 
 const state = window.$REDUX_STATE;
-const store = createStore(reducers, state, applyMiddleware(thunk));
+const store = createStore(reducers, state, composeWithDevTools(applyMiddleware(thunk)));
 
 render(
   <Provider store={store}>
