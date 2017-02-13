@@ -4,16 +4,11 @@ import { Row } from 'react-bootstrap';
 import { AddTemplate } from './AddTemplate';
 import { AddSkill } from './AddSkill';
 
-const ManageMatricesPage = () => {
- return (
+export const ManageMatricesPage = () =>
+ (
    <div>
-     <Row>
-       <h1 className="header">Matrices</h1>
-     </Row>
+     <Row><h1 className="header">Matrices</h1></Row>
      <AddTemplate />
      <AddSkill />
-  </div>
- )
-};
-
-export default ManageMatricesPage;
+    </div>
+ );

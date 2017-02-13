@@ -4,7 +4,7 @@ import { Router, Route, IndexRoute, hashHistory } from 'react-router';
 import App from './components/App';
 import { Dashboard } from './components/dashboard/Dashboard';
 import { ManageUsersPage } from './components/users/ManageUsersPage';
-import ManageMatricesPage from './components/matrices/ManageMatricesPage';
+import { ManageMatricesPage } from './components/matrices/ManageMatricesPage';
 
 export default (
   <Router history={hashHistory}>
