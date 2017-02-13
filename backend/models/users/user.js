@@ -13,6 +13,10 @@ const user = ({ _id, name, email, mentorId, createdDate, modifiedDate }) => Obje
   },
   // returns changes required to this object based on this action
   setMentor(mentorId) {
+    if (mentorId === _id.toString()) {
+      return { error: true, message: `User '${mentorId}' can not mentor themselves` };
+    }
+
     return { mentorId, modifiedDate: new Date() };
   },
   toString() {

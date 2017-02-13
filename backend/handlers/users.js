@@ -6,7 +6,7 @@ const { USER_EXISTS, MUST_BE_ADMIN, USER_NOT_FOUND } = require('./errors');
 
 const handlerFunctions = Object.freeze({
   users: {
-    create: function (req, res, next) {
+    create: (req, res, next) => {
       Promise.try(() => users.getUserByEmail(req.body.email))
         .then((user) => {
           if (user) {
@@ -20,19 +20,24 @@ const handlerFunctions = Object.freeze({
     }
   },
   user: {
-    selectMentor: function (req, res, next) {
+    selectMentor: (req, res, next) => {
       const { user } = res.locals;
       if (!user || !user.isAdmin) {
         return res.status(403).json(MUST_BE_ADMIN());
       }
-      users.getUserById(req.params.userId)
+      Promise.try(() => users.getUserById(req.params.userId))
         .then((user) => {
           if (!user) {
             return res.status(404).json(USER_NOT_FOUND());
           }
-          return users.updateUser(user, user.setMentor(req.body.mentorId))
+          const changes = user.setMentor(req.body.mentorId);
+          if (changes.error) {
+            return res.status(400).json(changes.message);
+          }
+          return users.updateUser(user, changes)
             .then((updatedUser) => res.status(200).json(updatedUser.viewModel));
         })
+        .catch((err) => next(err));
     }
   }
 

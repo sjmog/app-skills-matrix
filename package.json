@@ -8,9 +8,10 @@
     "debug": "nodemon --debug",
     "base": "node $npm_package_main",
     "lint": "standard --verbose | snazzy",
-    "test": "mocha",
+    "test": "eval $(cat .env.test) mocha",
     "build": "webpack --debug",
-    "watch": "NODE_ENV=local webpack --watch"
+    "watch": "NODE_ENV=local webpack --watch",
+    "prepush": "eval $(cat .env.test) yarn test"
   },
   "repository": {
     "url": "git@github.com:tes/app-skills-matrix.git",
@@ -25,6 +26,7 @@
     "chai": "^4.0.0-canary.1",
     "css-loader": "^0.26.1",
     "faucet": "^0.0.1",
+    "husky": "^0.13.1",
     "mocha": "^3.2.0",
     "node-sass": "^4.5.0",
     "nodemon": "^1.11.0",
