@@ -1,9 +1,10 @@
 [
   {
-    "email": "admin@magic.com",
-    "isAdmin": true
+    "email": "dmorgantini@gmail.com",
+    "name": "David Morgantini"
   },
   {
-    "email": "user@magic.com"
+    "email": "user@magic.com",
+    "name": "User Magic"
   }
 ]

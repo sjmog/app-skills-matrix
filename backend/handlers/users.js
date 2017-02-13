@@ -1,3 +1,5 @@
+const Promise = require('bluebird');
+
 const users = require('../models/users');
 const createHandler = require('./createHandler');
 const { USER_EXISTS, MUST_BE_ADMIN, USER_NOT_FOUND } = require('./errors');
@@ -5,7 +7,7 @@ const { USER_EXISTS, MUST_BE_ADMIN, USER_NOT_FOUND } = require('./errors');
 const handlerFunctions = Object.freeze({
   users: {
     create: function (req, res, next) {
-      users.getUserByEmail(req.body.email)
+      Promise.try(() => users.getUserByEmail(req.body.email))
         .then((user) => {
           if (user) {
             return res.status(409).json(USER_EXISTS(req.body.email));
