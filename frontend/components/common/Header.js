@@ -18,8 +18,8 @@ class Header extends Component {
             <LinkContainer to="/users">
               <NavItem eventKey={1}>Users</NavItem>
             </LinkContainer>
-            <LinkContainer to="/templates">
-              <NavItem eventKey={1}>Templates</NavItem>
+            <LinkContainer to="/matrices">
+              <NavItem eventKey={1}>Matrices</NavItem>
             </LinkContainer>
           </Nav>
           <Navbar.Link pullRight href="/auth/github">Login</Navbar.Link>
