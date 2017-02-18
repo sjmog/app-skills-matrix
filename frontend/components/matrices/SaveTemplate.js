@@ -11,16 +11,16 @@ class SaveTemplateComponent extends React.Component {
     this.state = { template: '' };
 
     this.updateTemplateState = this.updateTemplateState.bind(this);
-    this.onAddTemplate = this.onAddTemplate.bind(this);
+    this.saveTemplate = this.saveTemplate.bind(this);
   }
 
   updateTemplateState(e) {
     return this.setState({ template: e.target.value });
   }
 
-  onAddTemplate(e) {
+  saveTemplate(e) {
     e.preventDefault();
-    this.props.actions.addTemplate(this.state.template)
+    this.props.actions.saveTemplate(this.state.template)
   }
 
   render() {
@@ -32,7 +32,7 @@ class SaveTemplateComponent extends React.Component {
         <MatricesForm
           entityName="template"
           entity={this.state.template}
-          saveEntity={this.onAddTemplate}
+          saveEntity={this.saveTemplate}
           updateEntityInLocalState={this.updateTemplateState}
           success={this.props.success}
           error={this.props.error}

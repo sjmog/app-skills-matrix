@@ -11,16 +11,16 @@ class SaveSkillComponent extends React.Component {
     this.state = { skill: '' };
 
     this.updateSkillState = this.updateSkillState.bind(this);
-    this.onAddSkill = this.onAddSkill.bind(this);
+    this.saveSkill = this.saveSkill.bind(this);
   }
 
   updateSkillState(e) {
     return this.setState({ skill: e.target.value });
   }
 
-  onAddSkill(e) {
+  saveSkill(e) {
     e.preventDefault();
-    this.props.actions.addSkill(this.state.skill)
+    this.props.actions.saveSkill(this.state.skill)
   }
 
   render() {
@@ -32,7 +32,7 @@ class SaveSkillComponent extends React.Component {
         <MatricesForm
           entityName="skill"
           entity={this.state.skill}
-          saveEntity={this.onAddSkill}
+          saveEntity={this.saveSkill}
           updateEntityInLocalState={this.updateSkillState}
           success={this.props.success}
           error={this.props.error}
