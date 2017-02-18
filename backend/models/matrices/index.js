@@ -8,9 +8,11 @@ const skill = require('./skill');
 
 module.exports = {
   templates: {
-    addTemplate: function (newTemplate) {
-      return templatesCollection.insertOne(newTemplate)
-        .then(({ insertedId }) => templatesCollection.findOne({ _id: new ObjectId(insertedId) }))
+    addTemplate: function ({ templateId, name, skillGroups }) {
+      const changes = template.newTemplate(templateId, name, skillGroups);
+      return templatesCollection.updateOne({ templateId }, { $set: changes }, { upsert: true })
+        .then(() => templatesCollection.findOne({ templateId }))
+        .then(retrievedTemplate => template(retrievedTemplate))
     },
     getById: function (id) {
       return templatesCollection.findOne({ id })
@@ -35,7 +37,7 @@ module.exports = {
     addSkill: function ({ skillId, name, acceptanceCriteria, questions }) {
       const changes = skill.newSkill(skillId, name, acceptanceCriteria, questions);
       return skillsCollection.updateOne({ skillId }, { $set: changes }, { upsert: true })
-        .then(() => skillsCollection.findOne({ skill }))
+        .then(() => skillsCollection.findOne({ skillId }))
         .then(retrievedSkill => skill(retrievedSkill))
     },
     getSkillBySkillId: function (skillId) {
