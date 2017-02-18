@@ -45,7 +45,7 @@ class AddSkillComponent extends React.Component {
         </Row>
         <Row>
           { this.props.success
-            ? <Alert bsStyle='success'>Skill successfully added</Alert>
+            ? <Alert bsStyle='success'>Skill successfully saved</Alert>
             : false
           }
         </Row>

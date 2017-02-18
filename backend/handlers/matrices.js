@@ -15,15 +15,19 @@ const handlerFunctions = Object.freeze({
             .then(template => res.status(201).send(template)))
         .catch(next);
 
-      }
+    }
   },
   skills: {
-    create: function (req, res, next) {
+    save: function (req, res, next) {
       Promise.try(() => JSON.parse(req.body.skill))
-        .then(skills.addSkill)
-        .then((newSkillName) => res.status(201).send(newSkillName))
+        .then((skill) =>
+          skills.getSkillBySkillId(skill.skillId)
+            .then(retrievedSkill =>
+              (retrievedSkill
+                ? skills.updateSkill(retrievedSkill, skill)
+                : skills.addSkill(skill)))
+            .then(skill => res.status(201).send(skill)))
         .catch(next);
-
     }
   }
 });

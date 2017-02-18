@@ -4,6 +4,7 @@ const database = require('../../database');
 const templatesCollection = database.collection('templates');
 const skillsCollection = database.collection('skills');
 const template = require('./template');
+const skill = require('./skill');
 
 module.exports = {
   templates: {
@@ -31,9 +32,20 @@ module.exports = {
     },
   },
   skills: {
-    addSkill: function (skill) {
-      return skillsCollection.insertOne(skill)
-        .then(({ insertedId }) => skillsCollection.findOne({ _id: new ObjectId(insertedId) }))
-    }
+    addSkill: function ({ skillId, name, acceptanceCriteria, questions }) {
+      const changes = skill.newSkill(skillId, name, acceptanceCriteria, questions);
+      return skillsCollection.updateOne({ skillId }, { $set: changes }, { upsert: true })
+        .then(() => skillsCollection.findOne({ skill }))
+        .then(retrievedSkill => skill(retrievedSkill))
+    },
+    getSkillBySkillId: function (skillId) {
+      return skillsCollection.findOne({ skillId })
+        .then(res => res ? user(res) : null);
+    },
+    updateSkill: function (original, updates) {
+      return skillsCollection.updateOne({ _id: original.id }, { $set: updates })
+        .then(() => skillsCollection.findOne({ _id: original.id }))
+        .then(updatedSkill => skill(updatedSkill))
+    },
   }
 };
