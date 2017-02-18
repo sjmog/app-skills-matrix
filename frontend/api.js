@@ -20,7 +20,7 @@ export default ({
       .catch(handleError);
   },
   saveTemplate: function (template) {
-    return axios.post('/skillz/templates', { action: 'create', template })
+    return axios.post('/skillz/templates', { action: 'save', template })
       .then(getData)
       .catch(handleError);
   },

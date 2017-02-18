@@ -1,13 +1,18 @@
-const { templates, skills } = require('../models/matrices');
+const { templates, skills  } = require('../models/matrices');
 const createHandler = require('./createHandler');
 const Promise = require('bluebird');
 
 const handlerFunctions = Object.freeze({
   templates: {
-    create: function (req, res, next) {
+    save: function (req, res, next) {
       Promise.try(() => JSON.parse(req.body.template))
-        .then(templates.addTemplate)
-        .then((newTemplateName) => res.status(201).send(newTemplateName))
+        .then((template) =>
+          templates.getTemplateByTemplateId(template.templateId)
+            .then(retrievedTemplate =>
+              (retrievedTemplate
+                ? templates.updateTemplate(retrievedTemplate, template)
+                : templates.addTemplate(template)))
+            .then(template => res.status(201).send(template)))
         .catch(next);
 
       }

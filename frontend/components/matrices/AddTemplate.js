@@ -45,7 +45,7 @@ class AddTemplateComponent extends React.Component {
         </Row>
         <Row>
           { this.props.success
-            ? <Alert bsStyle='success'>Template successfully added</Alert>
+            ? <Alert bsStyle='success'>Template successfully saved</Alert>
             : false
           }
         </Row>
