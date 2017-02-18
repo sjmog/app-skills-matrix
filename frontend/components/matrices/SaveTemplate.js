@@ -1,0 +1,54 @@
+import React, { PropTypes } from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { Row, Form, FormGroup, FormControl, ControlLabel, Radio, Button, Glyphicon, Alert } from 'react-bootstrap';
+import { actions } from '../../modules/manageMatrices';
+import MatricesForm from './MatricesForm';
+
+class SaveTemplateComponent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { template: '' };
+
+    this.updateTemplateState = this.updateTemplateState.bind(this);
+    this.onAddTemplate = this.onAddTemplate.bind(this);
+  }
+
+  updateTemplateState(e) {
+    return this.setState({ template: e.target.value });
+  }
+
+  onAddTemplate(e) {
+    e.preventDefault();
+    this.props.actions.addTemplate(this.state.template)
+  }
+
+  render() {
+    return (
+      <div>
+        <Row>
+          <h2 className="header">New template</h2>
+        </Row>
+        <MatricesForm
+          entityName="template"
+          entity={this.state.template}
+          saveEntity={this.onAddTemplate}
+          updateEntityInLocalState={this.updateTemplateState}
+          success={this.props.success}
+          error={this.props.error}
+        />
+      </div>
+    );
+  }
+}
+
+export const SaveTemplate = connect(
+  function mapStateToProps(state) {
+    return state.manageMatrices.template;
+  },
+  function mapDispatchToProps(dispatch) {
+    return {
+      actions: bindActionCreators(actions, dispatch)
+    };
+  }
+)(SaveTemplateComponent);
