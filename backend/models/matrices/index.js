@@ -40,7 +40,7 @@ module.exports = {
     },
     getSkillBySkillId: function (skillId) {
       return skillsCollection.findOne({ skillId })
-        .then(res => res ? user(res) : null);
+        .then(res => res ? skill(res) : null);
     },
     updateSkill: function (original, updates) {
       return skillsCollection.updateOne({ _id: original.id }, { $set: updates })
