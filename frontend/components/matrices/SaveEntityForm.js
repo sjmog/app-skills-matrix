@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Row, Form, FormGroup, ControlLabel, FormControl, Button, Glyphicon, Alert } from 'react-bootstrap';
 
-const MatricesForm = ({ entityName, entity, saveEntity, updateEntityInLocalState, success, error }) =>
+const SaveEntityForm = ({ entityName, entity, saveEntity, updateEntityInLocalState, success, error }) =>
   (
     <div>
       <Row className='show-grid'>
@@ -28,11 +28,11 @@ const MatricesForm = ({ entityName, entity, saveEntity, updateEntityInLocalState
     </div>
   );
 
-MatricesForm.propTypes = {
+SaveEntityForm.propTypes = {
   entityName: PropTypes.string.isRequired,
   entity: PropTypes.string,
   saveEntity: PropTypes.func.isRequired,
   updateEntityInLocalState: PropTypes.func.isRequired,
 };
 
-export default MatricesForm
+export default SaveEntityForm

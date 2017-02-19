@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Row, Form, FormGroup, FormControl, ControlLabel, Radio, Button, Glyphicon, Alert } from 'react-bootstrap';
 import { actions } from '../../modules/manageMatrices';
-import MatricesForm from './MatricesForm';
+import SaveEntityForm from './SaveEntityForm';
 
 class SaveTemplateComponent extends React.Component {
   constructor(props) {
@@ -29,7 +29,7 @@ class SaveTemplateComponent extends React.Component {
         <Row>
           <h2 className="header">New template</h2>
         </Row>
-        <MatricesForm
+        <SaveEntityForm
           entityName="template"
           entity={this.state.template}
           saveEntity={this.saveTemplate}
