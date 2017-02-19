@@ -11,7 +11,8 @@
     "test": "eval $(cat .env.test) mocha",
     "build": "webpack --debug",
     "watch": "NODE_ENV=local webpack --watch",
-    "prepush": "eval $(cat .env.test) yarn test"
+    "prepush": "eval $(cat .env.test) yarn test",
+    "ensure-local-data": "NODE_ENV=local node scripts/ensure-local-data"
   },
   "repository": {
     "url": "git@github.com:tes/app-skills-matrix.git",
