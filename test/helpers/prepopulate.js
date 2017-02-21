@@ -13,5 +13,6 @@ module.exports = {
     templates.insertMany(templatesData),
   ])),
   users,
-  templates
+  templates,
+  insertTemplate: (template) => templates.insertOne(template)
 };
