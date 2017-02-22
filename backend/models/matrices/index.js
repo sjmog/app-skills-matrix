@@ -8,6 +8,9 @@ module.exports = {
     addTemplate: function(template) {
       return templatesCollection.insertOne(template)
         .then(({ insertedId }) => templatesCollection.findOne({ _id: new ObjectId(insertedId) }))
+    },
+    getById: function (templateId) {
+      return templatesCollection.findOne({ templateId });
     }
   },
   skills: {

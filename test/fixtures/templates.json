@@ -1,0 +1,16 @@
+[
+  {
+    "templateId": "eng-nodejs",
+    "name": "Node.js dev",
+    "skillGroups": [
+      {
+        "category": "magicness",
+        "level": "novice",
+        "skills": [
+          1,
+          2
+        ]
+      }
+    ]
+  }
+]

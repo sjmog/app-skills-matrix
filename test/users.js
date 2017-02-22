@@ -3,10 +3,12 @@ const { expect } = require('chai');
 const { ObjectId } = require('mongodb');
 
 const app = require('../backend');
-const { prepopulate, skills, users } = require('./helpers/prepopulate');
+const { prepopulate, users, templates } = require('./helpers/prepopulate');
 const { sign, cookieName } = require('../backend/models/auth');
 
 const prefix = '/skillz';
+
+const templateId = 'eng-nodejs';
 
 let adminToken, normalUserToken;
 let adminUserId, normalUserId;
@@ -64,7 +66,8 @@ describe('POST /users', () => {
 
 
 });
-describe('POST /users/:userId', () => {
+
+describe('POST /users/:userId { action: selectMentor }', () => {
   it('should let admin select a mentor', () =>
     request(app)
       .post(`${prefix}/users/${normalUserId}`)
@@ -102,6 +105,51 @@ describe('POST /users/:userId', () => {
       desc: 'can not mentor themselves',
       token: adminToken,
       body: { mentorId: normalUserId, action: 'selectMentor' },
+      userId: normalUserId,
+      expect: 400,
+    }),
+  ].forEach((test) =>
+    it(`should handle error cases '${test().desc}'`, () =>
+      request(app)
+        .post(`${prefix}/users/${test().userId}`)
+        .send(test().body)
+        .set('Cookie', `${cookieName}=${test().token}`)
+        .expect(test().expect)));
+
+
+});
+
+describe('POST /users/:userId { action: selectTemplate }', () => {
+  it('should let admin select a template for a user', () =>
+    request(app)
+      .post(`${prefix}/users/${normalUserId}`)
+      .send({ templateId, action: 'selectTemplate' })
+      .set('Cookie', `${cookieName}=${adminToken}`)
+      .expect(200)
+      .then((res) => users.findOne({ _id: new ObjectId(normalUserId) }))
+      .then((updatedUser) => {
+        expect(updatedUser.templateId).to.equal(templateId);
+      }));
+
+  [
+    () => ({
+      desc: 'not authorized',
+      token: normalUserToken,
+      body: { templateId, action: 'selectTemplate' },
+      userId: normalUserId,
+      expect: 403,
+    }),
+    () => ({
+      desc: 'no user',
+      token: adminToken,
+      body: { templateId, action: 'selectTemplate' },
+      userId: '58a237c185b8790720deb924',
+      expect: 404,
+    }),
+    () => ({
+      desc: 'template not found',
+      token: adminToken,
+      body: { templateId: 'does-not-exist-lolz', action: 'selectTemplate' },
       userId: normalUserId,
       expect: 400,
     }),
