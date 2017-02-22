@@ -2,17 +2,19 @@ const R = require('ramda');
 const Promise = require('bluebird');
 
 const users = require('./users');
+const { templates }= require('./matrices');
 
-const clientState = (user, userList = []) => ({
+const clientState = (user, userList = [], templates = []) => ({
   manageUsers: {
     users: R.map((domainUser) => domainUser.viewModel, userList),
+    templates: R.map((domainTemplate) => domainTemplate.viewModel, templates),
   }
 });
 
 module.exports = function (user) {
   if (user && user.isAdmin) {
-    return users.getAll()
-      .then((allUsers) => clientState(user, allUsers));
+    return Promise.all([users.getAll(), templates.getAll()])
+      .then(([allUsers, allTemplates]) => clientState(user, allUsers, allTemplates));
   }
   return Promise.resolve(clientState(user));
 };
