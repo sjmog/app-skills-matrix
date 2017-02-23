@@ -10,8 +10,8 @@ module.exports = {
       return templatesCollection.insertOne(newTemplate)
         .then(({ insertedId }) => templatesCollection.findOne({ _id: new ObjectId(insertedId) }))
     },
-    getById: function (templateId) {
-      return templatesCollection.findOne({ templateId })
+    getById: function (id) {
+      return templatesCollection.findOne({ id })
         .then((res) => res ? template(res) : null);
     },
     getAll: function () {

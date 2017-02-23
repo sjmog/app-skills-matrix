@@ -1,6 +1,6 @@
 [
   {
-    "templateId": "eng-nodejs",
+    "id": "eng-nodejs",
     "name": "Node.js dev",
     "skillGroups": [
       {

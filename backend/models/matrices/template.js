@@ -1,6 +1,6 @@
-const template = ({ templateId, name }) => Object.freeze({
+const template = ({ id, name }) => Object.freeze({
   get viewModel() {
-    return { id: templateId, name };
+    return { id, name };
   }
 });
 
