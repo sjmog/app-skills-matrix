@@ -18,6 +18,7 @@ class ManageUsersPageComponent extends React.Component {
     this.clearUserForm = this.clearUserForm.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
     this.onSelectMentor = this.onSelectMentor.bind(this);
+    this.onSelectTemplate = this.onSelectTemplate.bind(this);
   }
 
   componentDidMount() {
@@ -47,6 +48,11 @@ class ManageUsersPageComponent extends React.Component {
     this.props.actions.selectMentor(e.target.value, user);
   }
 
+  onSelectTemplate(e, user) {
+    e.preventDefault();
+    this.props.actions.selectTemplate(e.target.value, user);
+  }
+
   render() {
     return (
       <div>
@@ -61,7 +67,9 @@ class ManageUsersPageComponent extends React.Component {
         />
         <UserList
           users={this.props.users}
+          templates={this.props.templates}
           onSelectMentor={this.onSelectMentor}
+          onSelectTemplate={this.onSelectTemplate}
         />
       </div>
     );
@@ -69,7 +77,8 @@ class ManageUsersPageComponent extends React.Component {
 }
 
 ManageUsersPageComponent.propTypes = {
-  users: PropTypes.array
+  users: PropTypes.array,
+  templates: PropTypes.array,
 };
 
 export const ManageUsersPage = connect(

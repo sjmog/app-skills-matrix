@@ -14,6 +14,11 @@ export default ({
       .then(getData)
       .catch(handleError);
   },
+  selectTemplate: function(templateId, userId) {
+    return axios.post(`/skillz/users/${userId}`, { action: 'selectTemplate', templateId })
+      .then(getData)
+      .catch(handleError);
+  },
   saveTemplate: function (template) {
     return axios.post('/skillz/templates', { action: 'create', template })
       .then(getData)
