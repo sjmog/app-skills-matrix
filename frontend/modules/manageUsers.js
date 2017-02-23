@@ -8,12 +8,16 @@ export const constants = keymirror({
   ADD_USER_FAILURE: null,
   SELECT_MENTOR_SUCCESS: null,
   SELECT_MENTOR_FAILURE: null,
+  SELECT_TEMPLATE_SUCCESS: null,
+  SELECT_TEMPLATE_FAILURE: null,
 });
 
 const addUserSuccess = createAction(constants.ADD_USER_SUCCESS);
 const addUserFailure = createAction(constants.ADD_USER_FAILURE);
 const selectMentorSuccess = createAction(constants.SELECT_MENTOR_SUCCESS);
 const selectMentorFailure = createAction(constants.SELECT_MENTOR_FAILURE);
+const selectTemplateSuccess = createAction(constants.SELECT_TEMPLATE_SUCCESS);
+const selectTemplateFailure = createAction(constants.SELECT_TEMPLATE_FAILURE);
 
 function addUser(user) {
   return function (dispatch) {
@@ -31,12 +35,21 @@ function selectMentor(mentorId, user) {
   }
 }
 
+function selectTemplate(templateId, user) {
+  return function (dispatch) {
+    return api.selectTemplate(templateId, user.id)
+      .then((user) => dispatch(selectTemplateSuccess(user)))
+      .catch((err) => dispatch(selectTemplateFailure(err)));
+  }
+}
+
 export const actions = {
   selectMentor,
+  selectTemplate,
   addUser,
 };
 
-const handleSelectMentorSuccess = (state, action) =>
+const handleUserUpdateSuccess = (state, action) =>
   Object.assign({},
     state,
     {
@@ -50,6 +63,8 @@ const handleActionFailure = (state, action) => Object.assign({}, state, { error:
 export const reducers = handleActions({
   [addUserSuccess]: (state, action) => Object.assign({}, state, { users: [].concat(state.users, action.payload), success: true, error: null }),
   [addUserFailure]: handleActionFailure,
-  [selectMentorSuccess]: handleSelectMentorSuccess,
+  [selectMentorSuccess]: handleUserUpdateSuccess,
   [selectMentorFailure]: handleActionFailure,
+  [selectTemplateSuccess]: handleUserUpdateSuccess,
+  [selectTemplateFailure]: handleActionFailure,
 }, { users: [] });
