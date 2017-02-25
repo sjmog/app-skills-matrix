@@ -8,10 +8,10 @@ const skill = require('./skill');
 
 module.exports = {
   templates: {
-    addTemplate: function ({ templateId, name, skillGroups }) {
-      const changes = template.newTemplate(templateId, name, skillGroups);
-      return templatesCollection.updateOne({ templateId }, { $set: changes }, { upsert: true })
-        .then(() => templatesCollection.findOne({ templateId }))
+    addTemplate: function ({ id, name, skillGroups }) {
+      const changes = template.newTemplate(id, name, skillGroups);
+      return templatesCollection.updateOne({ id }, { $set: changes }, { upsert: true })
+        .then(() => templatesCollection.findOne({ id }))
         .then(retrievedTemplate => template(retrievedTemplate))
     },
     getById: function (id) {
@@ -23,10 +23,6 @@ module.exports = {
         .then((results) => results.toArray())
         .then((results) => results.map((doc) => template(doc)));
     },
-    getTemplateByTemplateId: function (templateId) {
-      return templatesCollection.findOne({ templateId })
-        .then(res => res ? template(res) : null);
-    },
     updateTemplate: function (original, updates) {
       return templatesCollection.updateOne({ _id: original.id }, { $set: updates })
         .then(() => templatesCollection.findOne({ _id: original.id }))
@@ -34,14 +30,14 @@ module.exports = {
     },
   },
   skills: {
-    addSkill: function ({ skillId, name, acceptanceCriteria, questions }) {
-      const changes = skill.newSkill(skillId, name, acceptanceCriteria, questions);
-      return skillsCollection.updateOne({ skillId }, { $set: changes }, { upsert: true })
-        .then(() => skillsCollection.findOne({ skillId }))
+    addSkill: function ({ id, name, acceptanceCriteria, questions }) {
+      const changes = skill.newSkill(id, name, acceptanceCriteria, questions);
+      return skillsCollection.updateOne({ id }, { $set: changes }, { upsert: true })
+        .then(() => skillsCollection.findOne({ id }))
         .then(retrievedSkill => skill(retrievedSkill))
     },
-    getSkillBySkillId: function (skillId) {
-      return skillsCollection.findOne({ skillId })
+    getById: function (id) {
+      return skillsCollection.findOne({ id })
         .then(res => res ? skill(res) : null);
     },
     updateSkill: function (original, updates) {

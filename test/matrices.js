@@ -25,7 +25,7 @@ beforeEach(() =>
 
 describe('POST /templates', () => {
   const sampleTemplate = {
-    templateId: 1,
+    id: 1,
     name: 'Node.js',
     skillGroups: [
       {
@@ -47,14 +47,14 @@ describe('POST /templates', () => {
       .send({  action: 'save', template: JSON.stringify(sampleTemplate) })
       .set('Cookie', `${cookieName}=${adminToken}`)
       .expect(201)
-      .then((res) => templates.findOne({ templateId: 1 }))
+      .then((res) => templates.findOne({ id: 1 }))
       .then(newTemplate => {
-        expect(newTemplate.templateId).to.equal(1);
+        expect(newTemplate.id).to.equal(1);
         expect(newTemplate.name).to.equal('Node.js');
       })
   );
 
-  it('updates an existing template when there is an existing template with the same templateId', () =>
+  it('updates an existing template when there is an existing template with the same id', () =>
     insertTemplate(Object.assign({}, sampleTemplate))
       .then(() =>
         request(app)
@@ -64,9 +64,9 @@ describe('POST /templates', () => {
             template: JSON.stringify(Object.assign({}, sampleTemplate, { name: 'new name', skillGroups: [] })) })
           .set('Cookie', `${cookieName}=${adminToken}`)
           .expect(201))
-      .then(res => templates.findOne({ templateId: 1 }))
+      .then(res => templates.findOne({ id: 1 }))
       .then(updatedTemplate => {
-        expect(updatedTemplate.templateId).to.equal(1);
+        expect(updatedTemplate.id).to.equal(1);
         expect(updatedTemplate.name).to.deep.equal('new name');
         expect(updatedTemplate.skillGroups.length).to.equal(0);
       }));
@@ -98,7 +98,7 @@ describe('POST /templates', () => {
 
 describe('POST /skills', () => {
   const sampleSkill = {
-    skillId: 1,
+    id: 1,
     name: 'Working knowledge of NodeJS',
     acceptanceCriteria: 'Understands the basics of NodeJS & es6 syntax',
     questions: [
@@ -115,14 +115,14 @@ describe('POST /skills', () => {
       })
       .set('Cookie', `${cookieName}=${adminToken}`)
       .expect(201)
-      .then(res => skills.findOne({ skillId: 1 }))
+      .then(res => skills.findOne({ id: 1 }))
       .then(newSkill => {
-        expect(newSkill.skillId).to.equal(1);
+        expect(newSkill.id).to.equal(1);
         expect(newSkill.name).to.equal('Working knowledge of NodeJS');
       })
   );
 
-  it('updates an existing skill when there is an existing skill with the same skillId', () =>
+  it('updates an existing skill when there is an existing skill with the same id', () =>
     insertSkill(Object.assign({}, sampleSkill))
       .then(() =>
         request(app)
@@ -133,9 +133,9 @@ describe('POST /skills', () => {
           })
           .set('Cookie', `${cookieName}=${adminToken}`)
           .expect(201))
-      .then(res => skills.findOne({ skillId: 1 }))
+      .then(res => skills.findOne({ id: 1 }))
       .then(updatedSkill => {
-        expect(updatedSkill.skillId).to.equal(1);
+        expect(updatedSkill.id).to.equal(1);
         expect(updatedSkill.name).to.deep.equal('new name');
         expect(updatedSkill.questions.length).to.equal(0);
       }));

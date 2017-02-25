@@ -7,7 +7,7 @@ const handlerFunctions = Object.freeze({
     save: function (req, res, next) {
       Promise.try(() => JSON.parse(req.body.template))
         .then((template) =>
-          templates.getTemplateByTemplateId(template.templateId)
+          templates.getById(template.id)
             .then(retrievedTemplate =>
               (retrievedTemplate
                 ? templates.updateTemplate(retrievedTemplate, template)
@@ -21,7 +21,7 @@ const handlerFunctions = Object.freeze({
     save: function (req, res, next) {
       Promise.try(() => JSON.parse(req.body.skill))
         .then((skill) =>
-          skills.getSkillBySkillId(skill.skillId)
+          skills.getById(skill.id)
             .then(retrievedSkill =>
               (retrievedSkill
                 ? skills.updateSkill(retrievedSkill, skill)

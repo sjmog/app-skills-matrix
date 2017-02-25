@@ -1,4 +1,5 @@
-const template = ({ id, name }) => Object.freeze({
+const template = ({ _id, id, name }) => Object.freeze({
+  id: _id,
   get viewModel() {
     return { id, name };
   }
@@ -6,10 +7,9 @@ const template = ({ id, name }) => Object.freeze({
 
 module.exports = template;
 
-module.exports = template;
-module.exports.newTemplate = (templateId, name, skillGroups) =>
+module.exports.newTemplate = (id, name, skillGroups) =>
   ({
-    templateId,
+    id,
     name,
     skillGroups,
     createdDate: new Date()

@@ -1,13 +1,13 @@
-const skill = ({ _id: id }) => {
-  return id
-    ? Object.freeze({ id })
+const skill = ({ _id }) => {
+  return _id
+    ? Object.freeze({ id: _id })
     : null;
 };
 
 module.exports = skill;
-module.exports.newSkill = (skillId, name, acceptanceCriteria, questions) =>
+module.exports.newSkill = (id, name, acceptanceCriteria, questions) =>
   ({
-    skillId,
+    id,
     name,
     acceptanceCriteria,
     questions,
