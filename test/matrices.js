@@ -5,6 +5,7 @@ const app = require('../backend');
 const { sign, cookieName } = require('../backend/models/auth');
 const { users, templates, skills, prepopulate, insertTemplate, insertSkill } = require('./helpers/prepopulate');
 const [ sampleTemplate ] = require('./fixtures/templates.json');
+const [ sampleSkill ] = require('./fixtures/skills.json');
 
 const prefix = '/skillz/matrices';
 
@@ -80,15 +81,6 @@ describe('POST /matrices/templates', () => {
 });
 
 describe('POST matrices/skills', () => {
-  const sampleSkill = {
-    id: 1,
-    name: 'Working knowledge of NodeJS',
-    acceptanceCriteria: 'Understands the basics of NodeJS & es6 syntax',
-    questions: [
-      { title: 'Do you use ternary operators?' }
-    ],
-  };
-
   it('permits saving of new skills by admin users', () =>
     request(app)
       .post(`${prefix}/skills`)

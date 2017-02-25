@@ -1,0 +1,12 @@
+[
+  {
+    "id": 1,
+    "name": "Working knowledge of NodeJS",
+    "acceptanceCriteria": "Understands the basics of NodeJS & es6 syntax",
+    "questions": [
+      {
+        "title": "Do you use ternary operators?"
+      }
+    ]
+  }
+]
