@@ -3,7 +3,8 @@ const { expect } = require('chai');
 const { ObjectId } = require('mongodb');
 
 const app = require('../backend');
-const { prepopulate, users, templates } = require('./helpers/prepopulate');
+const { prepopulate, users, insertTemplate } = require('./helpers/prepopulate');
+const [ sampleTemplate ] = require('./fixtures/templates.json');
 const { sign, cookieName } = require('../backend/models/auth');
 
 const prefix = '/skillz';
@@ -121,11 +122,13 @@ describe('POST /users/:userId { action: selectMentor }', () => {
 
 describe('POST /users/:userId { action: selectTemplate }', () => {
   it('should let admin select a template for a user', () =>
-    request(app)
-      .post(`${prefix}/users/${normalUserId}`)
-      .send({ templateId, action: 'selectTemplate' })
-      .set('Cookie', `${cookieName}=${adminToken}`)
-      .expect(200)
+    insertTemplate(sampleTemplate)
+      .then(() =>
+        request(app)
+        .post(`${prefix}/users/${normalUserId}`)
+        .send({ templateId, action: 'selectTemplate' })
+        .set('Cookie', `${cookieName}=${adminToken}`)
+        .expect(200))
       .then((res) => users.findOne({ _id: new ObjectId(normalUserId) }))
       .then((updatedUser) => {
         expect(updatedUser.templateId).to.equal(templateId);

@@ -12,7 +12,6 @@ module.exports = {
     templates.remove({}),
   ]).then(() => Promise.all([
     users.insertMany(usersData),
-    templates.insertMany(templatesData),
   ])),
   users,
   templates,

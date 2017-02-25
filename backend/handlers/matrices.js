@@ -12,7 +12,7 @@ const handlerFunctions = Object.freeze({
               (retrievedTemplate
                 ? templates.updateTemplate(retrievedTemplate, template)
                 : templates.addTemplate(template)))
-            .then(template => res.status(201).send(template)))
+            .then(template => res.status(201).json(template.viewModel)))
         .catch(next);
 
     }

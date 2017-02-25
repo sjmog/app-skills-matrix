@@ -4,6 +4,7 @@ const { expect } = require('chai');
 const app = require('../backend');
 const { sign, cookieName } = require('../backend/models/auth');
 const { users, templates, skills, prepopulate, insertTemplate, insertSkill } = require('./helpers/prepopulate');
+const [ sampleTemplate ] = require('./fixtures/templates.json');
 
 const prefix = '/skillz/matrices';
 
@@ -24,33 +25,16 @@ beforeEach(() =>
 );
 
 describe('POST /matrices/templates', () => {
-  const sampleTemplate = {
-    id: 1,
-    name: 'Node.js',
-    skillGroups: [
-      {
-        category: 'technicalSkill',
-        level: 'novice',
-        skills: [1,2]
-      },
-      {
-        category: 'frontendDevelopment',
-        level: 'novice',
-        skills: [3,4]
-      }
-    ]
-  };
-
   it('permits saving of new templates by admin users', () =>
     request(app)
       .post(`${prefix}/templates`)
       .send({  action: 'save', template: JSON.stringify(sampleTemplate) })
       .set('Cookie', `${cookieName}=${adminToken}`)
       .expect(201)
-      .then((res) => templates.findOne({ id: 1 }))
+      .then((res) => templates.findOne({ id: 'eng-nodejs' }))
       .then(newTemplate => {
-        expect(newTemplate.id).to.equal(1);
-        expect(newTemplate.name).to.equal('Node.js');
+        expect(newTemplate.name).to.equal('Node.js dev');
+        expect(newTemplate.skillGroups[0].category).to.equal('magicness');
       })
   );
 
@@ -64,9 +48,8 @@ describe('POST /matrices/templates', () => {
             template: JSON.stringify(Object.assign({}, sampleTemplate, { name: 'new name', skillGroups: [] })) })
           .set('Cookie', `${cookieName}=${adminToken}`)
           .expect(201))
-      .then(res => templates.findOne({ id: 1 }))
+      .then(res => templates.findOne({ id: 'eng-nodejs' }))
       .then(updatedTemplate => {
-        expect(updatedTemplate.id).to.equal(1);
         expect(updatedTemplate.name).to.deep.equal('new name');
         expect(updatedTemplate.skillGroups.length).to.equal(0);
       }));
