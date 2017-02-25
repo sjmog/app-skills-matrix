@@ -15,7 +15,8 @@ module.exports = {
   templates,
   insertTemplate: (template) => templates.insertOne(Object.assign({}, template)),
   skills,
-  evaluations,
   insertSkill: (skill) => skills.insertOne(Object.assign({}, skill)),
+  evaluations,
+  insertEvaluation: (evaluation) => evaluations.insertOne(Object.assign({}, evaluation)),
   clearDb: () => Promise.all([users.remove({}), templates.remove({}), skills.remove({}), evaluations.remove({})])
 };

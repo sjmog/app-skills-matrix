@@ -34,4 +34,9 @@ export default ({
       .then(getData)
       .catch(handleError);
   },
+  retrieveEvaluation: function (evaluationId) {
+    return axios.get(`/skillz/evaluations/${evaluationId}`)
+      .then(getData)
+      .catch(handleError);
+  },
 });

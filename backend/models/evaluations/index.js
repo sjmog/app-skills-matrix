@@ -9,4 +9,8 @@ module.exports = {
       .then(({ insertedId }) => evaluationsCollection.findOne({ _id: new ObjectId(insertedId) }))
       .then((res) => res ? evaluation(res) : null);
   },
+  getEvaluationById: function (id) {
+    return evaluationsCollection.findOne({ _id: new ObjectId(id) })
+      .then(res => res ? evaluation(res) : null);
+  }
 };

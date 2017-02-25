@@ -4,4 +4,5 @@ module.exports = Object.freeze({
   USER_NOT_FOUND: () => ({ message: 'User not found' }),
   TEMPLATE_NOT_FOUND: () => ({ message: 'Template not found' }),
   USER_HAS_NO_TEMPLATE: (username) => ({ message: `User '${username}' has not had a template selected`}),
+  EVALUATION_NOT_FOUND: () => ({ message: 'Evaluation not found'}),
 });

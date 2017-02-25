@@ -2,10 +2,11 @@ const request = require('supertest');
 const { expect } = require('chai');
 
 const app = require('../backend');
-const { prepopulateUsers, users, evaluations, insertTemplate, clearDb, insertSkill } = require('./helpers');
+const { prepopulateUsers, users, evaluations, insertTemplate, clearDb, insertSkill, insertEvaluation } = require('./helpers');
 const { sign, cookieName } = require('../backend/models/auth');
 const templateData = require('./fixtures/templates');
 const skills = require('./fixtures/skills');
+const [ evaluation ] = require('./fixtures/evaluations');
 
 const prefix = '/skillz';
 const templateId = 'eng-nodejs';
@@ -83,4 +84,29 @@ describe('POST /users/:userId/evaluations', () => {
         .set('Cookie', `${cookieName}=${test().token}`)
         .expect(test().expect)));
 
+});
+
+describe('GET /evaluation/:evaluationId', () => {
+  it('should retrieve an evaluation for any user', () =>
+    insertEvaluation(evaluation)
+      .then(({ insertedId }) =>
+        request(app)
+         .get(`${prefix}/evaluations/${insertedId}`)
+         .expect(200))
+      .then(({ body }) => {
+        expect(body.user.id).to.equal('user_id');
+        expect(body.template.name).to.equal('Node JS Dev');
+        expect(body.skillGroups.length > 0).to.equal(true);
+      }));
+
+  [
+    () => ({
+      desc: 'no evaluation',
+      expect: 404,
+    })
+  ].forEach((test) =>
+  it(`should handle error cases '${test().desc}'`, () =>
+    request(app)
+      .get(`${prefix}/evaluations/noMatchingId`)
+      .expect(test().expect)))
 });

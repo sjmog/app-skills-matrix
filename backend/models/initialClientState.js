@@ -15,11 +15,12 @@ const adminClientState = () => {
     }));
 };
 
-const clientState = (user) => {
-  return Promise.resolve({
-    dashboard: { user: user.viewModel },
-  })
-};
+const clientState = (user) =>
+  Promise.resolve({
+    dashboard: {
+      user: user ? user.viewModel : undefined
+    }
+  });
 
 module.exports = {
   adminClientState,
