@@ -5,7 +5,7 @@ const app = require('../backend');
 const { sign, cookieName } = require('../backend/models/auth');
 const { users, templates, skills, prepopulate, insertTemplate, insertSkill } = require('./helpers/prepopulate');
 
-const prefix = '/skillz';
+const prefix = '/skillz/matrices';
 
 let adminToken, normalUserToken;
 let adminUserId, normalUserId;
@@ -23,7 +23,7 @@ beforeEach(() =>
     .then(() => templates.remove({}))
 );
 
-describe('POST /templates', () => {
+describe('POST /matrices/templates', () => {
   const sampleTemplate = {
     id: 1,
     name: 'Node.js',
@@ -96,7 +96,7 @@ describe('POST /templates', () => {
       .expect(test().expect)));
 });
 
-describe('POST /skills', () => {
+describe('POST matrices/skills', () => {
   const sampleSkill = {
     id: 1,
     name: 'Working knowledge of NodeJS',

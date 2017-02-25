@@ -9,7 +9,7 @@ module.exports = (app) => {
   router.post('/templates', ensureAdmin, (req, res, next) => templates[req.body.action](req, res, next));
   router.post('/skills', ensureAdmin, (req, res, next) => skills[req.body.action](req, res, next));
 
-  app.use('/', router);
+  app.use('/matrices', router);
 
   return app
 };
