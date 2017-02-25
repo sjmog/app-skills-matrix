@@ -1,5 +1,3 @@
-const { ObjectId } = require('mongodb');
-
 const database = require('../../database');
 const templatesCollection = database.collection('templates');
 const skillsCollection = database.collection('skills');

@@ -26,7 +26,7 @@ const handlerFunctions = Object.freeze({
               (retrievedSkill
                 ? skills.updateSkill(retrievedSkill, skill)
                 : skills.addSkill(skill)))
-            .then(skill => res.status(201).send(skill)))
+            .then(skill => res.status(201).json(skill.viewModel)))
         .catch(next);
     }
   }
