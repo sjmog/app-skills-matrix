@@ -1,8 +1,10 @@
 const usersData = require('../fixtures/users');
 const templatesData = require('../fixtures/templates');
 const database = require('../../backend/database');
+
 const users = database.collection('users');
 const templates = database.collection('templates');
+const skills = database.collection('skills');
 
 module.exports = {
  prepopulate: () => Promise.all([
@@ -14,5 +16,7 @@ module.exports = {
   ])),
   users,
   templates,
-  insertTemplate: (template) => templates.insertOne(template)
+  insertTemplate: (template) => templates.insertOne(template),
+  skills,
+  insertSkill: (skill) => skills.insertOne(skill),
 };
