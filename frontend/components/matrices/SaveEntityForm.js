@@ -33,6 +33,8 @@ SaveEntityForm.propTypes = {
   entity: PropTypes.string,
   saveEntity: PropTypes.func.isRequired,
   updateEntityInLocalState: PropTypes.func.isRequired,
+  success: PropTypes.bool,
+  error: PropTypes.object,
 };
 
 export default SaveEntityForm
