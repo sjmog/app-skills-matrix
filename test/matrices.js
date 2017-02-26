@@ -3,7 +3,7 @@ const { expect } = require('chai');
 
 const app = require('../backend');
 const { sign, cookieName } = require('../backend/models/auth');
-const { users, templates, skills, prepopulate, insertTemplate, insertSkill } = require('./helpers/prepopulate');
+const { users, templates, skills, prepopulateUsers, insertTemplate, insertSkill } = require('./helpers');
 const [ sampleTemplate ] = require('./fixtures/templates.json');
 const [ sampleSkill ] = require('./fixtures/skills.json');
 
@@ -13,7 +13,7 @@ let adminToken, normalUserToken;
 let adminUserId, normalUserId;
 
 beforeEach(() =>
-  prepopulate()
+  prepopulateUsers()
     .then(() =>
       Promise.all([users.findOne({ email: 'dmorgantini@gmail.com' }), users.findOne({ email: 'user@magic.com' })])
         .then(([adminUser, normalUser]) => {
@@ -39,7 +39,7 @@ describe('POST /matrices/templates', () => {
       })
   );
 
-  it('updates an existing template when there is an existing template with the same id', () =>
+  it('updates an existing template with the same id', () =>
     insertTemplate(Object.assign({}, sampleTemplate))
       .then(() =>
         request(app)
@@ -97,7 +97,7 @@ describe('POST matrices/skills', () => {
       })
   );
 
-  it('updates an existing skill when there is an existing skill with the same id', () =>
+  it('updates an existing skill with the same id', () =>
     insertSkill(Object.assign({}, sampleSkill))
       .then(() =>
         request(app)

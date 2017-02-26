@@ -1,4 +1,4 @@
-const { templates, skills  } = require('../models/matrices');
+const { templates, skills } = require('../models/matrices');
 const createHandler = require('./createHandler');
 const Promise = require('bluebird');
 

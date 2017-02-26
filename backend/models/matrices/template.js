@@ -6,7 +6,6 @@ const template = ({ _id, id, name }) => Object.freeze({
 });
 
 module.exports = template;
-
 module.exports.newTemplate = (id, name, skillGroups) =>
   ({
     id,

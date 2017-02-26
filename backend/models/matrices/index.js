@@ -7,8 +7,8 @@ const skill = require('./skill');
 module.exports = {
   templates: {
     addTemplate: function ({ id, name, skillGroups }) {
-      const changes = template.newTemplate(id, name, skillGroups);
-      return templatesCollection.updateOne({ id }, { $set: changes }, { upsert: true })
+      const newTemplate = template.newTemplate(id, name, skillGroups);
+      return templatesCollection.updateOne({ id }, { $set: newTemplate }, { upsert: true })
         .then(() => templatesCollection.findOne({ id }))
         .then(retrievedTemplate => template(retrievedTemplate))
     },
@@ -29,8 +29,8 @@ module.exports = {
   },
   skills: {
     addSkill: function ({ id, name, acceptanceCriteria, questions }) {
-      const changes = skill.newSkill(id, name, acceptanceCriteria, questions);
-      return skillsCollection.updateOne({ id }, { $set: changes }, { upsert: true })
+      const newSkill = skill.newSkill(id, name, acceptanceCriteria, questions);
+      return skillsCollection.updateOne({ id }, { $set: newSkill }, { upsert: true })
         .then(() => skillsCollection.findOne({ id }))
         .then(retrievedSkill => skill(retrievedSkill))
     },

@@ -3,7 +3,7 @@ const { expect } = require('chai');
 const { ObjectId } = require('mongodb');
 
 const app = require('../backend');
-const { prepopulate, users, insertTemplate } = require('./helpers/prepopulate');
+const { prepopulateUsers, users, templates, insertTemplate } = require('./helpers');
 const [ sampleTemplate ] = require('./fixtures/templates.json');
 const { sign, cookieName } = require('../backend/models/auth');
 
@@ -15,7 +15,7 @@ let adminToken, normalUserToken;
 let adminUserId, normalUserId;
 
 beforeEach(() =>
-  prepopulate()
+  prepopulateUsers()
     .then(() =>
       Promise.all([users.findOne({ email: 'dmorgantini@gmail.com' }), users.findOne({ email: 'user@magic.com' })])
         .then(([adminUser, normalUser]) => {
@@ -23,7 +23,8 @@ beforeEach(() =>
           normalUserToken = sign({ email: normalUser.email, id: normalUser._id });
           normalUserId = normalUser._id;
           adminUserId = adminUser._id;
-        })));
+        }))
+    .then(() => templates.remove({})));
 
 describe('POST /users', () => {
   it('should let admin create users', () =>

@@ -6,7 +6,7 @@ const ensureLocalEnv = () =>
     ? Promise.resolve()
     : Promise.reject(new Error("Node ENV isn't local")));
 
-const exampleSkills = [
+const skills = [
   {
     id: 1,
     name: 'Working knowledge of NodeJS',
@@ -33,7 +33,7 @@ const exampleSkills = [
   },
 ];
 
-const exampleTemplate =
+const template =
   {
     id: 1,
     name: 'Node.js',
@@ -52,8 +52,8 @@ const exampleTemplate =
   };
 
 ensureLocalEnv()
-  .then(() => Promise.each(exampleSkills, skills.addSkill))
-  .then(() => templates.addTemplate(exampleTemplate))
+  .then(() => Promise.each(skills, skills.addSkill))
+  .then(() => templates.addTemplate(template))
   .then(() => {
     console.log('Sample data added');
     process.exit();
