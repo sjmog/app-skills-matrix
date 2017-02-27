@@ -4,21 +4,30 @@ const Promise = require('bluebird');
 
 const handlerFunctions = Object.freeze({
   templates: {
-    create: function (req, res, next) {
+    save: function (req, res, next) {
       Promise.try(() => JSON.parse(req.body.template))
-        .then(templates.addTemplate)
-        .then((newTemplateName) => res.status(201).send(newTemplateName))
+        .then((template) =>
+          templates.getById(template.id)
+            .then(retrievedTemplate =>
+              (retrievedTemplate
+                ? templates.updateTemplate(retrievedTemplate, template)
+                : templates.addTemplate(template)))
+            .then(template => res.status(201).json(template.viewModel)))
         .catch(next);
 
-      }
+    }
   },
   skills: {
-    create: function (req, res, next) {
+    save: function (req, res, next) {
       Promise.try(() => JSON.parse(req.body.skill))
-        .then(skills.addSkill)
-        .then((newSkillName) => res.status(201).send(newSkillName))
+        .then((skill) =>
+          skills.getById(skill.id)
+            .then(retrievedSkill =>
+              (retrievedSkill
+                ? skills.updateSkill(retrievedSkill, skill)
+                : skills.addSkill(skill)))
+            .then(skill => res.status(201).json(skill.viewModel)))
         .catch(next);
-
     }
   }
 });

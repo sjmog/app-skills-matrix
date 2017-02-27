@@ -3,7 +3,8 @@ const { expect } = require('chai');
 const { ObjectId } = require('mongodb');
 
 const app = require('../backend');
-const { prepopulate, users, templates } = require('./helpers/prepopulate');
+const { prepopulateUsers, users, templates, insertTemplate } = require('./helpers');
+const [ sampleTemplate ] = require('./fixtures/templates.json');
 const { sign, cookieName } = require('../backend/models/auth');
 
 const prefix = '/skillz';
@@ -14,7 +15,7 @@ let adminToken, normalUserToken;
 let adminUserId, normalUserId;
 
 beforeEach(() =>
-  prepopulate()
+  prepopulateUsers()
     .then(() =>
       Promise.all([users.findOne({ email: 'dmorgantini@gmail.com' }), users.findOne({ email: 'user@magic.com' })])
         .then(([adminUser, normalUser]) => {
@@ -22,7 +23,8 @@ beforeEach(() =>
           normalUserToken = sign({ email: normalUser.email, id: normalUser._id });
           normalUserId = normalUser._id;
           adminUserId = adminUser._id;
-        })));
+        }))
+    .then(() => templates.remove({})));
 
 describe('POST /users', () => {
   it('should let admin create users', () =>
@@ -121,11 +123,13 @@ describe('POST /users/:userId { action: selectMentor }', () => {
 
 describe('POST /users/:userId { action: selectTemplate }', () => {
   it('should let admin select a template for a user', () =>
-    request(app)
-      .post(`${prefix}/users/${normalUserId}`)
-      .send({ templateId, action: 'selectTemplate' })
-      .set('Cookie', `${cookieName}=${adminToken}`)
-      .expect(200)
+    insertTemplate(sampleTemplate)
+      .then(() =>
+        request(app)
+        .post(`${prefix}/users/${normalUserId}`)
+        .send({ templateId, action: 'selectTemplate' })
+        .set('Cookie', `${cookieName}=${adminToken}`)
+        .expect(200))
       .then((res) => users.findOne({ _id: new ObjectId(normalUserId) }))
       .then((updatedUser) => {
         expect(updatedUser.templateId).to.equal(templateId);
