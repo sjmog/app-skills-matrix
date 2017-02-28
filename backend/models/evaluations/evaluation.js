@@ -4,6 +4,12 @@ const status = keymirror({
   NEW: null,
 });
 
+module.exports = ({ id }) => Object.freeze({
+  get viewModel() {
+    return { id };
+  }
+});
+
 module.exports.newEvaluation = (template, user, skills, date = new Date()) => {
   return {
     id: `${user.id}-${date}`, //todo: format

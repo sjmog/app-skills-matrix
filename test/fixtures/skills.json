@@ -4,6 +4,7 @@
     "name": "Dragon Feeding",
     "criteria": "Can successfully feed their dragon",
     "type": "skill",
+    "version": 1,
     "questions": [
       {
         "title": "Do you know where to get the dragon food?"
@@ -18,6 +19,7 @@
     "name": "Advanced knowledge of Dragon Flight",
     "criteria": "Is able to fly their dragon in all situations",
     "type": "skill",
+    "version": 1,
     "questions": [
       {
         "title": "Are you able to fly your dragon in a hurricane?"

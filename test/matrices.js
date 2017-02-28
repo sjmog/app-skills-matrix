@@ -4,8 +4,8 @@ const { expect } = require('chai');
 const app = require('../backend');
 const { sign, cookieName } = require('../backend/models/auth');
 const { users, templates, skills, prepopulateUsers, insertTemplate, insertSkill } = require('./helpers');
-const [ sampleTemplate ] = require('./fixtures/templates.json');
-const [ sampleSkill ] = require('./fixtures/skills.json');
+const [ sampleTemplate ] = require('./fixtures/templates');
+const [ sampleSkill ] = require('./fixtures/skills');
 
 const prefix = '/skillz/matrices';
 
@@ -29,15 +29,14 @@ describe('POST /matrices/templates', () => {
   it('permits saving of new templates by admin users', () =>
     request(app)
       .post(`${prefix}/templates`)
-      .send({  action: 'save', template: JSON.stringify(sampleTemplate) })
+      .send({ action: 'save', template: JSON.stringify(sampleTemplate) })
       .set('Cookie', `${cookieName}=${adminToken}`)
       .expect(201)
       .then((res) => templates.findOne({ id: 'eng-nodejs' }))
       .then(newTemplate => {
-        expect(newTemplate.name).to.equal('Node.js dev');
-        expect(newTemplate.skillGroups[0].category).to.equal('magicness');
-      })
-  );
+        expect(newTemplate.name).to.equal('Node JS Dev');
+        expect(newTemplate.skillGroups[0].category).to.equal('Dragon Flight');
+      }));
 
   it('updates an existing template with the same id', () =>
     insertTemplate(Object.assign({}, sampleTemplate))
@@ -46,7 +45,8 @@ describe('POST /matrices/templates', () => {
           .post(`${prefix}/templates`)
           .send({
             action: 'save',
-            template: JSON.stringify(Object.assign({}, sampleTemplate, { name: 'new name', skillGroups: [] })) })
+            template: JSON.stringify(Object.assign({}, sampleTemplate, { name: 'new name', skillGroups: [] }))
+          })
           .set('Cookie', `${cookieName}=${adminToken}`)
           .expect(201))
       .then(res => templates.findOne({ id: 'eng-nodejs' }))
@@ -72,12 +72,12 @@ describe('POST /matrices/templates', () => {
     ];
 
   errorCases.forEach((test) =>
-  it(`should handle error cases '${test().desc}'`, () =>
-    request(app)
-      .post(`${prefix}/templates`)
-      .send(test().body)
-      .set('Cookie', `${cookieName}=${test().token}`)
-      .expect(test().expect)));
+    it(`should handle error cases '${test().desc}'`, () =>
+      request(app)
+        .post(`${prefix}/templates`)
+        .send(test().body)
+        .set('Cookie', `${cookieName}=${test().token}`)
+        .expect(test().expect)));
 });
 
 describe('POST matrices/skills', () => {
@@ -93,7 +93,7 @@ describe('POST matrices/skills', () => {
       .then(res => skills.findOne({ id: 1 }))
       .then(newSkill => {
         expect(newSkill.id).to.equal(1);
-        expect(newSkill.name).to.equal('Working knowledge of NodeJS');
+        expect(newSkill.name).to.equal('Dragon Feeding');
       })
   );
 
@@ -132,10 +132,10 @@ describe('POST matrices/skills', () => {
     ];
 
   errorCases.forEach((test) =>
-  it(`should handle error cases '${test().desc}'`, () =>
-    request(app)
-      .post(`${prefix}/skills`)
-      .send(test().body)
-      .set('Cookie', `${cookieName}=${test().token}`)
-      .expect(test().expect)));
+    it(`should handle error cases '${test().desc}'`, () =>
+      request(app)
+        .post(`${prefix}/skills`)
+        .send(test().body)
+        .set('Cookie', `${cookieName}=${test().token}`)
+        .expect(test().expect)));
 });

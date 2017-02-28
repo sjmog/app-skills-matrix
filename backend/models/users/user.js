@@ -2,6 +2,7 @@ const auth = require('../auth');
 
 const user = ({ _id, name, email, mentorId, templateId, createdDate, modifiedDate }) => Object.freeze({
   id: _id,
+  templateId,
   get isAdmin() {
     return auth.isAdmin(email);
   },
@@ -11,6 +12,7 @@ const user = ({ _id, name, email, mentorId, templateId, createdDate, modifiedDat
   get signingData() {
     return ({ id: _id, email });
   },
+  hasTemplate: Boolean(templateId),
   setMentor(mentorId) {
     if (mentorId === _id.toString()) {
       return { error: true, message: `User '${mentorId}' can not mentor themselves` };

@@ -1,9 +1,11 @@
 const Promise = require('bluebird');
 
 const users = require('../models/users');
-const { templates } = require('../models/matrices');
+const { templates, skills } = require('../models/matrices');
+const { newEvaluation } = require('../models/evaluations/evaluation');
+const evaluations = require('../models/evaluations');
 const createHandler = require('./createHandler');
-const { USER_EXISTS, MUST_BE_ADMIN, USER_NOT_FOUND, TEMPLATE_NOT_FOUND } = require('./errors');
+const { USER_EXISTS, MUST_BE_ADMIN, USER_NOT_FOUND, TEMPLATE_NOT_FOUND, USER_HAS_NO_TEMPLATE } = require('./errors');
 
 const handlerFunctions = Object.freeze({
   users: {
@@ -17,7 +19,7 @@ const handlerFunctions = Object.freeze({
             .then((user) => res.status(201).send(user.viewModel))
 
         })
-        .catch((err) => next(err));
+        .catch(next);
     }
   },
   user: {
@@ -38,7 +40,7 @@ const handlerFunctions = Object.freeze({
           return users.updateUser(user, changes)
             .then((updatedUser) => res.status(200).json(updatedUser.viewModel));
         })
-        .catch((err) => next(err));
+        .catch(next);
     },
     selectTemplate: (req, res, next) => {
       const { user } = res.locals;
@@ -58,12 +60,28 @@ const handlerFunctions = Object.freeze({
           return users.updateUser(user, changes)
             .then((updatedUser) => res.status(200).json(updatedUser.viewModel));
         })
-        .catch((err) => next(err));
+        .catch(next);
     },
   },
   evaluations: {
     create: (req, res, next) => {
+      Promise.try(() => users.getUserById(req.params.userId))
+        .then((user) => {
+          if (!user) {
+            return res.status(404).json(USER_NOT_FOUND());
+          }
+          if (!user.hasTemplate) {
+            return res.status(400).json(USER_HAS_NO_TEMPLATE(user.viewModel.name));
+          }
 
+          return Promise.all([templates.getById(user.templateId), skills.getAll()])
+            .then(([template, allSkills]) => {
+              const userEvaluation = newEvaluation(template, user, allSkills);
+              return evaluations.addEvaluation(userEvaluation);
+            })
+            .then((newEval) => res.status(201).json(newEval.viewModel));
+        })
+        .catch(next);
     }
   },
 });

@@ -15,7 +15,7 @@ let adminToken, normalUserToken;
 let adminUserId, normalUserId;
 
 beforeEach(() =>
-  prepopulateUsers()
+  Promise.all([prepopulateUsers(), templates.remove({})])
     .then(() =>
       Promise.all([users.findOne({ email: 'dmorgantini@gmail.com' }), users.findOne({ email: 'user@magic.com' })])
         .then(([adminUser, normalUser]) => {
