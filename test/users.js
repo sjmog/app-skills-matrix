@@ -164,6 +164,4 @@ describe('POST /users/:userId { action: selectTemplate }', () => {
         .send(test().body)
         .set('Cookie', `${cookieName}=${test().token}`)
         .expect(test().expect)));
-
-
 });

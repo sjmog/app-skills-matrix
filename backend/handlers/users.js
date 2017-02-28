@@ -59,9 +59,13 @@ const handlerFunctions = Object.freeze({
             .then((updatedUser) => res.status(200).json(updatedUser.viewModel));
         })
         .catch((err) => next(err));
-    }
-  }
+    },
+  },
+  evaluations: {
+    create: (req, res, next) => {
 
+    }
+  },
 });
 
 module.exports = createHandler(handlerFunctions);
