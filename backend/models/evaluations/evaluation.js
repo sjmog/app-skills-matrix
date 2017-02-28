@@ -12,7 +12,7 @@ module.exports = ({ id }) => Object.freeze({
 
 module.exports.newEvaluation = (template, user, skills, date = new Date()) => {
   return {
-    id: `${user.id}-${date}`, //todo: format
+    id: `${user.id}-${date}`,
     userId: user.id,
     createdDate: date,
     status: status.NEW,
