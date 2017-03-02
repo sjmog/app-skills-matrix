@@ -1,5 +1,4 @@
 import { handleActions, createAction } from 'redux-actions';
-import { combineReducers } from 'redux';
 import keymirror from 'keymirror';
 import api from '../api';
 

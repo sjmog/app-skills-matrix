@@ -1,13 +1,28 @@
 [
   {
     "id": "eng-nodejs",
-    "name": "Node.js dev",
+    "name": "Node JS Dev",
+    "version": 1,
+    "categories": [
+      "Magicness",
+      "Dragon Flight"
+    ],
+    "levels": [
+      "Novice",
+      "Expert"
+    ],
     "skillGroups": [
       {
-        "category": "magicness",
-        "level": "novice",
+        "category": "Dragon Flight",
+        "level": "Novice",
         "skills": [
-          1,
+          1
+        ]
+      },
+      {
+        "category": "Dragon Flight",
+        "level": "Expert",
+        "skills": [
           2
         ]
       }

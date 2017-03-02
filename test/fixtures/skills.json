@@ -1,11 +1,31 @@
 [
   {
     "id": 1,
-    "name": "Working knowledge of NodeJS",
-    "acceptanceCriteria": "Understands the basics of NodeJS & es6 syntax",
+    "name": "Dragon Feeding",
+    "criteria": "Can successfully feed their dragon",
+    "type": "skill",
+    "version": 1,
     "questions": [
       {
-        "title": "Do you use ternary operators?"
+        "title": "Do you know where to get the dragon food?"
+      },
+      {
+        "title": "Are you able to feed a dragon and retain your hands"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Advanced knowledge of Dragon Flight",
+    "criteria": "Is able to fly their dragon in all situations",
+    "type": "skill",
+    "version": 1,
+    "questions": [
+      {
+        "title": "Are you able to fly your dragon in a hurricane?"
+      },
+      {
+        "title": "Can you memoize your dragon?"
       }
     ]
   }

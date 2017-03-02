@@ -2,6 +2,7 @@ const database = require('../../database');
 const templatesCollection = database.collection('templates');
 const skillsCollection = database.collection('skills');
 const template = require('./template');
+const skills = require('./skills');
 const skill = require('./skill');
 
 module.exports = {
@@ -22,8 +23,9 @@ module.exports = {
         .then((results) => results.map((doc) => template(doc)));
     },
     updateTemplate: function (original, updates) {
-      return templatesCollection.updateOne({ _id: original.id }, { $set: updates })
-        .then(() => templatesCollection.findOne({ _id: original.id }))
+      delete updates._id;
+      return templatesCollection.updateOne({ id: original.id }, { $set: updates })
+        .then(() => templatesCollection.findOne({ id: original.id }))
         .then(updatedTemplate => template(updatedTemplate))
     },
   },
@@ -39,9 +41,15 @@ module.exports = {
         .then(res => res ? skill(res) : null);
     },
     updateSkill: function (original, updates) {
-      return skillsCollection.updateOne({ _id: original.id }, { $set: updates })
-        .then(() => skillsCollection.findOne({ _id: original.id }))
+      delete updates._id;
+      return skillsCollection.updateOne({ id: original.id }, { $set: updates })
+        .then(() => skillsCollection.findOne({ id: original.id }))
         .then(updatedSkill => skill(updatedSkill))
     },
+    getAll: function () {
+      return skillsCollection.find()
+        .then((results) => results.toArray())
+        .then((results) => skills(results));
+    }
   }
 };

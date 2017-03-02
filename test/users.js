@@ -15,7 +15,7 @@ let adminToken, normalUserToken;
 let adminUserId, normalUserId;
 
 beforeEach(() =>
-  prepopulateUsers()
+  Promise.all([prepopulateUsers(), templates.remove({})])
     .then(() =>
       Promise.all([users.findOne({ email: 'dmorgantini@gmail.com' }), users.findOne({ email: 'user@magic.com' })])
         .then(([adminUser, normalUser]) => {
@@ -164,6 +164,4 @@ describe('POST /users/:userId { action: selectTemplate }', () => {
         .send(test().body)
         .set('Cookie', `${cookieName}=${test().token}`)
         .expect(test().expect)));
-
-
 });

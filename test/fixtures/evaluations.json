@@ -1,0 +1,63 @@
+[
+  {
+    "id": "user_id-new Date()",
+    "userId": "user_id",
+    "createdDate": "new Date()",
+    "status": "NEW",
+    "template": {
+      "id": "eng-nodejs",
+      "name": "Node JS Dev",
+      "version": 1,
+      "categories": [
+        "Magicness",
+        "Dragon Flight"
+      ],
+      "levels": [
+        "Novice",
+        "Expert"
+      ]
+    },
+    "skillGroups": [
+      {
+        "level": "Novice",
+        "category": "Dragon Flight",
+        "skills": [
+          {
+            "id": 1,
+            "name": "Dragon Feeding",
+            "criteria": "Can successfully feed their dragon",
+            "type": "skill",
+            "questions": [
+              {
+                "title": "Do you know where to get the dragon food?"
+              },
+              {
+                "title": "Are you able to feed a dragon and retain your hands"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "level": "Expert",
+        "category": "Dragon Flight",
+        "skills": [
+          {
+            "id": 2,
+            "name": "Advanced knowledge of Dragon Flight",
+            "criteria": "Is able to fly their dragon in all situations",
+            "type": "skill",
+            "questions": [
+              {
+                "title": "Are you able to fly your dragon in a hurricane?"
+              },
+              {
+                "title": "Can you memoize your dragon?"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]
