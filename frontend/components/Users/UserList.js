@@ -22,21 +22,24 @@ const selectTemplate = (user, templates, onSelectTemplate) => {
   </FormGroup>);
 };
 
-function userDetailsRow(user, users, templates, selectedUsers, onUserSelectionChange, onSelectMentor, onSelectTemplate) {
+function userDetailsRow(user, isSelected, onUserSelectionChange, makeSelectMentorComponent, makeSelectTemplateComponent) {
   const { id, name, email } = user;
   return (
     <tr key={id}>
-      <td><Checkbox checked={R.contains(selectedUsers, user.id)} onChange={(e) => onUserSelectionChange(e, user)}/></td>
+      <td><Checkbox checked={isSelected} onChange={(e) => onUserSelectionChange(e, user)}/></td>
       <td>{name}</td>
       <td>{email}</td>
-      <td>{selectMentor(user, users, onSelectMentor)}</td>
-      <td>{selectTemplate(user, templates, onSelectTemplate)}</td>
+      <td>{makeSelectMentorComponent(user)}</td>
+      <td>{makeSelectTemplateComponent(user)}</td>
     </tr>
   );
 }
 
-const UserList = ({ users, templates, selectedUsers, onUserSelectionChange, onSelectMentor, onSelectTemplate }) =>
-  (
+const UserList = ({ users, templates, selectedUsers, onUserSelectionChange, onSelectMentor, onSelectTemplate }) => {
+  const makeSelectTemplateComponent = R.curry(selectTemplate)(R.__, templates, onSelectTemplate);
+  const makeSelectMentorComponent = R.curry(selectMentor)(R.__, users, onSelectMentor);
+
+  return (
     <Row>
       <Table responsive bordered>
         <thead>
@@ -49,10 +52,11 @@ const UserList = ({ users, templates, selectedUsers, onUserSelectionChange, onSe
         </tr>
         </thead>
         <tbody>
-        { users.map(user => userDetailsRow(user, users, templates, selectedUsers, onUserSelectionChange, onSelectMentor, onSelectTemplate)) }
+        { users.map(user => userDetailsRow(user, R.contains(selectedUsers, user.id), onUserSelectionChange, makeSelectMentorComponent, makeSelectTemplateComponent)) }
         </tbody>
       </Table>
     </Row>
   );
+};
 
 export default UserList;
