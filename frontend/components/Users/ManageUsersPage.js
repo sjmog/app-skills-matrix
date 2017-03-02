@@ -11,6 +11,7 @@ class ManageUsersPageComponent extends React.Component {
     super(props);
     this.state = {
       newUser: {},
+      selectedUsers: [],
     };
 
     this.updateNewUserState = this.updateNewUserState.bind(this);
@@ -19,6 +20,7 @@ class ManageUsersPageComponent extends React.Component {
     this.componentDidMount = this.componentDidMount.bind(this);
     this.onSelectMentor = this.onSelectMentor.bind(this);
     this.onSelectTemplate = this.onSelectTemplate.bind(this);
+    this.onUserSelectionChange = this.onUserSelectionChange.bind(this);
   }
 
   componentDidMount() {
@@ -43,6 +45,19 @@ class ManageUsersPageComponent extends React.Component {
     this.props.actions.addUser(this.state.newUser);
   };
 
+  onUserSelectionChange(e, user) {
+    const checked = e.target.checked;
+    let selectedUsers;
+    if (checked) {
+      selectedUsers = this.state.selectedUsers.concat([user.id]);
+    } else {
+      const index = this.state.selectedUsers.indexOf(user.id);
+      selectedUsers = this.state.selectedUsers.splice(index, 1);
+    }
+
+    this.state.setState({ selectedUsers })
+  }
+
   onSelectMentor(e, user) {
     e.preventDefault();
     this.props.actions.selectMentor(e.target.value, user);
@@ -66,10 +81,12 @@ class ManageUsersPageComponent extends React.Component {
           error={this.props.error}
         />
         <UserList
+          selectedUsers={this.state.selectedUsers}
           users={this.props.users}
           templates={this.props.templates}
           onSelectMentor={this.onSelectMentor}
           onSelectTemplate={this.onSelectTemplate}
+          onUserSelectionChange={this.onUserSelectionChange}
         />
       </div>
     );
