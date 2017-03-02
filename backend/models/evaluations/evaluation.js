@@ -4,16 +4,15 @@ const status = keymirror({
   NEW: null,
 });
 
-module.exports = ({ id }) => Object.freeze({
+module.exports = ({ _id, user }) => Object.freeze({
   get viewModel() {
-    return { id };
+    return { url: `${process.env.HOST}/#/evaluations/${_id}`, id: _id, usersName: user.name };
   }
 });
 
 module.exports.newEvaluation = (template, user, skills, date = new Date()) => {
   return {
-    id: `${user.id}-${date}`,
-    userId: user.id,
+    user: user.evaluationData,
     createdDate: date,
     status: status.NEW,
     template: template.evaluationData,

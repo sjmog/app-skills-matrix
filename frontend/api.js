@@ -19,6 +19,11 @@ export default ({
       .then(getData)
       .catch(handleError);
   },
+  startEvaluation: function(userId) {
+    return axios.post(`/skillz/users/${userId}/evaluations`, { action: 'create' })
+      .then(getData)
+      .catch(handleError);
+  },
   saveTemplate: function (template) {
     return axios.post('/skillz/templates', { action: 'save', template })
       .then(getData)

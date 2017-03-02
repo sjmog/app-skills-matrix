@@ -12,6 +12,9 @@ const user = ({ _id, name, email, mentorId, templateId, createdDate, modifiedDat
   get signingData() {
     return ({ id: _id, email });
   },
+  get evaluationData() {
+    return ({ id: _id, name });
+  },
   hasTemplate: Boolean(templateId),
   setMentor(mentorId) {
     if (mentorId === _id.toString()) {

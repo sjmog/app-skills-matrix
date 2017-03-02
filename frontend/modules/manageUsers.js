@@ -10,6 +10,8 @@ export const constants = keymirror({
   SELECT_MENTOR_FAILURE: null,
   SELECT_TEMPLATE_SUCCESS: null,
   SELECT_TEMPLATE_FAILURE: null,
+  START_EVALUATION_SUCCESS: null,
+  START_EVALUATION_FAILURE: null,
 });
 
 const addUserSuccess = createAction(constants.ADD_USER_SUCCESS);
@@ -18,6 +20,16 @@ const selectMentorSuccess = createAction(constants.SELECT_MENTOR_SUCCESS);
 const selectMentorFailure = createAction(constants.SELECT_MENTOR_FAILURE);
 const selectTemplateSuccess = createAction(constants.SELECT_TEMPLATE_SUCCESS);
 const selectTemplateFailure = createAction(constants.SELECT_TEMPLATE_FAILURE);
+const startEvaluationSuccess = createAction(constants.START_EVALUATION_SUCCESS);
+const startEvaluationFailure = createAction(constants.START_EVALUATION_FAILURE);
+
+function startEvaluation(userId) {
+  return function (dispatch) {
+    return api.startEvaluation(userId)
+      .then((evaluation) => dispatch(startEvaluationSuccess(Object.assign({}, evaluation, { success: true }))))
+      .catch((err) => dispatch(startEvaluationFailure(Object.assign({}, err, { success: false }))));
+  }
+}
 
 function addUser(user) {
   return function (dispatch) {
@@ -47,6 +59,7 @@ export const actions = {
   selectMentor,
   selectTemplate,
   addUser,
+  startEvaluation,
 };
 
 const handleUserUpdateSuccess = (state, action) =>
@@ -60,6 +73,8 @@ const handleUserUpdateSuccess = (state, action) =>
 
 const handleActionFailure = (state, action) => Object.assign({}, state, { error: action.payload, success: false });
 
+const handleEvaluationEvent = (state, action) => Object.assign({}, state, { newEvaluations: [].concat(state.newEvaluations, action.payload) });
+
 export const reducers = handleActions({
   [addUserSuccess]: (state, action) => Object.assign({}, state, { users: [].concat(state.users, action.payload), success: true, error: null }),
   [addUserFailure]: handleActionFailure,
@@ -67,4 +82,6 @@ export const reducers = handleActions({
   [selectMentorFailure]: handleActionFailure,
   [selectTemplateSuccess]: handleUserUpdateSuccess,
   [selectTemplateFailure]: handleActionFailure,
+  [startEvaluationSuccess]: handleEvaluationEvent,
+  [startEvaluationFailure]: handleEvaluationEvent,
 }, { users: [] });

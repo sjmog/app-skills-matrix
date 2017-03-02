@@ -26,7 +26,7 @@ function userDetailsRow(user, isSelected, onUserSelectionChange, makeSelectMento
   const { id, name, email } = user;
   return (
     <tr key={id}>
-      <td><Checkbox checked={isSelected} onChange={(e) => onUserSelectionChange(e, user)}/></td>
+      <td><Checkbox checked={Boolean(isSelected)} onChange={(e) => onUserSelectionChange(e, user)}/></td>
       <td>{name}</td>
       <td>{email}</td>
       <td>{makeSelectMentorComponent(user)}</td>
@@ -52,7 +52,7 @@ const UserList = ({ users, templates, selectedUsers, onUserSelectionChange, onSe
         </tr>
         </thead>
         <tbody>
-        { users.map(user => userDetailsRow(user, R.contains(selectedUsers, user.id), onUserSelectionChange, makeSelectMentorComponent, makeSelectTemplateComponent)) }
+        { users.map(user => userDetailsRow(user, R.contains(user.id, selectedUsers), onUserSelectionChange, makeSelectMentorComponent, makeSelectTemplateComponent)) }
         </tbody>
       </Table>
     </Row>

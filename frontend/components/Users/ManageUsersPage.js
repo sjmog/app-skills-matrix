@@ -2,7 +2,8 @@ import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { actions } from '../../modules/manageUsers';
-import { Row } from 'react-bootstrap';
+import { Row, Button } from 'react-bootstrap';
+import R from 'ramda';
 import AddUserForm from './AddUserForm';
 import UserList from './UserList';
 
@@ -21,6 +22,7 @@ class ManageUsersPageComponent extends React.Component {
     this.onSelectMentor = this.onSelectMentor.bind(this);
     this.onSelectTemplate = this.onSelectTemplate.bind(this);
     this.onUserSelectionChange = this.onUserSelectionChange.bind(this);
+    this.onStartEvaluation = this.onStartEvaluation.bind(this);
   }
 
   componentDidMount() {
@@ -45,17 +47,22 @@ class ManageUsersPageComponent extends React.Component {
     this.props.actions.addUser(this.state.newUser);
   };
 
+  onStartEvaluation(e) {
+    e.preventDefault();
+    this.state.selectedUsers.map(this.props.actions.startEvaluation);
+    this.setState({ selectedUsers: [] });
+  };
+
   onUserSelectionChange(e, user) {
     const checked = e.target.checked;
     let selectedUsers;
     if (checked) {
       selectedUsers = this.state.selectedUsers.concat([user.id]);
     } else {
-      const index = this.state.selectedUsers.indexOf(user.id);
-      selectedUsers = this.state.selectedUsers.splice(index, 1);
+      selectedUsers = R.filter((id) => id !== user.id, this.state.selectedUsers);
     }
 
-    this.state.setState({ selectedUsers })
+    return this.setState({ selectedUsers });
   }
 
   onSelectMentor(e, user) {
@@ -80,6 +87,11 @@ class ManageUsersPageComponent extends React.Component {
           onAddUser={this.onAddUser}
           error={this.props.error}
         />
+        <div>
+          <Button bsStyle="primary" disabled={this.state.selectedUsers.length === 0} onClick={this.onStartEvaluation}>
+            Start evaluation
+          </Button>
+        </div>
         <UserList
           selectedUsers={this.state.selectedUsers}
           users={this.props.users}
@@ -88,6 +100,9 @@ class ManageUsersPageComponent extends React.Component {
           onSelectTemplate={this.onSelectTemplate}
           onUserSelectionChange={this.onUserSelectionChange}
         />
+        <ul>{this.props.newEvaluations.map((e) => (<li key={e.id}>{e.success ? (
+          <div>New evaluation:&nbsp;<a href={e.url}>{e.usersName}</a></div>) : e.message}</li>))}
+        </ul>
       </div>
     );
   }

@@ -1,7 +1,9 @@
 [
   {
-    "id": "user_id-new Date()",
-    "userId": "user_id",
+    "user": {
+      "id": "user_id",
+      "name": "Jake"
+    },
     "createdDate": "new Date()",
     "status": "NEW",
     "template": {
