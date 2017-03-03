@@ -79,7 +79,7 @@ const handlerFunctions = Object.freeze({
               const userEvaluation = newEvaluation(template, user, allSkills);
               return evaluations.addEvaluation(userEvaluation);
             })
-            .then((newEval) => res.status(201).json(newEval.manageUserViewModel));
+            .then((newEval) => res.status(201).json(newEval.viewModel));
         })
         .catch(next);
     }
