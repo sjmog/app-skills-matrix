@@ -17,7 +17,7 @@ const adminClientState = () => {
 
 const clientState = (user) => {
   return Promise.resolve({
-    user: user.viewModel,
+    dashboard: { user: user.viewModel },
   })
 };
 

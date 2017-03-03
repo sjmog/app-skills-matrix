@@ -4,7 +4,7 @@ import { Router, Route, IndexRoute, hashHistory } from 'react-router';
 import UserApp from './components/user/App';
 import AdminApp from './components/admin/App';
 import { Dashboard as AdminDashboard } from './components/admin/Dashboard';
-import { Dashboard as UserDashboard } from './components/user/Dashboard';
+import { DashboardPage as UserDashboard } from './components/user/dashboard/Dashboard';
 import { ManageUsersPage } from './components/admin/users/ManageUsersPage';
 import { ManageMatricesPage } from './components/admin/matrices/ManageMatricesPage';
 
