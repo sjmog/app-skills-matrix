@@ -7,7 +7,7 @@ import R from 'ramda';
 
 import { actions } from '../../../modules/user/manageEvaluation';
 
-import './matrix.scss'
+import './evaluation.scss'
 
 const getSkillGroup = (level, category, skillGroups) =>
   _find(skillGroups,
@@ -26,7 +26,7 @@ class ManageEvaluationPageComponent extends React.Component {
     return this.props.evaluationRetrieved
       ? (
       <div>
-        <Row><h2 className="header">{template.name}</h2></Row>
+        <Row><h2 className='header'>{template.name}</h2></Row>
         {
           template.levels.map((levelName, index) => {
             const isTopLevel = index === 0;
