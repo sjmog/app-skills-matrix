@@ -8,6 +8,7 @@ const clientState = (user, userList = [], templates = []) => ({
   manageUsers: {
     users: R.map((domainUser) => domainUser.viewModel, userList),
     templates: R.map((domainTemplate) => domainTemplate.viewModel, templates),
+    newEvaluations: [],
   }
 });
 

@@ -6,7 +6,7 @@ const [before, after] = require('./middlewares');
 const routes = require('./routes');
 const database = require('./database');
 
-const basePath = process.env.basePath || '/skillz';
+const basePath = '/skillz';
 const port = process.env.PORT || 3000;
 const listen = app => app.listen(port, () =>
     console.log(`Skills Matrix listening on port ${port}`));
