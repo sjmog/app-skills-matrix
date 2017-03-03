@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { Navbar, Nav, NavItem } from 'react-bootstrap';
-import { LinkContainer } from 'react-router-bootstrap';
+import { Navbar } from 'react-bootstrap';
 
 class Header extends Component {
   render() {
@@ -13,14 +12,6 @@ class Header extends Component {
           <Navbar.Toggle />
         </Navbar.Header>
         <Navbar.Collapse>
-          <Nav>
-            <LinkContainer to="/users">
-              <NavItem eventKey={1}>Users</NavItem>
-            </LinkContainer>
-            <LinkContainer to="/matrices">
-              <NavItem eventKey={1}>Matrices</NavItem>
-            </LinkContainer>
-          </Nav>
           <Navbar.Link pullRight href="/auth/github">Login</Navbar.Link>
         </Navbar.Collapse>
       </Navbar>

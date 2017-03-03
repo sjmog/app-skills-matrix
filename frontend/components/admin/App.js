@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Grid } from 'react-bootstrap';
 
-import Header from './common/Header';
+import Header from './Header';
 
 class Full extends Component {
   render() {

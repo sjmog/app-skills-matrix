@@ -1,6 +1,6 @@
 import React from 'react';
 
-export class AdminDashboard extends React.Component {
+export class Dashboard extends React.Component {
   constructor(props) {
     super(props);
   }
