@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Row, Col, Panel, Alert } from 'react-bootstrap';
+import { Row, Col, Panel, Alert, Button } from 'react-bootstrap';
 import _find from 'lodash/find';
 import R from 'ramda';
 
@@ -26,7 +26,10 @@ class ManageEvaluationPageComponent extends React.Component {
     return this.props.evaluationRetrieved
       ? (
       <div>
-        <Row><h2 className='header'>{template.name}</h2></Row>
+        <Row>
+          <h3 className='header'>{template.name}</h3>
+          <Button bsStyle='primary' className='evaluation-btn' >{`Begin evaluation`}</Button>
+        </Row>
         {
           template.levels.map((levelName, index) => {
             const isTopLevel = index === 0;
@@ -36,7 +39,7 @@ class ManageEvaluationPageComponent extends React.Component {
                 const skillGroup = getSkillGroup(levelName, categoryName, skillGroups);
 
                 return (
-                  <Col sm={4} md={3} key={`${levelName}-${categoryName}`}>
+                  <Col sm={2} md={2} key={`${levelName}-${categoryName}`}>
                     { isTopLevel
                       ? (<h3>{categoryName}</h3>)
                       : false
@@ -60,7 +63,7 @@ class ManageEvaluationPageComponent extends React.Component {
 
             return (
               <Row key={levelName}>
-                <Col sm={2} md={2} className={isTopLevel? 'level-label--bottom' : false}>
+                <Col sm={1} md={1} className={isTopLevel? 'level-label' : false}>
                   { <h3 className='header'>{levelName}</h3> }
                 </Col>
                 {level}
