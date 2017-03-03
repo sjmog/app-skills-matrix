@@ -1,6 +1,6 @@
 import { handleActions, createAction } from 'redux-actions';
 import keymirror from 'keymirror';
-import api from '../api';
+import api from '../../api';
 
 export const constants = keymirror({
   SAVE_TEMPLATE_SUCCESS: null,

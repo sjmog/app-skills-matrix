@@ -1,7 +1,7 @@
 import { handleActions, createAction } from 'redux-actions';
 import keymirror from 'keymirror';
 import R from 'ramda';
-import api from '../api';
+import api from '../../api';
 
 export const constants = keymirror({
   ADD_USER_SUCCESS: null,

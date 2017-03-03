@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { actions } from '../../modules/manageUsers';
+import { actions } from '../../../modules/admin/manageUsers';
 import { Row, Button } from 'react-bootstrap';
 import R from 'ramda';
 import AddUserForm from './AddUserForm';

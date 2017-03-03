@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router';
 
 export class Dashboard extends React.Component {
   constructor(props) {
@@ -10,6 +9,7 @@ export class Dashboard extends React.Component {
     return (
       <div>
         <h1 className="header">Dashboard</h1>
+        <span>Winning!</span>
         {this.props.children}
       </div>
     );

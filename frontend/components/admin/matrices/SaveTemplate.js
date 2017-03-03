@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Row, Form, FormGroup, FormControl, ControlLabel, Radio, Button, Glyphicon, Alert } from 'react-bootstrap';
-import { actions } from '../../modules/manageMatrices';
+import { Row } from 'react-bootstrap';
+import { actions } from '../../../modules/admin/manageMatrices';
 import SaveEntityForm from './SaveEntityForm';
 
 class SaveTemplateComponent extends React.Component {
