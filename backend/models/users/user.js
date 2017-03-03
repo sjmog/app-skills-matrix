@@ -1,6 +1,6 @@
 const auth = require('../auth');
 
-const user = ({ _id, name, email, mentor, template, createdDate, modifiedDate, templateId, mentorId }) => Object.freeze({
+const user = ({ _id, name, email, mentor, template, createdDate, modifiedDate, templateId, mentorId, avatarUrl }) => Object.freeze({
   id: _id,
   templateId,
   get isAdmin() {
@@ -18,6 +18,7 @@ const user = ({ _id, name, email, mentor, template, createdDate, modifiedDate, t
   get userDetailsViewModel() {
     return ({
       name,
+      avatarUrl,
       email,
       mentor: mentor && mentor.userDetailsViewModel,
       template: template && template.userDetailsViewModel,
@@ -40,5 +41,5 @@ const user = ({ _id, name, email, mentor, template, createdDate, modifiedDate, t
 });
 
 module.exports = user;
-module.exports.newUser = (name, email) => ({ name, email, createdDate: new Date() });
+module.exports.newUser = (name, email, avatarUrl) => ({ name, email, createdDate: new Date(), avatarUrl });
 

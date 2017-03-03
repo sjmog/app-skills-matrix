@@ -23,8 +23,8 @@ const hydrateUser = (unhydratedUser) => {
 };
 
 module.exports = {
-  addUser: ({ email, name }) => {
-    const changes = user.newUser(name, email);
+  addUser: ({ email, name, avatarUrl }) => {
+    const changes = user.newUser(name, email, avatarUrl);
     return collection.updateOne({ email }, { $set: changes }, { upsert: true })
       .then(() => collection.findOne({ email }))
       .then(hydrateUser)
