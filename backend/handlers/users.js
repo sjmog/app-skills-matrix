@@ -16,7 +16,7 @@ const handlerFunctions = Object.freeze({
             return res.status(409).json(USER_EXISTS(req.body.email));
           }
           return users.addUser(req.body)
-            .then((user) => res.status(201).send(user.viewModel))
+            .then((user) => res.status(201).send(user.manageUserViewModel))
 
         })
         .catch(next);
@@ -38,7 +38,7 @@ const handlerFunctions = Object.freeze({
             return res.status(400).json(changes);
           }
           return users.updateUser(user, changes)
-            .then((updatedUser) => res.status(200).json(updatedUser.viewModel));
+            .then((updatedUser) => res.status(200).json(updatedUser.manageUserViewModel));
         })
         .catch(next);
     },
@@ -58,7 +58,7 @@ const handlerFunctions = Object.freeze({
 
           const changes = user.setTemplate(req.body.templateId);
           return users.updateUser(user, changes)
-            .then((updatedUser) => res.status(200).json(updatedUser.viewModel));
+            .then((updatedUser) => res.status(200).json(updatedUser.manageUserViewModel));
         })
         .catch(next);
     },
@@ -71,7 +71,7 @@ const handlerFunctions = Object.freeze({
             return res.status(404).json(USER_NOT_FOUND());
           }
           if (!user.hasTemplate) {
-            return res.status(400).json(USER_HAS_NO_TEMPLATE(user.viewModel.name));
+            return res.status(400).json(USER_HAS_NO_TEMPLATE(user.manageUserViewModel.name));
           }
 
           return Promise.all([templates.getById(user.templateId), skills.getAll()])
