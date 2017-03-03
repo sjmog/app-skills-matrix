@@ -8,7 +8,7 @@ const adminClientState = () => {
   return Promise.all([users.getAll(), templates.getAll()])
     .then(([allUsers = [], allTemplates = []]) => ({
       manageUsers: {
-        users: R.map((domainUser) => domainUser.viewModel, allUsers),
+        users: R.map((domainUser) => domainUser.manageUserViewModel, allUsers),
         templates: R.map((domainTemplate) => domainTemplate.viewModel, allTemplates),
         newEvaluations: [],
       }
@@ -18,7 +18,7 @@ const adminClientState = () => {
 const clientState = (user) =>
   Promise.resolve({
     dashboard: {
-      user: user ? user.viewModel : undefined
+      user: user ? user.userDetailsViewModel : undefined
     }
   });
 

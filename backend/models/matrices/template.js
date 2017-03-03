@@ -6,6 +6,9 @@ const template = ({ id, name, version, categories, levels, skillGroups }) => Obj
   get evaluationData() {
     return { id, name, version, categories, levels }
   },
+  get userDetailsViewModel() {
+    return { name };
+  },
   createSkillGroups: function (skills) {
     return skillGroups.map((skillGroup, index) => ({
       id: index,
