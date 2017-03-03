@@ -25,6 +25,20 @@
         "skills": [
           2
         ]
+      },
+      {
+        "category": "Magicness",
+        "level": "Expert",
+        "skills": [
+          3
+        ]
+      },
+      {
+        "category": "Magicness",
+        "level": "Novice",
+        "skills": [
+          4
+        ]
       }
     ]
   }

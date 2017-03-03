@@ -7,7 +7,8 @@ const template = ({ id, name, version, categories, levels, skillGroups }) => Obj
     return { id, name, version, categories, levels }
   },
   createSkillGroups: function (skills) {
-    return skillGroups.map((skillGroup) => ({
+    return skillGroups.map((skillGroup, index) => ({
+      id: index,
       category: skillGroup.category,
       level: skillGroup.level,
       skills: skillGroup.skills.map((skillId) => skills[skillId].evaluationData)

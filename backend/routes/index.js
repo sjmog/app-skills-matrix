@@ -2,12 +2,14 @@ const express = require('express');
 
 const users = require('./users');
 const matrices = require('./matrices');
+const evaluations = require('./evaluations');
 const clientApp = require('./clientApp');
 const auth = require('./auth');
 
 const apiRoutes = [
   users,
   matrices,
+  evaluations,
 ];
 
 const apiRouter = apiRoutes.reduce((app, route) => route(app), express.Router());

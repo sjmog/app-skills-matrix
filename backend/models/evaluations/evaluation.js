@@ -4,9 +4,12 @@ const status = keymirror({
   NEW: null,
 });
 
-module.exports = ({ _id, user }) => Object.freeze({
+module.exports = ({ _id, user, template, skillGroups }) => Object.freeze({
   get viewModel() {
     return { url: `${process.env.HOST}/#/evaluations/${_id}`, id: _id, usersName: user.name };
+  },
+  get userEvaluationViewModel() {
+    return { user, template, skillGroups };
   }
 });
 

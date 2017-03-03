@@ -15,7 +15,6 @@ const testTemplate = template(fixtureTemplates[0]);
 const testSkills = skills(fixtureSkills);
 
 describe('new evaluation', () => {
-
   it('should create a new evaluation for a user', () => {
     const created = newEvaluation(testTemplate, testUser, testSkills, "new Date()");
     delete created._id;

@@ -11,10 +11,16 @@ export class Dashboard extends React.Component {
   render() {
     return (
       <div>
-        <h1 className="header">Dashboard</h1>
-        <UserDetails
-          user={this.props.user}
-        />
+        {
+          this.props.user
+            ? <div>
+                <h1 className="header">Dashboard</h1>
+                <UserDetails
+                  user={this.props.user}
+                />
+              </div>
+            : <h1>{`You aren't logged in!`}</h1>
+        }
       </div>
     );
   }
@@ -27,5 +33,5 @@ Dashboard.propTypes = {
 export const DashboardPage = connect(
   function mapStateToProps(state) {
     return state.dashboard;
-  },
+  }
 )(Dashboard);

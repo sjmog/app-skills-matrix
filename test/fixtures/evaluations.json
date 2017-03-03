@@ -21,6 +21,7 @@
     },
     "skillGroups": [
       {
+        "id": 0,
         "level": "Novice",
         "category": "Dragon Flight",
         "skills": [
@@ -41,6 +42,7 @@
         ]
       },
       {
+        "id": 1,
         "level": "Expert",
         "category": "Dragon Flight",
         "skills": [
@@ -55,6 +57,42 @@
               },
               {
                 "title": "Can you memoize your dragon?"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "level": "Expert",
+        "category": "Magicness",
+        "skills": [
+          {
+            "id": 3,
+            "name": "Advanced knowledge of the Dark Arts",
+            "criteria": "Can execute the Imperius Curse",
+            "type": "skill",
+            "questions": [
+              {
+                "title": "Can you speak parseltongue?"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "level": "Novice",
+        "category": "Magicness",
+        "skills": [
+          {
+            "id": 4,
+            "name": "Working knowledge of the Dark Arts",
+            "criteria": "Can execute the Toenail-growing hex",
+            "type": "skill",
+            "questions": [
+              {
+                "title": "Have you hexed anyone in the last month?"
               }
             ]
           }

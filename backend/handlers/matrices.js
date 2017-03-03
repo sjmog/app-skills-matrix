@@ -1,6 +1,7 @@
+const Promise = require('bluebird');
+
 const { templates, skills } = require('../models/matrices');
 const createHandler = require('./createHandler');
-const Promise = require('bluebird');
 
 const handlerFunctions = Object.freeze({
   templates: {
