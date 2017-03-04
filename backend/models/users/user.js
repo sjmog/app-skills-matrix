@@ -1,8 +1,9 @@
 const auth = require('../auth');
 
-const user = ({ _id, name, email, mentor, template, createdDate, modifiedDate, templateId, mentorId, avatarUrl }) => Object.freeze({
+const user = ({ _id, name, email, createdDate, modifiedDate, templateId, mentorId, avatarUrl }) => Object.freeze({
   id: _id,
   templateId,
+  mentorId,
   get isAdmin() {
     return auth.isAdmin(email);
   },
@@ -16,21 +17,15 @@ const user = ({ _id, name, email, mentor, template, createdDate, modifiedDate, t
     return ({ id: _id, name });
   },
   get userDetailsViewModel() {
-    return ({
-      name,
-      avatarUrl,
-      email,
-      mentor: mentor && mentor.userDetailsViewModel,
-      template: template && template.userDetailsViewModel,
-    });
+    return ({ name, avatarUrl, email, mentorId, templateId });
   },
   hasTemplate: Boolean(templateId),
-  setMentor(mentorId) {
-    if (mentorId === _id.toString()) {
-      return { error: true, message: `User '${mentorId}' can not mentor themselves` };
+  setMentor(newMentorId) {
+    if (newMentorId === _id.toString()) {
+      return { error: true, message: `User '${newMentorId}' can not mentor themselves` };
     }
 
-    return { mentorId, modifiedDate: new Date() };
+    return { mentorId: newMentorId, modifiedDate: new Date() };
   },
   setTemplate(templateId) {
     return { templateId, modifiedDate: new Date() };

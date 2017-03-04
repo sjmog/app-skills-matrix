@@ -8,7 +8,7 @@ const expectedData = {
     name: 'Node JS Dev',
     version: 1,
     categories: ['Magicness', 'Dragon Flight'],
-    levels: ['Novice', 'Expert']
+    levels: ['Expert', 'Novice']
   },
   skills: {
     1: {
