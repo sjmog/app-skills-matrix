@@ -101,7 +101,7 @@ class ManageUsersPageComponent extends React.Component {
           onUserSelectionChange={this.onUserSelectionChange}
         />
         <ul>{this.props.newEvaluations.map((e) => (<li key={e.id}>{e.success ? (
-          <div>New evaluation:&nbsp;<a href={e.url}>{e.usersName}</a></div>) : e.message}</li>))}
+          <div>New evaluation created for {e.usersName}</div>) : e.message}</li>))}
         </ul>
       </div>
     );

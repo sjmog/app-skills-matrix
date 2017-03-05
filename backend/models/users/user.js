@@ -14,7 +14,7 @@ const user = ({ _id, name, email, createdDate, modifiedDate, templateId, mentorI
     return ({ id: _id, email });
   },
   get evaluationData() {
-    return ({ id: _id, name });
+    return ({ id: _id, name, email });
   },
   get userDetailsViewModel() {
     return ({ name, avatarUrl, email, mentorId, templateId });

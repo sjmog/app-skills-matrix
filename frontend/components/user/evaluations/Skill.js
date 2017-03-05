@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { ListGroupItem, ButtonGroup, Button } from 'react-bootstrap';
 
-import { statuses } from './Helpers';
+import { statuses } from './helpers';
 import AdditionalInfo from './AdditionalInfo';
 
 const Skill = ({ name, skillId, criteria, questions, updateSkillStatus, status = null }) =>

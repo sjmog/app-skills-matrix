@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Row, Col, Accordion, Panel, ListGroup, ProgressBar } from 'react-bootstrap';
 
-import { statuses } from './Helpers';
+import { statuses } from './helpers';
 
 import Skill from './Skill';
 
@@ -11,7 +11,7 @@ const header = (level, skillsInGroup, skills) => {
   const percentageAttained = numberOfAttainedSkills / totalNumberOfSkills * 100;
 
   return (
-    <Row className='show-grid' className='level-heading'>
+    <Row className='show-grid level-heading'>
       <Col md={6}>
         <h4>{level}</h4>
       </Col>

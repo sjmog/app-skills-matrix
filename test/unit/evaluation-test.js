@@ -10,7 +10,7 @@ const fixtureTemplates = require('../fixtures/templates');
 
 const expectedInitialEvaluation = fixtureEvaluations[0];
 
-const testUser = user({ _id: 'user_id', name: 'Jake' });
+const testUser = user({ _id: 'user_id', name: 'Jake', email: 'jake@hello.com' });
 const testTemplate = template(fixtureTemplates[0]);
 const testSkills = skills(fixtureSkills);
 
