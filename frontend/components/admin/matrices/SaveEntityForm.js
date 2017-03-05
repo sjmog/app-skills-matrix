@@ -16,7 +16,7 @@ const SaveEntityForm = ({ entityName, entity, saveEntity, updateEntityInLocalSta
             />
           </FormGroup>
           {' '}
-          <Button bsStyle='primary' type="submit"><Glyphicon glyph='upload'/></Button>
+          <Button bsStyle='primary' type='submit'><Glyphicon glyph='upload'/></Button>
         </Form>
       </Row>
       <Row>

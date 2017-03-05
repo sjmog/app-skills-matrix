@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Row, Form, FormGroup, FormControl, ControlLabel, Radio, Button, Glyphicon, Alert } from 'react-bootstrap';
+import { Row, Form, FormGroup, FormControl, ControlLabel, Radio, Glyphicon, Alert } from 'react-bootstrap';
 import { actions } from '../../../modules/admin/manageMatrices';
 import SaveEntityForm from './SaveEntityForm';
 

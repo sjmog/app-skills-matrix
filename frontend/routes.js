@@ -8,6 +8,7 @@ import { DashboardPage as UserDashboard } from './components/user/dashboard/Dash
 import { ManageUsersPage } from './components/admin/users/ManageUsersPage';
 import { ManageMatricesPage } from './components/admin/matrices/ManageMatricesPage';
 import { ManageEvaluationPage } from './components/user/evaluations/ManageEvaluationPage';
+import { ManageCategoryPage } from './components/user/evaluations/ManageCategoryPage';
 
 export const adminRoutes = (
   <Router history={hashHistory}>
@@ -26,6 +27,7 @@ export const userRoutes = (
       <IndexRoute component={UserDashboard}/>
       <Route path="dashboard" name="Dashboard" component={UserDashboard}/>
       <Route path="evaluations/:evaluationId" component={ManageEvaluationPage} />
+      <Route path="evaluations/:evaluationId/category/:category" component={ManageCategoryPage} />
     </Route>
   </Router>
 );

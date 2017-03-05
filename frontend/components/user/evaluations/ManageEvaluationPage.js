@@ -1,17 +1,14 @@
 import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Row, Col, Panel, Alert } from 'react-bootstrap';
-import _find from 'lodash/find';
+import { Row, Col, Panel, Alert, Button } from 'react-bootstrap';
 import R from 'ramda';
+import { Link } from 'react-router';
 
 import { actions } from '../../../modules/user/manageEvaluation';
+import { getSkillGroup, statuses } from './helpers';
 
 import './evaluation.scss'
-
-const getSkillGroup = (level, category, skillGroups) =>
-  _find(skillGroups,
-    (group => (group.level === level && group.category === category)));
 
 class ManageEvaluationPageComponent extends React.Component {
   componentWillMount() {
@@ -21,71 +18,81 @@ class ManageEvaluationPageComponent extends React.Component {
   }
 
   render() {
-    const { template, skillGroups, skills } = this.props;
+    if (this.props.evaluationRetrieved) {
+      const { template, skillGroups, skills } = this.props;
+      const [ firstCategory ] = template.categories;
 
-    return this.props.evaluationRetrieved
-      ? (
-      <div>
-        <Row><h2 className='header'>{template.name}</h2></Row>
-        {
-          template.levels.map((levelName, index) => {
-            const isTopLevel = index === 0;
+      return (
+        <div>
+          <Row>
+            <h3 className='header'>{template.name}</h3>
+            <Link to={`evaluations/${this.props.params.evaluationId}/category/${firstCategory}`}>
+              <Button bsStyle='primary' className='header__button'>
+                Begin evaluation
+              </Button>
+            </Link>
+          </Row>
+          {
+            template.levels.map((levelName, index) => {
+              const isTopLevel = (index === 0);
 
-            const level = template.categories.map(
-              (categoryName) => {
-                const skillGroup = getSkillGroup(levelName, categoryName, skillGroups);
+              const level = template.categories.map(
+                (categoryName) => {
+                  const skillGroup = getSkillGroup(levelName, categoryName, skillGroups);
 
-                return (
-                  <Col sm={4} md={3} key={`${levelName}-${categoryName}`}>
-                    { isTopLevel
-                      ? (<h3>{categoryName}</h3>)
-                      : false
-                    }
-                    {
-                      skillGroup.skills.map((skillId) => {
-                        const { name, status } =  skills[skillId];
-                        const achieved = (status && status === 'achieved');
+                  return (
+                    <Col md={2} key={`${levelName}-${categoryName}`}>
+                      { isTopLevel ? <h3>{categoryName}</h3> : false }
+                      {
+                        skillGroup.skills.map((skillId) => {
+                          const { name, status } =  skills[skillId];
+                          const achieved = (status && status === statuses.ATTAINED);
 
-                        return (
-                          <Panel className={achieved ? 'skill--blue' : false } key={skillId}>
-                            {name}
-                          </Panel>
-                        )
-                      })
-                    }
+                          return (
+                            <Panel className={achieved ? 'panel--state-attained' : false } key={skillId}>
+                              {name}
+                            </Panel>
+                          )
+                        })
+                      }
+                    </Col>
+                  )
+                }
+              );
+
+              return (
+                <Row key={levelName}>
+                  <Col md={1} className={isTopLevel? 'label--top' : false}>
+                    { <h3 className='header'>{levelName}</h3> }
                   </Col>
-                )
-              }
-            );
-
-            return (
-              <Row key={levelName}>
-                <Col sm={2} md={2} className={isTopLevel? 'level-label--bottom' : false}>
-                  { <h3 className='header'>{levelName}</h3> }
-                </Col>
-                {level}
-              </Row>
-            );
-          })
-        }
-      </div>
-    )
-      :
-      (
-        <Row>
-          { this.props.error
-            ? <Alert bsStyle='danger'>Something went wrong: {this.props.error.message}</Alert>
-            : false
+                  {level}
+                </Row>
+              );
+            })
           }
-        </Row>
-      );
+        </div>
+      )
+    }
+
+    return (
+      <Row>
+        { this.props.error
+          ? <Alert bsStyle='danger'>Something went wrong: {this.props.error.message}</Alert>
+          : false
+        }
+      </Row>
+    );
   }
 }
 
 ManageEvaluationPageComponent.propTypes = {
+  evaluationRetrieved: PropTypes.bool.isRequired,
   template: PropTypes.object,
   skillGroups: PropTypes.object,
   skills: PropTypes.object,
+  params: PropTypes.shape({
+    evaluationId: PropTypes.string.isRequired
+  })
 };
 
 export const ManageEvaluationPage = connect(

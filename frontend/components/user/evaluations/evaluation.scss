@@ -1,7 +1,30 @@
-.skill--blue {
-  background-color: #7CC4EB;
+.panel--state-attained {
+  background-color: #e6f2ff;
 }
 
-.level-label--bottom {
+.label--top {
   margin-top: 60px;
+}
+
+.header__button {
+  margin-top: 10px;
+}
+
+.info__panel {
+  border: none;
+  box-shadow: none;
+}
+
+.skill__cta-group {
+  margin-top: 10px;
+}
+
+.level-heading {
+ margin-bottom: 0;
+}
+
+.level-heading__progress-bar {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-right: 1px;
 }
