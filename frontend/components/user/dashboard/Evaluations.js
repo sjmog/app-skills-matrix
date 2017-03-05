@@ -16,8 +16,8 @@ const Evaluations = ({ evaluations }) => {
                 <dd>{e.templateName}</dd>
                 <dt>status</dt>
                 <dd>{e.status}</dd>
-                <dt>link</dt>
-                <dd><a href={e.url}>here</a></dd>
+                <dt>actions</dt>
+                <dd><a href={e.url}>view</a></dd>
               </dl>
             </ListGroupItem>)
           )}
