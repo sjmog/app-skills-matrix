@@ -4,30 +4,21 @@ import { connect } from "react-redux";
 import UserDetails from "./UserDetails";
 import Evaluations from "./Evaluations";
 
-export class Dashboard extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+const Dashboard = () =>
+  (<div>
+    { this.props.user ? <div>
+      <h1 className="header">Dashboard</h1>
+      <UserDetails
+        user={this.props.user}
+        mentor={this.props.mentor}
+        template={this.props.template}
+      />
+      <Evaluations
+        evaluations={this.props.evaluations}
+      />
+    </div> : <h1>{`You aren't logged in!`}</h1> }
+  </div>);
 
-  render() {
-
-    return (
-      <div>
-        { this.props.user ? <div>
-          <h1 className="header">Dashboard</h1>
-          <UserDetails
-            user={this.props.user}
-            mentor={this.props.mentor}
-            template={this.props.template}
-          />
-          <Evaluations
-            evaluations={this.props.evaluations}
-          />
-        </div> : <h1>{`You aren't logged in!`}</h1> }
-      </div>
-    );
-  }
-}
 
 Dashboard.propTypes = {
   user: PropTypes.object,

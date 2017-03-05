@@ -8,7 +8,7 @@ const UserDetails = ({ user, mentor, template }) => {
         <h2>My Details</h2>
         <img src={user.avatarUrl}/>
       </Col>
-      <Col xs={12} md={9} className="user_details_col">
+      <Col xs={12} md={9} className="user-details__col">
         <dl>
           <dt>name</dt>
           <dd>{user.name}</dd>
