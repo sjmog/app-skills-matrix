@@ -2,7 +2,8 @@
   {
     "user": {
       "id": "user_id",
-      "name": "Jake"
+      "name": "Jake",
+      "email": "jake@hello.com"
     },
     "createdDate": "new Date()",
     "status": "NEW",

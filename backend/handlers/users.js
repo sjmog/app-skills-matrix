@@ -5,6 +5,7 @@ const { templates, skills } = require('../models/matrices');
 const { newEvaluation } = require('../models/evaluations/evaluation');
 const evaluations = require('../models/evaluations');
 const createHandler = require('./createHandler');
+const { sendMail } = require('../services/email');
 const { USER_EXISTS, MUST_BE_ADMIN, USER_NOT_FOUND, TEMPLATE_NOT_FOUND, USER_HAS_NO_TEMPLATE } = require('./errors');
 
 const handlerFunctions = Object.freeze({
@@ -79,7 +80,11 @@ const handlerFunctions = Object.freeze({
               const userEvaluation = newEvaluation(template, user, allSkills);
               return evaluations.addEvaluation(userEvaluation);
             })
-            .then((newEval) => res.status(201).json(newEval.viewModel));
+            .then((newEval) => {
+              sendMail(newEval.mailData);
+              res.status(201).json(newEval.viewModel);
+
+            });
         })
         .catch(next);
     }

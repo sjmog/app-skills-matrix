@@ -4,17 +4,17 @@ import { connect } from "react-redux";
 import UserDetails from "./UserDetails";
 import Evaluations from "./Evaluations";
 
-const Dashboard = () =>
+const Dashboard = ({ user, mentor, template, evaluations }) =>
   (<div>
-    { this.props.user ? <div>
+    { user ? <div>
       <h1 className="header">Dashboard</h1>
       <UserDetails
-        user={this.props.user}
-        mentor={this.props.mentor}
-        template={this.props.template}
+        user={user}
+        mentor={mentor}
+        template={template}
       />
       <Evaluations
-        evaluations={this.props.evaluations}
+        evaluations={evaluations}
       />
     </div> : <h1>{`You aren't logged in!`}</h1> }
   </div>);
