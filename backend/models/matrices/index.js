@@ -30,8 +30,8 @@ module.exports = {
     },
   },
   skills: {
-    addSkill: function ({ id, name, acceptanceCriteria, questions }) {
-      const newSkill = skill.newSkill(id, name, acceptanceCriteria, questions);
+    addSkill: function ({ id, name, criteria, questions }) {
+      const newSkill = skill.newSkill(id, name, criteria, questions);
       return skillsCollection.updateOne({ id }, { $set: newSkill }, { upsert: true })
         .then(() => skillsCollection.findOne({ id }))
         .then(retrievedSkill => skill(retrievedSkill))
