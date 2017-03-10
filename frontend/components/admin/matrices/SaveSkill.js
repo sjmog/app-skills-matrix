@@ -27,7 +27,7 @@ class SaveSkillComponent extends React.Component {
     return (
       <div>
         <Row>
-          <h2 className="header">New skill</h2>
+          <h2 className="header">New skill(s)</h2>
         </Row>
         <SaveEntityForm
           entityName="skill"

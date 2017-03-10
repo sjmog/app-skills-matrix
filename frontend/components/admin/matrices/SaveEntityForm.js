@@ -20,7 +20,7 @@ const SaveEntityForm = ({ entityName, entity, saveEntity, updateEntityInLocalSta
         </Form>
       </Row>
       <Row>
-        { success ? <Alert bsStyle='success'>{`${entityName} successfully saved`}</Alert> : false }
+        { success ? <Alert bsStyle='success'>{`${entityName}(s) successfully saved`}</Alert> : false }
       </Row>
       <Row>
         { error ? <Alert bsStyle='danger'>Something went wrong: {error.message}</Alert> : false }

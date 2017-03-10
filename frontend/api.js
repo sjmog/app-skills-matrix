@@ -25,12 +25,12 @@ export default ({
       .catch(handleError);
   },
   saveTemplate: function (template) {
-    return axios.post('/skillz/templates', { action: 'save', template })
+    return axios.post('/skillz/matrices/templates', { action: 'save', template })
       .then(getData)
       .catch(handleError);
   },
   saveSkill: function (skill) {
-    return axios.post('/skillz/skills', { action: 'save', skill })
+    return axios.post('/skillz/matrices/skills', { action: 'save', skill })
       .then(getData)
       .catch(handleError);
   },
