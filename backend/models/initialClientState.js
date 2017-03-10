@@ -17,15 +17,17 @@ const adminClientState = () => {
 };
 
 const clientState = (user) =>
-  Promise.all([users.getUserById(user.mentorId), templates.getById(user.templateId), evaluations.getByUserId(user.id)])
-    .then(([mentor, template, evaluations]) => ({
-      dashboard: {
-        user: user ? user.userDetailsViewModel : null,
-        mentor: mentor ? mentor.userDetailsViewModel : null,
-        template: template ? template.viewModel : null,
-        evaluations: R.map((domainEvaluation) => domainEvaluation.viewModel, evaluations),
-      }
-      }));
+  user ?
+    Promise.all([users.getUserById(user.mentorId), templates.getById(user.templateId), evaluations.getByUserId(user.id)])
+      .then(([mentor, template, evaluations]) => ({
+        dashboard: {
+          user: user ? user.userDetailsViewModel : null,
+          mentor: mentor ? mentor.userDetailsViewModel : null,
+          template: template ? template.viewModel : null,
+          evaluations: R.map((domainEvaluation) => domainEvaluation.viewModel, evaluations),
+        }
+      })) :
+    Promise.resolve({ dashboard: {} });
 
 module.exports = {
   adminClientState,
