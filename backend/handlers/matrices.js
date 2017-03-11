@@ -21,12 +21,13 @@ const handlerFunctions = Object.freeze({
   skills: {
     save: function (req, res, next) {
       Promise.try(() => JSON.parse(req.body.skill))
-        .then((skill) =>
-          skills.getById(skill.id)
-            .then(retrievedSkill =>
-              (retrievedSkill
-                ? skills.updateSkill(retrievedSkill, skill)
-                : skills.addSkill(skill)))
+        .then((newSkills) =>
+          Promise.map([].concat(newSkills),
+            (skill) => skills.getById(skill.id)
+              .then(retrievedSkill =>
+                (retrievedSkill
+                  ? skills.updateSkill(retrievedSkill, skill)
+                  : skills.addSkill(skill))))
             .then(skill => res.status(201).json(skill.viewModel)))
         .catch(next);
     }

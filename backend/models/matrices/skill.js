@@ -9,11 +9,11 @@ const skill = ({ id, name, criteria, type, questions }) => Object.freeze({
 });
 
 module.exports = skill;
-module.exports.newSkill = (id, name, acceptanceCriteria, questions) =>
+module.exports.newSkill = (id, name, criteria, questions) =>
   ({
     id,
     name,
-    acceptanceCriteria,
+    criteria,
     questions,
     createdDate: new Date()
   });

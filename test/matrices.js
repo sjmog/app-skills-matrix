@@ -3,9 +3,10 @@ const { expect } = require('chai');
 
 const app = require('../backend');
 const { sign, cookieName } = require('../backend/models/auth');
-const { users, templates, skills, prepopulateUsers, insertTemplate, insertSkill } = require('./helpers');
+const { users, templates, skills, prepopulateUsers, insertTemplate, insertSkill, clearDb } = require('./helpers');
 const [ sampleTemplate ] = require('./fixtures/templates');
 const [ sampleSkill ] = require('./fixtures/skills');
+const allSkills = require('./fixtures/skills');
 
 const prefix = '/skillz/matrices';
 
@@ -13,7 +14,8 @@ let adminToken, normalUserToken;
 let adminUserId, normalUserId;
 
 beforeEach(() =>
-  prepopulateUsers()
+  clearDb()
+    .then(prepopulateUsers)
     .then(() =>
       Promise.all([users.findOne({ email: 'dmorgantini@gmail.com' }), users.findOne({ email: 'user@magic.com' })])
         .then(([adminUser, normalUser]) => {
@@ -22,7 +24,6 @@ beforeEach(() =>
           normalUserId = normalUser._id;
           adminUserId = adminUser._id;
         }))
-    .then(() => templates.remove({}))
 );
 
 describe('POST /matrices/templates', () => {
@@ -81,7 +82,7 @@ describe('POST /matrices/templates', () => {
 });
 
 describe('POST matrices/skills', () => {
-  it('permits saving of new skills by admin users', () =>
+  it('permits saving of a new skill by admin users', () =>
     request(app)
       .post(`${prefix}/skills`)
       .send({
@@ -94,6 +95,22 @@ describe('POST matrices/skills', () => {
       .then(newSkill => {
         expect(newSkill.id).to.equal(1);
         expect(newSkill.name).to.equal('Dragon Feeding');
+      })
+  );
+
+  it('permits saving of a list of new skills by admin users', () =>
+    request(app)
+      .post(`${prefix}/skills`)
+      .send({
+        action: 'save',
+        skill: JSON.stringify(allSkills)
+      })
+      .set('Cookie', `${cookieName}=${adminToken}`)
+      .expect(201)
+      .then(res => skills.find({}))
+      .then(savedSkills => savedSkills.toArray())
+      .then((savedSkills) => {
+        expect(savedSkills.length).to.equal(allSkills.length);
       })
   );
 
