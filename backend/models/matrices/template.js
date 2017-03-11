@@ -14,7 +14,8 @@ const template = ({ id, name, version, categories, levels, skillGroups }) => Obj
       id: index,
       category: skillGroup.category,
       level: skillGroup.level,
-      skills: skillGroup.skills.map((skillId) => skills[skillId].evaluationData)
+      skills: skillGroup.skills.map((skillId) =>
+        Object.assign({}, skills[skillId].evaluationData, { status: { previous: null, current: null } }))
     }));
   }
 });

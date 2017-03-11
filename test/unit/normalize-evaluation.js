@@ -19,7 +19,8 @@ const expectedData = {
       questions: [
         { title: 'Do you know where to get the dragon food?' },
         { title: 'Are you able to feed a dragon and retain your hands' },
-      ]
+      ],
+      status: { previous: null, current: null }
     },
     2: {
       id: 2,
@@ -29,7 +30,8 @@ const expectedData = {
       questions: [
         { title: 'Are you able to fly your dragon in a hurricane?' },
         { title: 'Can you memoize your dragon?' }
-      ]
+      ],
+      status: { previous: null, current: null }
     },
     3: {
       id: 3,
@@ -38,7 +40,8 @@ const expectedData = {
       type: 'skill',
       questions: [
         { title: 'Can you speak parseltongue?' }
-      ]
+      ],
+      status: { previous: null, current: null }
     },
     4: {
       id: 4,
@@ -47,7 +50,8 @@ const expectedData = {
       type: 'skill',
       questions: [
         { title: 'Have you hexed anyone in the last month?' }
-      ]
+      ],
+      status: { previous: null, current: null }
     }
   },
   skillGroups: {

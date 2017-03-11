@@ -38,7 +38,11 @@
               {
                 "title": "Are you able to feed a dragon and retain your hands"
               }
-            ]
+            ],
+            "status": {
+              "previous": null,
+              "current": null
+            }
           }
         ]
       },
@@ -59,7 +63,11 @@
               {
                 "title": "Can you memoize your dragon?"
               }
-            ]
+            ],
+            "status": {
+              "previous": null,
+              "current": null
+            }
           }
         ]
       },
@@ -77,7 +85,11 @@
               {
                 "title": "Can you speak parseltongue?"
               }
-            ]
+            ],
+            "status": {
+              "previous": null,
+              "current": null
+            }
           }
         ]
       },
@@ -95,7 +107,11 @@
               {
                 "title": "Have you hexed anyone in the last month?"
               }
-            ]
+            ],
+            "status": {
+              "previous": null,
+              "current": null
+            }
           }
         ]
       }

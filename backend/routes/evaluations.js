@@ -5,8 +5,8 @@ const { evaluation } = require('../handlers/evaluations');
 module.exports = (app) => {
   const router = Router();
 
-  router.get('/:evaluationId', (req, res, next) => evaluation.retrieve(req, res, next));
-
+  router.post('/update-skill-status', evaluation.updateSkillStatus);
+  router.get('/:evaluationId', evaluation.retrieve);
   app.use('/evaluations', router);
 
   return app

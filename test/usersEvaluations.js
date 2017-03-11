@@ -91,8 +91,8 @@ describe('GET /evaluation/:evaluationId', () => {
     insertEvaluation(evaluation)
       .then(({ insertedId }) =>
         request(app)
-         .get(`${prefix}/evaluations/${insertedId}`)
-         .expect(200))
+          .get(`${prefix}/evaluations/${insertedId}`)
+          .expect(200))
       .then(({ body }) => {
         expect(body.user.id).to.equal('user_id');
         expect(body.template.name).to.equal('Node JS Dev');
@@ -105,8 +105,37 @@ describe('GET /evaluation/:evaluationId', () => {
       expect: 404,
     })
   ].forEach((test) =>
-  it(`should handle error cases '${test().desc}'`, () =>
-    request(app)
-      .get(`${prefix}/evaluations/noMatchingId`)
-      .expect(test().expect)))
+    it(`should handle error cases '${test().desc}'`, () =>
+      request(app)
+        .get(`${prefix}/evaluations/noMatchingId`)
+        .expect(test().expect)))
+});
+
+describe('POST /evaluations/update-skill-status', () => {
+  it('allows users to update the status of a skill', () => {
+    let evaluationId;
+
+    return insertEvaluation(evaluation)
+      .then(({ insertedId }) => {
+        evaluationId = insertedId;
+
+        return request(app)
+          .post(`${prefix}/evaluations/update-skill-status`)
+          .send({
+            evaluationId: evaluationId,
+            skillGroupId: 0,
+            skillId: 1,
+            status: 'attained'
+          })
+          .expect(200)
+      })
+      .then(({ body }) => {
+        expect(body.skillId).to.equal(1);
+        expect(body.status).to.equal('attained');
+      })
+      .then(() => evaluations.findOne({ _id: evaluationId }))
+      .then(({ skillGroups }) => {
+        expect(skillGroups[0].skills[0].status).to.deep.equal({ previous: null, current: 'attained'});
+      })
+  })
 });
