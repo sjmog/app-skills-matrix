@@ -16,8 +16,8 @@ class ManageCategoryComponent extends React.Component {
     this.updateSkillStatus = this.updateSkillStatus.bind(this);
   }
 
-  updateSkillStatus(skillId, status) {
-    this.props.actions.updateSkillStatus(skillId, status);
+  updateSkillStatus(evaluationId, skillGroupId, skillId, status) {
+    this.props.actions.updateSkillStatus(evaluationId, skillGroupId, skillId, status);
   };
 
   render() {
@@ -29,13 +29,15 @@ class ManageCategoryComponent extends React.Component {
         <h2>{currentCategory}</h2>
         {
           template.levels.map((level, index) => {
-            const { skills: skillsInGroup } = getSkillGroup(level, currentCategory, skillGroups);
+            const { id: skillGroupId, skills: skillsInGroup } = getSkillGroup(level, currentCategory, skillGroups);
 
             return (
               <SkillGroup
+                evaluationId={this.props.params.evaluationId}
                 key={index}
                 eventKey={index}
                 level={level}
+                skillGroupId={skillGroupId}
                 skillsInGroup={skillsInGroup}
                 skills={skills}
                 updateSkillStatus={this.updateSkillStatus}

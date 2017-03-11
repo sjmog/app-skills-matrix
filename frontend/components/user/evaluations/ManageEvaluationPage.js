@@ -46,10 +46,11 @@ class ManageEvaluationPageComponent extends React.Component {
                       {
                         skillGroup.skills.map((skillId) => {
                           const { name, status } =  skills[skillId];
-                          const achieved = (status && status === statuses.ATTAINED);
 
                           return (
-                            <Panel className={achieved ? 'panel--state-attained' : false } key={skillId}>
+                            <Panel
+                              className={status && status.current === statuses.ATTAINED ? 'panel--state-attained' : false }
+                              key={skillId}>
                               {name}
                             </Panel>
                           )

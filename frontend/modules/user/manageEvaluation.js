@@ -9,7 +9,8 @@ import normalize from '../normalize';
 export const constants = keymirror({
   RETRIEVE_EVALUATION_SUCCESS: null,
   RETRIEVE_EVALUATION_FAILURE: null,
-  SKILL_STATUS_UPDATE: null,
+  SKILL_STATUS_UPDATE_SUCCESS: null,
+  SKILL_STATUS_UPDATE_FAILURE: null,
 });
 
 const retrieveEvaluationSuccess = createAction(
@@ -22,9 +23,14 @@ const retrieveEvaluationFailure = createAction(
   error => Object.assign({}, error)
 );
 
-const updateSkillStatus = createAction(
-  constants.SKILL_STATUS_UPDATE,
+const updateSkillStatusSuccess = createAction(
+  constants.SKILL_STATUS_UPDATE_SUCCESS,
   (skillId, status) => Object.assign({}, { skillId, status })
+);
+
+const updateSkillStatusFailure = createAction(
+  constants.SKILL_STATUS_UPDATE_FAILURE,
+  (skillId, error) => Object.assign({}, { skillId, error })
 );
 
 function retrieveEvaluation(evaluationId) {
@@ -36,6 +42,13 @@ function retrieveEvaluation(evaluationId) {
   }
 }
 
+function updateSkillStatus(evaluationId, skillGroupId, skillId, status) {
+  return function(dispatch) {
+    return api.updateSkillStatus(evaluationId, skillGroupId, skillId, status)
+      .then((update) => dispatch(updateSkillStatusSuccess(update.skillId, update.status)))
+      .catch((error) => dispatch(updateSkillStatusFailure(skillId, error)))
+  }
+}
 export const actions = {
   retrieveEvaluation,
   updateSkillStatus
@@ -50,13 +63,23 @@ const initialSate = {
 
 const handleUpdateSkillStatus = (state, action) => {
   const updatedSkill = state.skills[action.payload.skillId];
-  updatedSkill.status = action.payload.status;
+  updatedSkill.status.current = action.payload.status;
   const updatedSkills = R.merge(state.skills, { [action.payload.skillId]: updatedSkill });
 
   return Object.assign({}, state, { skills: updatedSkills } );
 };
+
+const handleUpdateSkillError = (state, action) => {
+  const skill = state.skills[action.payload.skillId];
+  skill.error = action.payload.error;
+  const updatedSkills = R.merge(state.skills, { [action.payload.skillId]: skill });
+
+  return Object.assign({}, state, { skills: updatedSkills } );
+};
+
 export const reducers = handleActions({
   [retrieveEvaluationSuccess]: (state, action) => Object.assign({}, state, action.payload, { evaluationRetrieved: true }),
   [retrieveEvaluationFailure]: (state, action) =>  Object.assign({}, state, { error: action.payload, evaluationRetrieved: false }),
-  [updateSkillStatus]: handleUpdateSkillStatus,
+  [updateSkillStatusSuccess]: handleUpdateSkillStatus,
+  [updateSkillStatusFailure]: handleUpdateSkillError
 }, initialSate);
