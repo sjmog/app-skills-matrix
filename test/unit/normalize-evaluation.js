@@ -3,6 +3,10 @@ const normalise = require('../../frontend/modules/normalize');
 const [ evaluation ] = require('./../fixtures/evaluations');
 
 const expectedData = {
+  evaluation: {
+    retrieved: true,
+    status: 'NEW'
+  },
   template: {
     id: 'eng-nodejs',
     name: 'Node JS Dev',

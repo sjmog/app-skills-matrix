@@ -14,11 +14,16 @@ class ManageCategoryComponent extends React.Component {
     super(props);
 
     this.updateSkillStatus = this.updateSkillStatus.bind(this);
+    this.evaluationComplete = this.evaluationComplete.bind(this);
   }
 
   updateSkillStatus(evaluationId, skillGroupId, skillId, status) {
     this.props.actions.updateSkillStatus(evaluationId, skillGroupId, skillId, status);
   };
+
+  evaluationComplete(evaluationId) {
+    this.props.actions.evaluationComplete(evaluationId);
+  }
 
   render() {
     const { category: currentCategory } = this.props.params;
@@ -49,6 +54,7 @@ class ManageCategoryComponent extends React.Component {
           categories={template.categories}
           currentCategory={currentCategory}
           evaluation={this.props.params.evaluationId}
+          evaluationComplete={this.evaluationComplete}
         />
       </div>
     )

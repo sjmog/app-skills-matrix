@@ -43,5 +43,10 @@ export default ({
     return axios.post('/skillz/evaluations/update-skill-status', { evaluationId, skillGroupId, skillId, status })
       .then(getData)
       .catch(handleError)
+  },
+  evaluationComplete: function (evaluationId) {
+    return axios.post(`/skillz/evaluations/${evaluationId}/complete`, { action: 'complete' })
+      .then(getData)
+      .catch(handleError)
   }
 });
