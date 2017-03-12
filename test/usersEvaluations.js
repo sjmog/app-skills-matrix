@@ -154,17 +154,17 @@ describe('POST /evaluations/:evaluationId/update-skill-status', () => {
       .send({
         skillGroupId: 0,
         skillId: 1,
-        status: 'attained'
+        status: 'ATTAINED'
       })
       .set('Cookie', `${cookieName}=${normalUserOneToken}`)
       .expect(200)
       .then(({ body }) => {
         expect(body.skillId).to.equal(1);
-        expect(body.status).to.equal('attained');
+        expect(body.status).to.equal('ATTAINED');
       })
       .then(() => evaluations.findOne({ _id: evaluationId }))
       .then(({ skillGroups }) => {
-        expect(skillGroups[0].skills[0].status).to.deep.equal({ previous: null, current: 'attained' });
+        expect(skillGroups[0].skills[0].status).to.deep.equal({ previous: null, current: 'ATTAINED' });
       }));
 
   const errorCases = [
