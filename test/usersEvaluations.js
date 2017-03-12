@@ -104,7 +104,7 @@ describe('GET /evaluation/:evaluationId', () => {
       })
   );
 
-  it('retrieves an evaluation for the target user', () =>
+  it('allows a user to retrieve thier evaluation', () =>
     request(app)
       .get(`${prefix}/evaluations/${evaluationId}`)
       .set('Cookie', `${cookieName}=${normalUserOneToken}`)
@@ -123,7 +123,7 @@ describe('GET /evaluation/:evaluationId', () => {
       expect: 404,
     }),
     () => ({
-      desc: 'not target user',
+      desc: 'user not subject of evaluation',
       token: normalUserTwoToken,
       evaluationId,
       expect: 403,
@@ -148,7 +148,7 @@ describe('POST /evaluations/:evaluationId/update-skill-status', () => {
       })
   );
 
-  it('allows users to update the status of a skill', () =>
+  it('allows a user to update the status of a skill', () =>
     request(app)
       .post(`${prefix}/evaluations/${evaluationId}/update-skill-status`)
       .send({
@@ -175,7 +175,7 @@ describe('POST /evaluations/:evaluationId/update-skill-status', () => {
       expect: 404,
     }),
     () => ({
-      desc: 'not target user',
+      desc: 'user not subject of evaluation',
       token: normalUserTwoToken,
       evaluationId,
       expect: 403,
@@ -201,7 +201,7 @@ describe('POST /evaluations/:evaluationId/complete', () => {
       })
   );
 
-  it('allows users to mark an evaluation as complete', () =>
+  it('allows users to complete their own evaluation', () =>
     request(app)
       .post(`${prefix}/evaluations/${evaluationId}/complete`)
       .send({ evaluationId })
@@ -220,7 +220,7 @@ describe('POST /evaluations/:evaluationId/complete', () => {
       expect: 404,
     }),
     () => ({
-      desc: 'not target user',
+      desc: 'user not subject of evaluation',
       evaluationId,
       token: normalUserTwoToken,
       expect: 403,
