@@ -39,8 +39,8 @@ class ManageCategoryComponent extends React.Component {
             return (
               <SkillGroup
                 evaluationId={this.props.params.evaluationId}
-                key={index}
-                eventKey={index}
+                key={skillGroupId}
+                eventKey={skillGroupId}
                 level={level}
                 skillGroupId={skillGroupId}
                 skillsInGroup={skillsInGroup}
