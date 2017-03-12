@@ -1,12 +1,8 @@
 const keymirror = require('keymirror');
 
-const STATUS = keymirror({
-  NEW: null,
-});
-
 const HOST = process.env.HOST;
 
-module.exports = ({ _id, user, template, skillGroups, status }) => Object.freeze({
+const evaluation = ({ _id, user, template, skillGroups, status }) => Object.freeze({
   id: _id,
   user,
   skillGroups,
@@ -25,6 +21,13 @@ module.exports = ({ _id, user, template, skillGroups, status }) => Object.freeze
   }
 });
 
+const STATUS = keymirror({
+  NEW: null,
+  COMPLETE: null,
+});
+
+module.exports = evaluation;
+module.exports.STATUS = STATUS;
 module.exports.newEvaluation = (template, user, skills, date = new Date()) => {
   return {
     user: user.evaluationData,
@@ -34,3 +37,5 @@ module.exports.newEvaluation = (template, user, skills, date = new Date()) => {
     skillGroups: template.createSkillGroups(skills),
   };
 };
+
+

@@ -1,6 +1,7 @@
 const database = require('../../database');
 const evaluationsCollection = database.collection('evaluations');
 const evaluation = require('./evaluation');
+const { STATUS } = require('./evaluation');
 const { ObjectId } = require('mongodb');
 const R = require('ramda');
 
@@ -51,7 +52,7 @@ module.exports = {
   complete: function(completedEvaluation) {
     return evaluationsCollection.updateOne(
       { _id: ObjectId(completedEvaluation.id) },
-      { $set: { status: 'COMPLETE' } }
+      { $set: { status: STATUS.COMPLETE} }
     )
     .then(() => evaluationsCollection.findOne({ _id: ObjectId(completedEvaluation.id) }))
     .then((res) => res ? evaluation(res) : null )
