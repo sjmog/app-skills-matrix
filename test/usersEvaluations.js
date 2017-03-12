@@ -191,3 +191,48 @@ describe('POST /evaluations/update-skill-status', () => {
         .set('Cookie', `${cookieName}=${test().token}`)
         .expect(test().expect)))
 });
+
+describe('POST /evaluations/:evaluationId/complete', () => {
+  let evaluationId;
+
+  beforeEach(() =>
+    insertEvaluation(Object.assign({}, evaluation, { user: { id: String(normalUserOneId) } }))
+      .then(({ insertedId }) => {
+        evaluationId = insertedId
+      })
+  );
+
+  it('allows users to mark an evaluation as complete', () =>
+    request(app)
+      .post(`${prefix}/evaluations/${evaluationId}/complete`)
+      .send({ evaluationId })
+      .set('Cookie', `${cookieName}=${normalUserOneToken}`)
+      .expect(200)
+      .then(() => evaluations.findOne({ _id: evaluationId }))
+      .then((completedApplication) => {
+        expect(completedApplication.status).to.equal('COMPLETE');
+      }));
+
+  const errorCases = [
+    () => ({
+      desc: 'no evaluation',
+      evaluationId: 'noMatchingId',
+      token: normalUserOneToken,
+      expect: 404,
+    }),
+    () => ({
+      desc: 'not target user',
+      evaluationId,
+      token: normalUserTwoToken,
+      expect: 403,
+    }),
+  ];
+
+  errorCases.forEach((test) =>
+    it(`handles error case: ${test().desc}`, () =>
+      request(app)
+        .post(`${prefix}/evaluations/${test().evaluationId}/complete`)
+        .send({ evaluationId })
+        .set('Cookie', `${cookieName}=${test().token}`)
+        .expect(test().expect)))
+});

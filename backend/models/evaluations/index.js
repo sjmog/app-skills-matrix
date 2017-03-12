@@ -45,7 +45,15 @@ module.exports = {
       { _id: new ObjectId(inProgressEvaluation.id) },
       { $set:  updatedEvaluation }
     )
-    .then(() => evaluationsCollection.findOne({ _id: new ObjectId(inProgressEvaluation.id) }))
+    .then(() => evaluationsCollection.findOne({ _id: ObjectId(inProgressEvaluation.id) }))
+    .then((res) => res ? evaluation(res) : null )
+  },
+  complete: function(completedEvaluation) {
+    return evaluationsCollection.updateOne(
+      { _id: ObjectId(completedEvaluation.id) },
+      { $set: { status: 'COMPLETE' } }
+    )
+    .then(() => evaluationsCollection.findOne({ _id: ObjectId(completedEvaluation.id) }))
     .then((res) => res ? evaluation(res) : null )
   }
 };

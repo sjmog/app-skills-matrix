@@ -14,7 +14,7 @@ module.exports = ({ _id, user, template, skillGroups, status }) => Object.freeze
     return { url: `${HOST}/#/evaluations/${_id}`, id: _id, usersName: user.name, status, templateName: template.name };
   },
   get userEvaluationViewModel() {
-    return { user, template, skillGroups };
+    return { user, status, template, skillGroups };
   },
   get mailData() {
     return {
