@@ -24,7 +24,7 @@ const Skill = ({ evaluationId, skillGroupId, name, skillId, criteria, questions,
           Not yet
         </Button>
       </ButtonGroup>
-      { error ? <Alert bsStyle='danger'>Something went wrong: {error.message || error}</Alert> : false }
+      { error ? <Alert bsStyle='danger'>Something went wrong: {error.message}</Alert> : false }
     </ListGroupItem>
   );
 

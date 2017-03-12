@@ -26,7 +26,7 @@ class ManageCategoryComponent extends React.Component {
   }
 
   render() {
-    const { category: currentCategory } = this.props.params;
+    const { category: currentCategory, evaluationId } = this.props.params;
     const { template, skillGroups, skills } = this.props;
 
     return (
@@ -38,7 +38,7 @@ class ManageCategoryComponent extends React.Component {
 
             return (
               <SkillGroup
-                evaluationId={this.props.params.evaluationId}
+                evaluationId={evaluationId}
                 key={skillGroupId}
                 eventKey={skillGroupId}
                 level={level}
@@ -53,7 +53,7 @@ class ManageCategoryComponent extends React.Component {
         <CategoryNav
           categories={template.categories}
           currentCategory={currentCategory}
-          evaluation={this.props.params.evaluationId}
+          evaluation={evaluationId}
           evaluationComplete={this.evaluationComplete}
         />
       </div>
