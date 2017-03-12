@@ -11,8 +11,8 @@ const [ evaluation ] = require('./fixtures/evaluations');
 const prefix = '/skillz';
 const templateId = 'eng-nodejs';
 
-let adminToken, normalUserToken;
-let adminUserId, normalUserId;
+let adminToken, normalUserOneToken, normalUserTwoToken;
+let adminUserId, normalUserOneId, normalUserTwoId;
 
 beforeEach(() =>
   clearDb()
@@ -20,23 +20,29 @@ beforeEach(() =>
     .then(() => insertTemplate(templateData[0]))
     .then(() => skills.map(insertSkill))
     .then(() =>
-      Promise.all([users.findOne({ email: 'dmorgantini@gmail.com' }), users.findOne({ email: 'user@magic.com' })])
-        .then(([adminUser, normalUser]) => {
-          normalUserToken = sign({ email: normalUser.email, id: normalUser._id });
+      Promise.all([
+          users.findOne({ email: 'dmorgantini@gmail.com' }),
+          users.findOne({ email: 'user@magic.com' }),
+          users.findOne({ email: 'user@dragon-riders.com' })
+        ])
+        .then(([adminUser, normalUserOne, normalUserTwo]) => {
+          normalUserOneToken = sign({ email: normalUserOne.email, id: normalUserOne._id });
+          normalUserTwoToken = sign({ email: normalUserTwo.email, id: normalUserTwo._id });
           adminToken = sign({ email: adminUser.email, id: adminUser._id });
-          normalUserId = normalUser._id;
+          normalUserOneId = normalUserOne._id;
+          normalUserTwoId = normalUserTwo._id;
           adminUserId = adminUser._id;
         })));
 
 describe('POST /users/:userId/evaluations', () => {
-  it('should let admin create an evaluation for a user', () =>
+  it('allows admin user to create an evaluation for a user', () =>
     request(app)
-      .post(`${prefix}/users/${normalUserId}`)
+      .post(`${prefix}/users/${normalUserOneId}`)
       .send({ templateId, action: 'selectTemplate' })
       .set('Cookie', `${cookieName}=${adminToken}`)
       .then(() =>
         request(app)
-          .post(`${prefix}/users/${normalUserId}/evaluations`)
+          .post(`${prefix}/users/${normalUserOneId}/evaluations`)
           .send({ action: 'create' })
           .set('Cookie', `${cookieName}=${adminToken}`)
           .expect(201)
@@ -47,12 +53,12 @@ describe('POST /users/:userId/evaluations', () => {
             expect(evaluationList.length).to.equal(1);
           })));
 
-  [
+  const errorCases = [
     () => ({
       desc: 'not authorized',
-      token: normalUserToken,
+      token: normalUserOneToken,
       body: { action: 'create' },
-      userId: normalUserId,
+      userId: normalUserOneToken,
       expect: 403,
     }),
     () => ({
@@ -66,18 +72,20 @@ describe('POST /users/:userId/evaluations', () => {
       desc: 'bad action',
       token: adminToken,
       body: { action: 'foo' },
-      userId: normalUserId,
+      userId: normalUserOneToken,
       expect: 400,
     }),
-    () => ({ // have not selected a template for this user
-      desc: 'no template',
+    () => ({
+      desc: 'no template selected for user',
       token: adminToken,
       body: { action: 'create' },
       userId: adminUserId,
       expect: 400,
     }),
-  ].forEach((test) =>
-    it(`should handle error cases '${test().desc}'`, () =>
+  ];
+
+  errorCases.forEach((test) =>
+    it(`handles error case: ${test().desc}`, () =>
       request(app)
         .post(`${prefix}/users/${test().userId}/evaluations`)
         .send(test().body)
@@ -87,55 +95,99 @@ describe('POST /users/:userId/evaluations', () => {
 });
 
 describe('GET /evaluation/:evaluationId', () => {
-  it('should retrieve an evaluation for any user', () =>
-    insertEvaluation(evaluation)
-      .then(({ insertedId }) =>
-        request(app)
-          .get(`${prefix}/evaluations/${insertedId}`)
-          .expect(200))
+  let evaluationId;
+
+  beforeEach(() =>
+    insertEvaluation(Object.assign({}, evaluation, { user: { id: String(normalUserOneId) } }))
+      .then(({ insertedId }) => {
+        evaluationId = insertedId
+      })
+  );
+
+  it('retrieves an evaluation for the target user', () =>
+    request(app)
+      .get(`${prefix}/evaluations/${evaluationId}`)
+      .set('Cookie', `${cookieName}=${normalUserOneToken}`)
+      .expect(200)
       .then(({ body }) => {
-        expect(body.user.id).to.equal('user_id');
+        expect(body.user.id).to.equal(String(normalUserOneId));
         expect(body.template.name).to.equal('Node JS Dev');
         expect(body.skillGroups.length > 0).to.equal(true);
       }));
 
-  [
+  const errorCases = [
     () => ({
       desc: 'no evaluation',
+      token: normalUserOneToken,
+      evaluationId: 'noMatchingId',
       expect: 404,
+    }),
+    () => ({
+      desc: 'not target user',
+      token: normalUserTwoToken,
+      evaluationId,
+      expect: 403,
     })
-  ].forEach((test) =>
-    it(`should handle error cases '${test().desc}'`, () =>
+  ];
+
+  errorCases.forEach((test) =>
+    it(`handles error case:${test().desc}`, () =>
       request(app)
-        .get(`${prefix}/evaluations/noMatchingId`)
+        .get(`${prefix}/evaluations/${test().evaluationId}`)
+        .set('Cookie', `${cookieName}=${test().token}`)
         .expect(test().expect)))
 });
 
 describe('POST /evaluations/update-skill-status', () => {
-  it('allows users to update the status of a skill', () => {
-    let evaluationId;
+  let evaluationId;
 
-    return insertEvaluation(evaluation)
+  beforeEach(() =>
+    insertEvaluation(Object.assign({}, evaluation, { user: { id: String(normalUserOneId) } }))
       .then(({ insertedId }) => {
-        evaluationId = insertedId;
-
-        return request(app)
-          .post(`${prefix}/evaluations/update-skill-status`)
-          .send({
-            evaluationId: evaluationId,
-            skillGroupId: 0,
-            skillId: 1,
-            status: 'attained'
-          })
-          .expect(200)
+        evaluationId = insertedId
       })
+  );
+
+  it('allows users to update the status of a skill', () =>
+    request(app)
+      .post(`${prefix}/evaluations/update-skill-status`)
+      .send({
+        evaluationId,
+        skillGroupId: 0,
+        skillId: 1,
+        status: 'attained'
+      })
+      .set('Cookie', `${cookieName}=${normalUserOneToken}`)
+      .expect(200)
       .then(({ body }) => {
         expect(body.skillId).to.equal(1);
         expect(body.status).to.equal('attained');
       })
       .then(() => evaluations.findOne({ _id: evaluationId }))
       .then(({ skillGroups }) => {
-        expect(skillGroups[0].skills[0].status).to.deep.equal({ previous: null, current: 'attained'});
-      })
-  })
+        expect(skillGroups[0].skills[0].status).to.deep.equal({ previous: null, current: 'attained' });
+      }));
+
+  const errorCases = [
+    () => ({
+      desc: 'no evaluation',
+      token: normalUserOneToken,
+      body: { evaluationId: 'noMatchingId' },
+      expect: 404,
+    }),
+    () => ({
+      desc: 'not target user',
+      token: normalUserTwoToken,
+      body: { evaluationId },
+      expect: 403,
+    }),
+  ];
+
+  errorCases.forEach((test) =>
+    it(`handles error case: ${test().desc}`, () =>
+      request(app)
+        .post(`${prefix}/evaluations/update-skill-status`)
+        .send(test().body)
+        .set('Cookie', `${cookieName}=${test().token}`)
+        .expect(test().expect)))
 });

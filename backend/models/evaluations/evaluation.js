@@ -7,6 +7,9 @@ const STATUS = keymirror({
 const HOST = process.env.HOST;
 
 module.exports = ({ _id, user, template, skillGroups, status }) => Object.freeze({
+  id: _id,
+  user,
+  skillGroups,
   get viewModel() {
     return { url: `${HOST}/#/evaluations/${_id}`, id: _id, usersName: user.name, status, templateName: template.name };
   },

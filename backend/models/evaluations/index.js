@@ -22,7 +22,7 @@ module.exports = {
       .then((res) => res ? evaluation(res) : null);
   },
   getEvaluationById: function (id) {
-    return evaluationsCollection.findOne({ _id: new ObjectId(id) })
+    return evaluationsCollection.findOne({ _id: ObjectId(id) })
       .then(res => res ? evaluation(res) : null);
   },
   getByUserId: function (userId) {
@@ -30,25 +30,22 @@ module.exports = {
       .then(res => res.toArray())
       .then(res => res.map(evaluation))
   },
-  updateSkillStatus: function(id, skillGroupId, skillId, status) {
-    return evaluationsCollection.findOne({ _id: new ObjectId(id) })
-      .then((evaluation) => {
-        const skillLens = R.compose(
-          R.lensProp('skillGroups'),
-          lensById(skillGroupId),
-          R.lensProp('skills'),
-          lensById(skillId),
-          R.lensPath(['status', 'current'])
-        );
+  updateSkillStatus: function(inProgressEvaluation, skillGroupId, skillId, status) {
+    const skillLens = R.compose(
+      R.lensProp('skillGroups'),
+      lensById(skillGroupId),
+      R.lensProp('skills'),
+      lensById(skillId),
+      R.lensPath(['status', 'current'])
+    );
 
-        const updatedEvaluation = R.set(skillLens, status, evaluation);
+    const updatedEvaluation = R.set(skillLens, status, inProgressEvaluation);
 
-        return evaluationsCollection.updateOne(
-          { _id: new ObjectId(id) },
-          { $set:  updatedEvaluation }
-        );
-      })
-      .then(() => evaluationsCollection.findOne({ _id: new ObjectId(id) }))
-      .then((res) => res ? evaluation(res) : null )
+    return evaluationsCollection.updateOne(
+      { _id: new ObjectId(inProgressEvaluation.id) },
+      { $set:  updatedEvaluation }
+    )
+    .then(() => evaluationsCollection.findOne({ _id: new ObjectId(inProgressEvaluation.id) }))
+    .then((res) => res ? evaluation(res) : null )
   }
 };
