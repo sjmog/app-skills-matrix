@@ -104,7 +104,7 @@ describe('GET /evaluation/:evaluationId', () => {
       })
   );
 
-  it('allows a user to retrieve thier evaluation', () =>
+  it('allows a user to retrieve their evaluation', () =>
     request(app)
       .get(`${prefix}/evaluations/${evaluationId}`)
       .set('Cookie', `${cookieName}=${normalUserOneToken}`)
