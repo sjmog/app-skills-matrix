@@ -138,7 +138,7 @@ describe('GET /evaluation/:evaluationId', () => {
         .expect(test().expect)))
 });
 
-describe('POST /evaluations/update-skill-status', () => {
+describe('POST /evaluations/:evaluationId/update-skill-status', () => {
   let evaluationId;
 
   beforeEach(() =>
@@ -150,9 +150,8 @@ describe('POST /evaluations/update-skill-status', () => {
 
   it('allows users to update the status of a skill', () =>
     request(app)
-      .post(`${prefix}/evaluations/update-skill-status`)
+      .post(`${prefix}/evaluations/${evaluationId}/update-skill-status`)
       .send({
-        evaluationId,
         skillGroupId: 0,
         skillId: 1,
         status: 'attained'
@@ -172,13 +171,13 @@ describe('POST /evaluations/update-skill-status', () => {
     () => ({
       desc: 'no evaluation',
       token: normalUserOneToken,
-      body: { evaluationId: 'noMatchingId' },
+      evaluationId: 'noMatchingId',
       expect: 404,
     }),
     () => ({
       desc: 'not target user',
       token: normalUserTwoToken,
-      body: { evaluationId },
+      evaluationId,
       expect: 403,
     }),
   ];
@@ -186,7 +185,7 @@ describe('POST /evaluations/update-skill-status', () => {
   errorCases.forEach((test) =>
     it(`handles error case: ${test().desc}`, () =>
       request(app)
-        .post(`${prefix}/evaluations/update-skill-status`)
+        .post(`${prefix}/evaluations/${test().evaluationId}/update-skill-status`)
         .send(test().body)
         .set('Cookie', `${cookieName}=${test().token}`)
         .expect(test().expect)))

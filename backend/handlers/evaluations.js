@@ -22,7 +22,8 @@ const handlerFunctions = Object.freeze({
         .catch(next);
     },
     updateSkillStatus: (req, res, next) => {
-      const { evaluationId, skillGroupId, skillId, status } = req.body;
+      const { evaluationId } = req.params;
+      const { skillGroupId, skillId, status } = req.body;
       const { user } = res.locals;
 
       Promise.try(() => getEvaluationById(evaluationId))
