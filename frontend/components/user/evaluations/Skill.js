@@ -1,26 +1,26 @@
 import React, { PropTypes } from 'react';
 import { ListGroupItem, ButtonGroup, Button, Alert } from 'react-bootstrap';
 
-import { statuses } from './helpers';
+import { SKILL_STATUS } from '../../../modules/user/manageEvaluation';
 import AdditionalInfo from './AdditionalInfo';
 
 const Skill = ({ evaluationId, skillGroupId, name, skillId, criteria, questions, updateSkillStatus, status = null, error }) =>
   (
     <ListGroupItem
-      bsStyle={status && status.current === statuses.ATTAINED ? 'success' : null}
+      bsStyle={status && status.current === SKILL_STATUS.ATTAINED ? 'success' : null}
       key={skillId}>
       <h4 className='list-group-item-heading'>{name}</h4>
       <p><strong>Criteria: </strong>{criteria}</p>
       { questions ? <AdditionalInfo questions={questions}/> : false }
       <ButtonGroup className='skill__cta-group'>
         <Button
-          active={status && status.current === statuses.ATTAINED}
-          onClick={() =>  updateSkillStatus(evaluationId, skillGroupId, skillId, statuses.ATTAINED)}>
+          active={status && status.current === SKILL_STATUS.ATTAINED}
+          onClick={() =>  updateSkillStatus(evaluationId, skillGroupId, skillId, SKILL_STATUS.ATTAINED)}>
           Attained
         </Button>
         <Button
-          active={status && status.current === statuses.UNATTAINED}
-          onClick={() => updateSkillStatus(evaluationId, skillGroupId, skillId, statuses.UNATTAINED)}>
+          active={status && status.current === SKILL_STATUS.UNATTAINED}
+          onClick={() => updateSkillStatus(evaluationId, skillGroupId, skillId, SKILL_STATUS.UNATTAINED)}>
           Not yet
         </Button>
       </ButtonGroup>

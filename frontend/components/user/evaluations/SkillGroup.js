@@ -1,14 +1,14 @@
 import React, { PropTypes } from 'react';
 import { Row, Col, Accordion, Panel, ListGroup, ProgressBar } from 'react-bootstrap';
 
-import { statuses } from './helpers';
+import { SKILL_STATUS } from '../../../modules/user/manageEvaluation';
 
 import Skill from './Skill';
 
 const header = (level, skillsInGroup, skills) => {
   const totalNumberOfSkills = skillsInGroup.length;
   const numberOfAttainedSkills = skillsInGroup.filter(
-    (id) => skills[id].status && skills[id].status.current === statuses.ATTAINED
+    (id) => skills[id].status && skills[id].status.current === SKILL_STATUS.ATTAINED
   ).length;
   const percentageAttained = numberOfAttainedSkills / totalNumberOfSkills * 100;
 

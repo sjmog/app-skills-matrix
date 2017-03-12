@@ -5,6 +5,11 @@ import R from 'ramda';
 import api from '../../api';
 import normalize from '../normalize';
 
+export const SKILL_STATUS = {
+  ATTAINED: 'attained',
+  UNATTAINED: 'unattained',
+};
+
 export const constants = keymirror({
   RETRIEVE_EVALUATION_SUCCESS: null,
   RETRIEVE_EVALUATION_FAILURE: null,

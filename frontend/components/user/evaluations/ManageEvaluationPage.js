@@ -5,8 +5,8 @@ import { Row, Col, Panel, Alert, Button } from 'react-bootstrap';
 import R from 'ramda';
 import { Link } from 'react-router';
 
-import { actions } from '../../../modules/user/manageEvaluation';
-import { getSkillGroup, statuses } from './helpers';
+import { actions, SKILL_STATUS } from '../../../modules/user/manageEvaluation';
+import { getSkillGroup } from './helpers';
 
 import './evaluation.scss'
 
@@ -55,7 +55,7 @@ class ManageEvaluationPageComponent extends React.Component {
 
                           return (
                             <Panel
-                              className={status && status.current === statuses.ATTAINED ? 'panel--state-attained' : false }
+                              className={status && status.current === SKILL_STATUS.ATTAINED ? 'panel--state-attained' : false }
                               key={skillId}>
                               {name}
                             </Panel>
