@@ -152,6 +152,7 @@ describe('POST /evaluations/:evaluationId/update-skill-status', () => {
     request(app)
       .post(`${prefix}/evaluations/${evaluationId}/update-skill-status`)
       .send({
+        action: 'updateSkillStatus',
         skillGroupId: 0,
         skillId: 1,
         status: 'ATTAINED'
@@ -172,12 +173,14 @@ describe('POST /evaluations/:evaluationId/update-skill-status', () => {
       desc: 'no evaluation',
       token: normalUserOneToken,
       evaluationId: 'noMatchingId',
+      body: { action: 'updateSkillStatus' },
       expect: 404,
     }),
     () => ({
       desc: 'user not subject of evaluation',
       token: normalUserTwoToken,
       evaluationId,
+      body: { action: 'updateSkillStatus' },
       expect: 403,
     }),
   ];
@@ -204,7 +207,7 @@ describe('POST /evaluations/:evaluationId/complete', () => {
   it('allows users to complete their own evaluation', () =>
     request(app)
       .post(`${prefix}/evaluations/${evaluationId}/complete`)
-      .send({ evaluationId })
+      .send({ action: 'complete', evaluationId })
       .set('Cookie', `${cookieName}=${normalUserOneToken}`)
       .expect(200)
       .then(() => evaluations.findOne({ _id: evaluationId }))
@@ -217,12 +220,14 @@ describe('POST /evaluations/:evaluationId/complete', () => {
       desc: 'no evaluation',
       evaluationId: 'noMatchingId',
       token: normalUserOneToken,
+      body: { action: 'complete' },
       expect: 404,
     }),
     () => ({
       desc: 'user not subject of evaluation',
       evaluationId,
       token: normalUserTwoToken,
+      body: { action: 'complete' },
       expect: 403,
     }),
   ];
@@ -231,7 +236,7 @@ describe('POST /evaluations/:evaluationId/complete', () => {
     it(`handles error case: ${test().desc}`, () =>
       request(app)
         .post(`${prefix}/evaluations/${test().evaluationId}/complete`)
-        .send({ evaluationId })
+        .send(test().body)
         .set('Cookie', `${cookieName}=${test().token}`)
         .expect(test().expect)))
 });

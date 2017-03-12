@@ -40,7 +40,7 @@ export default ({
       .catch(handleError);
   },
   updateSkillStatus: function (evaluationId, skillGroupId, skillId, status) {
-    return axios.post(`/skillz/evaluations/${evaluationId}/update-skill-status`, { skillGroupId, skillId, status })
+    return axios.post(`/skillz/evaluations/${evaluationId}/update-skill-status`, { action: 'updateSkillStatus', skillGroupId, skillId, status })
       .then(getData)
       .catch(handleError)
   },
