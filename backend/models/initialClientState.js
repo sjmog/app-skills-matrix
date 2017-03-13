@@ -12,7 +12,10 @@ const adminClientState = () => {
         users: R.map((domainUser) => domainUser.manageUserViewModel, allUsers),
         templates: R.map((domainTemplate) => domainTemplate.viewModel, allTemplates),
         newEvaluations: [],
-      }
+      },
+      manageMatrices: {
+        templates: R.map((domainTemplate) => domainTemplate.viewModel, allTemplates),
+      },
     }));
 };
 
