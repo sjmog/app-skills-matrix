@@ -1,7 +1,7 @@
 const Promise = require('bluebird');
 
 const createHandler = require('./createHandler');
-const { getEvaluationById, updateSkillStatus, complete } = require('../models/evaluations');
+const { getEvaluationById, updateEvaluation } = require('../models/evaluations');
 const { EVALUATION_NOT_FOUND, MUST_BE_SUBJECT_OF_EVALUATION } = require('./errors');
 
 const handlerFunctions = Object.freeze({
@@ -39,8 +39,9 @@ const handlerFunctions = Object.freeze({
             return res.status(403).json(MUST_BE_SUBJECT_OF_EVALUATION());
           }
 
-          return updateSkillStatus(evaluation, skillGroupId, skillId, status)
-            .then(() => res.status(200).json({ skillId, status }));
+          const updatedEvaluation = evaluation.updateSkill(skillGroupId, skillId, status);
+          return updateEvaluation(updatedEvaluation)
+            .then(() => res.sendStatus(204));
         })
         .catch(next)
     },
@@ -58,8 +59,9 @@ const handlerFunctions = Object.freeze({
             return res.status(403).json(MUST_BE_SUBJECT_OF_EVALUATION());
           }
 
-          return complete(evaluation)
-            .then((completedEval) => res.status(200).json(completedEval.viewModel));
+          const completedApplication = evaluation.complete();
+          return updateEvaluation(completedApplication)
+            .then(() => res.sendStatus(204));
         })
         .catch(next);
     }

@@ -158,11 +158,7 @@ describe('POST /evaluations/:evaluationId { action: updateSkillStatus }', () => 
         status: 'ATTAINED'
       })
       .set('Cookie', `${cookieName}=${normalUserOneToken}`)
-      .expect(200)
-      .then(({ body }) => {
-        expect(body.skillId).to.equal(1);
-        expect(body.status).to.equal('ATTAINED');
-      })
+      .expect(204)
       .then(() => evaluations.findOne({ _id: evaluationId }))
       .then(({ skillGroups }) => {
         expect(skillGroups[0].skills[0].status).to.deep.equal({ previous: null, current: 'ATTAINED' });
@@ -209,7 +205,7 @@ describe('POST /evaluations/:evaluationId { action: complete }', () => {
       .post(`${prefix}/evaluations/${evaluationId}`)
       .send({ action: 'complete', evaluationId })
       .set('Cookie', `${cookieName}=${normalUserOneToken}`)
-      .expect(200)
+      .expect(204)
       .then(() => evaluations.findOne({ _id: evaluationId }))
       .then((completedApplication) => {
         expect(completedApplication.status).to.equal('COMPLETE');

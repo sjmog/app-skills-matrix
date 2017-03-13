@@ -5,7 +5,7 @@ import { Row, Col, Panel, Alert, Button } from 'react-bootstrap';
 import R from 'ramda';
 import { Link } from 'react-router';
 
-import { actions, SKILL_STATUS } from '../../../modules/user/manageEvaluation';
+import { actions, SKILL_STATUS, EVALUATION_STATUS } from '../../../modules/user/manageEvaluation';
 import { getSkillGroup } from './helpers';
 
 import './evaluation.scss'
@@ -29,7 +29,7 @@ class ManageEvaluationPageComponent extends React.Component {
           <Row>
             <h3 className='header'>{template.name}</h3>
             {
-              evaluation.status === 'NEW'
+              evaluation.status === EVALUATION_STATUS.NEW
                 ? <Link to={`evaluations/${this.props.params.evaluationId}/category/${firstCategory}`}>
                     <Button bsStyle='primary' className='header__button'>
                       Begin evaluation

@@ -41,12 +41,10 @@ export default ({
   },
   updateSkillStatus: function (evaluationId, skillGroupId, skillId, status) {
     return axios.post(`/skillz/evaluations/${evaluationId}`, { action: 'updateSkillStatus', skillGroupId, skillId, status })
-      .then(getData)
       .catch(handleError)
   },
   evaluationComplete: function (evaluationId) {
     return axios.post(`/skillz/evaluations/${evaluationId}`, { action: 'complete' })
-      .then(getData)
       .catch(handleError)
   }
 });

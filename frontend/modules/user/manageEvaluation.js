@@ -10,6 +10,11 @@ export const SKILL_STATUS = keymirror({
   UNATTAINED: null,
 });
 
+export const EVALUATION_STATUS = keymirror({
+  COMPLETE: null,
+  NEW: null,
+});
+
 export const constants = keymirror({
   RETRIEVE_EVALUATION_SUCCESS: null,
   RETRIEVE_EVALUATION_FAILURE: null,
@@ -40,8 +45,7 @@ const updateSkillStatusFailure = createAction(
 );
 
 const evaluationCompleteSuccess = createAction(
-  constants.EVALUATION_COMPLETE_SUCCESS,
-  status => status
+  constants.EVALUATION_COMPLETE_SUCCESS
 );
 
 const evaluationCompleteFailure = createAction(
@@ -61,7 +65,7 @@ function retrieveEvaluation(evaluationId) {
 function updateSkillStatus(evaluationId, skillGroupId, skillId, status) {
   return function(dispatch) {
     return api.updateSkillStatus(evaluationId, skillGroupId, skillId, status)
-      .then((update) => dispatch(updateSkillStatusSuccess(update.skillId, update.status)))
+      .then((update) => dispatch(updateSkillStatusSuccess(skillId, status)))
       .catch((error) => dispatch(updateSkillStatusFailure(skillId, error)))
   }
 }
@@ -69,7 +73,7 @@ function updateSkillStatus(evaluationId, skillGroupId, skillId, status) {
 function evaluationComplete(evaluationId) {
   return function(dispatch) {
     return api.evaluationComplete(evaluationId)
-      .then(({ status }) => dispatch(evaluationCompleteSuccess(status)))
+      .then(() => dispatch(evaluationCompleteSuccess()))
       .catch((error) => dispatch(evaluationCompleteFailure(error)))
   }
 }
@@ -112,7 +116,7 @@ export const reducers = handleActions({
   [evaluationCompleteSuccess]:
     (state, action) => {
       const evaluation = Object.assign({}, state.evaluation);
-      evaluation.status = action.payload;
+      evaluation.status = EVALUATION_STATUS.COMPLETE;
       return R.merge(state, { evaluation });
     },
   [evaluationCompleteFailure]:
