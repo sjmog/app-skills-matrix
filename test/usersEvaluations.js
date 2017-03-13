@@ -138,7 +138,7 @@ describe('GET /evaluation/:evaluationId', () => {
         .expect(test().expect)))
 });
 
-describe('POST /evaluations/:evaluationId/update-skill-status', () => {
+describe('POST /evaluations/:evaluationId { action: updateSkillStatus }', () => {
   let evaluationId;
 
   beforeEach(() =>
@@ -150,7 +150,7 @@ describe('POST /evaluations/:evaluationId/update-skill-status', () => {
 
   it('allows a user to update the status of a skill', () =>
     request(app)
-      .post(`${prefix}/evaluations/${evaluationId}/update-skill-status`)
+      .post(`${prefix}/evaluations/${evaluationId}`)
       .send({
         action: 'updateSkillStatus',
         skillGroupId: 0,
@@ -188,13 +188,13 @@ describe('POST /evaluations/:evaluationId/update-skill-status', () => {
   errorCases.forEach((test) =>
     it(`handles error case: ${test().desc}`, () =>
       request(app)
-        .post(`${prefix}/evaluations/${test().evaluationId}/update-skill-status`)
+        .post(`${prefix}/evaluations/${test().evaluationId}`)
         .send(test().body)
         .set('Cookie', `${cookieName}=${test().token}`)
         .expect(test().expect)))
 });
 
-describe('POST /evaluations/:evaluationId/complete', () => {
+describe('POST /evaluations/:evaluationId { action: complete }', () => {
   let evaluationId;
 
   beforeEach(() =>
@@ -206,7 +206,7 @@ describe('POST /evaluations/:evaluationId/complete', () => {
 
   it('allows users to complete their own evaluation', () =>
     request(app)
-      .post(`${prefix}/evaluations/${evaluationId}/complete`)
+      .post(`${prefix}/evaluations/${evaluationId}`)
       .send({ action: 'complete', evaluationId })
       .set('Cookie', `${cookieName}=${normalUserOneToken}`)
       .expect(200)
@@ -235,7 +235,7 @@ describe('POST /evaluations/:evaluationId/complete', () => {
   errorCases.forEach((test) =>
     it(`handles error case: ${test().desc}`, () =>
       request(app)
-        .post(`${prefix}/evaluations/${test().evaluationId}/complete`)
+        .post(`${prefix}/evaluations/${test().evaluationId}`)
         .send(test().body)
         .set('Cookie', `${cookieName}=${test().token}`)
         .expect(test().expect)))
