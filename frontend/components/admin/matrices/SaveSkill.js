@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Row, Form, FormGroup, FormControl, ControlLabel, Radio, Glyphicon, Alert } from 'react-bootstrap';
-import { actions } from '../../../modules/admin/manageMatrices';
+import { Row } from 'react-bootstrap';
+import { actions } from '../../../modules/admin/matrices';
 import SaveEntityForm from './SaveEntityForm';
 
 class SaveSkillComponent extends React.Component {
@@ -44,7 +44,7 @@ class SaveSkillComponent extends React.Component {
 
 export const SaveSkill = connect(
   function mapStateToProps(state) {
-    return state.manageMatrices.skill || {};
+    return state.matrices.skill || {};
   },
   function mapDispatchToProps(dispatch) {
     return {

@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { actions } from '../../../modules/admin/manageUsers';
+import { actions } from '../../../modules/admin/users';
 import { Row, Button } from 'react-bootstrap';
 import R from 'ramda';
 import AddUserForm from './AddUserForm';
@@ -94,13 +94,13 @@ class ManageUsersPageComponent extends React.Component {
         </div>
         <UserList
           selectedUsers={this.state.selectedUsers}
-          users={this.props.users}
-          templates={this.props.templates}
+          users={this.props.users.users}
+          templates={this.props.matrices.templates}
           onSelectMentor={this.onSelectMentor}
           onSelectTemplate={this.onSelectTemplate}
           onUserSelectionChange={this.onUserSelectionChange}
         />
-        <ul>{this.props.newEvaluations.map((e) => (<li key={e.id}>{e.success ? (
+        <ul>{this.props.users.newEvaluations.map((e) => (<li key={e.id}>{e.success ? (
           <div>New evaluation created for {e.usersName}</div>) : e.message}</li>))}
         </ul>
       </div>
@@ -109,13 +109,13 @@ class ManageUsersPageComponent extends React.Component {
 }
 
 ManageUsersPageComponent.propTypes = {
-  users: PropTypes.array,
-  templates: PropTypes.array,
+  users: PropTypes.object,
+  matrices: PropTypes.object,
 };
 
 export const ManageUsersPage = connect(
   function mapStateToProps(state) {
-    return state.manageUsers;
+    return { users: state.users, matrices: state.matrices }
   },
   function mapDispatchToProps(dispatch) {
     return {

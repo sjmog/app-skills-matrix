@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 
-import { reducers as manageUsersReducers } from './manageUsers';
-import { reducers as manageMatricesReducers } from './manageMatrices';
+import { reducers as usersReducers } from './users';
+import { reducers as matricesReducers } from './matrices';
 
-export const reducers = combineReducers({ manageUsers: manageUsersReducers, manageMatrices: manageMatricesReducers });
+export const reducers = combineReducers({ users: usersReducers, matrices: matricesReducers });
 

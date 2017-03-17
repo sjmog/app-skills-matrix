@@ -8,12 +8,11 @@ const evaluations = require('./evaluations');
 const adminClientState = () => {
   return Promise.all([users.getAll(), templates.getAll()])
     .then(([allUsers = [], allTemplates = []]) => ({
-      manageUsers: {
+      users: {
         users: R.map((domainUser) => domainUser.manageUserViewModel, allUsers),
-        templates: R.map((domainTemplate) => domainTemplate.viewModel, allTemplates),
         newEvaluations: [],
       },
-      manageMatrices: {
+      matrices: {
         templates: R.map((domainTemplate) => domainTemplate.viewModel, allTemplates),
       },
     }));

@@ -19,6 +19,6 @@ export const ManageMatricesPageComponent = ({ templates }) =>
 
 export const ManageMatricesPage = connect(
   function mapStateToProps(state) {
-    return state.manageMatrices;
+    return state.matrices;
   }
 )(ManageMatricesPageComponent);
