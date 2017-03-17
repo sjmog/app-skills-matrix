@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Row } from 'react-bootstrap';
-import { actions } from '../../../modules/admin/manageMatrices';
+import { actions } from '../../../modules/admin/matrices';
 import SaveEntityForm from './SaveEntityForm';
 
 class SaveTemplateComponent extends React.Component {
@@ -44,7 +44,7 @@ class SaveTemplateComponent extends React.Component {
 
 export const SaveTemplate = connect(
   function mapStateToProps(state) {
-    return state.manageMatrices.template;
+    return state.matrices.template || {};
   },
   function mapDispatchToProps(dispatch) {
     return {
