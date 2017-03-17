@@ -14,14 +14,19 @@ class ManageCategoryComponent extends React.Component {
     super(props);
 
     this.updateSkillStatus = this.updateSkillStatus.bind(this);
+    this.evaluationComplete = this.evaluationComplete.bind(this);
   }
 
-  updateSkillStatus(skillId, status) {
-    this.props.actions.updateSkillStatus(skillId, status);
+  updateSkillStatus(evaluationId, skillGroupId, skillId, status) {
+    this.props.actions.updateSkillStatus(evaluationId, skillGroupId, skillId, status);
   };
 
+  evaluationComplete(evaluationId) {
+    this.props.actions.evaluationComplete(evaluationId);
+  }
+
   render() {
-    const { category: currentCategory } = this.props.params;
+    const { category: currentCategory, evaluationId } = this.props.params;
     const { template, skillGroups, skills } = this.props;
 
     return (
@@ -29,13 +34,15 @@ class ManageCategoryComponent extends React.Component {
         <h2>{currentCategory}</h2>
         {
           template.levels.map((level, index) => {
-            const { skills: skillsInGroup } = getSkillGroup(level, currentCategory, skillGroups);
+            const { id: skillGroupId, skills: skillsInGroup } = getSkillGroup(level, currentCategory, skillGroups);
 
             return (
               <SkillGroup
-                key={index}
-                eventKey={index}
+                evaluationId={evaluationId}
+                key={skillGroupId}
+                eventKey={skillGroupId}
                 level={level}
+                skillGroupId={skillGroupId}
                 skillsInGroup={skillsInGroup}
                 skills={skills}
                 updateSkillStatus={this.updateSkillStatus}
@@ -46,7 +53,8 @@ class ManageCategoryComponent extends React.Component {
         <CategoryNav
           categories={template.categories}
           currentCategory={currentCategory}
-          evaluation={this.props.params.evaluationId}
+          evaluation={evaluationId}
+          evaluationComplete={this.evaluationComplete}
         />
       </div>
     )

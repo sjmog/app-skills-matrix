@@ -4,7 +4,7 @@ import { Link } from 'react-router';
 
 import './evaluation.scss';
 
-const CategoryNav = ({ categories, currentCategory, evaluation }) =>
+const CategoryNav = ({ categories, currentCategory, evaluation, evaluationComplete }) =>
   (
     <ButtonToolbar>
         {
@@ -19,7 +19,9 @@ const CategoryNav = ({ categories, currentCategory, evaluation }) =>
         }
       <ButtonGroup>
         <Link to={`evaluations/${evaluation}`} >
-          <Button bsStyle='success'>
+          <Button
+            bsStyle='success'
+            onClick={() => evaluationComplete(evaluation) }>
             {"I've finished my evaluation"}
           </Button>
         </Link>
@@ -31,6 +33,7 @@ CategoryNav.propTypes = {
   categories: PropTypes.array.isRequired,
   currentCategory: PropTypes.string.isRequired,
   evaluation: PropTypes.string.isRequired,
+  evaluationComplete: PropTypes.func.isRequired,
 };
 
 export default CategoryNav;

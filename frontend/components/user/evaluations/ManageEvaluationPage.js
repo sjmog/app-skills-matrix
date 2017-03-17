@@ -5,32 +5,38 @@ import { Row, Col, Panel, Alert, Button } from 'react-bootstrap';
 import R from 'ramda';
 import { Link } from 'react-router';
 
-import { actions } from '../../../modules/user/manageEvaluation';
-import { getSkillGroup, statuses } from './helpers';
+import { actions, SKILL_STATUS, EVALUATION_STATUS } from '../../../modules/user/manageEvaluation';
+import { getSkillGroup } from './helpers';
 
 import './evaluation.scss'
 
 class ManageEvaluationPageComponent extends React.Component {
   componentWillMount() {
-    if (!this.props.evaluationRetrieved) {
+    if (!this.props.evaluation.retrieved) {
       this.props.actions.retrieveEvaluation(this.props.params.evaluationId);
     }
   }
 
   render() {
-    if (this.props.evaluationRetrieved) {
-      const { template, skillGroups, skills } = this.props;
+    const { error } = this.props.evaluation;
+
+    if (this.props.evaluation.retrieved && !error) {
+      const { evaluation, template, skillGroups, skills } = this.props;
       const [ firstCategory ] = template.categories;
 
       return (
         <div>
           <Row>
             <h3 className='header'>{template.name}</h3>
-            <Link to={`evaluations/${this.props.params.evaluationId}/category/${firstCategory}`}>
-              <Button bsStyle='primary' className='header__button'>
-                Begin evaluation
-              </Button>
-            </Link>
+            {
+              evaluation.status === EVALUATION_STATUS.NEW
+                ? <Link to={`evaluations/${this.props.params.evaluationId}/category/${firstCategory}`}>
+                    <Button bsStyle='primary' className='header__button'>
+                      Begin evaluation
+                    </Button>
+                  </Link>
+                : false
+            }
           </Row>
           {
             template.levels.map((levelName, index) => {
@@ -46,10 +52,11 @@ class ManageEvaluationPageComponent extends React.Component {
                       {
                         skillGroup.skills.map((skillId) => {
                           const { name, status } =  skills[skillId];
-                          const achieved = (status && status === statuses.ATTAINED);
 
                           return (
-                            <Panel className={achieved ? 'panel--state-attained' : false } key={skillId}>
+                            <Panel
+                              className={status && status.current === SKILL_STATUS.ATTAINED ? 'panel--state-attained' : false }
+                              key={skillId}>
                               {name}
                             </Panel>
                           )
@@ -74,19 +81,12 @@ class ManageEvaluationPageComponent extends React.Component {
       )
     }
 
-    return (
-      <Row>
-        { this.props.error
-          ? <Alert bsStyle='danger'>Something went wrong: {this.props.error.message}</Alert>
-          : false
-        }
-      </Row>
-    );
+    return (<Row>{error ? <Alert bsStyle='danger'>Something went wrong: {error.message}</Alert> : false}</Row>);
   }
 }
 
 ManageEvaluationPageComponent.propTypes = {
-  evaluationRetrieved: PropTypes.bool.isRequired,
+  evaluation: PropTypes.object,
   template: PropTypes.object,
   skillGroups: PropTypes.object,
   skills: PropTypes.object,

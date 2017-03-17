@@ -1,13 +1,15 @@
 import React, { PropTypes } from 'react';
 import { Row, Col, Accordion, Panel, ListGroup, ProgressBar } from 'react-bootstrap';
 
-import { statuses } from './helpers';
+import { SKILL_STATUS } from '../../../modules/user/manageEvaluation';
 
 import Skill from './Skill';
 
 const header = (level, skillsInGroup, skills) => {
   const totalNumberOfSkills = skillsInGroup.length;
-  const numberOfAttainedSkills = skillsInGroup.filter((id) => skills[id].status === statuses.ATTAINED).length;
+  const numberOfAttainedSkills = skillsInGroup.filter(
+    (id) => skills[id].status && skills[id].status.current === SKILL_STATUS.ATTAINED
+  ).length;
   const percentageAttained = numberOfAttainedSkills / totalNumberOfSkills * 100;
 
   return (
@@ -26,7 +28,7 @@ const header = (level, skillsInGroup, skills) => {
   );
 };
 
-const SkillGroup = ({ level, skillsInGroup, skills, eventKey, updateSkillStatus }) =>
+const SkillGroup = ({ evaluationId, level, skillGroupId, skillsInGroup, skills, eventKey, updateSkillStatus, }) =>
   (
     <Accordion key={level} >
       <Panel
@@ -38,10 +40,12 @@ const SkillGroup = ({ level, skillsInGroup, skills, eventKey, updateSkillStatus 
           {
             skillsInGroup.map(
               (skillId) => {
-                const { name, criteria, questions, status } = skills[skillId];
+                const { name, criteria, questions, status, error } = skills[skillId];
 
                 return (
                   <Skill
+                    evaluationId={evaluationId}
+                    skillGroupId={skillGroupId}
                     key={level}
                     name={name}
                     skillId={skillId}
@@ -49,6 +53,7 @@ const SkillGroup = ({ level, skillsInGroup, skills, eventKey, updateSkillStatus 
                     questions={questions}
                     updateSkillStatus={updateSkillStatus}
                     status={status}
+                    error={error}
                   />
                 );
               })
@@ -59,7 +64,9 @@ const SkillGroup = ({ level, skillsInGroup, skills, eventKey, updateSkillStatus 
   );
 
 SkillGroup.propTypes = {
+  evaluationId: PropTypes.string.isRequired,
   level: PropTypes.string.isRequired,
+  skillGroupId: PropTypes.number.isRequired,
   skillsInGroup: PropTypes.array.isRequired,
   skills: PropTypes.object.isRequired,
   eventKey: PropTypes.number.isRequired,

@@ -12,6 +12,10 @@ module.exports = (data) => {
   const { skills, skillGroups } = normaliseSkillGroup(data.skillGroups);
 
   return Object.assign({}, {
+    evaluation: {
+      retrieved: true,
+      status: data.status,
+    },
     template: data.template,
     skills,
     skillGroups

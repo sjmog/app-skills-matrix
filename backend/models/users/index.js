@@ -21,9 +21,9 @@ module.exports = {
       .then((res) => res ? user(res) : null);
   },
   updateUser: (original, updates) => {
-    return collection.updateOne({ _id: original.id }, { $set: updates })
-      .then(() => collection.findOne({ _id: original.id }))
-      .then(retrievedUser => user(retrievedUser))
+    return collection.updateOne({ _id: ObjectId(original.id) }, { $set: updates })
+      .then(() => collection.findOne({ _id: ObjectId(original.id) }))
+      .then((res) => res ? user(res) : null);
   },
   getAll: () => {
     return collection.find()
