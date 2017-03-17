@@ -8,13 +8,13 @@ const user = ({ _id, name, email, createdDate, modifiedDate, templateId, mentorI
     return auth.isAdmin(email);
   },
   get manageUserViewModel() {
-    return ({ id: _id, name, email, mentorId, templateId });
+    return ({ id: _id.toString(), name, email, mentorId, templateId });
   },
   get signingData() {
-    return ({ id: _id, email });
+    return ({ id: _id.toString(), email });
   },
   get evaluationData() {
-    return ({ id: _id, name, email });
+    return ({ id: _id.toString(), name, email });
   },
   get userDetailsViewModel() {
     return ({ name, avatarUrl, email, mentorId, templateId });
