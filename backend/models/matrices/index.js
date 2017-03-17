@@ -5,6 +5,9 @@ const template = require('./template');
 const skills = require('./skills');
 const skill = require('./skill');
 
+skillsCollection.ensureIndex({ id: 1 }, { unique: true, background: true });
+templatesCollection.ensureIndex({ id: 1}, { unique: true, background: true });
+
 module.exports = {
   templates: {
     addTemplate: function ({ id, name, skillGroups, categories, levels }) {

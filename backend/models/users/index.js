@@ -5,6 +5,8 @@ const user = require('./user');
 
 const collection = database.collection('users');
 
+collection.ensureIndex({ email: 1 }, { unique: true, background: true });
+
 module.exports = {
   addUser: ({ email, name, avatarUrl }) => {
     const changes = user.newUser(name, email, avatarUrl);

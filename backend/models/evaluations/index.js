@@ -3,6 +3,8 @@ const evaluationsCollection = database.collection('evaluations');
 const evaluation = require('./evaluation');
 const { ObjectId } = require('mongodb');
 
+evaluationsCollection.ensureIndex({ 'user.id': 1 }, { background: true });
+
 module.exports = {
   addEvaluation: function (newEvaluation) {
     return evaluationsCollection.insertOne(newEvaluation)
@@ -18,12 +20,12 @@ module.exports = {
       .then(res => res.toArray())
       .then(res => res.map(evaluation))
   },
-  updateEvaluation: function(updatedEvaluation) {
+  updateEvaluation: function (updatedEvaluation) {
     return evaluationsCollection.updateOne(
       { _id: ObjectId(updatedEvaluation.id) },
       { $set: updatedEvaluation }
     )
-    .then(() => evaluationsCollection.findOne({ _id: ObjectId(updatedEvaluation.id) }))
-    .then((res) => res ? evaluation(res) : null )
+      .then(() => evaluationsCollection.findOne({ _id: ObjectId(updatedEvaluation.id) }))
+      .then((res) => res ? evaluation(res) : null)
   }
 };
