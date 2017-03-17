@@ -7,8 +7,8 @@ const skill = require('./skill');
 
 module.exports = {
   templates: {
-    addTemplate: function ({ id, name, skillGroups }) {
-      const newTemplate = template.newTemplate(id, name, skillGroups);
+    addTemplate: function ({ id, name, skillGroups, categories, levels }) {
+      const newTemplate = template.newTemplate(id, name, skillGroups, categories, levels);
       return templatesCollection.updateOne({ id }, { $set: newTemplate }, { upsert: true })
         .then(() => templatesCollection.findOne({ id }))
         .then(retrievedTemplate => template(retrievedTemplate))

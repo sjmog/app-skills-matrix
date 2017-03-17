@@ -21,10 +21,12 @@ const template = ({ id, name, version, categories, levels, skillGroups }) => Obj
 });
 
 module.exports = template;
-module.exports.newTemplate = (id, name, skillGroups) =>
+module.exports.newTemplate = (id, name, skillGroups, levels, categories) =>
   ({
     id,
     name,
     skillGroups,
+    levels,
+    categories,
     createdDate: new Date()
   });
