@@ -3,9 +3,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import { actions } from '../../../../modules/user/evaluation';
-import { getSkillGroup } from '../helpers';
+import { getSkillGroup } from '../../../common/helpers';
 
-import AdditionalInfo from './AdditionalInfo';
 import CategoryNav from './CategoryNav';
 import SkillGroup from './SkillGroup';
 
@@ -33,7 +32,7 @@ class EvaluationCategoryComponent extends React.Component {
       <div>
         <h2>{currentCategory}</h2>
         {
-          template.levels.map((level, index) => {
+          template.levels.map((level) => {
             const { id: skillGroupId, skills: skillsInGroup } = getSkillGroup(level, currentCategory, skillGroups);
 
             return (

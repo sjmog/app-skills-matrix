@@ -3,7 +3,7 @@ import { Row, Button } from 'react-bootstrap';
 import { Link } from 'react-router';
 
 import { EVALUATION_STATUS } from '../../../modules/user/evaluation';
-import Matrix from './matrix/Matrix';
+import Matrix from '../../common/matrix/Matrix';
 import './evaluation.scss'
 
 const EvaluationPageHeader = ({ templateName, firstCategory, id, status} ) => (

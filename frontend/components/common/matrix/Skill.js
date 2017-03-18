@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 
-import { SKILL_STATUS } from '../../../../modules/user/evaluation';
+import { SKILL_STATUS } from '../../../modules/user/evaluation';
 
 const Skill = ({ status, name }) => (
   <tr className={ status.current === SKILL_STATUS.ATTAINED ? 'skill--attained' : false }>
