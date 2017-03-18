@@ -2,7 +2,8 @@ const Promise = require('bluebird');
 
 const createHandler = require('./createHandler');
 const { getEvaluationById, updateEvaluation } = require('../models/evaluations');
-const { EVALUATION_NOT_FOUND, MUST_BE_SUBJECT_OF_EVALUATION } = require('./errors');
+const { getUserById } = require('../models/users');
+const { EVALUATION_NOT_FOUND, MUST_BE_SUBJECT_OF_EVALUATION_OR_MENTOR, MUST_BE_LOGGED_IN } = require('./errors');
 
 const handlerFunctions = Object.freeze({
   evaluation: {
@@ -16,8 +17,15 @@ const handlerFunctions = Object.freeze({
             return res.status(404).json(EVALUATION_NOT_FOUND());
           }
 
-          if ((user && user.id) !== evaluation.user.id) {
-            return res.status(403).json(MUST_BE_SUBJECT_OF_EVALUATION());
+          if (!user) {
+            return res.status(401).json(MUST_BE_LOGGED_IN());
+          }
+
+          if (user.id !== evaluation.user.id) {
+            return getUserById(evaluation.user.id)
+              .then(({ mentorId }) => user.id === mentorId
+                ? res.status(200).json(evaluation.userEvaluationViewModel)
+                : res.status(403).json(MUST_BE_SUBJECT_OF_EVALUATION_OR_MENTOR()));
           }
 
           return res.status(200).json(evaluation.userEvaluationViewModel);
@@ -35,12 +43,20 @@ const handlerFunctions = Object.freeze({
             return res.status(404).json(EVALUATION_NOT_FOUND());
           }
 
-          if ((user && user.id) !== evaluation.user.id) {
-            return res.status(403).json(MUST_BE_SUBJECT_OF_EVALUATION());
+          if (!user) {
+            return res.status(401).json(MUST_BE_LOGGED_IN());
           }
 
-          const updatedEvaluation = evaluation.updateSkill(skillGroupId, skillId, status);
-          return updateEvaluation(updatedEvaluation)
+          if (user.id !== evaluation.user.id) {
+            return getUserById(evaluation.user.id)
+              .then(({ mentorId }) =>
+                (user.id !== mentorId
+                  ? res.status(403).json(MUST_BE_SUBJECT_OF_EVALUATION_OR_MENTOR())
+                  : updateEvaluation(evaluation.updateSkill(skillGroupId, skillId, status))
+                    .then(() => res.sendStatus(204))));
+          }
+
+          return updateEvaluation(evaluation.updateSkill(skillGroupId, skillId, status))
             .then(() => res.sendStatus(204));
         })
         .catch(next)
@@ -55,8 +71,12 @@ const handlerFunctions = Object.freeze({
             return res.status(404).json(EVALUATION_NOT_FOUND());
           }
 
-          if ((user && user.id) !== evaluation.user.id) {
-            return res.status(403).json(MUST_BE_SUBJECT_OF_EVALUATION());
+          if (!user) {
+            return res.status(401).json(MUST_BE_LOGGED_IN());
+          }
+
+          if (user.id !== evaluation.user.id) {
+            return res.status(403).json(MUST_BE_SUBJECT_OF_EVALUATION_OR_MENTOR());
           }
 
           const completedApplication = evaluation.complete();

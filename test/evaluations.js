@@ -2,7 +2,7 @@ const request = require('supertest');
 const { expect } = require('chai');
 
 const app = require('../backend');
-const { prepopulateUsers, users, evaluations, insertTemplate, clearDb, insertSkill, insertEvaluation } = require('./helpers');
+const { prepopulateUsers, users, assignMentor, evaluations, insertTemplate, clearDb, insertSkill, insertEvaluation } = require('./helpers');
 const { sign, cookieName } = require('../backend/models/auth');
 const templateData = require('./fixtures/templates');
 const skills = require('./fixtures/skills');
@@ -57,6 +57,19 @@ describe('evaluations', () => {
           expect(body.skillGroups.length > 0).to.equal(true);
         }));
 
+    it('allows a mentor to view the evaluation of thier mentee', () =>
+      assignMentor(normalUserOneId, normalUserTwoId)
+        .then(() =>
+          request(app)
+            .get(`${prefix}/evaluations/${evaluationId}`)
+            .set('Cookie', `${cookieName}=${normalUserTwoToken}`)
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.user.id).to.equal(String(normalUserOneId));
+              expect(body.template.name).to.equal('Node JS Dev');
+              expect(body.skillGroups.length > 0).to.equal(true);
+            })));
+
     const errorCases = [
       () => ({
         desc: 'no evaluation',
@@ -105,6 +118,26 @@ describe('evaluations', () => {
         .then(({ skillGroups }) => {
           expect(skillGroups[0].skills[0].status).to.deep.equal({ previous: null, current: 'ATTAINED' });
         }));
+
+    it('allows a mentor to view their mentees evaluation', () =>
+      assignMentor(normalUserOneId, normalUserTwoId)
+        .then(() =>
+          request(app)
+            .post(`${prefix}/evaluations/${evaluationId}`)
+            .send({
+              action: 'updateSkillStatus',
+              skillGroupId: 0,
+              skillId: 1,
+              status: 'ATTAINED'
+            })
+            .set('Cookie', `${cookieName}=${normalUserTwoToken}`)
+            .expect(204)
+        )
+        .then(() => evaluations.findOne({ _id: evaluationId }))
+        .then(({ skillGroups }) => {
+          expect(skillGroups[0].skills[0].status).to.deep.equal({ previous: null, current: 'ATTAINED' });
+        })
+    );
 
     const errorCases = [
       () => ({
