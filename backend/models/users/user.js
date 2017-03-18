@@ -2,6 +2,7 @@ const auth = require('../auth');
 
 const user = ({ _id, name, email, createdDate, modifiedDate, templateId, mentorId, avatarUrl }) => Object.freeze({
   id: _id.toString(),
+  name,
   templateId,
   mentorId,
   get isAdmin() {

@@ -31,5 +31,10 @@ module.exports = {
     return collection.find()
       .then((results) => results.toArray())
       .then((results) => results.map((doc) => user(doc)));
-  }
+  },
+  getByMentorId: (id) => {
+    return collection.find({ mentorId: id })
+      .then((results) => results.toArray())
+      .then((results) => results.map((doc) => user(doc)))
+  },
 };
