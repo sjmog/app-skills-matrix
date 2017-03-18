@@ -2,14 +2,14 @@ import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { actions } from '../../../modules/user/manageEvaluation';
-import { getSkillGroup } from './helpers';
+import { actions } from '../../../../modules/user/evaluation';
+import { getSkillGroup } from '../helpers';
 
 import AdditionalInfo from './AdditionalInfo';
 import CategoryNav from './CategoryNav';
 import SkillGroup from './SkillGroup';
 
-class ManageCategoryComponent extends React.Component {
+class EvaluationCategoryComponent extends React.Component {
   constructor(props) {
     super(props);
 
@@ -61,7 +61,7 @@ class ManageCategoryComponent extends React.Component {
   }
 }
 
-ManageCategoryComponent.propTypes = {
+EvaluationCategoryComponent.propTypes = {
   params: PropTypes.shape({
     category: PropTypes.string.isRequired,
     evaluationId: PropTypes.string.isRequired
@@ -73,13 +73,13 @@ ManageCategoryComponent.propTypes = {
   skillGroups: PropTypes.object.isRequired
 };
 
-export const ManageCategoryPage = connect(
+export const EvaluationCategoryPage = connect(
   function mapStateToProps(state) {
-    return state.manageEvaluation;
+    return state.evaluation;
   },
   function mapDispatchToProps(dispatch) {
     return {
       actions: bindActionCreators(actions, dispatch)
     };
   }
-)(ManageCategoryComponent);
+)(EvaluationCategoryComponent);

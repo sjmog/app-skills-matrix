@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Button, Panel } from 'react-bootstrap';
 
-import './evaluation.scss';
+import './../evaluation.scss';
 
 class AdditionalInfo extends React.Component {
   constructor(props) {

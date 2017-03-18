@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
 import { reducers as dashboardReducers } from './dashboard';
-import { reducers as manageEvaluationReducers } from './manageEvaluation';
+import { reducers as evaluationReducers } from './evaluation';
 
-export const reducers = combineReducers({ dashboard: dashboardReducers, manageEvaluation: manageEvaluationReducers });
+export const reducers = combineReducers({ dashboard: dashboardReducers, evaluation: evaluationReducers });

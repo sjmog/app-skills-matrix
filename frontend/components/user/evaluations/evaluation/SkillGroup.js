@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Row, Col, Accordion, Panel, ListGroup, ProgressBar } from 'react-bootstrap';
 
-import { SKILL_STATUS } from '../../../modules/user/manageEvaluation';
+import { SKILL_STATUS } from '../../../../modules/user/evaluation';
 
 import Skill from './Skill';
 

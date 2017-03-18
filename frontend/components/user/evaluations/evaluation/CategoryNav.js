@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { Button, ButtonGroup, ButtonToolbar } from 'react-bootstrap';
 import { Link } from 'react-router';
 
-import './evaluation.scss';
+import './../evaluation.scss';
 
 const CategoryNav = ({ categories, currentCategory, evaluation, evaluationComplete }) =>
   (

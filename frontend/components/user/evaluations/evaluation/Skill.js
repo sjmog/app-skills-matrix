@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { ListGroupItem, ButtonGroup, Button, Alert } from 'react-bootstrap';
 
-import { SKILL_STATUS } from '../../../modules/user/manageEvaluation';
+import { SKILL_STATUS } from '../../../../modules/user/evaluation';
 import AdditionalInfo from './AdditionalInfo';
 
 const Skill = ({ evaluationId, skillGroupId, name, skillId, criteria, questions, updateSkillStatus, status = null, error }) =>
