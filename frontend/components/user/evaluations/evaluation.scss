@@ -1,9 +1,14 @@
-.panel--state-attained {
-  background-color: #e6f2ff;
+.matrix-table__head {
+  background-color: #337ab7;
+  color: white;
 }
 
-.label--top {
-  margin-top: 60px;
+.matrix-table__body {
+  background-color: #f4f6f9;
+}
+
+.skill--attained {
+  background-color: #e6f2ff;
 }
 
 .header__button {
