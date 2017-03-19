@@ -3,7 +3,7 @@ import keymirror from 'keymirror';
 import R from 'ramda';
 
 import api from '../../api';
-import normalize from '../normalize';
+import { normalizeEvaluation } from '../normalize';
 
 export const SKILL_STATUS = keymirror({
   ATTAINED: null,
@@ -56,7 +56,7 @@ const evaluationCompleteFailure = createAction(
 function retrieveEvaluation(evaluationId) {
   return function(dispatch) {
     return api.retrieveEvaluation(evaluationId)
-      .then(normalize)
+      .then(normalizeEvaluation)
       .then((normalizedEvaluation) => dispatch(retrieveEvaluationSuccess(normalizedEvaluation)))
       .catch((error) => dispatch(retrieveEvaluationFailure(error)))
   }

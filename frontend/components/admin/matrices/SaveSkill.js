@@ -44,7 +44,7 @@ class SaveSkillComponent extends React.Component {
 
 export const SaveSkill = connect(
   function mapStateToProps(state) {
-    return state.matrices.skill || {};
+    return state.matrices.skillResult || {};
   },
   function mapDispatchToProps(dispatch) {
     return {

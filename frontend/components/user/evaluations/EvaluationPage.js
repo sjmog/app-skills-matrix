@@ -6,8 +6,10 @@ import { Row, Alert } from 'react-bootstrap';
 import { actions } from '../../../modules/user/evaluation';
 
 import EvaluationPageHeader from './EvaluationPageHeader';
-import Matrix from './matrix/Matrix';
+import Matrix from '../../common/matrix/Matrix';
+
 import './evaluation.scss'
+import '../../common/matrix/matrix.scss'
 
 class EvaluationPageComponent extends React.Component {
   componentWillMount() {

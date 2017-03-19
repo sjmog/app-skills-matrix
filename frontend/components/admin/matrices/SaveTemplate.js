@@ -44,7 +44,7 @@ class SaveTemplateComponent extends React.Component {
 
 export const SaveTemplate = connect(
   function mapStateToProps(state) {
-    return state.matrices.template || {};
+    return state.matrices.templateResult || {};
   },
   function mapDispatchToProps(dispatch) {
     return {

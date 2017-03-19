@@ -3,6 +3,18 @@ const template = ({ id, name, version, categories, levels, skillGroups }) => Obj
   get viewModel() {
     return { id, name };
   },
+  get normalizedViewModel() {
+    const skillGroupsWithId = skillGroups
+      .map((skillGroup, index) => Object.assign({}, skillGroup, { id: index }));
+
+    const indexedSkillGroups = skillGroupsWithId
+      .reduce((collector, skillGroup) => {
+        collector[skillGroup.id] = skillGroup;
+        return collector;
+      }, {});
+
+    return { id, name, version, categories, levels, skillGroups: indexedSkillGroups };
+  },
   get evaluationData() {
     return { id, name, version, categories, levels }
   },

@@ -1,5 +1,6 @@
 const request = require('supertest');
 const { expect } = require('chai');
+const Promise = require('bluebird');
 
 const app = require('../backend');
 const { sign, cookieName } = require('../backend/models/auth');
@@ -26,6 +27,44 @@ describe('matrices', () => {
             adminUserId = adminUser._id;
           }))
   );
+
+  describe('GET /matrices/template', () => {
+    it('gets the template by id', () => {
+      return insertTemplate(Object.assign({}, sampleTemplate))
+        .then(() =>
+          request(app)
+            .get(`${prefix}/templates/${sampleTemplate.id}`)
+            .set('Cookie', `${cookieName}=${adminToken}`)
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.name).to.equal('Node JS Dev');
+              expect(body.skillGroups[0].category).to.equal('Dragon Flight');
+            }));
+    });
+
+    const errorCases =
+      [
+        () => ({
+          desc: 'not authorized',
+          token: normalUserToken,
+          id: sampleTemplate.id,
+          expect: 403,
+        }),
+        () => ({
+          desc: 'no template',
+          token: adminToken,
+          id: 'lolz-lolz',
+          expect: 404,
+        }),
+      ];
+
+    errorCases.forEach((test) =>
+      it(`should handle error cases '${test().desc}'`, () =>
+        request(app)
+          .get(`${prefix}/templates/${test().id}`)
+          .set('Cookie', `${cookieName}=${test().token}`)
+          .expect(test().expect)));
+  });
 
   describe('POST /matrices/templates', () => {
     it('permits saving of new templates by admin users', () =>
@@ -80,6 +119,22 @@ describe('matrices', () => {
           .send(test().body)
           .set('Cookie', `${cookieName}=${test().token}`)
           .expect(test().expect)));
+  });
+
+  describe('GET matrices/skills', () => {
+    it('gets all the skills', () =>
+      Promise.map(allSkills, insertSkill)
+        .then(() =>
+          request(app)
+            .get(`${prefix}/skills`)
+            .set('Cookie', `${cookieName}=${adminToken}`)
+            .expect(200)
+            .then((res) => {
+              // dear future me, I'm sorry.
+              expect(res.body[1].name).to.equal(allSkills[0].name);
+              expect(res.body[2].name).to.equal(allSkills[1].name);
+              expect(res.body[6].name).to.equal(allSkills[5].name);
+            })));
   });
 
   describe('POST matrices/skills', () => {

@@ -1,6 +1,6 @@
 const { normalize, schema } = require('normalizr');
 
-const normaliseSkillGroup = (skillGroups) => {
+const normaliseEvaluationSkillGroup = (skillGroups) => {
   const skill = new schema.Entity('skills');
   const skillGroup = new schema.Entity('skillGroups', { skills: [skill] });
   const skillGroupList = new schema.Array(skillGroup);
@@ -8,15 +8,15 @@ const normaliseSkillGroup = (skillGroups) => {
   return normalize(skillGroups, skillGroupList).entities;
 };
 
-module.exports = (data) => {
-  const { skills, skillGroups } = normaliseSkillGroup(data.skillGroups);
+module.exports.normalizeEvaluation = (evaluation) => {
+  const { skills, skillGroups } = normaliseEvaluationSkillGroup(evaluation.skillGroups);
 
   return Object.assign({}, {
     evaluation: {
       retrieved: true,
-      status: data.status,
+      status: evaluation.status,
     },
-    template: data.template,
+    template: evaluation.template,
     skills,
     skillGroups
   });
