@@ -1,6 +1,5 @@
 const request = require('supertest');
 const { expect } = require('chai');
-const cheerio = require('cheerio');
 
 const app = require('../backend');
 const { prepopulateUsers, users, evaluations, insertTemplate, assignTemplate, clearDb, insertSkill, insertEvaluation, assignMentor } = require('./helpers');
@@ -12,12 +11,7 @@ const [evaluation] = require('./fixtures/evaluations');
 let adminToken, normalUserOneToken, normalUserTwoToken;
 let adminUserId, normalUserOneId, normalUserTwoId;
 
-const getInitialState = (str) => {
-  const $ = cheerio.load(str);
-  const scriptTagContents = $('script').get()[0].children[0].data;
-
-  return JSON.parse(scriptTagContents.match(/REDUX_STATE=(.*)/)[0].substr(12));
-};
+const getInitialState = (str) => JSON.parse(str.match(/REDUX_STATE=(.*)/)[0].substr(12));
 
 describe('initial client state', () => {
 
