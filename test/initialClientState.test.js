@@ -30,9 +30,9 @@ describe('initial client state', () => {
             normalUserOneToken = sign({ email: normalUserOne.email, id: normalUserOne._id });
             normalUserTwoToken = sign({ email: normalUserTwo.email, id: normalUserTwo._id });
             adminToken = sign({ email: adminUser.email, id: adminUser._id });
-            normalUserOneId = normalUserOne._id;
-            normalUserTwoId = normalUserTwo._id;
-            adminUserId = adminUser._id;
+            normalUserOneId = String(normalUserOne._id);
+            normalUserTwoId = String(normalUserTwo._id);
+            adminUserId = String(adminUser._id);
           })));
 
   describe('normal user', () => {
@@ -60,14 +60,13 @@ describe('initial client state', () => {
     );
 
     it('returns initial state with evaluations', () =>
-      insertEvaluation(Object.assign({}, evaluation, { user: { id: String(normalUserOneId) } }))
+      insertEvaluation(Object.assign({}, evaluation, { user: { id: normalUserOneId } }))
         .then(({ insertedId: evaluationId }) =>
           request(app)
             .get('/')
             .set('Cookie', `${cookieName}=${normalUserOneToken}`)
             .expect(200)
             .then((res) => {
-
               const expectedEvaluations = [
                 {
                   id: String(evaluationId),
@@ -85,7 +84,7 @@ describe('initial client state', () => {
     it('returns initial state with mentee evaluations', () =>
       Promise.all([
           assignMentor(normalUserTwoId, normalUserOneId),
-          insertEvaluation(Object.assign({}, evaluation, { user: { id: String(normalUserTwoId) } })),
+          insertEvaluation(Object.assign({}, evaluation, { user: { id: normalUserTwoId } })),
         ])
         .then(([ res, { insertedId: menteeEvaluationId }]) =>
           request(app)
@@ -121,7 +120,6 @@ describe('initial client state', () => {
             .set('Cookie', `${cookieName}=${normalUserOneToken}`)
             .expect(200)
             .then((res) => {
-
               const expectedMentor = {
                 email: 'dmorgantini@gmail.com',
                 name: 'David Morgantini'
@@ -140,7 +138,6 @@ describe('initial client state', () => {
             .set('Cookie', `${cookieName}=${normalUserOneToken}`)
             .expect(200)
             .then((res) => {
-
               const expectedTemplate = {
                 id: 'eng-nodejs',
                 name: 'Node JS Dev'
@@ -159,10 +156,9 @@ describe('initial client state', () => {
             .set('Cookie', `${cookieName}=${normalUserOneToken}`)
             .expect(200)
             .then((res) => {
-
               const expectedUser = {
                 email: 'user@magic.com',
-                mentorId: String(adminUserId),
+                mentorId: adminUserId,
                 name: 'User Magic'
               };
 
@@ -210,17 +206,17 @@ describe('initial client state', () => {
           const expectedUsers = [
             {
               email: "dmorgantini@gmail.com",
-              id: String(adminUserId),
+              id: adminUserId,
               name: "David Morgantini"
             },
             {
               email: "user@magic.com",
-              id: String(normalUserOneId),
+              id: normalUserOneId,
               name: "User Magic"
             },
             {
               email: "user@dragon-riders.com",
-              id: String(normalUserTwoId),
+              id: normalUserTwoId,
               name: "User Dragon Rider"
             }
           ];
