@@ -37,15 +37,15 @@ export const actions = {
 
 const handleSaveTemplateSuccess = (state, action) =>
   Object.assign({}, state, {
-    template: { success: true, error: null },
+    templateResult: { success: true, error: null },
     templates: [].concat(state.templates, action.payload),
   });
 
 export const reducers = handleActions({
   [saveTemplateSuccess]: handleSaveTemplateSuccess,
-  [saveTemplateFailure]: (state, action) => Object.assign({}, state, { template: { error: action.payload, success: false } }),
-  [saveSkillSuccess]: (state, action) => Object.assign({}, state, { skill: { success: true, error: null } }),
-  [saveSkillFailure]: (state, action) => Object.assign({}, state, { skill: { error: action.payload, success: false } }),
+  [saveTemplateFailure]: (state, action) => Object.assign({}, state, { templateResult: { error: action.payload, success: false } }),
+  [saveSkillSuccess]: (state, action) => Object.assign({}, state, { skillResult: { success: true, error: null } }),
+  [saveSkillFailure]: (state, action) => Object.assign({}, state, { skillResult: { error: action.payload, success: false } }),
 }, { template: {}, skill: {} });
 
 
