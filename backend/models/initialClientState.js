@@ -7,15 +7,12 @@ const evaluations = require('./evaluations');
 
 const viewModels = R.map((domainEvaluation, viewModel = 'viewModel') => domainEvaluation[viewModel]);
 
-const getMenteeEvaluations = (id) => Promise.reduce(
+const getMenteeEvaluations = (id) => Promise.map(
   users.getByMentorId(id),
-  (menteeEvaluations, user) =>
-    evaluations.getByUserId(user.id)
+  ({ id, name }) =>
+    evaluations.getByUserId(id)
       .then(viewModels)
-      .then((evaluations) => {
-        menteeEvaluations[user.name] = evaluations;
-        return menteeEvaluations
-      }), {}
+      .then(evaluations => ({ name, evaluations }))
 );
 
 const adminClientState = () => {
