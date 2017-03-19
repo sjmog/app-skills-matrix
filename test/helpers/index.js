@@ -1,5 +1,6 @@
+const { ObjectId } = require('mongodb');
+
 const usersData = require('../fixtures/users');
-const templatesData = require('../fixtures/templates');
 const database = require('../../backend/database');
 
 const users = database.collection('users');
@@ -12,8 +13,10 @@ const prepopulateUsers = () => users.remove({}).then(() => users.insertMany(user
 module.exports = {
   prepopulateUsers,
   users,
+  assignMentor: (userId, mentorId) => users.update({ _id: ObjectId(userId) }, { $set: { mentorId: String(mentorId) } }),
   templates,
   insertTemplate: (template) => templates.insertOne(Object.assign({}, template)),
+  assignTemplate: (userId, templateId) => users.update({ _id: ObjectId(userId) }, { $set: { templateId: String(templateId) } }),
   skills,
   insertSkill: (skill) => skills.insertOne(Object.assign({}, skill)),
   evaluations,

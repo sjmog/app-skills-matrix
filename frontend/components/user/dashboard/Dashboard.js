@@ -1,23 +1,32 @@
-import React, { PropTypes } from "react";
-import { connect } from "react-redux";
+import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 
-import UserDetails from "./UserDetails";
-import Evaluations from "./Evaluations";
+import UserDetails from './UserDetails';
+import Evaluations from './Evaluations';
+import MenteeEvaluations from './MenteeEvaluations';
 
-const Dashboard = ({ user, mentor, template, evaluations }) =>
-  (<div>
-    { user ? <div>
-      <h1 className="header">Dashboard</h1>
-      <UserDetails
-        user={user}
-        mentor={mentor}
-        template={template}
-      />
-      <Evaluations
-        evaluations={evaluations}
-      />
-    </div> : <h1>{`You aren't logged in!`}</h1> }
-  </div>);
+const Dashboard = ({ user, mentor, template, evaluations, menteeEvaluations }) => (
+  <div>
+    {
+      user
+        ? <div>
+            <h1 className="header">Dashboard</h1>
+            <UserDetails
+              user={user}
+              mentor={mentor}
+              template={template}
+            />
+            <Evaluations
+              evaluations={evaluations}
+            />
+            <MenteeEvaluations
+              menteeEvaluations={menteeEvaluations}
+            />
+          </div>
+        : <h1>{`You aren't logged in!`}</h1>
+    }
+  </div>
+);
 
 
 Dashboard.propTypes = {
@@ -25,6 +34,7 @@ Dashboard.propTypes = {
   mentor: PropTypes.object,
   template: PropTypes.object,
   evaluations: PropTypes.array,
+  menteeEvaluations: PropTypes.array,
 };
 
 export const DashboardPage = connect(
