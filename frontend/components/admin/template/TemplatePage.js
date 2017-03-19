@@ -8,8 +8,6 @@ import { actions } from '../../../modules/admin/matrices';
 import TemplatePageHeader from './TemplatePageHeader';
 import Matrix from '../../common/matrix/Matrix';
 
-import '../../common/matrix/matrix.scss'
-
 class TemplatePageComponent extends React.Component {
   componentWillMount() {
     if (!this.props.retrieved) {

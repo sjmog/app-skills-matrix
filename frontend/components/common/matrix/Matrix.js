@@ -3,6 +3,8 @@ import { Table } from 'react-bootstrap';
 
 import Level from './Level';
 
+import '../../common/matrix/matrix.scss'
+
 const Matrix = ({ categories, levels, skillGroups, skills }) =>
   (
     <Table responsive>
