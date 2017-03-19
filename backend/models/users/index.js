@@ -6,6 +6,7 @@ const user = require('./user');
 const collection = database.collection('users');
 
 collection.ensureIndex({ email: 1 }, { unique: true, background: true });
+collection.ensureIndex({ mentorId: 1 }, { background: true });
 
 module.exports = {
   addUser: ({ email, name, avatarUrl }) => {
