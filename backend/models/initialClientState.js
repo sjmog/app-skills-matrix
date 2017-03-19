@@ -1,5 +1,6 @@
 const R = require('ramda');
 const Promise = require('bluebird');
+const moment = require('moment');
 
 const users = require('./users');
 const { templates } = require('./matrices');
@@ -7,10 +8,13 @@ const evaluations = require('./evaluations');
 
 const viewModels = R.map(domainObject => domainObject.viewModel);
 
+const sortNewestToOldest = (evaluations) => evaluations.sort((a, b) => moment(a.createdDate).isBefore(b.createdDate));
+
 const getMenteeEvaluations = (id) => Promise.map(
   users.getByMentorId(id),
   ({ id, name }) =>
     evaluations.getByUserId(id)
+      .then(sortNewestToOldest)
       .then(viewModels)
       .then(evaluations => ({ name, evaluations }))
 );

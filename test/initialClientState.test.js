@@ -1,5 +1,6 @@
 const request = require('supertest');
 const { expect } = require('chai');
+const moment = require('moment');
 
 const app = require('../backend');
 const { prepopulateUsers, users, evaluations, insertTemplate, assignTemplate, clearDb, insertSkill, insertEvaluation, assignMentor } = require('./helpers');
@@ -7,6 +8,9 @@ const { sign, cookieName } = require('../backend/models/auth');
 const [template] = require('./fixtures/templates');
 const skills = require('./fixtures/skills');
 const [evaluation] = require('./fixtures/evaluations');
+
+const beforeNow = moment().subtract(1, 'days').toDate();
+const now = moment().toDate();
 
 let adminToken, normalUserOneToken, normalUserTwoToken;
 let adminUserId, normalUserOneId, normalUserTwoId;
@@ -81,12 +85,13 @@ describe('initial client state', () => {
         )
     );
 
-    it('returns initial state with mentee evaluations', () =>
+    it('returns initial state with mentee evaluations from newest to oldest', () =>
       Promise.all([
           assignMentor(normalUserTwoId, normalUserOneId),
-          insertEvaluation(Object.assign({}, evaluation, { user: { id: normalUserTwoId } })),
+          insertEvaluation(Object.assign({}, evaluation, { createdDate: beforeNow, user: { id: normalUserTwoId } })),
+          insertEvaluation(Object.assign({}, evaluation, { createdDate: now, user: { id: normalUserTwoId } })),
         ])
-        .then(([ res, { insertedId: menteeEvaluationId }]) =>
+        .then(([ res, { insertedId: menteeEvaluationId_OLD }, { insertedId: menteeEvaluationId_NEW }]) =>
           request(app)
             .get('/')
             .set('Cookie', `${cookieName}=${normalUserOneToken}`)
@@ -98,10 +103,16 @@ describe('initial client state', () => {
                   name: 'User Dragon Rider',
                   evaluations: [
                     {
-                      id: String(menteeEvaluationId),
+                      id: String(menteeEvaluationId_NEW),
                       status: 'NEW',
                       templateName: 'Node JS Dev',
-                      url: `undefined/#/evaluations/${String(menteeEvaluationId)}`
+                      url: `undefined/#/evaluations/${String(menteeEvaluationId_NEW)}`
+                    },
+                    {
+                      id: String(menteeEvaluationId_OLD),
+                      status: 'NEW',
+                      templateName: 'Node JS Dev',
+                      url: `undefined/#/evaluations/${String(menteeEvaluationId_OLD)}`
                     }
                   ]
                 }
