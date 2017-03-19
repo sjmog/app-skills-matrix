@@ -1,8 +1,8 @@
 const { expect } = require('chai');
-const normalise = require('../../frontend/modules/normalize');
+const { normalizeEvaluation } = require('../../frontend/modules/normalize');
 const [ evaluation ] = require('./../fixtures/evaluations');
 
-const expectedData = {
+const normalizedEvaluation = {
   evaluation: {
     retrieved: true,
     status: 'NEW'
@@ -88,6 +88,6 @@ const expectedData = {
 
 describe('normalize evaluation', () => {
   it('should normalize an evaluation', () => {
-    expect(normalise(evaluation)).to.deep.equal(expectedData);
+    expect(normalizeEvaluation(evaluation)).to.deep.equal(normalizedEvaluation);
   });
 });

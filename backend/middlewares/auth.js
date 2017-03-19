@@ -1,5 +1,6 @@
 const auth = require('../models/auth');
 const users = require('../models/users');
+const { MUST_BE_ADMIN, MUST_BE_LOGGED_IN } = require('../handlers/errors');
 
 module.exports = {
   populateUser: (req, res, next) =>
@@ -13,7 +14,12 @@ module.exports = {
             }))
         .catch(next) :
       next(),
-  ensureAdmin: (req, res, next) => res.locals.user.isAdmin ?
-    next() :
-    res.status(403).json({ message: `User '${res.locals.user}' does not have admin access` }),
+  ensureAdmin: (req, res, next) => {
+    if (!res.locals.user) {
+      return res.status(401).json(MUST_BE_LOGGED_IN())
+    }
+    res.locals.user && res.locals.user.isAdmin ?
+      next() :
+      res.status(403).json(MUST_BE_ADMIN())
+  },
 };

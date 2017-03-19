@@ -29,8 +29,18 @@ export default ({
       .then(getData)
       .catch(handleError);
   },
+  getTemplate: function (templateId) {
+    return axios.get(`/skillz/matrices/templates/${templateId}`)
+      .then(getData)
+      .catch(handleError);
+  },
   saveSkill: function (skill) {
     return axios.post('/skillz/matrices/skills', { action: 'save', skill })
+      .then(getData)
+      .catch(handleError);
+  },
+  getSkills: function () {
+    return axios.get('/skillz/matrices/skills')
       .then(getData)
       .catch(handleError);
   },
