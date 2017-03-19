@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import { Row } from 'react-bootstrap';
-import './template.scss'
 
 const TemplatePageHeader = ({ templateName, firstCategory, id } ) => (
   <Row>
