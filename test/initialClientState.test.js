@@ -63,9 +63,12 @@ describe('initial client state', () => {
         })
     );
 
-    it('returns initial state with evaluations', () =>
-      insertEvaluation(Object.assign({}, evaluation, { user: { id: normalUserOneId } }))
-        .then(({ insertedId: evaluationId }) =>
+    it('returns initial state with evaluations from newest to oldest', () =>
+      Promise.all([
+          insertEvaluation(Object.assign({}, evaluation, { createdDate: beforeNow, user: { id: normalUserOneId } })),
+          insertEvaluation(Object.assign({}, evaluation, { createdDate: now, user: { id: normalUserOneId } })),
+        ])
+        .then(([{ insertedId: evaluationId_OLD }, { insertedId: evaluationId_NEW }]) =>
           request(app)
             .get('/')
             .set('Cookie', `${cookieName}=${normalUserOneToken}`)
@@ -73,10 +76,16 @@ describe('initial client state', () => {
             .then((res) => {
               const expectedEvaluations = [
                 {
-                  id: String(evaluationId),
+                  id: String(evaluationId_NEW),
                   status: 'NEW',
                   templateName: 'Node JS Dev',
-                  url: `undefined/#/evaluations/${String(evaluationId)}`
+                  url: `undefined/#/evaluations/${String(evaluationId_NEW)}`
+                },
+                {
+                  id: String(evaluationId_OLD),
+                  status: 'NEW',
+                  templateName: 'Node JS Dev',
+                  url: `undefined/#/evaluations/${String(evaluationId_OLD)}`
                 }
               ];
 

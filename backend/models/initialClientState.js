@@ -10,12 +10,15 @@ const viewModels = R.map(domainObject => domainObject.viewModel);
 
 const sortNewestToOldest = (evaluations) => evaluations.sort((a, b) => moment(a.createdDate).isBefore(b.createdDate));
 
+const getEvaluations = (id) =>
+  evaluations.getByUserId(id)
+    .then(sortNewestToOldest)
+    .then(viewModels);
+
 const getMenteeEvaluations = (id) => Promise.map(
   users.getByMentorId(id),
   ({ id, name }) =>
-    evaluations.getByUserId(id)
-      .then(sortNewestToOldest)
-      .then(viewModels)
+    getEvaluations(id)
       .then(evaluations => ({ name, evaluations }))
 );
 
@@ -37,7 +40,7 @@ const clientState = (user) =>
     Promise.all([
         users.getUserById(user.mentorId),
         templates.getById(user.templateId),
-        evaluations.getByUserId(user.id),
+        getEvaluations(user.id),
         getMenteeEvaluations(user.id)
       ])
       .then(([mentor, template, evaluations, menteeEvaluations]) =>
@@ -46,7 +49,7 @@ const clientState = (user) =>
             user: user ? user.userDetailsViewModel : null,
             mentor: mentor ? mentor.userDetailsViewModel : null,
             template: template ? template.viewModel : null,
-            evaluations: viewModels(evaluations),
+            evaluations: evaluations,
             menteeEvaluations: menteeEvaluations,
           }
         }))
