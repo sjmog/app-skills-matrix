@@ -43,7 +43,7 @@ const clientState = (user) =>
             mentor: mentor ? mentor.userDetailsViewModel : null,
             template: template ? template.viewModel : null,
             evaluations: viewModels(evaluations),
-            menteeEvaluations: R.isEmpty(menteeEvaluations) ? null : menteeEvaluations,
+            menteeEvaluations: menteeEvaluations,
           }
         }))
     :

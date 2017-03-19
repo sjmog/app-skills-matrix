@@ -6,7 +6,7 @@ import EvaluationsList from './EvaluationsList';
 const MenteeEvaluations = ({ menteeEvaluations }) => (
   <div>
     {
-      menteeEvaluations
+      menteeEvaluations.length
         ? <Col xs={12} md={12}>
             <h2>Mentee Evaluations</h2>
             {
