@@ -19,7 +19,7 @@ const getInitialState = (str) => {
   return JSON.parse(scriptTagContents.match(/REDUX_STATE=(.*)/)[0].substr(12));
 };
 
-describe('Initial client state', () => {
+describe('initial client state', () => {
 
   beforeEach(() =>
     clearDb()
@@ -41,7 +41,7 @@ describe('Initial client state', () => {
             adminUserId = adminUser._id;
           })));
 
-  describe('GET / (client state)', () => {
+  describe('normal user', () => {
     it('returns HTML with a script tag containing initial state', () =>
       request(app)
         .get('/')
@@ -175,6 +175,64 @@ describe('Initial client state', () => {
               expect(getInitialState(res.text).dashboard.user).to.deep.equal(expectedUser);
             })
         )
+    );
+  });
+
+  describe('admin user', () => {
+    it('returns HTML with a script tag containing initial state', () =>
+      request(app)
+        .get('/admin')
+        .set('Cookie', `${cookieName}=${adminToken}`)
+        .expect(200)
+        .then((res) => {
+          expect(getInitialState(res.text)).to.have.property('matrices');
+          expect(getInitialState(res.text)).to.have.property('users');
+        })
+    );
+
+    it('returns initial state with all templates', () =>
+      request(app)
+        .get('/admin')
+        .set('Cookie', `${cookieName}=${adminToken}`)
+        .expect(200)
+        .then((res) => {
+          const expectedTemplates = [
+            {
+              id: 'eng-nodejs',
+              name: 'Node JS Dev',
+            }
+          ];
+
+          expect(getInitialState(res.text).matrices.templates).to.deep.equal(expectedTemplates);
+        })
+    );
+
+    it('returns initial state with all users', () =>
+      request(app)
+        .get('/admin')
+        .set('Cookie', `${cookieName}=${adminToken}`)
+        .expect(200)
+        .then((res) => {
+          const expectedUsers = [
+            {
+              email: "dmorgantini@gmail.com",
+              id: String(adminUserId),
+              name: "David Morgantini"
+            },
+            {
+              email: "user@magic.com",
+              id: String(normalUserOneId),
+              name: "User Magic"
+            },
+            {
+              email: "user@dragon-riders.com",
+              id: String(normalUserTwoId),
+              name: "User Dragon Rider"
+            }
+          ];
+
+          expect(getInitialState(res.text).users.users).to.deep.equal(expectedUsers);
+        })
     );
   })
 });

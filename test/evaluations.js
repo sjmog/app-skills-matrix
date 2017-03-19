@@ -57,7 +57,7 @@ describe('evaluations', () => {
           expect(body.skillGroups.length > 0).to.equal(true);
         }));
 
-    it('allows a mentor to view the evaluation of thier mentee', () =>
+    it('allows a mentor to view the evaluation of their mentee', () =>
       assignMentor(normalUserOneId, normalUserTwoId)
         .then(() =>
           request(app)

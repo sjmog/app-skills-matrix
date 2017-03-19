@@ -5,7 +5,7 @@ const users = require('./users');
 const { templates } = require('./matrices');
 const evaluations = require('./evaluations');
 
-const viewModels = R.map((domainEvaluation, viewModel = 'viewModel') => domainEvaluation[viewModel]);
+const viewModels = R.map(domainObject => domainObject.viewModel);
 
 const getMenteeEvaluations = (id) => Promise.map(
   users.getByMentorId(id),
@@ -19,11 +19,11 @@ const adminClientState = () => {
   return Promise.all([users.getAll(), templates.getAll()])
     .then(([allUsers = [], allTemplates = []]) => ({
       users: {
-        users: viewModels(allUsers, 'manageUserViewModel'),
+        users: R.map((domainUser) => domainUser.manageUserViewModel, allUsers),
         newEvaluations: [],
       },
       matrices: {
-        templates: viewModels(allTemplates),
+        templates: R.map((domainTemplate) => domainTemplate.viewModel, allTemplates),
       },
     }));
 };

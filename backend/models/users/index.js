@@ -29,12 +29,12 @@ module.exports = {
   },
   getAll: () => {
     return collection.find()
-      .then((results) => results.toArray())
-      .then((results) => results.map((doc) => user(doc)));
+      .then((res) => res.toArray())
+      .then((res) => res.map((doc) => user(doc)));
   },
   getByMentorId: (id) => {
     return collection.find({ mentorId: id })
-      .then((results) => results.toArray())
-      .then((results) => results.map((doc) => user(doc)))
+      .then((res) => res.toArray())
+      .then((res) => res.map((doc) => user(doc)))
   },
 };
