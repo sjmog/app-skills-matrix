@@ -1,5 +1,4 @@
 const Promise = require('bluebird');
-const R = require('ramda');
 
 const { templates, skills } = require('../models/matrices');
 const createHandler = require('./createHandler');
