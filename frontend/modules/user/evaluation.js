@@ -3,7 +3,7 @@ import keymirror from 'keymirror';
 import R from 'ramda';
 
 import api from '../../api';
-import normalizeEvaluation from '../normalize';
+import { normalizeEvaluation } from '../normalize';
 
 export const SKILL_STATUS = keymirror({
   ATTAINED: null,
