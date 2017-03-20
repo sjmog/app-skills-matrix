@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { actions } from '../../../../modules/user/evaluation';
+import { actions, SKILL_STATUS } from '../../../../modules/user/evaluation';
 import { getSkillGroup } from '../../../common/helpers';
 
 import CategoryNav from './CategoryNav';
@@ -16,8 +16,9 @@ class EvaluationCategoryComponent extends React.Component {
     this.evaluationComplete = this.evaluationComplete.bind(this);
   }
 
-  updateSkillStatus(evaluationId, skillGroupId, skillId, status) {
-    this.props.actions.updateSkillStatus(evaluationId, skillGroupId, skillId, status);
+  updateSkillStatus(evaluationId, skillGroupId, skillId, currentStatus) {
+    const newStatus = currentStatus !== SKILL_STATUS.ATTAINED ? SKILL_STATUS.ATTAINED : null;
+    this.props.actions.updateSkillStatus(evaluationId, skillGroupId, skillId, newStatus);
   };
 
   evaluationComplete(evaluationId) {

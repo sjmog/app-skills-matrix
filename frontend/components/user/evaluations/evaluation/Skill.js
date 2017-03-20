@@ -15,13 +15,8 @@ const Skill = ({ evaluationId, skillGroupId, name, skillId, criteria, questions,
       <ButtonGroup className='skill__cta-group'>
         <Button
           active={status && status.current === SKILL_STATUS.ATTAINED}
-          onClick={() =>  updateSkillStatus(evaluationId, skillGroupId, skillId, SKILL_STATUS.ATTAINED)}>
+          onClick={() => updateSkillStatus(evaluationId, skillGroupId, skillId, status.current)}>
           Attained
-        </Button>
-        <Button
-          active={status && status.current === SKILL_STATUS.UNATTAINED}
-          onClick={() => updateSkillStatus(evaluationId, skillGroupId, skillId, SKILL_STATUS.UNATTAINED)}>
-          Not yet
         </Button>
       </ButtonGroup>
       { error ? <Alert bsStyle='danger'>Something went wrong: {error.message}</Alert> : false }

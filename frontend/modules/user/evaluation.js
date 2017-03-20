@@ -7,7 +7,6 @@ import { normalizeEvaluation } from '../normalize';
 
 export const SKILL_STATUS = keymirror({
   ATTAINED: null,
-  UNATTAINED: null,
 });
 
 export const EVALUATION_STATUS = keymirror({
