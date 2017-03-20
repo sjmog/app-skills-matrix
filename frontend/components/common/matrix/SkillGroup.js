@@ -3,7 +3,7 @@ import { Table } from 'react-bootstrap';
 
 import Skill from './Skill';
 
-const SkillGroup = ({ skillGroup, skills }) =>
+const SkillGroup = ({ skillGroup, skills, viewSkillDetails }) =>
   (
     <td>
       <Table bordered>
@@ -11,13 +11,13 @@ const SkillGroup = ({ skillGroup, skills }) =>
         {
           skillGroup.skills.map(
             (skillId) => {
-              const { name, status } =  skills[skillId];
+              const skill =  skills[skillId];
 
               return (
                 <Skill
                   key={skillId}
-                  name={name}
-                  status={status}
+                  skill={skill}
+                  viewSkillDetails={viewSkillDetails}
                 />
               )
             })
