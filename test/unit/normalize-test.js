@@ -20,6 +20,7 @@ const normalizedEvaluation = {
       name: 'Dragon Feeding',
       criteria: 'Can successfully feed their dragon',
       type: 'skill',
+      version: 1,
       questions: [
         { title: 'Do you know where to get the dragon food?' },
         { title: 'Are you able to feed a dragon and retain your hands' },
@@ -31,6 +32,7 @@ const normalizedEvaluation = {
       name: 'Advanced knowledge of Dragon Flight',
       criteria: 'Is able to fly their dragon in all situations',
       type: 'skill',
+      version: 1,
       questions: [
         { title: 'Are you able to fly your dragon in a hurricane?' },
         { title: 'Can you memoize your dragon?' }
@@ -42,6 +44,7 @@ const normalizedEvaluation = {
       name: 'Advanced knowledge of the Dark Arts',
       criteria: 'Can execute the Imperius Curse',
       type: 'skill',
+      version: 1,
       questions: [
         { title: 'Can you speak parseltongue?' }
       ],
@@ -52,6 +55,7 @@ const normalizedEvaluation = {
       name: 'Working knowledge of the Dark Arts',
       criteria: 'Can execute the Toenail-growing hex',
       type: 'skill',
+      version: 1,
       questions: [
         { title: 'Have you hexed anyone in the last month?' }
       ],

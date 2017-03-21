@@ -3,7 +3,7 @@ import React, { PropTypes } from 'react';
 import { getSkillGroup } from '../helpers';
 import SkillGroup from './SkillGroup';
 
-const Level = ({ categories, levelName, skillGroups, skills }) =>
+const Level = ({ categories, levelName, skillGroups, skills, viewSkillDetails }) =>
   (
     <tr>
       <td>{<strong>{levelName}</strong>}</td>
@@ -14,6 +14,7 @@ const Level = ({ categories, levelName, skillGroups, skills }) =>
               key={categoryName}
               skillGroup={getSkillGroup(levelName, categoryName, skillGroups)}
               skills={skills}
+              viewSkillDetails={viewSkillDetails}
             />
           )
         )

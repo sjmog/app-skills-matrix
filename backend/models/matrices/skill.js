@@ -1,18 +1,20 @@
-const skill = ({ id, name, criteria, type, questions }) => Object.freeze({
+const skill = ({ id, name, version, criteria, type, questions }) => Object.freeze({
   id,
   get viewModel() {
     return { id, name };
   },
   get evaluationData() {
-    return { id, name, criteria, type, questions }
+    return { id, name, version, criteria, type, questions }
   }
 });
 
 module.exports = skill;
-module.exports.newSkill = (id, name, criteria, questions) =>
+module.exports.newSkill = (id, name, type, version = 1, criteria, questions) =>
   ({
     id,
     name,
+    type,
+    version,
     criteria,
     questions,
     createdDate: new Date()

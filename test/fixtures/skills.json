@@ -34,6 +34,7 @@
     "name": "Advanced knowledge of the Dark Arts",
     "criteria": "Can execute the Imperius Curse",
     "type": "skill",
+    "version": 1,
     "questions": [
       {
         "title": "Can you speak parseltongue?"
@@ -45,6 +46,7 @@
     "name": "Working knowledge of the Dark Arts",
     "criteria": "Can execute the Toenail-growing hex",
     "type": "skill",
+    "version": 1,
     "questions": [
       {
         "title": "Have you hexed anyone in the last month?"
@@ -56,6 +58,7 @@
     "name": "Powerful Sword Arm",
     "criteria": "Can chop a pumpkin in half with 1 slice",
     "type": "skill",
+    "version": 1,
     "questions": [
       {
         "title": "Can you chop all the things?"
@@ -70,6 +73,7 @@
     "name": "Bash",
     "criteria": "Can smite enemies with a single bash",
     "type": "skill",
+    "version": 1,
     "questions": [
       {
         "title": "Have you bashed all your enemies in the last month?"
