@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Button, Panel } from 'react-bootstrap';
+import { Button, Panel, Glyphicon } from 'react-bootstrap';
 
 import './../evaluation.scss';
 
@@ -13,7 +13,7 @@ class AdditionalInfo extends React.Component {
     return (
       <div>
         <Button bsStyle='info' onClick={()=> this.setState({ open: !this.state.open })}>
-          {"I'm not sure"}
+          <Glyphicon glyph='question-sign'/>
         </Button>
         <Panel className='info__panel' collapsible expanded={this.state.open}>
           <ul>

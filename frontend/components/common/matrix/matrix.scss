@@ -1,16 +1,8 @@
-.matrix-table__head {
-  background-color: #337ab7;
-  color: white;
-}
-
-.matrix-table__body {
-  background-color: #f4f6f9;
-}
-
 dl {
   padding: 0.5em;
   margin-bottom: 0px;
 }
+
 dt {
   float: left;
   clear: left;
@@ -19,10 +11,29 @@ dt {
   font-weight: bold;
   color: black;
 }
+
 dt:after {
   content: ":";
 }
 dd {
   margin: 0 0 0 110px;
   padding: 0 0 0.5em 0;
+
+  .table {
+    font-size: 18px;
+  }
+}
+
+.table .table {
+  margin-bottom: 0;
+}
+
+.skill--attained {
+  background-color: #dff0d8;
+}
+
+.skill--current {
+  -webkit-box-shadow:inset 0 0 0 4px #3c763d;
+  -moz-box-shadow:inset 0 0 0 4px #3c763d;
+  box-shadow:inset 0 0 0 4px #3c763d;
 }
