@@ -7,7 +7,7 @@ import SkillBody from './SkillBody';
 import '../evaluation.scss'
 
 const Skill = ({ level, skill, updateSkillStatus, prevSkill, nextSkill, isFirstSkill, isLastSkill }) => {
-  const { name, id, criteria, questions, status = null, error } = skill;
+  const { name, id, criteria, questions, status, error } = skill;
 
   return (
     <div>
