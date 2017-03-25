@@ -14,7 +14,7 @@ import Skill from './Skill';
 
 const getAllSkillsInCategory = (category, levels, allSkills, skillGroups) =>
   R.flatten(
-    levels.map((level) => {
+    R.reverse(levels).map((level) => {
       const { id: skillGroupId, skills } = getSkillGroup(level, category, skillGroups);
       return skills.map((id) => Object.assign({}, { id, skillGroupId }));
     }));
@@ -101,8 +101,8 @@ class EvaluationCategoryComponent extends React.Component {
             nextCategory={this.categories[this.state.indexOfCurrentCategory + 1]}
             evaluationComplete={this.evaluationComplete}
           />
-          </Row>
-          <Row>
+        </Row>
+        <Row>
           <Col md={7} className='skill-panel'>
             <Skill
               level={this.skillGroups[this.state.currentSkill.skillGroupId].level}
