@@ -16,6 +16,6 @@ const Skill = ({ skill, viewSkillDetails, isBeingEvaluated }) => {
 Skill.propTypes = {
   skill: PropTypes.object.isRequired,
   viewSkillDetails: PropTypes.func.isRequired,
-  isCurrentSkill: PropTypes.bool.isRequired,
+  isCurrentSkill: PropTypes.bool,
 }
 export default Skill;

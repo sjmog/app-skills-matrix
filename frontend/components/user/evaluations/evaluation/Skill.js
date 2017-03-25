@@ -20,9 +20,9 @@ const Skill = ({ level, skill, updateSkillStatus, prevSkill, nextSkill, isFirstS
         {'Attained'}
       </Button>
       {
-        status && status.current === SKILL_STATUS.ATTAINED
-        ? <Glyphicon className='skill-panel__attained-icon' glyph='ok-circle' />
-        : false
+        status.current === SKILL_STATUS.ATTAINED
+          ? <Glyphicon className='skill-panel__attained-icon' glyph='ok-circle' />
+          : false
       }
       <ButtonGroup className='pull-right' >
       <Button

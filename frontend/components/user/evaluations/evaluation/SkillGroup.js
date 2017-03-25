@@ -8,7 +8,7 @@ import Skill from './Skill';
 const header = (level, skillsInGroup, skills) => {
   const totalNumberOfSkills = skillsInGroup.length;
   const numberOfAttainedSkills = skillsInGroup.filter(
-    (id) => skills[id].status && skills[id].status.current === SKILL_STATUS.ATTAINED
+    (id) => skills[id].status.current === SKILL_STATUS.ATTAINED
   ).length;
   const percentageAttained = numberOfAttainedSkills / totalNumberOfSkills * 100;
 
