@@ -8,16 +8,22 @@ import './evaluation.scss'
 
 const EvaluationPageHeader = ({ templateName, firstCategory, id, status} ) => (
   <Row>
-    <PageHeader>{templateName}</PageHeader>
-    {
-      status === EVALUATION_STATUS.NEW
-        ? <Link to={`evaluations/${id}/category/${firstCategory}`}>
-            <Button bsStyle='primary' className='header__button'>
-              Begin evaluation
-            </Button>
-          </Link>
-        : false
-    }
+    <PageHeader
+    >Evaluation <small>{templateName}</small>
+      {
+        status === EVALUATION_STATUS.NEW
+          ? <Link to={`evaluations/${id}/category/${firstCategory}`}>
+              <Button
+                bsStyle='primary'
+                bsSize='large'
+                className='pull-right'
+              >
+                Begin evaluation
+              </Button>
+            </Link>
+          : false
+      }
+    </PageHeader>
   </Row>
 );
 

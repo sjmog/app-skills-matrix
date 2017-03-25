@@ -15,6 +15,7 @@ dt {
 dt:after {
   content: ":";
 }
+
 dd {
   margin: 0 0 0 110px;
   padding: 0 0 0.5em 0;
@@ -22,6 +23,15 @@ dd {
   .table {
     font-size: 18px;
   }
+}
+
+.table {
+  background-color: #f9f9f9;
+  font-size: 18px;
+  margin-bottom: 0px;
+  -webkit-border-radius:6px;
+  -moz-border-radius:6px;
+  border-radius:6px;
 }
 
 .table .table {
