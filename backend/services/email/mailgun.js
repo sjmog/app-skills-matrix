@@ -9,7 +9,7 @@ const getData = (response) => response.data;
 module.exports.sendMail = ({ recipients, subject, body }) => {
   // To NOT send emails (say as part of your test) don't set the API key
   if (!MAIL_DOMAIN || !MAIL_API_KEY) {
-    return Promise.resolve({});
+    return Promise.reject({ message: 'WAT? Missing credentials to send an email. Need MAIL_DOMAIN & MAIL_API_KEY' });
   }
   const options = {
     auth: {

@@ -2,6 +2,7 @@ const { ObjectId } = require('mongodb');
 
 const usersData = require('../fixtures/users');
 const database = require('../../backend/database');
+const { encrypt, decrypt } = require('../../backend/models/evaluations/encryption');
 
 const users = database.collection('users');
 const templates = database.collection('templates');
@@ -20,6 +21,7 @@ module.exports = {
   skills,
   insertSkill: (skill) => skills.insertOne(Object.assign({}, skill)),
   evaluations,
-  insertEvaluation: (evaluation) => evaluations.insertOne(Object.assign({}, evaluation)),
+  insertEvaluation: (evaluation) => evaluations.insertOne(encrypt(evaluation)),
+  getEvaluation: (evaluationId) => evaluations.findOne({ _id: ObjectId(evaluationId) }).then(decrypt),
   clearDb: () => Promise.all([users.remove({}), templates.remove({}), skills.remove({}), evaluations.remove({})])
 };

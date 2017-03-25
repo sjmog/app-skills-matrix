@@ -2,7 +2,7 @@ const request = require('supertest');
 const { expect } = require('chai');
 
 const app = require('../backend');
-const { prepopulateUsers, users, assignMentor, evaluations, insertTemplate, clearDb, insertSkill, insertEvaluation } = require('./helpers');
+const { prepopulateUsers, users, assignMentor, evaluations, insertTemplate, clearDb, insertSkill, insertEvaluation, getEvaluation } = require('./helpers');
 const { sign, cookieName } = require('../backend/models/auth');
 const templateData = require('./fixtures/templates');
 const skills = require('./fixtures/skills');
@@ -114,7 +114,7 @@ describe('evaluations', () => {
         })
         .set('Cookie', `${cookieName}=${normalUserOneToken}`)
         .expect(204)
-        .then(() => evaluations.findOne({ _id: evaluationId }))
+        .then(() => getEvaluation(evaluationId))
         .then(({ skillGroups }) => {
           expect(skillGroups[0].skills[0].status).to.deep.equal({ previous: null, current: 'ATTAINED' });
         }));
@@ -133,7 +133,7 @@ describe('evaluations', () => {
             .set('Cookie', `${cookieName}=${normalUserTwoToken}`)
             .expect(204)
         )
-        .then(() => evaluations.findOne({ _id: evaluationId }))
+        .then(() => getEvaluation(evaluationId))
         .then(({ skillGroups }) => {
           expect(skillGroups[0].skills[0].status).to.deep.equal({ previous: null, current: 'ATTAINED' });
         })
