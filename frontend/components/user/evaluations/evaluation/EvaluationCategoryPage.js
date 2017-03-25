@@ -116,7 +116,7 @@ class EvaluationCategoryComponent extends React.Component {
           </Col>
           <Col md={5} className='matrix-panel'>
             <Matrix
-              currentSkill={this.state.currentSkill.id}
+              currentSkillId={this.state.currentSkill.id}
               categories={[].concat(this.props.params.category)}
               levels={[].concat(this.levels)}
               skillGroups={this.skillGroups}
