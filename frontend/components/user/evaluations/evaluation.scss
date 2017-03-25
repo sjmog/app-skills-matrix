@@ -30,11 +30,15 @@
   margin-right: 1px;
 }
 
-// Bootstrap overrides
 .btn {
   background-image: none;
 }
 
 .panel-title {
   font-size: 18px;
+}
+
+.alert {
+  margin-top: 10px;
+  margin-bottom: 10px;
 }

@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Modal, Button, Glyphicon } from 'react-bootstrap';
+import { Modal, Button, Glyphicon, Alert } from 'react-bootstrap';
 
 import { SKILL_STATUS } from '../../../modules/user/evaluation';
 
@@ -40,6 +40,7 @@ const SkillDetailsModal = ({ showModal, onClose, skill, updateSkillStatus }) =>
                     ? <Glyphicon className='skill-modal__attained-icon' glyph='ok-circle' />
                     : false
                 }
+                { skill.error ? <Alert bsStyle='danger'>Something went wrong: {skill.error.message}</Alert> : false }
               </div>
             : null
           }

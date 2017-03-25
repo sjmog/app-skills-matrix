@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Panel, Label, ButtonGroup, Button, Alert, Glyphicon } from 'react-bootstrap';
 
-
 import { SKILL_STATUS } from '../../../../modules/user/evaluation';
 import SkillBody from './SkillBody';
 import '../evaluation.scss'
