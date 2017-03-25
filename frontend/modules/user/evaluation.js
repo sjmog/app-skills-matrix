@@ -61,8 +61,11 @@ function retrieveEvaluation(evaluationId) {
   }
 }
 
-function updateSkillStatus(evaluationId, skillGroupId, skillId, status) {
-  return function(dispatch) {
+function updateSkillStatus(evaluationId, skillId, status) {
+  return function(dispatch, getState) {
+    const { skillGroups } = getState().evaluation;
+    const skillGroupId = R.keys(R.filter((group, key) => R.contains(skillId, group.skills), skillGroups))[0];
+
     return api.updateSkillStatus(evaluationId, skillGroupId, skillId, status)
       .then((update) => dispatch(updateSkillStatusSuccess(skillId, status)))
       .catch((error) => dispatch(updateSkillStatusFailure(skillId, error)))

@@ -77,10 +77,9 @@ class EvaluationCategoryComponent extends React.Component {
     })
   }
 
-  updateSkillStatus(currentStatus) {
-    const { skillGroupId, id } = this.state.currentSkill;
+  updateSkillStatus(skillId, currentStatus) {
     const newStatus = currentStatus !== SKILL_STATUS.ATTAINED ? SKILL_STATUS.ATTAINED : null;
-    this.props.actions.updateSkillStatus(this.evaluationId, skillGroupId, id, newStatus);
+    this.props.actions.updateSkillStatus(this.evaluationId, skillId, newStatus);
   };
 
   evaluationComplete(evaluationId) {
@@ -121,6 +120,7 @@ class EvaluationCategoryComponent extends React.Component {
               levels={[].concat(this.levels)}
               skillGroups={this.skillGroups}
               skills={this.skills}
+              updateSkillStatus={this.updateSkillStatus}
             />
           </Col>
         </Row>

@@ -36,9 +36,9 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status }) =
   },
   updateSkill: function (skillGroupId, skillId, newSkillStatus) {
     const skillLens = R.compose(
-      lensById(skillGroupId),
+      lensById(Number(skillGroupId)),
       R.lensProp('skills'),
-      lensById(skillId),
+      lensById(Number(skillId)),
       R.lensPath(['status', 'current'])
     );
 

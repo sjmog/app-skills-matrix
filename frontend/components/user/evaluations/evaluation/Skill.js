@@ -16,7 +16,7 @@ const Skill = ({ level, skill, updateSkillStatus, prevSkill, nextSkill, isFirstS
       <Button
         bsStyle='primary'
         bsSize='large'
-        onClick={() => updateSkillStatus(status.current)}>
+        onClick={() => updateSkillStatus(id, status.current)}>
         {'Attained'}
       </Button>
       {
