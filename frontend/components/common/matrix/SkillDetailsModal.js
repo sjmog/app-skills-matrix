@@ -37,7 +37,7 @@ const SkillDetailsModal = ({ showModal, onClose, skill, updateSkillStatus }) =>
                 </Button>
                 {
                   skill.status.current === SKILL_STATUS.ATTAINED
-                    ? <Glyphicon className='skill-modal__attained-icon' glyph='ok-circle' />
+                    ? <Glyphicon className='skill-attained-icon' glyph='ok-circle' />
                     : false
                 }
                 { skill.error ? <Alert bsStyle='danger'>Something went wrong: {skill.error.message}</Alert> : false }
