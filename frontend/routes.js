@@ -1,7 +1,7 @@
 import React from 'react';
 import { Router, Route, IndexRoute, hashHistory } from 'react-router';
 
-import UserApp from './components/App';
+import UserApp from './components/user/App';
 import AdminApp from './components/admin/App';
 import { Dashboard as AdminDashboard } from './components/admin/Dashboard';
 import { DashboardPage as UserDashboard } from './components/user/dashboard/Dashboard';
