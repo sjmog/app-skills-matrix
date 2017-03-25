@@ -2,14 +2,14 @@ import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import R from 'ramda';
-import { Button, ButtonGroup, Glyphicon, Col, Row } from 'react-bootstrap';
+import { Col, Row } from 'react-bootstrap';
 import { Link } from 'react-router';
 
 import { actions, SKILL_STATUS } from '../../../../modules/user/evaluation';
 import { getSkillGroup } from '../../../common/helpers';
 
+import CategoryPageHeader from './CategoryPageHeader';
 import Matrix from '../../../common/matrix/Matrix'
-import CategoryNav from './CategoryNav';
 import Skill from './Skill';
 
 const getAllSkillsInCategory = (category, levels, allSkills, skillGroups) =>
@@ -91,12 +91,19 @@ class EvaluationCategoryComponent extends React.Component {
     return (
       <div>
         <Row>
-          <Col md={6}>
-          <h2>{this.props.params.category}</h2>
-          </Col>
-        </Row>
-        <Row className="show-grid">
-          <Col md={6}>
+          <CategoryPageHeader
+            evaluationId={this.evaluationId}
+            currentCategory={this.props.params.category}
+            templateName={this.props.template.name}
+            isFirstCategory={this.state.indexOfCurrentCategory === 0}
+            isLastCategory={this.state.indexOfCurrentCategory + 1 === this.categories.length}
+            previousCategory={this.categories[this.state.indexOfCurrentCategory - 1]}
+            nextCategory={this.categories[this.state.indexOfCurrentCategory + 1]}
+            evaluationComplete={this.evaluationComplete}
+          />
+          </Row>
+          <Row>
+          <Col md={7} className='skill-panel'>
             <Skill
               level={this.skillGroups[this.state.currentSkill.skillGroupId].level}
               skill={this.skills[this.state.currentSkill.id]}
@@ -106,43 +113,9 @@ class EvaluationCategoryComponent extends React.Component {
               isFirstSkill={this.state.indexOfCurrentSkill === 0}
               isLastSkill={this.state.indexOfCurrentSkill + 1 === this.state.allSkillsInCategory.length}
             />
-            <ButtonGroup
-              className='pull-right'
-            >
-            <Link to={`evaluations/${this.evaluationId}/category/${this.categories[this.state.indexOfCurrentCategory - 1]}`}
-                  className={'category-nav-link'}>
-              <Button
-                bsSize='large'
-                disabled={this.state.indexOfCurrentCategory === 0}
-              >
-                <Glyphicon glyph='chevron-left'/>
-                Previous category
-              </Button>
-            </Link>
-              <Link to={`evaluations/${this.evaluationId}/category/${this.categories[this.state.indexOfCurrentCategory + 1]}`}
-                  className={'category-nav-link'}>
-              <Button
-                bsSize='large'
-                disabled={this.state.indexOfCurrentCategory + 1 === this.categories.length}
-              >
-                Next category
-                <Glyphicon glyph='chevron-right'/>
-              </Button>
-            </Link>
-            </ButtonGroup>
           </Col>
-          <Col md={6}>
-            <Link to={`evaluations/${this.evaluationId}`}>
-              <Button
-                bsStyle='success'
-                bsSize='large'
-                onClick={() => this.evaluationComplete(this.evaluationId)}
-              >
-                {"I've finished my evaluation"}
-              </Button>
-            </Link>
+          <Col md={5} className='matrix-panel'>
             <Matrix
-              head={false}
               currentSkill={this.state.currentSkill.id}
               categories={[].concat(this.props.params.category)}
               levels={[].concat(this.levels)}

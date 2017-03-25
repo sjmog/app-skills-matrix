@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
-import { Panel, Col, ListGroupItem, ButtonGroup, Button, Alert, Glyphicon, Row } from 'react-bootstrap';
+import { Panel, Label, ButtonGroup, Button, Alert, Glyphicon } from 'react-bootstrap';
 
 
 import { SKILL_STATUS } from '../../../../modules/user/evaluation';
-import AdditionalInfo from './AdditionalInfo';
+import SkillBody from './SkillBody';
 import '../evaluation.scss'
 
 const Skill = ({ level, skill, updateSkillStatus, prevSkill, nextSkill, isFirstSkill, isLastSkill }) => {
@@ -11,23 +11,20 @@ const Skill = ({ level, skill, updateSkillStatus, prevSkill, nextSkill, isFirstS
 
   return (
     <div>
-    <Panel
-      bsStyle={status && status.current === SKILL_STATUS.ATTAINED ? 'success' : 'primary' }
-      key={id}
-      header={<h2>{`${level}: ${name}`}</h2>}
-    >
-      <h4><strong>Criteria: </strong>{criteria}</h4>
-      { questions ? <AdditionalInfo questions={questions}/> : false }
+    <Panel key={id} header={<h4>{name}<Label className='pull-right' bsStyle='info'>{level}</Label></h4>}>
+      <SkillBody criteria={criteria} questions={questions} />
       <Button
         bsStyle='primary'
         bsSize='large'
-        active={status && status.current === SKILL_STATUS.ATTAINED}
         onClick={() => updateSkillStatus(status.current)}>
         {'Attained'}
       </Button>
-      <ButtonGroup
-        className='pull-right'
-      >
+      {
+        status && status.current === SKILL_STATUS.ATTAINED
+        ? <Glyphicon className='skill-panel__attained-icon' glyph='ok-circle' />
+        : false
+      }
+      <ButtonGroup className='pull-right' >
       <Button
         bsSize='large'
         disabled={isFirstSkill}

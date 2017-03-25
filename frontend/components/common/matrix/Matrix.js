@@ -38,7 +38,7 @@ class Matrix extends React.Component {
         <Table responsive>
           <thead className='matrix-table__head'>
           <tr>
-            <th>Level</th>
+            <th>{' '}</th>
             { categories.map((categoryName) => (<th key={categoryName}>{categoryName}</th>)) }
           </tr>
           </thead>
