@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Row, Button } from 'react-bootstrap';
+import { Row, Button, PageHeader } from 'react-bootstrap';
 import { Link } from 'react-router';
 
 import { EVALUATION_STATUS } from '../../../modules/user/evaluation';
@@ -8,7 +8,7 @@ import './evaluation.scss'
 
 const EvaluationPageHeader = ({ templateName, firstCategory, id, status} ) => (
   <Row>
-    <h3 className='header'>{templateName}</h3>
+    <PageHeader>{templateName}</PageHeader>
     {
       status === EVALUATION_STATUS.NEW
         ? <Link to={`evaluations/${id}/category/${firstCategory}`}>

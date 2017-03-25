@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Navbar } from 'react-bootstrap';
 
+import './header.scss';
+
 class Header extends Component {
   render() {
     return (
@@ -12,7 +14,10 @@ class Header extends Component {
           <Navbar.Toggle />
         </Navbar.Header>
         <Navbar.Collapse>
-          <Navbar.Link pullRight href="/auth/github">Login</Navbar.Link>
+            <Navbar.Link
+              pullRight
+              href="/auth/github">Login
+            </Navbar.Link>
         </Navbar.Collapse>
       </Navbar>
     )
