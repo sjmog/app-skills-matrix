@@ -52,7 +52,7 @@ class Matrix extends React.Component {
                 skillGroups={skillGroups}
                 skills={skills}
                 viewSkillDetails={this.viewSkillDetails}
-                currentSkill={currentSkillId}
+                currentSkillId={currentSkillId}
               />
             ))
           }
