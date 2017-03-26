@@ -166,6 +166,41 @@ describe('evaluations', () => {
             .set('Cookie', `${cookieName}=${normalUserOneToken}`)
             .expect(403)));
 
+    it('prevents updates by the subject of an evaluation if the status is unknown', () =>
+      insertEvaluation(Object.assign({}, evaluation, { status: 'FOO_BAR' }), normalUserOneId)
+        .then(({ insertedId }) => {
+          evaluationId = insertedId
+        })
+        .then(() =>
+          request(app)
+            .post(`${prefix}/evaluations/${evaluationId}`)
+            .send({
+              action: 'updateSkillStatus',
+              skillGroupId: 0,
+              skillId: 1,
+              status: 'ATTAINED'
+            })
+            .set('Cookie', `${cookieName}=${normalUserOneToken}`)
+            .expect(403)));
+
+    it('prevents updates by a mentor if the status of an evaluation is unknown', () =>
+      insertEvaluation(Object.assign({}, evaluation, { status: 'FOO_BAR' }), normalUserOneId)
+        .then(({ insertedId }) => {
+          evaluationId = insertedId
+        })
+        .then(() => assignMentor(normalUserOneId, normalUserTwoId))
+        .then(() =>
+          request(app)
+            .post(`${prefix}/evaluations/${evaluationId}`)
+            .send({
+              action: 'updateSkillStatus',
+              skillGroupId: 0,
+              skillId: 1,
+              status: 'ATTAINED'
+            })
+            .set('Cookie', `${cookieName}=${normalUserTwoToken}`)
+            .expect(403)));
+
     it('prevents updates by the subject of the evaluation if the evaluation has been reviewed by their mentor', () =>
       insertEvaluation(Object.assign({}, evaluation, { status: MENTOR_REVIEW_COMPLETE }), normalUserOneId)
         .then(({ insertedId }) => {
@@ -300,6 +335,31 @@ describe('evaluations', () => {
             .post(`${prefix}/evaluations/${evaluationId}`)
             .send({ action: 'complete' })
             .set('Cookie', `${cookieName}=${normalUserOneToken}`)
+            .expect(403)));
+
+    it('prevents the subject of an evaluation from completing their evaluation if the status is unknown', () =>
+      insertEvaluation(Object.assign({}, evaluation, { status: 'FOO_BAR' }), normalUserOneId)
+        .then(({ insertedId }) => {
+          evaluationId = insertedId
+        })
+        .then(() =>
+          request(app)
+            .post(`${prefix}/evaluations/${evaluationId}`)
+            .send({ action: 'complete' })
+            .set('Cookie', `${cookieName}=${normalUserOneToken}`)
+            .expect(403)));
+
+    it('prevents a mentor from completing a review for an evaluation if the status is unknown', () =>
+      insertEvaluation(Object.assign({}, evaluation, { status: 'FOO_BAR' }), normalUserOneId)
+        .then(({ insertedId }) => {
+          evaluationId = insertedId
+        })
+        .then(() => assignMentor(normalUserOneId, normalUserTwoId))
+        .then(() =>
+          request(app)
+            .post(`${prefix}/evaluations/${evaluationId}`)
+            .send({ action: 'complete' })
+            .set('Cookie', `${cookieName}=${normalUserTwoToken}`)
             .expect(403)));
 
     it('prevents the subject of an evaluation from completing their evaluation after a mentor review', () =>
