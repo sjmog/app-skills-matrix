@@ -1,19 +1,18 @@
-.skill--attained {
-  background-color: #e6f2ff;
+@import '../../common/common';
+
+.skill-panel {
+ padding-left: 0;
 }
 
-.header__button {
-  margin-top: 10px;
+.matrix-panel {
+  padding-right: 0;
 }
 
-.info__panel {
+.skill-panel___info {
   border: none;
   box-shadow: none;
-}
-
-.skill__cta-group {
-  margin-top: 10px;
-  margin-bottom: 10px;
+  color: lightslategray;
+  font-size: 18px;
 }
 
 .level-heading {
@@ -24,4 +23,12 @@
   margin-top: 10px;
   margin-bottom: 10px;
   margin-right: 1px;
+}
+
+.btn {
+  background-image: none;
+}
+
+.panel-title {
+  font-size: 18px;
 }

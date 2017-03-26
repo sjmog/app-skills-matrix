@@ -1,42 +1,65 @@
 import React, { PropTypes } from 'react';
-import { ListGroupItem, ButtonGroup, Button, Alert } from 'react-bootstrap';
+import { Panel, Label, ButtonGroup, Button, Alert, Glyphicon } from 'react-bootstrap';
 
 import { SKILL_STATUS } from '../../../../modules/user/evaluation';
-import AdditionalInfo from './AdditionalInfo';
+import SkillBody from './SkillBody';
+import '../evaluation.scss'
 
-const Skill = ({ evaluationId, skillGroupId, name, skillId, criteria, questions, updateSkillStatus, status = null, error }) =>
-  (
-    <ListGroupItem
-      bsStyle={status && status.current === SKILL_STATUS.ATTAINED ? 'success' : null}
-      key={skillId}>
-      <h4 className='list-group-item-heading'>{name}</h4>
-      <p><strong>Criteria: </strong>{criteria}</p>
-      { questions ? <AdditionalInfo questions={questions}/> : false }
-      <ButtonGroup className='skill__cta-group'>
-        <Button
-          active={status && status.current === SKILL_STATUS.ATTAINED}
-          onClick={() =>  updateSkillStatus(evaluationId, skillGroupId, skillId, SKILL_STATUS.ATTAINED)}>
-          Attained
-        </Button>
-        <Button
-          active={status && status.current === SKILL_STATUS.UNATTAINED}
-          onClick={() => updateSkillStatus(evaluationId, skillGroupId, skillId, SKILL_STATUS.UNATTAINED)}>
-          Not yet
-        </Button>
+const Skill = ({ level, skill, updateSkillStatus, prevSkill, nextSkill, isFirstSkill, isLastSkill }) => {
+  const { name, id, criteria, questions, status, error } = skill;
+
+  return (
+    <div>
+    <Panel key={id} header={<h4>{name}<Label className='pull-right' bsStyle='info'>{level}</Label></h4>}>
+      <SkillBody criteria={criteria} questions={questions} />
+      <Button
+        bsStyle='primary'
+        bsSize='large'
+        onClick={() => updateSkillStatus(id, status.current)}>
+        {'Attained'}
+      </Button>
+      {
+        status.current === SKILL_STATUS.ATTAINED
+          ? <Glyphicon className='skill-attained-icon' glyph='ok-circle' />
+          : false
+      }
+      <ButtonGroup className='pull-right' >
+      <Button
+        bsSize='large'
+        disabled={isFirstSkill}
+        onClick={() => prevSkill(skill.id) }>
+        <Glyphicon glyph='chevron-left'/>
+        Previous skill
+      </Button>
+      <Button
+        bsSize='large'
+        disabled={isLastSkill}
+        onClick={() => nextSkill(skill.id) }>
+        Next skill
+        <Glyphicon glyph='chevron-right'/>
+      </Button>
       </ButtonGroup>
       { error ? <Alert bsStyle='danger'>Something went wrong: {error.message}</Alert> : false }
-    </ListGroupItem>
+    </Panel>
+    </div>
   );
+};
 
 Skill.propTypes = {
-  evaluationId: PropTypes.string.isRequired,
-  skillGroupId: PropTypes.number.isRequired,
-  name: PropTypes.string.isRequired,
-  skillId: PropTypes.number.isRequired,
-  criteria: PropTypes.string.isRequired,
-  questions: PropTypes.array,
+  isLastSkill: PropTypes.bool.isRequired,
+  isFirstSkill: PropTypes.bool.isRequired,
+  level: PropTypes.string.isRequired,
+  skill: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    id: PropTypes.number.isRequired,
+    criteria: PropTypes.string.isRequired,
+    questions: PropTypes.array,
+    status: PropTypes.object.isRequired,
+    error: PropTypes.object,
+  }),
   updateSkillStatus: PropTypes.func.isRequired,
-  status: PropTypes.object,
+  nextSkill: PropTypes.func.isRequired,
+  prevSkill: PropTypes.func.isRequired,
 };
 
 export default Skill;

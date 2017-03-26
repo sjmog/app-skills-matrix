@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Row, Alert } from 'react-bootstrap';
 
-import { actions } from '../../../modules/user/evaluation';
+import { actions, SKILL_STATUS } from '../../../modules/user/evaluation';
 
 import EvaluationPageHeader from './EvaluationPageHeader';
 import Matrix from '../../common/matrix/Matrix';
@@ -11,11 +11,21 @@ import Matrix from '../../common/matrix/Matrix';
 import './evaluation.scss'
 
 class EvaluationPageComponent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.updateSkillStatus = this.updateSkillStatus.bind(this);
+  }
+
   componentWillMount() {
     if (!this.props.evaluation.retrieved) {
       this.props.actions.retrieveEvaluation(this.props.params.evaluationId);
     }
   }
+
+  updateSkillStatus(skillId, currentStatus) {
+    const newStatus = currentStatus !== SKILL_STATUS.ATTAINED ? SKILL_STATUS.ATTAINED : null;
+    this.props.actions.updateSkillStatus(this.props.params.evaluationId, skillId, newStatus);
+  };
 
   render() {
     const { error } = this.props.evaluation;
@@ -38,6 +48,7 @@ class EvaluationPageComponent extends React.Component {
               levels={template.levels}
               skillGroups={skillGroups}
               skills={skills}
+              updateSkillStatus={this.updateSkillStatus}
             />
           </Row>
         </div>

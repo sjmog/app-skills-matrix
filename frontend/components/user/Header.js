@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { Navbar } from 'react-bootstrap';
+import { Navbar, Glyphicon } from 'react-bootstrap';
+
+import './header.scss';
 
 class Header extends Component {
   render() {
@@ -7,12 +9,18 @@ class Header extends Component {
       <Navbar inverse collapseOnSelect>
         <Navbar.Header>
           <Navbar.Brand>
-            <a href="#">Skills Matrix</a>
+            <a href="#">
+              <Glyphicon glyph='equalizer'/>
+              {` SKILLS MATRIX`}
+            </a>
           </Navbar.Brand>
           <Navbar.Toggle />
         </Navbar.Header>
         <Navbar.Collapse>
-          <Navbar.Link pullRight href="/auth/github">Login</Navbar.Link>
+            <Navbar.Link
+              pullRight
+              href="/auth/github">LOGIN
+            </Navbar.Link>
         </Navbar.Collapse>
       </Navbar>
     )
