@@ -120,7 +120,7 @@ describe('evaluations', () => {
             .set('Cookie', `${cookieName}=${normalUserOneToken}`)
             .expect(204)
         )
-        .then(() => evaluations.findOne({ _id: evaluationId }))
+        .then(() => getEvaluation(evaluationId))
         .then(({ skillGroups }) => {
           expect(skillGroups[0].skills[0].status).to.deep.equal({ previous: null, current: 'ATTAINED' });
         }));
