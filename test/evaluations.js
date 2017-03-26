@@ -290,7 +290,7 @@ describe('evaluations', () => {
           expect(completedApplication.status).to.equal(MENTOR_REVIEW_COMPLETE);
         }));
 
-    it('prevents the subject of evaluation from completing their evaluation more than once', () =>
+    it('prevents the subject of an evaluation from completing their evaluation more than once', () =>
       insertEvaluation(Object.assign({}, evaluation, { status: SELF_EVALUATION_COMPLETE }), normalUserOneId)
         .then(({ insertedId }) => {
           evaluationId = insertedId
@@ -302,7 +302,7 @@ describe('evaluations', () => {
             .set('Cookie', `${cookieName}=${normalUserOneToken}`)
             .expect(403)));
 
-    it('prevents subject of evaluation from completing their evaluation after a mentor review', () =>
+    it('prevents the subject of an evaluation from completing their evaluation after a mentor review', () =>
       insertEvaluation(Object.assign({}, evaluation, { status: MENTOR_REVIEW_COMPLETE }), normalUserOneId)
         .then(({ insertedId }) => {
           evaluationId = insertedId
@@ -314,7 +314,7 @@ describe('evaluations', () => {
             .set('Cookie', `${cookieName}=${normalUserOneToken}`)
             .expect(403)));
 
-    it('prevents mentor from completing a review of an evaluation for their mentee more than once', () =>
+    it('prevents a mentor from completing a review more than once', () =>
       insertEvaluation(Object.assign({}, evaluation, { status: MENTOR_REVIEW_COMPLETE }), normalUserOneId)
         .then(({ insertedId }) => {
           evaluationId = insertedId
