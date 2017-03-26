@@ -40,7 +40,7 @@ const CategoryPageHeader = ({
             bsSize='large'
             className='pull-right'
             onClick={() => evaluationComplete(evaluationId)}>
-            Submit
+            Evaluation complete
           </Button>
         </Link>
       </ButtonGroup>

@@ -14,6 +14,7 @@ class EvaluationPageComponent extends React.Component {
   constructor(props) {
     super(props);
     this.updateSkillStatus = this.updateSkillStatus.bind(this);
+    this.evaluationComplete = this.evaluationComplete.bind(this);
   }
 
   componentWillMount() {
@@ -27,21 +28,28 @@ class EvaluationPageComponent extends React.Component {
     this.props.actions.updateSkillStatus(this.props.params.evaluationId, skillId, newStatus);
   };
 
+  evaluationComplete() {
+    this.props.actions.evaluationComplete(this.props.params.evaluationId);
+  }
+
   render() {
     const { error } = this.props.evaluation;
 
     if (this.props.evaluation.retrieved && !error) {
-      const { evaluation, template, skillGroups, skills } = this.props;
+      const { evaluation, template, skillGroups, skills, user } = this.props;
       const [ firstCategory ] = template.categories;
 
       return (
         <div>
           <EvaluationPageHeader
+            view={this.props.view}
             templateName={template.name}
+            userName={user.name}
             firstCategory={firstCategory}
             id={this.props.params.evaluationId}
             status={evaluation.status}
-            />
+            evaluationComplete={this.evaluationComplete}
+          />
           <Row>
             <Matrix
               categories={template.categories}

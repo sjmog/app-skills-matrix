@@ -6,5 +6,8 @@ module.exports = Object.freeze({
   USER_HAS_NO_TEMPLATE: (username) => ({ message: `User '${username}' has not had a template selected` }),
   EVALUATION_NOT_FOUND: () => ({ message: 'Evaluation not found' }),
   MUST_BE_SUBJECT_OF_EVALUATION_OR_MENTOR: () => ({ message: 'Only the person being evaluated and their mentor can view an evaluation' }),
-  MUST_BE_LOGGED_IN: () => ({ message: 'You must be logged in to view this page' })
+  MUST_BE_LOGGED_IN: () => ({ message: 'You must be logged in to view this page' }),
+  SUBJECT_CANNOT_UPDATE_AFTER_SELF_EVALUATION: () => ({ message: "You've already completed your self-evaluation." }),
+  MENTOR_REVIEW_COMPLETE: () => ({ message: 'This evaluation has been reviewed and is now complete.'}),
+  MENTOR_CAN_ONLY_UPDATE_AFTER_SELF_EVALUATION: () => ({ message: "You can't update this evaluation until your mentee has completed their self-evaluation"})
 });

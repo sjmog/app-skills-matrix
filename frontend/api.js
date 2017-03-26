@@ -55,6 +55,7 @@ export default ({
   },
   evaluationComplete: function (evaluationId) {
     return axios.post(`/skillz/evaluations/${evaluationId}`, { action: 'complete' })
+      .then(getData)
       .catch(handleError)
   }
 });

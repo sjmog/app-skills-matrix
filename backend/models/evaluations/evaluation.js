@@ -3,6 +3,17 @@ const R = require('ramda');
 
 const HOST = process.env.HOST;
 
+const STATUS = keymirror({
+  NEW: null,
+  SELF_EVALUATION_COMPLETE: null,
+  MENTOR_REVIEW_COMPLETE: null,
+});
+
+const VIEW = keymirror({
+  SUBJECT: null,
+  MENTOR: null,
+});
+
 const lensMatching = (pred) =>
   R.lens(
     R.find(pred),
@@ -24,8 +35,11 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status }) =
   get viewModel() {
     return { url: `${HOST}/#/evaluations/${_id}`, id: _id, usersName: user.name, status, templateName: template.name };
   },
-  get userEvaluationViewModel() {
-    return { user, status, template, skillGroups };
+  get subjectEvaluationViewModel() {
+    return { user, status, template, skillGroups, view: VIEW.SUBJECT  };
+  },
+  get mentorEvaluationViewModel() {
+    return { user, status, template, skillGroups, view: VIEW.MENTOR };
   },
   get mailData() {
     return {
@@ -53,21 +67,32 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status }) =
       status
     }
   },
-  complete: function () {
+  selfEvaluationComplete: function () {
     return {
       id: _id,
       user,
       createdDate,
       template,
       skillGroups,
-      status: STATUS.COMPLETE
+      status: STATUS.SELF_EVALUATION_COMPLETE
     }
+  },
+  selfEvaluationCompleted: function () {
+    return status === STATUS.SELF_EVALUATION_COMPLETE
+  },
+  mentorReviewComplete: function () {
+    return {
+      id: _id,
+      user,
+      createdDate,
+      template,
+      skillGroups,
+      status: STATUS.MENTOR_REVIEW_COMPLETE,
+    }
+  },
+  mentorReviewCompleted: function () {
+    return status === STATUS.MENTOR_REVIEW_COMPLETE;
   }
-});
-
-const STATUS = keymirror({
-  NEW: null,
-  COMPLETE: null,
 });
 
 module.exports = evaluation;

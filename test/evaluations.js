@@ -4,6 +4,8 @@ const { expect } = require('chai');
 const app = require('../backend');
 const { prepopulateUsers, users, assignMentor, evaluations, insertTemplate, clearDb, insertSkill, insertEvaluation, getEvaluation } = require('./helpers');
 const { sign, cookieName } = require('../backend/models/auth');
+const { STATUS } = require('../backend/models/evaluations/evaluation');
+const { NEW, SELF_EVALUATION_COMPLETE, MENTOR_REVIEW_COMPLETE } = STATUS;
 const templateData = require('./fixtures/templates');
 const skills = require('./fixtures/skills');
 const [evaluation] = require('./fixtures/evaluations');
@@ -12,6 +14,8 @@ const prefix = '/skillz';
 
 let adminToken, normalUserOneToken, normalUserTwoToken;
 let adminUserId, normalUserOneId, normalUserTwoId;
+
+let evaluationId;
 
 describe('evaluations', () => {
 
@@ -35,22 +39,18 @@ describe('evaluations', () => {
             adminUserId = adminUser._id;
           })));
 
-
   describe('GET /evaluation/:evaluationId', () => {
-    let evaluationId;
-
-    beforeEach(() =>
-      insertEvaluation(Object.assign({}, evaluation, { user: { id: String(normalUserOneId) } }))
+    it('allows a user to retrieve their evaluation', () =>
+      insertEvaluation(evaluation, normalUserOneId)
         .then(({ insertedId }) => {
           evaluationId = insertedId
         })
-    );
-
-    it('allows a user to retrieve their evaluation', () =>
-      request(app)
-        .get(`${prefix}/evaluations/${evaluationId}`)
-        .set('Cookie', `${cookieName}=${normalUserOneToken}`)
-        .expect(200)
+        .then(() =>
+          request(app)
+            .get(`${prefix}/evaluations/${evaluationId}`)
+            .set('Cookie', `${cookieName}=${normalUserOneToken}`)
+            .expect(200)
+        )
         .then(({ body }) => {
           expect(body.user.id).to.equal(String(normalUserOneId));
           expect(body.template.name).to.equal('Node JS Dev');
@@ -58,7 +58,11 @@ describe('evaluations', () => {
         }));
 
     it('allows a mentor to view the evaluation of their mentee', () =>
-      assignMentor(normalUserOneId, normalUserTwoId)
+      insertEvaluation(evaluation, normalUserOneId)
+        .then(({ insertedId }) => {
+          evaluationId = insertedId
+        })
+        .then(() => assignMentor(normalUserOneId, normalUserTwoId))
         .then(() =>
           request(app)
             .get(`${prefix}/evaluations/${evaluationId}`)
@@ -70,6 +74,17 @@ describe('evaluations', () => {
               expect(body.skillGroups.length > 0).to.equal(true);
             })));
 
+    it(`prevents users that aren't the subject and aren't the subjects mentor from viewing an evaluation`, () =>
+      insertEvaluation(evaluation, normalUserOneId)
+        .then(({ insertedId }) => {
+          evaluationId = insertedId
+        })
+        .then(() =>
+          request(app)
+            .get(`${prefix}/evaluations/${evaluationId}`)
+            .set('Cookie', `${cookieName}=${normalUserTwoToken}`)
+            .expect(403)));
+
     const errorCases = [
       () => ({
         desc: 'no evaluation',
@@ -77,12 +92,6 @@ describe('evaluations', () => {
         evaluationId: 'noMatchingId',
         expect: 404,
       }),
-      () => ({
-        desc: 'user not subject of evaluation',
-        token: normalUserTwoToken,
-        evaluationId,
-        expect: 403,
-      })
     ];
 
     errorCases.forEach((test) =>
@@ -94,33 +103,34 @@ describe('evaluations', () => {
   });
 
   describe('POST /evaluations/:evaluationId { action: updateSkillStatus }', () => {
-    let evaluationId;
-
-    beforeEach(() =>
-      insertEvaluation(Object.assign({}, evaluation, { user: { id: String(normalUserOneId) } }))
+    it('allows a user to update the status of a skill', () =>
+      insertEvaluation(evaluation, normalUserOneId)
         .then(({ insertedId }) => {
           evaluationId = insertedId
         })
-    );
-
-    it('allows a user to update the status of a skill', () =>
-      request(app)
-        .post(`${prefix}/evaluations/${evaluationId}`)
-        .send({
-          action: 'updateSkillStatus',
-          skillGroupId: 0,
-          skillId: 1,
-          status: 'ATTAINED'
-        })
-        .set('Cookie', `${cookieName}=${normalUserOneToken}`)
-        .expect(204)
-        .then(() => getEvaluation(evaluationId))
+        .then(() =>
+          request(app)
+            .post(`${prefix}/evaluations/${evaluationId}`)
+            .send({
+              action: 'updateSkillStatus',
+              skillGroupId: 0,
+              skillId: 1,
+              status: 'ATTAINED'
+            })
+            .set('Cookie', `${cookieName}=${normalUserOneToken}`)
+            .expect(204)
+        )
+        .then(() => evaluations.findOne({ _id: evaluationId }))
         .then(({ skillGroups }) => {
           expect(skillGroups[0].skills[0].status).to.deep.equal({ previous: null, current: 'ATTAINED' });
         }));
 
-    it('allows a mentor to view their mentees evaluation', () =>
-      assignMentor(normalUserOneId, normalUserTwoId)
+    it('allows a mentor to update a skill for their mentee if they have already self-evaluated', () =>
+      insertEvaluation(Object.assign({}, evaluation, { status: SELF_EVALUATION_COMPLETE }), normalUserOneId)
+        .then(({ insertedId }) => {
+          evaluationId = insertedId
+        })
+        .then(() => assignMentor(normalUserOneId, normalUserTwoId))
         .then(() =>
           request(app)
             .post(`${prefix}/evaluations/${evaluationId}`)
@@ -139,78 +149,215 @@ describe('evaluations', () => {
         })
     );
 
-    const errorCases = [
-      () => ({
-        desc: 'no evaluation',
-        token: normalUserOneToken,
-        evaluationId: 'noMatchingId',
-        body: { action: 'updateSkillStatus' },
-        expect: 404,
-      }),
-      () => ({
-        desc: 'user not subject of evaluation',
-        token: normalUserTwoToken,
-        evaluationId,
-        body: { action: 'updateSkillStatus' },
-        expect: 403,
-      }),
-    ];
-
-    errorCases.forEach((test) =>
-      it(`handles error case: ${test().desc}`, () =>
-        request(app)
-          .post(`${prefix}/evaluations/${test().evaluationId}`)
-          .send(test().body)
-          .set('Cookie', `${cookieName}=${test().token}`)
-          .expect(test().expect)))
-  });
-
-  describe('POST /evaluations/:evaluationId { action: complete }', () => {
-    let evaluationId;
-
-    beforeEach(() =>
-      insertEvaluation(Object.assign({}, evaluation, { user: { id: String(normalUserOneId) } }))
+    it('prevents updates by the subject of the evaluation if they have completed their self-evaluation', () =>
+      insertEvaluation(Object.assign({}, evaluation, { status: SELF_EVALUATION_COMPLETE }), normalUserOneId)
         .then(({ insertedId }) => {
           evaluationId = insertedId
         })
-    );
+        .then(() =>
+          request(app)
+            .post(`${prefix}/evaluations/${evaluationId}`)
+            .send({
+              action: 'updateSkillStatus',
+              skillGroupId: 0,
+              skillId: 1,
+              status: 'ATTAINED'
+            })
+            .set('Cookie', `${cookieName}=${normalUserOneToken}`)
+            .expect(403)));
 
-    it('allows users to complete their own evaluation', () =>
+    it('prevents updates by the subject of the evaluation if the evaluation has been reviewed by their mentor', () =>
+      insertEvaluation(Object.assign({}, evaluation, { status: 'MENTOR_REVIEW_COMPLETE' }), normalUserOneId)
+        .then(({ insertedId }) => {
+          evaluationId = insertedId
+        })
+        .then(() =>
+          request(app)
+            .post(`${prefix}/evaluations/${evaluationId}`)
+            .send({
+              action: 'updateSkillStatus',
+              skillGroupId: 0,
+              skillId: 1,
+              status: 'ATTAINED'
+            })
+            .set('Cookie', `${cookieName}=${normalUserOneToken}`)
+            .expect(403)));
+
+    it('prevents updates by a mentor if they have already completed their review of an evaluation', () =>
+      insertEvaluation(Object.assign({}, evaluation, { status: MENTOR_REVIEW_COMPLETE }), normalUserOneId)
+        .then(({ insertedId }) => {
+          evaluationId = insertedId
+        })
+        .then(() => assignMentor(normalUserOneId, normalUserTwoId))
+        .then(() =>
+          request(app)
+            .post(`${prefix}/evaluations/${evaluationId}`)
+            .send({
+              action: 'updateSkillStatus',
+              skillGroupId: 0,
+              skillId: 1,
+              status: 'ATTAINED'
+            })
+            .set('Cookie', `${cookieName}=${normalUserTwoToken}`)
+            .expect(403)));
+
+    it('prevents updates by a mentor if the evaluation has not been completed by their mentee', () =>
+      insertEvaluation(Object.assign({}, evaluation, { status: NEW  }), normalUserOneId)
+        .then(({ insertedId }) => {
+          evaluationId = insertedId
+        })
+        .then(() => assignMentor(normalUserOneId, normalUserTwoId))
+        .then(() =>
+          request(app)
+            .post(`${prefix}/evaluations/${evaluationId}`)
+            .send({
+              action: 'updateSkillStatus',
+              skillGroupId: 0,
+              skillId: 1,
+              status: 'ATTAINED'
+            })
+            .set('Cookie', `${cookieName}=${normalUserTwoToken}`)
+            .expect(403)));
+
+    it('prevents a user that is not the subject, nor the mentor of the subject, from updating a skill', () =>
+      insertEvaluation(evaluation, normalUserOneId)
+        .then(({ insertedId }) => {
+          evaluationId = insertedId
+        })
+        .then(() =>
+          request(app)
+            .post(`${prefix}/evaluations/${evaluationId}`)
+            .send({
+              action: 'updateSkillStatus',
+              skillGroupId: 0,
+              skillId: 1,
+              status: 'ATTAINED'
+            })
+            .set('Cookie', `${cookieName}=${normalUserTwoToken}`)
+            .expect(403)));
+
+    it('returns not found if an attempt is made to update an evaluation that does not exist', () =>
       request(app)
-        .post(`${prefix}/evaluations/${evaluationId}`)
-        .send({ action: 'complete', evaluationId })
+        .post(`${prefix}/evaluations/noMatchingId`)
+        .send({
+          action: 'updateSkillStatus',
+          skillGroupId: 0,
+          skillId: 1,
+          status: 'ATTAINED'
+        })
         .set('Cookie', `${cookieName}=${normalUserOneToken}`)
-        .expect(204)
-        .then(() => evaluations.findOne({ _id: evaluationId }))
-        .then((completedApplication) => {
-          expect(completedApplication.status).to.equal('COMPLETE');
-        }));
-
-    const errorCases = [
-      () => ({
-        desc: 'no evaluation',
-        evaluationId: 'noMatchingId',
-        token: normalUserOneToken,
-        body: { action: 'complete' },
-        expect: 404,
-      }),
-      () => ({
-        desc: 'user not subject of evaluation',
-        evaluationId,
-        token: normalUserTwoToken,
-        body: { action: 'complete' },
-        expect: 403,
-      }),
-    ];
-
-    errorCases.forEach((test) =>
-      it(`handles error case: ${test().desc}`, () =>
-        request(app)
-          .post(`${prefix}/evaluations/${test().evaluationId}`)
-          .send(test().body)
-          .set('Cookie', `${cookieName}=${test().token}`)
-          .expect(test().expect)))
+        .expect(404));
   });
 
+  describe('POST /evaluations/:evaluationId { action: complete }', () => {
+    it('allows users to complete their own evaluation', () =>
+      insertEvaluation(evaluation, normalUserOneId)
+        .then(({ insertedId }) => {
+          evaluationId = insertedId
+        })
+        .then(() =>
+          request(app)
+            .post(`${prefix}/evaluations/${evaluationId}`)
+            .send({ action: 'complete' })
+            .set('Cookie', `${cookieName}=${normalUserOneToken}`)
+            .expect(200)
+            .then(({ body }) => {
+              expect(body).to.deep.equal({ status: SELF_EVALUATION_COMPLETE })
+            })
+            .then(() => evaluations.findOne({ _id: evaluationId }))
+            .then((completedApplication) => {
+              expect(completedApplication.status).to.equal(SELF_EVALUATION_COMPLETE);
+            })
+        ));
+
+    it('allows a mentor to complete a review of an evaluation for their mentee', () =>
+      insertEvaluation(Object.assign({}, evaluation, { status: SELF_EVALUATION_COMPLETE }), normalUserOneId)
+        .then(({ insertedId }) => {
+          evaluationId = insertedId
+        })
+        .then(() => assignMentor(normalUserOneId, normalUserTwoId))
+        .then(() =>
+          request(app)
+            .post(`${prefix}/evaluations/${evaluationId}`)
+            .send({ action: 'complete' })
+            .set('Cookie', `${cookieName}=${normalUserTwoToken}`)
+            .expect(200))
+        .then(({ body }) => {
+          expect(body).to.deep.equal({ status: MENTOR_REVIEW_COMPLETE })
+        })
+        .then(() => evaluations.findOne({ _id: evaluationId }))
+        .then((completedApplication) => {
+          expect(completedApplication.status).to.equal(MENTOR_REVIEW_COMPLETE);
+        }));
+
+    it('prevents the subject of evaluation from completing their evaluation more than once', () =>
+      insertEvaluation(Object.assign({}, evaluation, { status: SELF_EVALUATION_COMPLETE }), normalUserOneId)
+        .then(({ insertedId }) => {
+          evaluationId = insertedId
+        })
+        .then(() =>
+          request(app)
+            .post(`${prefix}/evaluations/${evaluationId}`)
+            .send({ action: 'complete' })
+            .set('Cookie', `${cookieName}=${normalUserOneToken}`)
+            .expect(403)));
+
+    it('prevents subject of evaluation from completing their evaluation after a mentor review', () =>
+      insertEvaluation(Object.assign({}, evaluation, { status: MENTOR_REVIEW_COMPLETE }), normalUserOneId)
+        .then(({ insertedId }) => {
+          evaluationId = insertedId
+        })
+        .then(() =>
+          request(app)
+            .post(`${prefix}/evaluations/${evaluationId}`)
+            .send({ action: 'complete' })
+            .set('Cookie', `${cookieName}=${normalUserOneToken}`)
+            .expect(403)));
+
+    it('prevents mentor from completing a review of an evaluation for their mentee more than once', () =>
+      insertEvaluation(Object.assign({}, evaluation, { status: MENTOR_REVIEW_COMPLETE }), normalUserOneId)
+        .then(({ insertedId }) => {
+          evaluationId = insertedId
+        })
+        .then(() => assignMentor(normalUserOneId, normalUserTwoId))
+        .then(() =>
+          request(app)
+            .post(`${prefix}/evaluations/${evaluationId}`)
+            .send({ action: 'complete' })
+            .set('Cookie', `${cookieName}=${normalUserTwoToken}`)
+            .expect(403)));
+
+    it('prevents mentor from completing a review of an evaluation before their mentee has self-evaluated', () =>
+      insertEvaluation(Object.assign({}, evaluation, { status: NEW  }), normalUserOneId)
+        .then(({ insertedId }) => {
+          evaluationId = insertedId
+        })
+        .then(() => assignMentor(normalUserOneId, normalUserTwoId))
+        .then(() =>
+          request(app)
+            .post(`${prefix}/evaluations/${evaluationId}`)
+            .send({ action: 'complete' })
+            .set('Cookie', `${cookieName}=${normalUserTwoToken}`)
+            .expect(403)));
+
+    it('prevents users that are not the subject of evaluation, nor the subjects mentor, from completing an evaluation', () =>
+      insertEvaluation(evaluation, normalUserOneId)
+        .then(({ insertedId }) => {
+          evaluationId = insertedId
+        })
+        .then(() =>
+          request(app)
+            .post(`${prefix}/evaluations/${evaluationId}`)
+            .send({ action: 'complete' })
+            .set('Cookie', `${cookieName}=${normalUserTwoToken}`)
+            .expect(403)));
+
+    it('returns not found if a request is made to complete an evaluation that does not exist', () =>
+      request(app)
+        .post(`${prefix}/evaluations/noMatchingId`)
+        .send({ action: 'complete' })
+        .set('Cookie', `${cookieName}=${normalUserOneToken}`)
+        .expect(404))
+  })
 });
 

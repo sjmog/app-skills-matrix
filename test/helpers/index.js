@@ -21,7 +21,7 @@ module.exports = {
   skills,
   insertSkill: (skill) => skills.insertOne(Object.assign({}, skill)),
   evaluations,
-  insertEvaluation: (evaluation) => evaluations.insertOne(encrypt(evaluation)),
+  insertEvaluation: (evaluation, user) => evaluations.insertOne(encrypt(Object.assign({}, evaluation, { user: { id: String(user) } }))),
   getEvaluation: (evaluationId) => evaluations.findOne({ _id: ObjectId(evaluationId) }).then(decrypt),
   clearDb: () => Promise.all([users.remove({}), templates.remove({}), skills.remove({}), evaluations.remove({})])
 };
