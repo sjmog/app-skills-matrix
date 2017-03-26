@@ -74,7 +74,7 @@ describe('evaluations', () => {
               expect(body.skillGroups.length > 0).to.equal(true);
             })));
 
-    it(`prevents users that aren't the subject and aren't the subjects mentor from viewing an evaluation`, () =>
+    it(`prevents a user that is not the subject, nor the subjects mentor, from viewing an evaluation`, () =>
       insertEvaluation(evaluation, normalUserOneId)
         .then(({ insertedId }) => {
           evaluationId = insertedId
@@ -103,7 +103,7 @@ describe('evaluations', () => {
   });
 
   describe('POST /evaluations/:evaluationId { action: updateSkillStatus }', () => {
-    it('allows a user to update the status of a skill', () =>
+    it('allows a user to update the status of a skill for a new evaluation', () =>
       insertEvaluation(evaluation, normalUserOneId)
         .then(({ insertedId }) => {
           evaluationId = insertedId
@@ -167,7 +167,7 @@ describe('evaluations', () => {
             .expect(403)));
 
     it('prevents updates by the subject of the evaluation if the evaluation has been reviewed by their mentor', () =>
-      insertEvaluation(Object.assign({}, evaluation, { status: 'MENTOR_REVIEW_COMPLETE' }), normalUserOneId)
+      insertEvaluation(Object.assign({}, evaluation, { status: MENTOR_REVIEW_COMPLETE }), normalUserOneId)
         .then(({ insertedId }) => {
           evaluationId = insertedId
         })
@@ -250,7 +250,7 @@ describe('evaluations', () => {
   });
 
   describe('POST /evaluations/:evaluationId { action: complete }', () => {
-    it('allows users to complete their own evaluation', () =>
+    it('allows a user to complete their own evaluation when it is new', () =>
       insertEvaluation(evaluation, normalUserOneId)
         .then(({ insertedId }) => {
           evaluationId = insertedId
@@ -290,7 +290,7 @@ describe('evaluations', () => {
           expect(completedApplication.status).to.equal(MENTOR_REVIEW_COMPLETE);
         }));
 
-    it('prevents the subject of an evaluation from completing their evaluation more than once', () =>
+    it('prevents the subject of an evaluation from completing their evaluation if it is not new', () =>
       insertEvaluation(Object.assign({}, evaluation, { status: SELF_EVALUATION_COMPLETE }), normalUserOneId)
         .then(({ insertedId }) => {
           evaluationId = insertedId
@@ -314,7 +314,7 @@ describe('evaluations', () => {
             .set('Cookie', `${cookieName}=${normalUserOneToken}`)
             .expect(403)));
 
-    it('prevents a mentor from completing a review more than once', () =>
+    it('prevents a mentor from completing a review for an evaluation they have alraedy reviewed', () =>
       insertEvaluation(Object.assign({}, evaluation, { status: MENTOR_REVIEW_COMPLETE }), normalUserOneId)
         .then(({ insertedId }) => {
           evaluationId = insertedId
@@ -340,7 +340,7 @@ describe('evaluations', () => {
             .set('Cookie', `${cookieName}=${normalUserTwoToken}`)
             .expect(403)));
 
-    it('prevents users that are not the subject of evaluation, nor the subjects mentor, from completing an evaluation', () =>
+    it('prevents a user that is not the subject of the evaluation, nor the subjects mentor, from completing an evaluation', () =>
       insertEvaluation(evaluation, normalUserOneId)
         .then(({ insertedId }) => {
           evaluationId = insertedId

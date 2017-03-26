@@ -67,6 +67,9 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status }) =
       status
     }
   },
+  isNewEvaluation: function () {
+    return status === STATUS.NEW
+  },
   selfEvaluationComplete: function () {
     return {
       id: _id,
