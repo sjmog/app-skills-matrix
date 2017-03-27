@@ -44,3 +44,5 @@ $RECYCLE.BIN/
 .env
 .env.test
 frontend/dist
+client_secret.json
+google-sheets-token.json

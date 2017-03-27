@@ -4,6 +4,32 @@ This application is meant to be an automated approach to the skills matrix syste
 
 See [REQUIREMENTS.md](https://github.com/tes/app-skills-matrix/blob/master/REQUIREMENTS.md) for the original requirements.
 
+# Setting up access to google sheets API
+
+You will need Node.js version 6 or higher.
+
+* To access your Google account, you will need to set up OAuth: <https://developers.google.com/sheets/quickstart/nodejs#step\_1\_turn\_on\_the\_api\_name> 
+* Download the `client_secret.json` file. Save the file at the root level of the tool.
+
+In order to get data from a google sheet, you will have to set up the OAuth token. This is very easy, simply run the script in your terminal:
+
+```javascript
+node offline-google-sheet-auth.js
+```
+
+You will be presented with a message similar to:
+
+```
+Authorize this tool by visiting this url:  https://accounts.google.com/o/oauth2/auth?access_type=offline&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fspreadsheets.readonly&response_type=code&client_id=913948888888-rrrsd97bqasglllbu3v7t014gs78ieej.apps.googleusercontent.com&redirect_uri=urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob
+Enter the code from that page here:
+```
+
+1. Copy the URL and paste it into a browser where **you are currently logged in as the master Google account** you would like to use to manage the skills matrix app.
+1. Allow the app access to your account.
+1. Copy the token it provides and paste it into the command line at the prompt.
+
+This then saves the token in a file called `google-sheets-token.json`. This token can then be used when starting the application (to do).
+
 # How to run the app
 ```
 λ yarn
