@@ -5,7 +5,10 @@ import R from 'ramda';
 import { Col, Row } from 'react-bootstrap';
 import { Link } from 'react-router';
 
-import { actions, SKILL_STATUS } from '../../../../modules/user/evaluation';
+import { actions, SKILL_STATUS, EVALUATION_VIEW, EVALUATION_STATUS } from '../../../../modules/user/evaluation';
+const { SUBJECT, MENTOR } = EVALUATION_VIEW;
+const { NEW, SELF_EVALUATION_COMPLETE } = EVALUATION_STATUS;
+
 import { getSkillGroup } from '../../../common/helpers';
 
 import CategoryPageHeader from './CategoryPageHeader';
@@ -24,7 +27,7 @@ const getIndexOfSkill = (id, skillsInCategory) => R.findIndex(R.propEq('id', id)
 class EvaluationCategoryComponent extends React.Component {
   constructor(props) {
     super(props);
-    const { template, skills, skillGroups, params } = this.props;
+    const { template, skills, skillGroups, params, view, evaluation } = this.props;
     const allSkillsInCategory = getAllSkillsInCategory(params.category, template.levels, skills, skillGroups);
 
     this.state = {
@@ -35,6 +38,8 @@ class EvaluationCategoryComponent extends React.Component {
       indexOfCurrentCategory: template.categories.indexOf(params.category),
     };
 
+    this.view = view;
+    this.evaluation = evaluation;
     this.evaluationId = params.evaluationId;
     this.levels = template.levels;
     this.categories = template.categories;
@@ -121,6 +126,10 @@ class EvaluationCategoryComponent extends React.Component {
               skillGroups={this.skillGroups}
               skills={this.skills}
               updateSkillStatus={this.updateSkillStatus}
+              canUpdateSkillStatus={
+                this.view === SUBJECT && this.evaluation.status === NEW
+                || this.view === MENTOR && this.evaluation.status === SELF_EVALUATION_COMPLETE
+              }
             />
           </Col>
         </Row>

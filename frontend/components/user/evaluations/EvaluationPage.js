@@ -3,7 +3,9 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Row, Alert } from 'react-bootstrap';
 
-import { actions, SKILL_STATUS } from '../../../modules/user/evaluation';
+import { actions, SKILL_STATUS, EVALUATION_VIEW, EVALUATION_STATUS } from '../../../modules/user/evaluation';
+const { SUBJECT, MENTOR } = EVALUATION_VIEW;
+const { NEW, SELF_EVALUATION_COMPLETE } = EVALUATION_STATUS;
 
 import EvaluationPageHeader from './EvaluationPageHeader';
 import Matrix from '../../common/matrix/Matrix';
@@ -36,7 +38,7 @@ class EvaluationPageComponent extends React.Component {
     const { error } = this.props.evaluation;
 
     if (this.props.evaluation.retrieved && !error) {
-      const { evaluation, template, skillGroups, skills, user } = this.props;
+      const { evaluation, template, skillGroups, skills, user, view } = this.props;
       const [ firstCategory ] = template.categories;
 
       return (
@@ -57,6 +59,10 @@ class EvaluationPageComponent extends React.Component {
               skillGroups={skillGroups}
               skills={skills}
               updateSkillStatus={this.updateSkillStatus}
+              canUpdateSkillStatus={
+                view === SUBJECT && evaluation.status === NEW
+                || view === MENTOR && evaluation.status === SELF_EVALUATION_COMPLETE
+              }
             />
           </Row>
         </div>
