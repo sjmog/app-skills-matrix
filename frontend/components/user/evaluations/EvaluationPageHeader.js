@@ -31,30 +31,38 @@ const alertText = (view, status) => {
   return text;
 };
 
-const EvaluationPageHeader = ({ view, templateName, userName, firstCategory, id, status, evaluationComplete }) =>
-  (
-    <Row>
-      { view === MENTOR
-        ? <PageHeader
-            alertText={alertText(view, status)}
-            title={userName}
-            btnOnClick={evaluationComplete}
-            btnDisabled={status !== SELF_EVALUATION_COMPLETE}
-            btnText='Review complete' />
-        : false
-      }
-      { view === SUBJECT
-        ? <PageHeader
-            alertText={alertText(view, status)}
-            title='Evaluation'
-            subTitle={templateName}
-            btnUrl={`evaluations/${id}/category/${firstCategory}`}
-            btnDisabled={status === MENTOR_REVIEW_COMPLETE || status === SELF_EVALUATION_COMPLETE}
-            btnText='Begin evaluation' />
-        : false
-      }
-    </Row>
-  );
+const EvaluationPageHeader = ({ view, templateName, userName, firstCategory, id, status, evaluationComplete }) => {
+  if (view === MENTOR) {
+    return (
+      <Row>
+        <PageHeader
+          alertText={alertText(view, status)}
+          title={userName}
+          btnOnClick={evaluationComplete}
+          btnDisabled={status !== SELF_EVALUATION_COMPLETE}
+          btnText='Review complete'
+        />
+      </Row>
+    )
+  }
+
+  if (view === SUBJECT) {
+    return (
+      <Row>
+        <PageHeader
+        alertText={alertText(view, status)}
+        title='Evaluation'
+        subTitle={templateName}
+        btnUrl={`evaluations/${id}/category/${firstCategory}`}
+        btnDisabled={status === MENTOR_REVIEW_COMPLETE || status === SELF_EVALUATION_COMPLETE}
+        btnText='Begin evaluation'
+        />
+      </Row>
+    )
+  }
+
+  return false;
+};
 
 EvaluationPageHeader.propTypes = {
   templateName: PropTypes.string.isRequired,
