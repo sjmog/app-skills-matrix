@@ -36,8 +36,7 @@ class EvaluationPageComponent extends React.Component {
     const { error } = this.props.evaluation;
 
     if (this.props.evaluation.retrieved && !error) {
-      const { evaluation, template, skillGroups, skills, user, view } = this.props;
-      const [ firstCategory ] = template.categories;
+      const { evaluation, template, skillGroups, skills, view } = this.props;
 
       return (
         <div>
