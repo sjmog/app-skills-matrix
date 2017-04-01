@@ -99,7 +99,7 @@ const initialSate = {
   skillGroups: {}
 };
 
-export const reducers = handleActions({
+export default handleActions({
   [retrieveEvaluationSuccess]:
     (state, action) => R.merge(state, action.payload),
   [retrieveEvaluationFailure]:
@@ -135,3 +135,13 @@ export const reducers = handleActions({
       return R.merge(state, { evaluation });
     },
 }, initialSate);
+
+const getSkillGroup = (level, category, skillGroups) =>
+  R.find(group => (group.level === level && group.category === category), R.values(skillGroups));
+
+export const getAllSkillsInCategory = (state, category) =>
+  R.flatten(
+    R.reverse(state.template.levels).map((level) => {
+      const { id: skillGroupId, skills } = getSkillGroup(level, category, state.skillGroups);
+      return skills.map((id) => Object.assign({}, { id, skillGroupId }));
+    }));
