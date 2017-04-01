@@ -16,7 +16,7 @@ const normalizedEvaluation = {
     categories: ['Magicness', 'Dragon Flight'],
     levels: ['Expert', 'Novice']
   },
-  user: {
+  subject: {
     email: 'jake@hello.com',
     id: 'user_id',
     name: 'Jake'

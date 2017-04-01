@@ -12,7 +12,7 @@ module.exports.normalizeEvaluation = (evaluation) => {
   const { skills, skillGroups } = normaliseEvaluationSkillGroup(evaluation.skillGroups);
 
   return Object.assign({}, {
-    user: evaluation.user,
+    subject: evaluation.user,
     view: evaluation.view,
     evaluation: {
       retrieved: true,

@@ -153,7 +153,7 @@ export const getTemplateName = (state) =>
   state.template.name;
 
 export const getSubjectName = (state) =>
-  state.user.name;
+  state.subject.name;
 
 export const getFirstCategory = (state) =>
   state.template.categories[0];
