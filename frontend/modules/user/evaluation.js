@@ -145,3 +145,18 @@ export const getAllSkillsInCategory = (state, category) =>
       const { id: skillGroupId, skills } = getSkillGroup(level, category, state.skillGroups);
       return skills.map((id) => Object.assign({}, { id, skillGroupId }));
     }));
+
+export const getView = (state) =>
+  state.view;
+
+export const getTemplateName = (state) =>
+  state.template.name;
+
+export const getSubjectName = (state) =>
+  state.user.name;
+
+export const getFirstCategory = (state) =>
+  state.template.categories[0];
+
+export const getEvaluationStatus = (state) =>
+  state.evaluation.status;

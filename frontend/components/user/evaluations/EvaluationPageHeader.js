@@ -1,8 +1,11 @@
 import React, { PropTypes } from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import { Row, Button, Label, Alert } from 'react-bootstrap';
 import { Link } from 'react-router';
 
-import { EVALUATION_STATUS, EVALUATION_VIEW } from '../../../modules/user/evaluation';
+import { actions, EVALUATION_STATUS, EVALUATION_VIEW } from '../../../modules/user/evaluation';
+import { getView, getSubjectName, getTemplateName, getFirstCategory, getEvaluationStatus } from '../../../modules/user';
 import Matrix from '../../common/matrix/Matrix';
 import PageHeader from './../../common/PageHeader';
 
@@ -31,45 +34,71 @@ const alertText = (view, status) => {
   return text;
 };
 
-const EvaluationPageHeader = ({ view, templateName, userName, firstCategory, id, status, evaluationComplete }) => {
-  if (view === MENTOR) {
-    return (
-      <Row>
-        <PageHeader
-          alertText={alertText(view, status)}
-          title={userName}
-          btnOnClick={evaluationComplete}
-          btnDisabled={status !== SELF_EVALUATION_COMPLETE}
-          btnText='Review complete'
-        />
-      </Row>
-    )
+class EvaluationPageHeader extends React.Component {
+  constructor(props) {
+    super(props);
+    this.evaluationComplete = this.evaluationComplete.bind(this);
   }
 
-  if (view === SUBJECT) {
-    return (
-      <Row>
-        <PageHeader
-        alertText={alertText(view, status)}
-        title='Evaluation'
-        subTitle={templateName}
-        btnUrl={`evaluations/${id}/category/${firstCategory}`}
-        btnDisabled={status === MENTOR_REVIEW_COMPLETE || status === SELF_EVALUATION_COMPLETE}
-        btnText='Begin evaluation'
-        />
-      </Row>
-    )
+  evaluationComplete() {
+    this.props.actions.evaluationComplete(this.props.evaluationId);
   }
 
-  return false;
-};
+  render() {
+    const { evaluationId, view, templateName, firstCategory, subjectName, status } = this.props;
+
+    if (view === MENTOR) {
+      return (
+        <Row>
+          <PageHeader
+            alertText={alertText(view, status)}
+            title={subjectName}
+            btnOnClick={this.evaluationComplete}
+            btnDisabled={status !== SELF_EVALUATION_COMPLETE}
+            btnText='Review complete'
+          />
+        </Row>
+      )
+    }
+
+    if (view === SUBJECT) {
+      return (
+        <Row>
+          <PageHeader
+            alertText={alertText(view, status)}
+            title='Evaluation'
+            subTitle={templateName}
+            btnUrl={`evaluations/${evaluationId}/category/${firstCategory}`}
+            btnDisabled={status === MENTOR_REVIEW_COMPLETE || status === SELF_EVALUATION_COMPLETE}
+            btnText='Begin evaluation'
+          />
+        </Row>
+      )
+    }
+    return false;
+  }
+}
 
 EvaluationPageHeader.propTypes = {
-  templateName: PropTypes.string.isRequired,
-  firstCategory: PropTypes.string.isRequired,
-  id: PropTypes.string.isRequired,
+  view: PropTypes.string.isRequired,
+  templateName:  PropTypes.string.isRequired,
+  firstCategory:  PropTypes.string.isRequired,
+  subjectName:  PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,
-  evaluationComplete: PropTypes.func,
+  evaluationId: PropTypes.string.isRequired,
 };
 
-export default EvaluationPageHeader;
+export default connect(
+  function mapStateToProps(state) {
+    return ({
+      view: getView(state),
+      templateName: getTemplateName(state),
+      firstCategory: getFirstCategory(state),
+      subjectName: getSubjectName(state),
+      status: getEvaluationStatus(state),
+    })
+  },
+  function mapDispatchToProps(dispatch) {
+    return bindActionCreators(actions, dispatch);
+  }
+)(EvaluationPageHeader);

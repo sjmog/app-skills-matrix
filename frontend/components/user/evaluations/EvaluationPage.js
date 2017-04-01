@@ -15,24 +15,22 @@ import './evaluation.scss'
 class EvaluationPageComponent extends React.Component {
   constructor(props) {
     super(props);
+
     this.updateSkillStatus = this.updateSkillStatus.bind(this);
-    this.evaluationComplete = this.evaluationComplete.bind(this);
+
+    this.evaluationId = this.props.params.evaluationId;
   }
 
   componentWillMount() {
     if (!this.props.evaluation.retrieved) {
-      this.props.actions.retrieveEvaluation(this.props.params.evaluationId);
+      this.props.actions.retrieveEvaluation(this.evaluationId);
     }
   }
 
   updateSkillStatus(skillId, currentStatus) {
     const newStatus = currentStatus !== SKILL_STATUS.ATTAINED ? SKILL_STATUS.ATTAINED : null;
-    this.props.actions.updateSkillStatus(this.props.params.evaluationId, skillId, newStatus);
+    this.props.actions.updateSkillStatus(this.evaluationId, skillId, newStatus);
   };
-
-  evaluationComplete() {
-    this.props.actions.evaluationComplete(this.props.params.evaluationId);
-  }
 
   render() {
     const { error } = this.props.evaluation;
@@ -43,15 +41,7 @@ class EvaluationPageComponent extends React.Component {
 
       return (
         <div>
-          <EvaluationPageHeader
-            view={this.props.view}
-            templateName={template.name}
-            userName={user.name}
-            firstCategory={firstCategory}
-            id={this.props.params.evaluationId}
-            status={evaluation.status}
-            evaluationComplete={this.evaluationComplete}
-          />
+          <EvaluationPageHeader evaluationId={this.evaluationId} />
           <Row>
             <Matrix
               categories={template.categories}
