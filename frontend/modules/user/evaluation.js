@@ -160,3 +160,15 @@ export const getFirstCategory = (state) =>
 
 export const getEvaluationStatus = (state) =>
   state.evaluation.status;
+
+export const getSkillGroups = (state) =>
+  state.skillGroups;
+
+export const getSkills = (state) =>
+  state.skills;
+
+export const getLevels = (state) =>
+  state.template.levels;
+
+export const getCategories = (state) =>
+  state.template.categories;

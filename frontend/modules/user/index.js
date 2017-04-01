@@ -2,9 +2,9 @@ import { combineReducers } from 'redux';
 import dashboard from './dashboard';
 import evaluation, * as fromEvaluation from './evaluation';
 
-export const reducers = combineReducers({ dashboard, evaluation });
+export default combineReducers({ dashboard, evaluation });
 
-// EVALUATION SELECTORS
+/* EVALUATION SELECTORS */
 
 export const getAllSkillsInCategory = ({ evaluation }, category) =>
   fromEvaluation.getAllSkillsInCategory(evaluation, category);
@@ -23,3 +23,16 @@ export const getSubjectName = ({ evaluation }) =>
 
 export const getEvaluationStatus = ({ evaluation}) =>
   fromEvaluation.getEvaluationStatus(evaluation);
+
+export const getSkillGroups = ({ evaluation }) =>
+  fromEvaluation.getSkillGroups(evaluation);
+
+export const getSkills = ({ evaluation }) =>
+  fromEvaluation.getSkills(evaluation);
+
+export const getLevels = ({ evaluation }) =>
+  fromEvaluation.getLevels(evaluation);
+
+export const getCategories = ({ evaluation }) =>
+  fromEvaluation.getCategories(evaluation);
+

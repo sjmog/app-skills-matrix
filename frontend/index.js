@@ -9,8 +9,8 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/css/bootstrap-theme.css';
 
 import { adminRoutes, userRoutes } from './routes';
-import { reducers as adminReducers } from './modules/admin';
-import { reducers as userReducers } from './modules/user';
+import adminReducers from './modules/admin';
+import userReducers from './modules/user';
 
 const state = window.$REDUX_STATE;
 const context = window.$CONTEXT;

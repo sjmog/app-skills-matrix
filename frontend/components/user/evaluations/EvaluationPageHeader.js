@@ -5,7 +5,7 @@ import { Row, Button, Label, Alert } from 'react-bootstrap';
 import { Link } from 'react-router';
 
 import { actions, EVALUATION_STATUS, EVALUATION_VIEW } from '../../../modules/user/evaluation';
-import { getView, getSubjectName, getTemplateName, getFirstCategory, getEvaluationStatus } from '../../../modules/user';
+import * as selectors from '../../../modules/user';
 import Matrix from '../../common/matrix/Matrix';
 import PageHeader from './../../common/PageHeader';
 
@@ -91,11 +91,11 @@ EvaluationPageHeader.propTypes = {
 export default connect(
   function mapStateToProps(state) {
     return ({
-      view: getView(state),
-      templateName: getTemplateName(state),
-      firstCategory: getFirstCategory(state),
-      subjectName: getSubjectName(state),
-      status: getEvaluationStatus(state),
+      view: selectors.getView(state),
+      templateName: selectors.getTemplateName(state),
+      firstCategory: selectors.getFirstCategory(state),
+      subjectName: selectors.getSubjectName(state),
+      status: selectors.getEvaluationStatus(state),
     })
   },
   function mapDispatchToProps(dispatch) {
