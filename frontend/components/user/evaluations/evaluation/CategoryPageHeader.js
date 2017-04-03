@@ -20,18 +20,18 @@ const CategoryPageHeader = ({
     <small>{currentCategory}</small>
     <ButtonToolbar className='pull-right'>
       <ButtonGroup>
-        <Button bsSize='large' disabled={isFirstCategory}>
-          <Link to={`evaluations/${evaluationId}/category/${previousCategory}`} className={'category-nav-link'}>
-            <Glyphicon glyph='chevron-left'/>
-            Previous category
-          </Link>
-        </Button>
-        <Button bsSize='large' disabled={isLastCategory}>
-          <Link to={`evaluations/${evaluationId}/category/${nextCategory}`} className={'category-nav-link'}>
-            Next category
-            <Glyphicon glyph='chevron-right'/>
-          </Link>
-        </Button>
+        <Link to={`evaluations/${evaluationId}/category/${previousCategory}`} className={'category-nav-link'}>
+          <Button className='nav-btn--left' bsSize='large' disabled={isFirstCategory}>
+              <Glyphicon glyph='chevron-left'/>
+              Previous category
+          </Button>
+        </Link>
+        <Link to={`evaluations/${evaluationId}/category/${nextCategory}`} className={'category-nav-link'}>
+          <Button className='nav-btn--right' bsSize='large' disabled={isLastCategory}>
+              Next category
+              <Glyphicon glyph='chevron-right'/>
+          </Button>
+        </Link>
       </ButtonGroup>
       <ButtonGroup>
         <Link to={`evaluations/${evaluationId}`}>
@@ -40,7 +40,7 @@ const CategoryPageHeader = ({
             bsSize='large'
             className='pull-right'
             onClick={() => evaluationComplete(evaluationId)}>
-            Submit
+            Evaluation complete
           </Button>
         </Link>
       </ButtonGroup>

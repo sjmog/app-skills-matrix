@@ -3,7 +3,7 @@ import { Modal, Button, Glyphicon, Alert } from 'react-bootstrap';
 
 import { SKILL_STATUS } from '../../../modules/user/evaluation';
 
-const SkillDetailsModal = ({ showModal, onClose, skill, updateSkillStatus }) =>
+const SkillDetailsModal = ({ showModal, onClose, skill, updateSkillStatus, canUpdateSkillStatus }) =>
   (
     <div>
       <Modal show={showModal} onHide={onClose}>
@@ -29,15 +29,21 @@ const SkillDetailsModal = ({ showModal, onClose, skill, updateSkillStatus }) =>
                     </ul>
                   </dd>
                 </dl>
-                <Button
-                  bsStyle='primary'
-                  bsSize='large'
-                  onClick={() => updateSkillStatus(skill.id, skill.status.current)}>
-                  {'Attained'}
-                </Button>
                 {
-                  skill.status.current === SKILL_STATUS.ATTAINED
-                    ? <Glyphicon className='skill-attained-icon' glyph='ok-circle' />
+                  canUpdateSkillStatus
+                    ? <div>
+                        <Button
+                          bsStyle='primary'
+                          bsSize='large'
+                          onClick={() => updateSkillStatus(skill.id, skill.status.current)}>
+                          {'Attained'}
+                        </Button>
+                        {
+                          skill.status.current === SKILL_STATUS.ATTAINED
+                            ? <Glyphicon className='skill-attained-icon' glyph='ok-circle' />
+                            : false
+                        }
+                      </div>
                     : false
                 }
                 { skill.error ? <Alert bsStyle='danger'>Something went wrong: {skill.error.message}</Alert> : false }
@@ -55,7 +61,9 @@ const SkillDetailsModal = ({ showModal, onClose, skill, updateSkillStatus }) =>
 SkillDetailsModal.propTypes = {
   showModal: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+  updateSkillStatus: PropTypes.func,
   skill: PropTypes.object,
+  canUpdateSkillStatus: PropTypes.bool,
 };
 
 export default SkillDetailsModal;

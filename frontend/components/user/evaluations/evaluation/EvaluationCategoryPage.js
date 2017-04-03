@@ -5,36 +5,33 @@ import R from 'ramda';
 import { Col, Row } from 'react-bootstrap';
 import { Link } from 'react-router';
 
-import { actions, SKILL_STATUS } from '../../../../modules/user/evaluation';
-import { getSkillGroup } from '../../../common/helpers';
+import { getAllSkillsInCategory } from '../../../../modules/user'
+import { actions, SKILL_STATUS, EVALUATION_VIEW, EVALUATION_STATUS } from '../../../../modules/user/evaluation';
+const { SUBJECT, MENTOR } = EVALUATION_VIEW;
+const { NEW, SELF_EVALUATION_COMPLETE } = EVALUATION_STATUS;
 
 import CategoryPageHeader from './CategoryPageHeader';
 import Matrix from '../../../common/matrix/Matrix'
 import Skill from './Skill';
-
-const getAllSkillsInCategory = (category, levels, allSkills, skillGroups) =>
-  R.flatten(
-    R.reverse(levels).map((level) => {
-      const { id: skillGroupId, skills } = getSkillGroup(level, category, skillGroups);
-      return skills.map((id) => Object.assign({}, { id, skillGroupId }));
-    }));
 
 const getIndexOfSkill = (id, skillsInCategory) => R.findIndex(R.propEq('id', id))(skillsInCategory);
 
 class EvaluationCategoryComponent extends React.Component {
   constructor(props) {
     super(props);
-    const { template, skills, skillGroups, params } = this.props;
-    const allSkillsInCategory = getAllSkillsInCategory(params.category, template.levels, skills, skillGroups);
+    const { template, skills, skillGroups, params, view, evaluation, skillsInCategory } = this.props;
 
     this.state = {
-      currentSkill: allSkillsInCategory[0],
+      currentSkill: skillsInCategory[0],
       indexOfCurrentSkill: 0,
-      allSkillsInCategory: allSkillsInCategory,
+      skillsInCategory,
       currentCategory: params.category,
       indexOfCurrentCategory: template.categories.indexOf(params.category),
     };
 
+    this.templateName = template.name;
+    this.view = view;
+    this.evaluation = evaluation;
     this.evaluationId = params.evaluationId;
     this.levels = template.levels;
     this.categories = template.categories;
@@ -50,13 +47,13 @@ class EvaluationCategoryComponent extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps !== this.props) {
       const { category: currentCategory } = nextProps.params;
-      const allSkillsInCategory = getAllSkillsInCategory(currentCategory, this.levels, this.skills, this.skillGroups);
-      const indexOfCurrentSkill = getIndexOfSkill(this.state.currentSkill.id, allSkillsInCategory);
+      const { skillsInCategory } = this.props;
+      const indexOfCurrentSkill = getIndexOfSkill(this.state.currentSkill.id, skillsInCategory);
 
       this.setState({
-        currentSkill: indexOfCurrentSkill >= 0 ? allSkillsInCategory[indexOfCurrentSkill] : allSkillsInCategory[0],
-        indexOfCurrentSkill,
-        allSkillsInCategory,
+        currentSkill: indexOfCurrentSkill >= 0 ? skillsInCategory[indexOfCurrentSkill] : skillsInCategory[0],
+        indexOfCurrentSkill: indexOfCurrentSkill >= 0 ? indexOfCurrentSkill : 0,
+        skillsInCategory,
         currentCategory: currentCategory,
         indexOfCurrentCategory: this.categories.indexOf(currentCategory),
       });
@@ -65,14 +62,14 @@ class EvaluationCategoryComponent extends React.Component {
 
   nextSkill() {
     this.setState({
-      currentSkill: this.state.allSkillsInCategory[this.state.indexOfCurrentSkill + 1],
+      currentSkill: this.state.skillsInCategory[this.state.indexOfCurrentSkill + 1],
       indexOfCurrentSkill: this.state.indexOfCurrentSkill + 1
     })
   };
 
   prevSkill() {
     this.setState({
-      currentSkill: this.state.allSkillsInCategory[this.state.indexOfCurrentSkill - 1],
+      currentSkill: this.state.skillsInCategory[this.state.indexOfCurrentSkill - 1],
       indexOfCurrentSkill: this.state.indexOfCurrentSkill - 1
     })
   }
@@ -93,7 +90,7 @@ class EvaluationCategoryComponent extends React.Component {
           <CategoryPageHeader
             evaluationId={this.evaluationId}
             currentCategory={this.props.params.category}
-            templateName={this.props.template.name}
+            templateName={this.templateName}
             isFirstCategory={this.state.indexOfCurrentCategory === 0}
             isLastCategory={this.state.indexOfCurrentCategory + 1 === this.categories.length}
             previousCategory={this.categories[this.state.indexOfCurrentCategory - 1]}
@@ -110,7 +107,7 @@ class EvaluationCategoryComponent extends React.Component {
               nextSkill={this.nextSkill}
               prevSkill={this.prevSkill}
               isFirstSkill={this.state.indexOfCurrentSkill === 0}
-              isLastSkill={this.state.indexOfCurrentSkill + 1 === this.state.allSkillsInCategory.length}
+              isLastSkill={this.state.indexOfCurrentSkill + 1 === this.state.skillsInCategory.length}
             />
           </Col>
           <Col md={5} className='matrix-panel'>
@@ -121,6 +118,10 @@ class EvaluationCategoryComponent extends React.Component {
               skillGroups={this.skillGroups}
               skills={this.skills}
               updateSkillStatus={this.updateSkillStatus}
+              canUpdateSkillStatus={
+                this.view === SUBJECT && this.evaluation.status === NEW
+                || this.view === MENTOR && this.evaluation.status === SELF_EVALUATION_COMPLETE
+              }
             />
           </Col>
         </Row>
@@ -138,12 +139,23 @@ EvaluationCategoryComponent.propTypes = {
     levels: PropTypes.array
   }),
   skills: PropTypes.object.isRequired,
-  skillGroups: PropTypes.object.isRequired
+  skillGroups: PropTypes.object.isRequired,
+  skillsInCategory: PropTypes.array.isRequired,
 };
 
 export const EvaluationCategoryPage = connect(
-  function mapStateToProps(state) {
-    return state.evaluation;
+  function mapStateToProps(state, { params }) {
+    const  { template, skills, skillGroups, view, evaluation } = state.evaluation;
+    const skillsInCategory = getAllSkillsInCategory(state, params.category);
+
+    return ({
+      template,
+      skills,
+      skillGroups,
+      evaluation,
+      view,
+      skillsInCategory
+    });
   },
   function mapDispatchToProps(dispatch) {
     return {

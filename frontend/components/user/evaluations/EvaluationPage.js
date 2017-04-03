@@ -3,7 +3,9 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Row, Alert } from 'react-bootstrap';
 
-import { actions, SKILL_STATUS } from '../../../modules/user/evaluation';
+import { actions, SKILL_STATUS, EVALUATION_VIEW, EVALUATION_STATUS } from '../../../modules/user/evaluation';
+const { SUBJECT, MENTOR } = EVALUATION_VIEW;
+const { NEW, SELF_EVALUATION_COMPLETE } = EVALUATION_STATUS;
 
 import EvaluationPageHeader from './EvaluationPageHeader';
 import Matrix from '../../common/matrix/Matrix';
@@ -14,6 +16,7 @@ class EvaluationPageComponent extends React.Component {
   constructor(props) {
     super(props);
     this.updateSkillStatus = this.updateSkillStatus.bind(this);
+    this.evaluationComplete = this.evaluationComplete.bind(this);
   }
 
   componentWillMount() {
@@ -27,21 +30,28 @@ class EvaluationPageComponent extends React.Component {
     this.props.actions.updateSkillStatus(this.props.params.evaluationId, skillId, newStatus);
   };
 
+  evaluationComplete() {
+    this.props.actions.evaluationComplete(this.props.params.evaluationId);
+  }
+
   render() {
     const { error } = this.props.evaluation;
 
     if (this.props.evaluation.retrieved && !error) {
-      const { evaluation, template, skillGroups, skills } = this.props;
+      const { evaluation, template, skillGroups, skills, user, view } = this.props;
       const [ firstCategory ] = template.categories;
 
       return (
         <div>
           <EvaluationPageHeader
+            view={this.props.view}
             templateName={template.name}
+            userName={user.name}
             firstCategory={firstCategory}
             id={this.props.params.evaluationId}
             status={evaluation.status}
-            />
+            evaluationComplete={this.evaluationComplete}
+          />
           <Row>
             <Matrix
               categories={template.categories}
@@ -49,6 +59,10 @@ class EvaluationPageComponent extends React.Component {
               skillGroups={skillGroups}
               skills={skills}
               updateSkillStatus={this.updateSkillStatus}
+              canUpdateSkillStatus={
+                view === SUBJECT && evaluation.status === NEW
+                || view === MENTOR && evaluation.status === SELF_EVALUATION_COMPLETE
+              }
             />
           </Row>
         </div>

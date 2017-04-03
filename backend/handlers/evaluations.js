@@ -3,7 +3,14 @@ const Promise = require('bluebird');
 const createHandler = require('./createHandler');
 const { getEvaluationById, updateEvaluation } = require('../models/evaluations');
 const { getUserById } = require('../models/users');
-const { EVALUATION_NOT_FOUND, MUST_BE_SUBJECT_OF_EVALUATION_OR_MENTOR, MUST_BE_LOGGED_IN } = require('./errors');
+const {
+  EVALUATION_NOT_FOUND,
+  MUST_BE_SUBJECT_OF_EVALUATION_OR_MENTOR,
+  MUST_BE_LOGGED_IN,
+  SUBJECT_CAN_ONLY_UPDATE_NEW_EVALUATION,
+  MENTOR_REVIEW_COMPLETE,
+  MENTOR_CAN_ONLY_UPDATE_AFTER_SELF_EVALUATION,
+} = require('./errors');
 
 const handlerFunctions = Object.freeze({
   evaluation: {
@@ -21,14 +28,15 @@ const handlerFunctions = Object.freeze({
             return res.status(401).json(MUST_BE_LOGGED_IN());
           }
 
-          if (user.id !== evaluation.user.id) {
-            return getUserById(evaluation.user.id)
-              .then(({ mentorId }) => user.id === mentorId
-                ? res.status(200).json(evaluation.userEvaluationViewModel)
-                : res.status(403).json(MUST_BE_SUBJECT_OF_EVALUATION_OR_MENTOR()));
+          if (user.id === evaluation.user.id) {
+            return res.status(200).json(evaluation.subjectEvaluationViewModel);
           }
 
-          return res.status(200).json(evaluation.userEvaluationViewModel);
+          return getUserById(evaluation.user.id)
+            .then(({ mentorId }) =>
+              (user.id === mentorId
+                ? res.status(200).json(evaluation.mentorEvaluationViewModel)
+                : res.status(403).json(MUST_BE_SUBJECT_OF_EVALUATION_OR_MENTOR())));
         })
         .catch(next);
     },
@@ -47,17 +55,28 @@ const handlerFunctions = Object.freeze({
             return res.status(401).json(MUST_BE_LOGGED_IN());
           }
 
-          if (user.id !== evaluation.user.id) {
-            return getUserById(evaluation.user.id)
-              .then(({ mentorId }) =>
-                (user.id !== mentorId
-                  ? res.status(403).json(MUST_BE_SUBJECT_OF_EVALUATION_OR_MENTOR())
-                  : updateEvaluation(evaluation.updateSkill(skillGroupId, skillId, status))
-                    .then(() => res.sendStatus(204))));
+          if (evaluation.mentorReviewCompleted()) {
+            return res.status(403).json(MENTOR_REVIEW_COMPLETE())
           }
 
-          return updateEvaluation(evaluation.updateSkill(skillGroupId, skillId, status))
-            .then(() => res.sendStatus(204));
+          if (user.id === evaluation.user.id) {
+            return evaluation.isNewEvaluation()
+              ? updateEvaluation(evaluation.updateSkill(skillGroupId, skillId, status))
+                  .then(() => res.sendStatus(204))
+              : res.status(403).json(SUBJECT_CAN_ONLY_UPDATE_NEW_EVALUATION());
+          }
+
+          return getUserById(evaluation.user.id)
+            .then(({ mentorId }) => {
+              if (user.id !== mentorId) {
+                return res.status(403).json(MUST_BE_SUBJECT_OF_EVALUATION_OR_MENTOR());
+              }
+
+              return evaluation.selfEvaluationCompleted()
+                ? updateEvaluation(evaluation.updateSkill(skillGroupId, skillId, status))
+                    .then(() => res.sendStatus(204))
+                : res.status(403).json(MENTOR_CAN_ONLY_UPDATE_AFTER_SELF_EVALUATION());
+            })
         })
         .catch(next)
     },
@@ -75,13 +94,29 @@ const handlerFunctions = Object.freeze({
             return res.status(401).json(MUST_BE_LOGGED_IN());
           }
 
-          if (user.id !== evaluation.user.id) {
-            return res.status(403).json(MUST_BE_SUBJECT_OF_EVALUATION_OR_MENTOR());
+          if (evaluation.mentorReviewCompleted()) {
+            return res.status(403).json(MENTOR_REVIEW_COMPLETE())
           }
 
-          const completedApplication = evaluation.complete();
-          return updateEvaluation(completedApplication)
-            .then(() => res.sendStatus(204));
+          if (user.id === evaluation.user.id) {
+            const completedApplication = evaluation.selfEvaluationComplete();
+            return evaluation.isNewEvaluation()
+              ? updateEvaluation(completedApplication)
+                .then((updatedEvaluation) => res.status(200).json({ status: updatedEvaluation.status }))
+              : res.status(403).json(SUBJECT_CAN_ONLY_UPDATE_NEW_EVALUATION());
+          }
+
+          return getUserById(evaluation.user.id)
+            .then(({ mentorId }) => {
+              if (user.id !== mentorId) {
+                return res.status(403).json(MUST_BE_SUBJECT_OF_EVALUATION_OR_MENTOR());
+              }
+
+              return evaluation.selfEvaluationCompleted()
+                ? updateEvaluation(evaluation.mentorReviewComplete())
+                    .then((updatedEvaluation) => res.status(200).json({ status: updatedEvaluation.status }))
+                : res.status(403).json(MENTOR_CAN_ONLY_UPDATE_AFTER_SELF_EVALUATION())
+            });
         })
         .catch(next);
     }

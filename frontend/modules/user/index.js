@@ -1,5 +1,8 @@
 import { combineReducers } from 'redux';
-import { reducers as dashboardReducers } from './dashboard';
-import { reducers as evaluationReducers } from './evaluation';
+import dashboard from './dashboard';
+import evaluation, * as fromEvaluation from './evaluation';
 
-export const reducers = combineReducers({ dashboard: dashboardReducers, evaluation: evaluationReducers });
+export const reducers = combineReducers({ dashboard, evaluation });
+
+export const getAllSkillsInCategory = (state, category) =>
+  fromEvaluation.getAllSkillsInCategory(state.evaluation, category);

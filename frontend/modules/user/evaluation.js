@@ -5,12 +5,18 @@ import R from 'ramda';
 import api from '../../api';
 import { normalizeEvaluation } from '../normalize';
 
+export const EVALUATION_VIEW = keymirror({
+  MENTOR: null,
+  SUBJECT: null,
+});
+
 export const SKILL_STATUS = keymirror({
   ATTAINED: null,
 });
 
 export const EVALUATION_STATUS = keymirror({
-  COMPLETE: null,
+  MENTOR_REVIEW_COMPLETE: null,
+  SELF_EVALUATION_COMPLETE: null,
   NEW: null,
 });
 
@@ -44,7 +50,8 @@ const updateSkillStatusFailure = createAction(
 );
 
 const evaluationCompleteSuccess = createAction(
-  constants.EVALUATION_COMPLETE_SUCCESS
+  constants.EVALUATION_COMPLETE_SUCCESS,
+  status => status
 );
 
 const evaluationCompleteFailure = createAction(
@@ -75,7 +82,7 @@ function updateSkillStatus(evaluationId, skillId, status) {
 function evaluationComplete(evaluationId) {
   return function(dispatch) {
     return api.evaluationComplete(evaluationId)
-      .then(() => dispatch(evaluationCompleteSuccess()))
+      .then((status) => dispatch(evaluationCompleteSuccess(status)))
       .catch((error) => dispatch(evaluationCompleteFailure(error)))
   }
 }
@@ -92,7 +99,7 @@ const initialSate = {
   skillGroups: {}
 };
 
-export const reducers = handleActions({
+export default handleActions({
   [retrieveEvaluationSuccess]:
     (state, action) => R.merge(state, action.payload),
   [retrieveEvaluationFailure]:
@@ -118,7 +125,7 @@ export const reducers = handleActions({
   [evaluationCompleteSuccess]:
     (state, action) => {
       const evaluation = Object.assign({}, state.evaluation);
-      evaluation.status = EVALUATION_STATUS.COMPLETE;
+      evaluation.status = action.payload.status;
       return R.merge(state, { evaluation });
     },
   [evaluationCompleteFailure]:
@@ -128,3 +135,13 @@ export const reducers = handleActions({
       return R.merge(state, { evaluation });
     },
 }, initialSate);
+
+const getSkillGroup = (level, category, skillGroups) =>
+  R.find(group => (group.level === level && group.category === category), R.values(skillGroups));
+
+export const getAllSkillsInCategory = (state, category) =>
+  R.flatten(
+    R.reverse(state.template.levels).map((level) => {
+      const { id: skillGroupId, skills } = getSkillGroup(level, category, state.skillGroups);
+      return skills.map((id) => Object.assign({}, { id, skillGroupId }));
+    }));

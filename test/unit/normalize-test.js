@@ -1,8 +1,10 @@
 const { expect } = require('chai');
+const evaluation = require('../../backend/models/evaluations/evaluation');
 const { normalizeEvaluation } = require('../../frontend/modules/normalize');
-const [ evaluation ] = require('./../fixtures/evaluations');
+const [ sampleEvaluation ] = require('./../fixtures/evaluations');
 
 const normalizedEvaluation = {
+  view: 'SUBJECT',
   evaluation: {
     retrieved: true,
     status: 'NEW'
@@ -13,6 +15,11 @@ const normalizedEvaluation = {
     version: 1,
     categories: ['Magicness', 'Dragon Flight'],
     levels: ['Expert', 'Novice']
+  },
+  user: {
+    email: 'jake@hello.com',
+    id: 'user_id',
+    name: 'Jake'
   },
   skills: {
     1: {
@@ -92,6 +99,6 @@ const normalizedEvaluation = {
 
 describe('normalize evaluation', () => {
   it('should normalize an evaluation', () => {
-    expect(normalizeEvaluation(evaluation)).to.deep.equal(normalizedEvaluation);
+    expect(normalizeEvaluation(evaluation(sampleEvaluation).subjectEvaluationViewModel)).to.deep.equal(normalizedEvaluation);
   });
 });
