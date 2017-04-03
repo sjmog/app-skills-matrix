@@ -36,3 +36,5 @@ export const getLevels = ({ evaluation }) =>
 export const getCategories = ({ evaluation }) =>
   fromEvaluation.getCategories(evaluation);
 
+export const getError = ({ evaluation }) =>
+  fromEvaluation.getError(evaluation);

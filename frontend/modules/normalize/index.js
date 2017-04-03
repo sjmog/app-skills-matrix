@@ -14,10 +14,7 @@ module.exports.normalizeEvaluation = (evaluation) => {
   return Object.assign({}, {
     subject: evaluation.user,
     view: evaluation.view,
-    evaluation: {
-      retrieved: true,
-      status: evaluation.status,
-    },
+    status: evaluation.status,
     template: evaluation.template,
     skills,
     skillGroups

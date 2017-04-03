@@ -3,6 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Row, Alert } from 'react-bootstrap';
 
+import * as selectors from '../../../modules/user';
 import { actions, SKILL_STATUS, EVALUATION_VIEW, EVALUATION_STATUS } from '../../../modules/user/evaluation';
 const { SUBJECT, MENTOR } = EVALUATION_VIEW;
 const { NEW, SELF_EVALUATION_COMPLETE } = EVALUATION_STATUS;
@@ -16,15 +17,17 @@ class EvaluationPageComponent extends React.Component {
   constructor(props) {
     super(props);
 
-    this.updateSkillStatus = this.updateSkillStatus.bind(this);
+    this.state = {
+      evaluationRetrieved: false
+    };
 
+    this.updateSkillStatus = this.updateSkillStatus.bind(this);
     this.evaluationId = this.props.params.evaluationId;
   }
 
   componentWillMount() {
-    if (!this.props.evaluation.retrieved) {
-      this.props.actions.retrieveEvaluation(this.evaluationId);
-    }
+    this.props.actions.retrieveEvaluation(this.evaluationId)
+      .then(() => this.setState({ evaluationRetrieved: true }))
   }
 
   updateSkillStatus(skillId, currentStatus) {
@@ -33,40 +36,45 @@ class EvaluationPageComponent extends React.Component {
   };
 
   render() {
-    const { error } = this.props.evaluation;
+    const { levels, categories, status, skillGroups, skills, view, error } = this.props;
 
-    if (this.props.evaluation.retrieved && !error) {
-      const { evaluation, template, skillGroups, skills, view } = this.props;
-
-      return (
-        <div>
-          <EvaluationPageHeader evaluationId={this.evaluationId} />
-          <Row>
-            <Matrix
-              categories={template.categories}
-              levels={template.levels}
-              skillGroups={skillGroups}
-              skills={skills}
-              updateSkillStatus={this.updateSkillStatus}
-              canUpdateSkillStatus={
-                view === SUBJECT && evaluation.status === NEW
-                || view === MENTOR && evaluation.status === SELF_EVALUATION_COMPLETE
-              }
-            />
-          </Row>
-        </div>
-      )
+    if (!this.state.evaluationRetrieved) {
+      return false;
     }
 
-    return (<Row>{error ? <Alert bsStyle='danger'>Something went wrong: {error.message}</Alert> : false}</Row>);
+    if (error) {
+      return <Row>{error ? <Alert bsStyle='danger'>Something went wrong: {error.message}</Alert> : false}</Row>;
+    }
+
+    return (
+      <div>
+        <EvaluationPageHeader evaluationId={this.evaluationId}/>
+        <Row>
+          <Matrix
+            categories={categories}
+            levels={levels}
+            skillGroups={skillGroups}
+            skills={skills}
+            updateSkillStatus={this.updateSkillStatus}
+            canUpdateSkillStatus={
+              view === SUBJECT && status === NEW
+              || view === MENTOR && status === SELF_EVALUATION_COMPLETE
+            }
+          />
+        </Row>
+      </div>
+    )
   }
 }
 
 EvaluationPageComponent.propTypes = {
-  evaluation: PropTypes.object,
-  template: PropTypes.object,
+  status: PropTypes.string,
+  levels: PropTypes.array,
+  categories: PropTypes.array,
   skillGroups: PropTypes.object,
   skills: PropTypes.object,
+  view: PropTypes.string,
+  error: PropTypes.object,
   params: PropTypes.shape({
     evaluationId: PropTypes.string.isRequired
   })
@@ -74,7 +82,15 @@ EvaluationPageComponent.propTypes = {
 
 export const EvaluationPage = connect(
   function mapStateToProps(state) {
-    return state.evaluation;
+    return ({
+      status: selectors.getEvaluationStatus(state),
+      levels: selectors.getLevels(state),
+      categories: selectors.getCategories(state),
+      skillGroups: selectors.getSkillGroups(state),
+      skills: selectors.getSkills(state),
+      view: selectors.getView(state),
+      error: selectors.getError(state),
+    });
   },
   function mapDispatchToProps(dispatch) {
     return {
