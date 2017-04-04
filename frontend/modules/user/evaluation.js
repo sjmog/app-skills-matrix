@@ -93,7 +93,8 @@ export const actions = {
 };
 
 const initialSate = {
-  evaluation: {},
+  error: null,
+  status: null,
   template: {},
   skills: {},
   skillGroups: {}
@@ -104,10 +105,8 @@ export default handleActions({
     (state, action) => R.merge(state, action.payload),
   [retrieveEvaluationFailure]:
     (state, action) => {
-      const evaluation = Object.assign({}, state.evaluation);
-      evaluation.error = action.payload;
-      return R.merge(state, { evaluation })
-  },
+      return R.merge(state, { error: action.payload });
+    },
   [updateSkillStatusSuccess]:
     (state, action) => {
       const { skillId, status } = action.payload;
@@ -124,15 +123,11 @@ export default handleActions({
     },
   [evaluationCompleteSuccess]:
     (state, action) => {
-      const evaluation = Object.assign({}, state.evaluation);
-      evaluation.status = action.payload.status;
-      return R.merge(state, { evaluation });
+      return R.merge(state, { status: action.payload.status });
     },
   [evaluationCompleteFailure]:
     (state, action) => {
-      const evaluation = Object.assign({}, state.evaluation);
-      evaluation.error = action.payload;
-      return R.merge(state, { evaluation });
+      return R.merge(state, { error: action.payload });
     },
 }, initialSate);
 
@@ -145,3 +140,36 @@ export const getAllSkillsInCategory = (state, category) =>
       const { id: skillGroupId, skills } = getSkillGroup(level, category, state.skillGroups);
       return skills.map((id) => Object.assign({}, { id, skillGroupId }));
     }));
+
+export const getView = (state) =>
+  R.path(['view'], state);
+
+export const getTemplateName = (state) =>
+  R.path(['template', 'name'], state);
+
+export const getSubjectName = (state) =>
+  R.path(['subject', 'name'], state);
+
+export const getFirstCategory = (state) => {
+  const categories = getCategories(state);
+  return categories ? R.head(categories) : undefined;
+};
+
+export const getEvaluationStatus = (state) =>
+  R.path(['status'], state);
+
+export const getSkillGroups = (state) =>
+  R.path(['skillGroups'], state);
+
+export const getSkills = (state) =>
+  R.path(['skills'], state);
+
+export const getLevels = (state) => {
+  return R.path(['template', 'levels'], state);
+};
+
+export const getCategories = (state) =>
+  R.path(['template', 'categories'], state);
+
+export const getError = (state) =>
+  R.path(['error'], state);

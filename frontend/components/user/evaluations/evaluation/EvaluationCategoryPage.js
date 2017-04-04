@@ -5,7 +5,7 @@ import R from 'ramda';
 import { Col, Row } from 'react-bootstrap';
 import { Link } from 'react-router';
 
-import { getAllSkillsInCategory } from '../../../../modules/user'
+import * as selectors from '../../../../modules/user'
 import { actions, SKILL_STATUS, EVALUATION_VIEW, EVALUATION_STATUS } from '../../../../modules/user/evaluation';
 const { SUBJECT, MENTOR } = EVALUATION_VIEW;
 const { NEW, SELF_EVALUATION_COMPLETE } = EVALUATION_STATUS;
@@ -19,22 +19,22 @@ const getIndexOfSkill = (id, skillsInCategory) => R.findIndex(R.propEq('id', id)
 class EvaluationCategoryComponent extends React.Component {
   constructor(props) {
     super(props);
-    const { template, skills, skillGroups, params, view, evaluation, skillsInCategory } = this.props;
+    const { templateName, levels, categories, skills, skillGroups, view, skillsInCategory, status, params } = this.props;
 
     this.state = {
       currentSkill: skillsInCategory[0],
       indexOfCurrentSkill: 0,
       skillsInCategory,
       currentCategory: params.category,
-      indexOfCurrentCategory: template.categories.indexOf(params.category),
+      indexOfCurrentCategory: categories.indexOf(params.category),
     };
 
-    this.templateName = template.name;
+    this.templateName = templateName;
     this.view = view;
-    this.evaluation = evaluation;
+    this.evaluationStatus = status;
     this.evaluationId = params.evaluationId;
-    this.levels = template.levels;
-    this.categories = template.categories;
+    this.levels = levels;
+    this.categories = categories;
     this.skills = skills;
     this.skillGroups = skillGroups;
 
@@ -119,8 +119,8 @@ class EvaluationCategoryComponent extends React.Component {
               skills={this.skills}
               updateSkillStatus={this.updateSkillStatus}
               canUpdateSkillStatus={
-                this.view === SUBJECT && this.evaluation.status === NEW
-                || this.view === MENTOR && this.evaluation.status === SELF_EVALUATION_COMPLETE
+                this.view === SUBJECT && this.evaluationStatus === NEW
+                || this.view === MENTOR && this.evaluationStatus === SELF_EVALUATION_COMPLETE
               }
             />
           </Col>
@@ -145,16 +145,15 @@ EvaluationCategoryComponent.propTypes = {
 
 export const EvaluationCategoryPage = connect(
   function mapStateToProps(state, { params }) {
-    const  { template, skills, skillGroups, view, evaluation } = state.evaluation;
-    const skillsInCategory = getAllSkillsInCategory(state, params.category);
-
     return ({
-      template,
-      skills,
-      skillGroups,
-      evaluation,
-      view,
-      skillsInCategory
+      templateName: selectors.getTemplateName(state),
+      levels: selectors.getLevels(state),
+      categories: selectors.getCategories(state),
+      skills: selectors.getSkills(state),
+      skillGroups: selectors.getSkillGroups(state),
+      status: selectors.getEvaluationStatus(state),
+      view: selectors.getView(state),
+      skillsInCategory: selectors.getAllSkillsInCategory(state, params.category),
     });
   },
   function mapDispatchToProps(dispatch) {

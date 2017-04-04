@@ -5,10 +5,7 @@ const [ sampleEvaluation ] = require('./../fixtures/evaluations');
 
 const normalizedEvaluation = {
   view: 'SUBJECT',
-  evaluation: {
-    retrieved: true,
-    status: 'NEW'
-  },
+  status: 'NEW',
   template: {
     id: 'eng-nodejs',
     name: 'Node JS Dev',
@@ -16,7 +13,7 @@ const normalizedEvaluation = {
     categories: ['Magicness', 'Dragon Flight'],
     levels: ['Expert', 'Novice']
   },
-  user: {
+  subject: {
     email: 'jake@hello.com',
     id: 'user_id',
     name: 'Jake'
