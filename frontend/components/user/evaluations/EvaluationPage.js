@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Row, Alert } from 'react-bootstrap';
+import { Row, Alert, Col } from 'react-bootstrap';
 
 import * as selectors from '../../../modules/user';
 import { actions, SKILL_STATUS, EVALUATION_VIEW, EVALUATION_STATUS } from '../../../modules/user/evaluation';
@@ -47,9 +47,13 @@ class EvaluationPageComponent extends React.Component {
     }
 
     return (
-      <div>
-        <EvaluationPageHeader evaluationId={this.evaluationId}/>
+      <div className='evaluation-grid'>
+        <div className='evaluation-grid__item'>
+          <EvaluationPageHeader evaluationId={this.evaluationId}/>
+        </div>
+        <div className='evaluation-grid__item'>
         <Row>
+          <Col md={20}>
           <Matrix
             categories={categories}
             levels={levels}
@@ -61,7 +65,9 @@ class EvaluationPageComponent extends React.Component {
               || view === MENTOR && status === SELF_EVALUATION_COMPLETE
             }
           />
+          </Col>
         </Row>
+        </div>
       </div>
     )
   }

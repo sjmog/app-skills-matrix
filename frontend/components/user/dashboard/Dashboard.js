@@ -1,12 +1,14 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { Grid } from 'react-bootstrap';
+
 
 import UserDetails from './UserDetails';
 import Evaluations from './Evaluations';
 import MenteeEvaluations from './MenteeEvaluations';
 
 const Dashboard = ({ user, mentor, template, evaluations, menteeEvaluations }) => (
-  <div>
+  <Grid>
     {
       user
         ? <div>
@@ -25,7 +27,7 @@ const Dashboard = ({ user, mentor, template, evaluations, menteeEvaluations }) =
           </div>
         : <h1>{`You aren't logged in!`}</h1>
     }
-  </div>
+  </Grid>
 );
 
 

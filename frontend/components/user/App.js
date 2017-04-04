@@ -11,9 +11,7 @@ class Full extends Component {
         <div className="app-body">
           <main className="main">
             <div className="container-fluid">
-              <Grid>
-                {this.props.children}
-              </Grid>
+              {this.props.children}
             </div>
           </main>
         </div>

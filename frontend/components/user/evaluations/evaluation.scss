@@ -1,5 +1,15 @@
 @import '../../common/common';
 
+.evaluation-grid {
+  display: flex;
+  flex-direction: column ;
+  justify-content: space-around;
+}
+
+.evaluation-grid__item {
+  margin: 0 20px 0 20px;
+}
+
 .skill-panel {
  padding-left: 0;
 }

@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import R from 'ramda';
-import { Col, Row } from 'react-bootstrap';
+import { Grid, Col, Row } from 'react-bootstrap';
 import { Link } from 'react-router';
 
 import * as selectors from '../../../../modules/user'
@@ -88,7 +88,7 @@ class EvaluationCategoryComponent extends React.Component {
     const currentLevel = this.skillGroups[this.state.currentSkill.skillGroupId].level;
 
     return (
-      <div>
+      <Grid>
         <Row>
           <CategoryPageHeader
             evaluationId={this.evaluationId}
@@ -128,7 +128,7 @@ class EvaluationCategoryComponent extends React.Component {
             />
           </Col>
         </Row>
-      </div>
+      </Grid>
     )
   }
 }
