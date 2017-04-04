@@ -15,8 +15,17 @@
   font-size: 18px;
 }
 
-.panel-title {
-  font-size: 18px;
+.skill-header {
+  display: flex;
+  align-items: baseline;
+}
+
+.skill-header__title {
+  flex: 1;
+  margin-right: 6px;
+}
+
+.skill-header__label {
 }
 
 .nav-btn--right {

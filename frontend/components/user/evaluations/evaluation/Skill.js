@@ -10,7 +10,14 @@ const Skill = ({ level, skill, updateSkillStatus, prevSkill, nextSkill, isFirstS
 
   return (
     <div>
-    <Panel key={id} header={<h4>{name}<Label className='pull-right' bsStyle='info'>{level}</Label></h4>}>
+    <Panel
+      key={id}
+      header={
+        <div className='skill-header'>
+          <h4 className='skill-header__title'>{name}</h4>
+          <Label className='skill-header__label' bsStyle='info'>{level}</Label>
+        </div>
+      }>
       <SkillBody criteria={criteria} questions={questions} />
       <Button
         bsStyle='primary'
