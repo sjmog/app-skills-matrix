@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import R from 'ramda';
-import { Col, Row } from 'react-bootstrap';
+import { Grid, Col, Row } from 'react-bootstrap';
 import { Link } from 'react-router';
 
 import * as selectors from '../../../../modules/user'
@@ -15,6 +15,7 @@ import Matrix from '../../../common/matrix/Matrix'
 import Skill from './Skill';
 
 const getIndexOfSkill = (id, skillsInCategory) => R.findIndex(R.propEq('id', id))(skillsInCategory);
+const getIndexOfLevel = (level, levels) => levels.indexOf(level);
 
 class EvaluationCategoryComponent extends React.Component {
   constructor(props) {
@@ -84,8 +85,10 @@ class EvaluationCategoryComponent extends React.Component {
   }
 
   render() {
+    const currentLevel = this.skillGroups[this.state.currentSkill.skillGroupId].level;
+
     return (
-      <div>
+      <Grid>
         <Row>
           <CategoryPageHeader
             evaluationId={this.evaluationId}
@@ -101,7 +104,7 @@ class EvaluationCategoryComponent extends React.Component {
         <Row>
           <Col md={7} className='skill-panel'>
             <Skill
-              level={this.skillGroups[this.state.currentSkill.skillGroupId].level}
+              level={currentLevel}
               skill={this.skills[this.state.currentSkill.id]}
               updateSkillStatus={this.updateSkillStatus}
               nextSkill={this.nextSkill}
@@ -114,7 +117,7 @@ class EvaluationCategoryComponent extends React.Component {
             <Matrix
               skillBeingEvaluated={this.state.currentSkill.id}
               categories={[].concat(this.props.params.category)}
-              levels={[].concat(this.levels)}
+              levels={this.levels.slice(getIndexOfLevel(currentLevel, this.levels), this.levels.length)}
               skillGroups={this.skillGroups}
               skills={this.skills}
               updateSkillStatus={this.updateSkillStatus}
@@ -125,7 +128,7 @@ class EvaluationCategoryComponent extends React.Component {
             />
           </Col>
         </Row>
-      </div>
+      </Grid>
     )
   }
 }

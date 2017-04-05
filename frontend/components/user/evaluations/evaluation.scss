@@ -1,5 +1,15 @@
 @import '../../common/common';
 
+.evaluation-grid {
+  display: flex;
+  flex-direction: column ;
+  justify-content: space-around;
+}
+
+.evaluation-grid__item {
+  margin: 0 20px 0 20px;
+}
+
 .skill-panel {
  padding-left: 0;
 }
@@ -15,8 +25,17 @@
   font-size: 18px;
 }
 
-.panel-title {
-  font-size: 18px;
+.skill-header {
+  display: flex;
+  align-items: baseline;
+}
+
+.skill-header__title {
+  flex: 1;
+  margin-right: 6px;
+}
+
+.skill-header__label {
 }
 
 .nav-btn--right {
