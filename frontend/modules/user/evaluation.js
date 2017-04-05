@@ -138,7 +138,7 @@ export const getAllSkillsInCategory = (state, category) =>
   R.flatten(
     R.reverse(state.template.levels).map((level) => {
       const { id: skillGroupId, skills } = getSkillGroup(level, category, state.skillGroups);
-      return skills.map((id) => Object.assign({}, { id, skillGroupId }));
+      return R.reverse(skills.map((id) => Object.assign({}, { id, skillGroupId })));
     }));
 
 export const getView = (state) =>
