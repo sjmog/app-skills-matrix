@@ -20,11 +20,11 @@ const getIndexOfLevel = (level, levels) => levels.indexOf(level);
 class EvaluationCategoryComponent extends React.Component {
   constructor(props) {
     super(props);
-    const { templateName, levels, categories, skills, skillGroups, view, skillsInCategory, status, params } = this.props;
+    const { templateName, levels, categories, skills, skillGroups, view, skillsInCategory, status, params, highestAttainedSkill } = this.props;
 
     this.state = {
-      currentSkill: skillsInCategory[0],
-      indexOfCurrentSkill: 0,
+      currentSkill: highestAttainedSkill,
+      indexOfCurrentSkill: getIndexOfSkill(highestAttainedSkill.id, skillsInCategory),
       skillsInCategory,
       currentCategory: params.category,
       indexOfCurrentCategory: categories.indexOf(params.category),
@@ -48,12 +48,13 @@ class EvaluationCategoryComponent extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps !== this.props) {
       const { category: currentCategory } = nextProps.params;
-      const { skillsInCategory } = this.props;
+      const { skillsInCategory, highestAttainedSkill } = this.props;
+      const indexOfHighestAttainedSkill = getIndexOfSkill(highestAttainedSkill.id, skillsInCategory);
       const indexOfCurrentSkill = getIndexOfSkill(this.state.currentSkill.id, skillsInCategory);
 
       this.setState({
-        currentSkill: indexOfCurrentSkill >= 0 ? skillsInCategory[indexOfCurrentSkill] : skillsInCategory[0],
-        indexOfCurrentSkill: indexOfCurrentSkill >= 0 ? indexOfCurrentSkill : 0,
+        currentSkill: indexOfCurrentSkill >= 0 ? skillsInCategory[indexOfCurrentSkill] : highestAttainedSkill,
+        indexOfCurrentSkill: indexOfCurrentSkill >= 0 ? indexOfCurrentSkill : indexOfHighestAttainedSkill,
         skillsInCategory,
         currentCategory: currentCategory,
         indexOfCurrentCategory: this.categories.indexOf(currentCategory),
@@ -157,6 +158,7 @@ export const EvaluationCategoryPage = connect(
       status: selectors.getEvaluationStatus(state),
       view: selectors.getView(state),
       skillsInCategory: selectors.getAllSkillsInCategory(state, params.category),
+      highestAttainedSkill: selectors.getHighestAttainedSkill(state, params.category),
     });
   },
   function mapDispatchToProps(dispatch) {

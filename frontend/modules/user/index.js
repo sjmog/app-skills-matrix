@@ -38,3 +38,6 @@ export const getCategories = ({ evaluation }) =>
 
 export const getError = ({ evaluation }) =>
   fromEvaluation.getError(evaluation);
+
+export const getHighestAttainedSkill = ({ evaluation }, category) =>
+  fromEvaluation.getHighestAttainedSkill(evaluation, category);

@@ -173,3 +173,13 @@ export const getCategories = (state) =>
 
 export const getError = (state) =>
   R.path(['error'], state);
+
+export const getHighestAttainedSkill = (state, category) => {
+  const skillsInCategory = getAllSkillsInCategory(state, category);
+
+  return R.last(
+    skillsInCategory.filter(({ id }) => {
+      const { current, previous } = getSkills(state)[id].status;
+      return current === SKILL_STATUS.ATTAINED || previous === SKILL_STATUS.ATTAINED;
+    })) || skillsInCategory[0];
+};
