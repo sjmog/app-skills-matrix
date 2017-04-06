@@ -100,20 +100,20 @@ const handlerFunctions = Object.freeze({
             return res.status(403).json(MENTOR_REVIEW_COMPLETE())
           }
 
-          if (user.id === evaluation.user.id) {
-            const completedApplication = evaluation.selfEvaluationComplete();
-            return evaluation.isNewEvaluation()
-              ? Promise.all([updateEvaluation(completedApplication), getUserById(mentorId)])
-                .then(([updatedEvaluation, mentor]) =>
-                {
-                  sendMail(updatedEvaluation.getSelfEvaluationCompleteEmail(mentor));
-                  res.status(200).json({ status: updatedEvaluation.status })
-                })
-              : res.status(403).json(SUBJECT_CAN_ONLY_UPDATE_NEW_EVALUATION());
-          }
-
           return getUserById(evaluation.user.id)
             .then(({ mentorId }) => {
+
+              if (user.id === evaluation.user.id) {
+                const completedApplication = evaluation.selfEvaluationComplete();
+                return evaluation.isNewEvaluation()
+                  ? Promise.all([updateEvaluation(completedApplication), getUserById(mentorId)])
+                    .then(([updatedEvaluation, mentor]) => {
+                      sendMail(updatedEvaluation.getSelfEvaluationCompleteEmail(mentor));
+                      res.status(200).json({ status: updatedEvaluation.status })
+                    })
+                  : res.status(403).json(SUBJECT_CAN_ONLY_UPDATE_NEW_EVALUATION());
+              }
+
               if (user.id !== mentorId) {
                 return res.status(403).json(MUST_BE_SUBJECT_OF_EVALUATION_OR_MENTOR());
               }

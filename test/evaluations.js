@@ -290,6 +290,7 @@ describe('evaluations', () => {
         .then(({ insertedId }) => {
           evaluationId = insertedId
         })
+        .then(() => assignMentor(normalUserOneId, normalUserTwoId))
         .then(() =>
           request(app)
             .post(`${prefix}/evaluations/${evaluationId}`)

@@ -2,7 +2,7 @@ const request = require('supertest');
 const { expect } = require('chai');
 
 const app = require('../backend');
-const { prepopulateUsers, users, evaluations, insertTemplate, clearDb, insertSkill, insertEvaluation } = require('./helpers');
+const { prepopulateUsers, users, evaluations, insertTemplate, clearDb, insertSkill, insertEvaluation, assignMentor } = require('./helpers');
 const { sign, cookieName } = require('../backend/models/auth');
 const templateData = require('./fixtures/templates');
 const skills = require('./fixtures/skills');
@@ -34,7 +34,8 @@ describe('userEvaluations', () => {
             normalUserOneId = normalUserOne._id;
             normalUserTwoId = normalUserTwo._id;
             adminUserId = adminUser._id;
-          })));
+          }))
+      .then(() => assignMentor(normalUserOneId, normalUserTwoId)));
 
   describe('POST /users/:userId/evaluations', () => {
     it('allows admin user to create an evaluation for a user', () =>

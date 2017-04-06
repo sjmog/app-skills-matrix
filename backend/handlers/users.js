@@ -6,7 +6,7 @@ const { newEvaluation } = require('../models/evaluations/evaluation');
 const evaluations = require('../models/evaluations');
 const createHandler = require('./createHandler');
 const { sendMail } = require('../services/email');
-const { USER_EXISTS, MUST_BE_ADMIN, USER_NOT_FOUND, TEMPLATE_NOT_FOUND, USER_HAS_NO_TEMPLATE } = require('./errors');
+const { USER_EXISTS, MUST_BE_ADMIN, USER_NOT_FOUND, TEMPLATE_NOT_FOUND, USER_HAS_NO_TEMPLATE, USER_HAS_NO_MENTOR } = require('./errors');
 
 const handlerFunctions = Object.freeze({
   users: {
@@ -73,6 +73,9 @@ const handlerFunctions = Object.freeze({
           }
           if (!user.hasTemplate) {
             return res.status(400).json(USER_HAS_NO_TEMPLATE(user.manageUserViewModel.name));
+          }
+          if (!user.hasMentor) {
+            return res.status(400).json(USER_HAS_NO_MENTOR(user.manageUserViewModel.name));
           }
 
           return Promise.all([templates.getById(user.templateId), skills.getAll()])
