@@ -3,8 +3,13 @@
   "version": "1.0.0",
   "description": "OSS tool to manage employees skills",
   "main": "backend/index.js",
+  "engines": {
+    "node": "6",
+    "npm": "yarn"
+  },
   "scripts": {
-    "start": "eval $(cat .env) nodemon",
+    "start-dev": "eval $(cat .env) nodemon",
+    "start": "node backend/index.js",
     "debug": "nodemon --debug",
     "base": "node $npm_package_main",
     "lint": "standard --verbose | snazzy",
@@ -12,7 +17,10 @@
     "build": "webpack --debug",
     "watch": "NODE_ENV=local webpack --watch",
     "prepush": "eval $(cat .env.test) yarn test",
-    "ensure-local-data": "NODE_ENV=local node scripts/ensure-local-data"
+    "postinstall": "webpack",
+    "ensure-local-data": "NODE_ENV=local node scripts/ensure-local-data",
+    "setup-dokku-deploy": "git remote add dokku dokku@dokku.management.tescloud.com:skills-matrix",
+    "deploy": "git pull --rebase && git push dokku master"
   },
   "repository": {
     "url": "git@github.com:tes/app-skills-matrix.git",

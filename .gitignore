@@ -46,3 +46,4 @@ $RECYCLE.BIN/
 frontend/dist
 client_secret.json
 google-sheets-token.json
+dokku.md
