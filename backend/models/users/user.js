@@ -5,6 +5,9 @@ const user = ({ _id, name, email, createdDate, modifiedDate, templateId, mentorI
   name,
   templateId,
   mentorId,
+  get email() {
+    return email;
+  },
   get isAdmin() {
     return auth.isAdmin(email);
   },
