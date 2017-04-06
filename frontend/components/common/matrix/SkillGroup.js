@@ -3,7 +3,7 @@ import { Table } from 'react-bootstrap';
 
 import Skill from './Skill';
 
-const SkillGroup = ({ skillGroup, skills, viewSkillDetails, skillBeingEvaluated }) =>
+const SkillGroup = ({ skillGroup, skills, viewSkillDetails, skillBeingEvaluated, canViewDetails }) =>
   (
     <td>
       <Table bordered>
@@ -19,6 +19,7 @@ const SkillGroup = ({ skillGroup, skills, viewSkillDetails, skillBeingEvaluated 
                   skill={skill}
                   viewSkillDetails={viewSkillDetails}
                   isBeingEvaluated={skillBeingEvaluated === skillId}
+                  canViewDetails={canViewDetails}
                 />
               )
             })
@@ -32,6 +33,7 @@ SkillGroup.propTypes = {
   skillGroup: PropTypes.object.isRequired,
   skills: PropTypes.object.isRequired,
   skillBeingEvaluated: PropTypes.number,
+  canViewDetails: PropTypes.bool
 };
 
 export default SkillGroup;

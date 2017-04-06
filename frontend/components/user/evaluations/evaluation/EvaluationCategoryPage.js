@@ -143,11 +143,8 @@ class EvaluationCategoryComponent extends React.Component {
               levels={this.levels.slice(getIndexOfLevel(currentLevel, this.levels), this.levels.length)}
               skillGroups={this.skillGroups}
               skills={this.skills}
-              updateSkillStatus={this.updateSkillStatus}
-              canUpdateSkillStatus={
-                this.view === SUBJECT && this.evaluationStatus === NEW
-                || this.view === MENTOR && this.evaluationStatus === SELF_EVALUATION_COMPLETE
-              }
+              canUpdateSkillStatus={false}
+              canViewDetails={false}
             />
           </Col>
         </Row>

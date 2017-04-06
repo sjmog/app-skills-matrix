@@ -32,7 +32,7 @@ class Matrix extends React.Component {
   }
 
   render() {
-    const { categories, levels, skillGroups, skills, skillBeingEvaluated, updateSkillStatus, canUpdateSkillStatus } = this.props;
+    const { categories, levels, skillGroups, skills, skillBeingEvaluated, updateSkillStatus, canUpdateSkillStatus, canViewDetails } = this.props;
     return (
       <div>
         <Table responsive>
@@ -53,6 +53,7 @@ class Matrix extends React.Component {
                 skills={skills}
                 viewSkillDetails={this.viewSkillDetails}
                 skillBeingEvaluated={skillBeingEvaluated}
+                canViewDetails={canViewDetails}
               />
             ))
           }
@@ -77,6 +78,7 @@ Matrix.propTypes = {
   skills: PropTypes.object.isRequired,
   skillBeingEvaluated: PropTypes.number,
   canUpdateSkillStatus: PropTypes.bool,
+  canViewDetails: PropTypes.bool,
 };
 
 export default Matrix;
