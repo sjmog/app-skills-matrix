@@ -6,7 +6,7 @@ import SkillBody from './SkillBody';
 import '../evaluation.scss'
 
 const Skill = ({ level, skill, updateSkillStatus, prevSkill, nextSkill, isFirstSkill, isLastSkill }) => {
-  const { name, id, criteria, questions, status, error } = skill;
+  const { name, id, criteria, questions, status } = skill;
 
   return (
     <div>
@@ -19,17 +19,20 @@ const Skill = ({ level, skill, updateSkillStatus, prevSkill, nextSkill, isFirstS
         </div>
       }>
       <SkillBody criteria={criteria} questions={questions} />
-      <Button
-        bsStyle='primary'
-        bsSize='large'
-        onClick={() => updateSkillStatus(id, status.current)}>
-        {'Attained'}
-      </Button>
-      {
-        status.current === SKILL_STATUS.ATTAINED
-          ? <Glyphicon className='skill-attained-icon' glyph='ok-circle' />
-          : false
-      }
+      <ButtonGroup>
+        <Button
+          bsStyle='default'
+          bsSize='large'
+          onClick={() => updateSkillStatus(id, SKILL_STATUS.ATTAINED)}>
+          {'Attained'}
+        </Button>
+        <Button
+          bsStyle='default'
+          bsSize='large'
+          onClick={() => updateSkillStatus(id, null)}>
+          {'Not attained'}
+        </Button>
+      </ButtonGroup>
     </Panel>
       <ButtonGroup className='pull-right' >
         <Button
@@ -45,7 +48,6 @@ const Skill = ({ level, skill, updateSkillStatus, prevSkill, nextSkill, isFirstS
           <Glyphicon glyph='chevron-right'/>
         </Button>
       </ButtonGroup>
-      { error ? <Alert bsStyle='danger'>Something went wrong: {error.message}</Alert> : false }
     </div>
   );
 };
@@ -60,7 +62,6 @@ Skill.propTypes = {
     criteria: PropTypes.string.isRequired,
     questions: PropTypes.array,
     status: PropTypes.object.isRequired,
-    error: PropTypes.object,
   }),
   updateSkillStatus: PropTypes.func.isRequired,
   nextSkill: PropTypes.func.isRequired,

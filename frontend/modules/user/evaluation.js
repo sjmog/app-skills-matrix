@@ -112,6 +112,7 @@ export default handleActions({
       const { skillId, status } = action.payload;
       const skills = Object.assign({}, state.skills);
       skills[skillId].status.current = status;
+      skills[skillId].error = null;
       return R.merge(state, { skills });
     },
   [updateSkillStatusFailure]:
@@ -182,4 +183,9 @@ export const getHighestAttainedSkill = (state, category) => {
       const { current, previous } = getSkills(state)[id].status;
       return current === SKILL_STATUS.ATTAINED || previous === SKILL_STATUS.ATTAINED;
     })) || skillsInCategory[0];
+};
+
+export const getErringSkills = (state) => {
+  const skills = getSkills(state);
+  return R.filter((skill) => skill.error)(R.values(skills));
 };

@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import R from 'ramda';
-import { Grid, Col, Row } from 'react-bootstrap';
+import { Grid, Col, Row, Alert } from 'react-bootstrap';
 import { Link } from 'react-router';
 
 import * as selectors from '../../../../modules/user'
@@ -76,9 +76,14 @@ class EvaluationCategoryComponent extends React.Component {
     })
   }
 
-  updateSkillStatus(skillId, currentStatus) {
-    const newStatus = currentStatus !== SKILL_STATUS.ATTAINED ? SKILL_STATUS.ATTAINED : null;
-    this.props.actions.updateSkillStatus(this.evaluationId, skillId, newStatus);
+  updateSkillStatus(skillId, newStatus) {
+    const isLastSkillInCategory = this.state.indexOfCurrentSkill + 1 === this.state.skillsInCategory.length;
+    return this.props.actions.updateSkillStatus(this.evaluationId, skillId, newStatus)
+      .then(() =>
+        !isLastSkillInCategory
+         ? this.nextSkill()
+         : null
+      );
   };
 
   evaluationComplete(evaluationId) {
@@ -90,6 +95,17 @@ class EvaluationCategoryComponent extends React.Component {
 
     return (
       <Grid>
+        { this.props.erringSkills
+          ? <Row>
+            {this.props.erringSkills.map(
+              ({ name }) =>
+                <Alert bsStyle='danger' key={name}>
+                  {`There was a problem updating a skill: ${name}`}
+                </Alert>
+            )}
+          </Row>
+          : false
+        }
         <Row>
           <CategoryPageHeader
             evaluationId={this.evaluationId}
@@ -159,6 +175,7 @@ export const EvaluationCategoryPage = connect(
       view: selectors.getView(state),
       skillsInCategory: selectors.getAllSkillsInCategory(state, params.category),
       highestAttainedSkill: selectors.getHighestAttainedSkill(state, params.category),
+      erringSkills: selectors.getErringSkills(state),
     });
   },
   function mapDispatchToProps(dispatch) {
