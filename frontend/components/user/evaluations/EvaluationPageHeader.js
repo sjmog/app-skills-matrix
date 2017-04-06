@@ -99,6 +99,8 @@ export default connect(
     })
   },
   function mapDispatchToProps(dispatch) {
-    return bindActionCreators(actions, dispatch);
+    return {
+      actions: bindActionCreators(actions, dispatch)
+    };
   }
 )(EvaluationPageHeader);
