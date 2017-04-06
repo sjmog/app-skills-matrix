@@ -30,24 +30,22 @@ const Skill = ({ level, skill, updateSkillStatus, prevSkill, nextSkill, isFirstS
           ? <Glyphicon className='skill-attained-icon' glyph='ok-circle' />
           : false
       }
+    </Panel>
       <ButtonGroup className='pull-right' >
-      <Button
-        bsSize='large'
-        disabled={isFirstSkill}
-        onClick={() => prevSkill(skill.id) }>
-        <Glyphicon glyph='chevron-left'/>
-        Previous skill
-      </Button>
-      <Button
-        bsSize='large'
-        disabled={isLastSkill}
-        onClick={() => nextSkill(skill.id) }>
-        Next skill
-        <Glyphicon glyph='chevron-right'/>
-      </Button>
+        <Button
+          disabled={isFirstSkill}
+          onClick={() => prevSkill(skill.id) }>
+          <Glyphicon glyph='chevron-left'/>
+          Previous skill
+        </Button>
+        <Button
+          disabled={isLastSkill}
+          onClick={() => nextSkill(skill.id) }>
+          Next skill
+          <Glyphicon glyph='chevron-right'/>
+        </Button>
       </ButtonGroup>
       { error ? <Alert bsStyle='danger'>Something went wrong: {error.message}</Alert> : false }
-    </Panel>
     </div>
   );
 };
