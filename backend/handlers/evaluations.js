@@ -3,6 +3,8 @@ const Promise = require('bluebird');
 const createHandler = require('./createHandler');
 const { getEvaluationById, updateEvaluation } = require('../models/evaluations');
 const { getUserById } = require('../models/users');
+const { sendMail } = require('../services/email');
+
 const {
   EVALUATION_NOT_FOUND,
   MUST_BE_SUBJECT_OF_EVALUATION_OR_MENTOR,
@@ -62,7 +64,7 @@ const handlerFunctions = Object.freeze({
           if (user.id === evaluation.user.id) {
             return evaluation.isNewEvaluation()
               ? updateEvaluation(evaluation.updateSkill(skillGroupId, skillId, status))
-                  .then(() => res.sendStatus(204))
+                .then(() => res.sendStatus(204))
               : res.status(403).json(SUBJECT_CAN_ONLY_UPDATE_NEW_EVALUATION());
           }
 
@@ -74,7 +76,7 @@ const handlerFunctions = Object.freeze({
 
               return evaluation.selfEvaluationCompleted()
                 ? updateEvaluation(evaluation.updateSkill(skillGroupId, skillId, status))
-                    .then(() => res.sendStatus(204))
+                  .then(() => res.sendStatus(204))
                 : res.status(403).json(MENTOR_CAN_ONLY_UPDATE_AFTER_SELF_EVALUATION());
             })
         })
@@ -101,8 +103,12 @@ const handlerFunctions = Object.freeze({
           if (user.id === evaluation.user.id) {
             const completedApplication = evaluation.selfEvaluationComplete();
             return evaluation.isNewEvaluation()
-              ? updateEvaluation(completedApplication)
-                .then((updatedEvaluation) => res.status(200).json({ status: updatedEvaluation.status }))
+              ? Promise.all([updateEvaluation(completedApplication), getUserById(mentorId)])
+                .then(([updatedEvaluation, mentor]) =>
+                {
+                  sendMail(updatedEvaluation.getSelfEvaluationCompleteEmail(mentor));
+                  res.status(200).json({ status: updatedEvaluation.status })
+                })
               : res.status(403).json(SUBJECT_CAN_ONLY_UPDATE_NEW_EVALUATION());
           }
 
@@ -114,7 +120,7 @@ const handlerFunctions = Object.freeze({
 
               return evaluation.selfEvaluationCompleted()
                 ? updateEvaluation(evaluation.mentorReviewComplete())
-                    .then((updatedEvaluation) => res.status(200).json({ status: updatedEvaluation.status }))
+                  .then((updatedEvaluation) => res.status(200).json({ status: updatedEvaluation.status }))
                 : res.status(403).json(MENTOR_CAN_ONLY_UPDATE_AFTER_SELF_EVALUATION())
             });
         })

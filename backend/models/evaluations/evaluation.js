@@ -41,14 +41,21 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status }) =
   get mentorEvaluationViewModel() {
     return { user, status, template, skillGroups, view: VIEW.MENTOR };
   },
-  get mailData() {
+  get newEvaluationEmail() {
     return {
       recipients: user.email,
       subject: 'A new evaluation has been triggered',
       body: `Please visit ${`${HOST}/#/evaluations/${_id}`} to complete your evaluation`,
     }
   },
-  updateSkill: function (skillGroupId, skillId, newSkillStatus) {
+  getSelfEvaluationCompleteEmail(mentor) {
+    return {
+      recipients: mentor.email,
+      subject: `${user.name} has completed their self evaluation`,
+      body: `Please book a meeting with them and and visit ${`${HOST}/#/evaluations/${_id}`} to review their evaluation.`,
+    }
+  },
+  updateSkill(skillGroupId, skillId, newSkillStatus) {
     const skillLens = R.compose(
       lensById(Number(skillGroupId)),
       R.lensProp('skills'),
@@ -67,10 +74,10 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status }) =
       status
     }
   },
-  isNewEvaluation: function () {
+  isNewEvaluation() {
     return status === STATUS.NEW
   },
-  selfEvaluationComplete: function () {
+  selfEvaluationComplete() {
     return {
       id: _id,
       user,
@@ -80,10 +87,10 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status }) =
       status: STATUS.SELF_EVALUATION_COMPLETE
     }
   },
-  selfEvaluationCompleted: function () {
+  selfEvaluationCompleted() {
     return status === STATUS.SELF_EVALUATION_COMPLETE
   },
-  mentorReviewComplete: function () {
+  mentorReviewComplete() {
     return {
       id: _id,
       user,
@@ -93,7 +100,7 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status }) =
       status: STATUS.MENTOR_REVIEW_COMPLETE,
     }
   },
-  mentorReviewCompleted: function () {
+  mentorReviewCompleted() {
     return status === STATUS.MENTOR_REVIEW_COMPLETE;
   }
 });

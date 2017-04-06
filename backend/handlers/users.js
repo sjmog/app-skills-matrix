@@ -81,7 +81,7 @@ const handlerFunctions = Object.freeze({
               return evaluations.addEvaluation(userEvaluation);
             })
             .then((newEval) => {
-              sendMail(newEval.mailData);
+              sendMail(newEval.newEvaluationEmail);
               res.status(201).json(newEval.viewModel);
 
             });

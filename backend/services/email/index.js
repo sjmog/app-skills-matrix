@@ -9,10 +9,10 @@ const providers = {
 };
 
 module.exports.sendMail = ({ recipients, subject, body }) => {
-  const emailProvider = providers[MAIL_PROVIDER];
-  if (!emailProvider) {
+  const emailProviderSendMailFn = providers[MAIL_PROVIDER];
+  if (!emailProviderSendMailFn) {
     return Promise.resolve({});
   }
 
-  return emailProvider({ recipients, subject, body });
+  return emailProviderSendMailFn({ recipients, subject, body }).catch(console.error);
 };
