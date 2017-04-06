@@ -20,14 +20,15 @@ const getIndexOfLevel = (level, levels) => levels.indexOf(level);
 class EvaluationCategoryComponent extends React.Component {
   constructor(props) {
     super(props);
-    const { templateName, levels, categories, skills, skillGroups, view, skillsInCategory, status, params, highestAttainedSkill } = this.props;
+    const { templateName, levels, categories, skills, skillGroups, view, skillsInCategory, status, params, lowestUnattainedSkill, nextCategory } = this.props;
 
     this.state = {
-      currentSkill: highestAttainedSkill,
-      indexOfCurrentSkill: getIndexOfSkill(highestAttainedSkill.id, skillsInCategory),
+      currentSkill: lowestUnattainedSkill,
+      indexOfCurrentSkill: getIndexOfSkill(lowestUnattainedSkill.id, skillsInCategory),
       skillsInCategory,
       currentCategory: params.category,
       indexOfCurrentCategory: categories.indexOf(params.category),
+      nextCategory,
     };
 
     this.templateName = templateName;
@@ -48,16 +49,17 @@ class EvaluationCategoryComponent extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps !== this.props) {
       const { category: currentCategory } = nextProps.params;
-      const { skillsInCategory, highestAttainedSkill } = this.props;
-      const indexOfHighestAttainedSkill = getIndexOfSkill(highestAttainedSkill.id, skillsInCategory);
+      const { skillsInCategory, lowestUnattainedSkill, nextCategory } = this.props;
+      const indexOfLowestUnattainedSkill = getIndexOfSkill(lowestUnattainedSkill.id, skillsInCategory);
       const indexOfCurrentSkill = getIndexOfSkill(this.state.currentSkill.id, skillsInCategory);
 
       this.setState({
-        currentSkill: indexOfCurrentSkill >= 0 ? skillsInCategory[indexOfCurrentSkill] : highestAttainedSkill,
-        indexOfCurrentSkill: indexOfCurrentSkill >= 0 ? indexOfCurrentSkill : indexOfHighestAttainedSkill,
+        currentSkill: indexOfCurrentSkill >= 0 ? skillsInCategory[indexOfCurrentSkill] : lowestUnattainedSkill,
+        indexOfCurrentSkill: indexOfCurrentSkill >= 0 ? indexOfCurrentSkill : indexOfLowestUnattainedSkill,
         skillsInCategory,
         currentCategory: currentCategory,
         indexOfCurrentCategory: this.categories.indexOf(currentCategory),
+        nextCategory,
       });
     }
   }
@@ -78,13 +80,17 @@ class EvaluationCategoryComponent extends React.Component {
 
   updateSkillStatus(skillId, newStatus) {
     const isLastSkillInCategory = this.state.indexOfCurrentSkill + 1 === this.state.skillsInCategory.length;
+    const isLastCategory = this.state.indexOfCurrentCategory + 1 === this.categories.length;
+
     return this.props.actions.updateSkillStatus(this.evaluationId, skillId, newStatus)
-      .then(() =>
-        !isLastSkillInCategory
-         ? this.nextSkill()
-         : null
-      );
-  };
+      .then(() => {
+        if (isLastSkillInCategory && !isLastCategory) {
+          this.props.router.push(`evaluations/${this.evaluationId}/category/${this.state.nextCategory}`)
+        } else if (!isLastSkillInCategory) {
+          this.nextSkill();
+        }
+      });
+  }
 
   evaluationComplete(evaluationId) {
     this.props.actions.evaluationComplete(evaluationId);
@@ -174,8 +180,9 @@ export const EvaluationCategoryPage = connect(
       status: selectors.getEvaluationStatus(state),
       view: selectors.getView(state),
       skillsInCategory: selectors.getAllSkillsInCategory(state, params.category),
-      highestAttainedSkill: selectors.getHighestAttainedSkill(state, params.category),
+      lowestUnattainedSkill: selectors.getLowestUnattainedSkill(state, params.category),
       erringSkills: selectors.getErringSkills(state),
+      nextCategory: selectors.getNextCategory(state, params.category),
     });
   },
   function mapDispatchToProps(dispatch) {

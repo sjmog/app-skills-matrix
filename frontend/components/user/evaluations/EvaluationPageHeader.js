@@ -45,7 +45,7 @@ class EvaluationPageHeader extends React.Component {
   }
 
   render() {
-    const { evaluationId, view, templateName, firstCategory, subjectName, status } = this.props;
+    const { evaluationId, view, templateName, category, subjectName, status } = this.props;
 
     if (view === MENTOR) {
       return (
@@ -68,9 +68,9 @@ class EvaluationPageHeader extends React.Component {
             alertText={alertText(view, status)}
             title='Evaluation'
             subTitle={templateName}
-            btnUrl={`evaluations/${evaluationId}/category/${firstCategory}`}
+            btnUrl={`evaluations/${evaluationId}/category/${category}`}
             btnDisabled={status === MENTOR_REVIEW_COMPLETE || status === SELF_EVALUATION_COMPLETE}
-            btnText='Begin evaluation'
+            btnText='Evaluate'
           />
         </Row>
       )
@@ -82,7 +82,7 @@ class EvaluationPageHeader extends React.Component {
 EvaluationPageHeader.propTypes = {
   view: PropTypes.string.isRequired,
   templateName:  PropTypes.string.isRequired,
-  firstCategory:  PropTypes.string.isRequired,
+  category:  PropTypes.string.isRequired,
   subjectName:  PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,
   evaluationId: PropTypes.string.isRequired,
@@ -93,7 +93,7 @@ export default connect(
     return ({
       view: selectors.getView(state),
       templateName: selectors.getTemplateName(state),
-      firstCategory: selectors.getFirstCategory(state),
+      category: selectors.getNextCategory(state),
       subjectName: selectors.getSubjectName(state),
       status: selectors.getEvaluationStatus(state),
     })

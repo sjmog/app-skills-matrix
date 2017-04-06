@@ -151,11 +151,6 @@ export const getTemplateName = (state) =>
 export const getSubjectName = (state) =>
   R.path(['subject', 'name'], state);
 
-export const getFirstCategory = (state) => {
-  const categories = getCategories(state);
-  return categories ? R.head(categories) : undefined;
-};
-
 export const getEvaluationStatus = (state) =>
   R.path(['status'], state);
 
@@ -175,17 +170,37 @@ export const getCategories = (state) =>
 export const getError = (state) =>
   R.path(['error'], state);
 
-export const getHighestAttainedSkill = (state, category) => {
+export const getLowestUnattainedSkill = (state, category) => {
   const skillsInCategory = getAllSkillsInCategory(state, category);
 
-  return R.last(
-    skillsInCategory.filter(({ id }) => {
-      const { current, previous } = getSkills(state)[id].status;
-      return current === SKILL_STATUS.ATTAINED || previous === SKILL_STATUS.ATTAINED;
-    })) || skillsInCategory[0];
+  const hasUnattainedSkills = ({ id }) => {
+    const { current, previous } = state.skills[id].status;
+    return current !== SKILL_STATUS.ATTAINED && previous !== SKILL_STATUS.ATTAINED;
+  };
+
+  const unattainedSkill = R.find(hasUnattainedSkills)(skillsInCategory);
+  return unattainedSkill || R.last(skillsInCategory);
 };
 
 export const getErringSkills = (state) => {
   const skills = getSkills(state);
   return R.filter((skill) => skill.error)(R.values(skills));
+};
+
+const unattained = (skill) =>
+  R.path(['status', 'current'], skill) !== SKILL_STATUS.ATTAINED
+  && R.path(['status', 'previous'], skill) !== SKILL_STATUS.ATTAINED;
+
+export const getNextCategory = (state, category) => {
+  const indexOfCurrentCategory = state.template.categories.indexOf(category) || 0;
+  const remainingCategories = R.slice(indexOfCurrentCategory + 1, Infinity, state.template.categories);
+
+  const hasUnattainedSkills = (category) => {
+    const skillsInCategory = getAllSkillsInCategory(state, category).map(({ id }) => state.skills[id]);
+    const unattainedSkills = R.filter(unattained)(R.values(skillsInCategory));
+
+    return unattainedSkills.length > 0;
+  };
+
+  return R.find(hasUnattainedSkills)(remainingCategories);
 };

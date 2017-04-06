@@ -15,9 +15,6 @@ export const getView = ({ evaluation }) =>
 export const getTemplateName = ({ evaluation }) =>
   fromEvaluation.getTemplateName(evaluation);
 
-export const getFirstCategory = ({ evaluation }) =>
-  fromEvaluation.getFirstCategory(evaluation);
-
 export const getSubjectName = ({ evaluation }) =>
   fromEvaluation.getSubjectName(evaluation);
 
@@ -39,8 +36,11 @@ export const getCategories = ({ evaluation }) =>
 export const getError = ({ evaluation }) =>
   fromEvaluation.getError(evaluation);
 
-export const getHighestAttainedSkill = ({ evaluation }, category) =>
-  fromEvaluation.getHighestAttainedSkill(evaluation, category);
+export const getLowestUnattainedSkill = ({ evaluation }, category) =>
+  fromEvaluation.getLowestUnattainedSkill(evaluation, category);
 
 export const getErringSkills = ({ evaluation }) =>
   fromEvaluation.getErringSkills(evaluation);
+
+export const getNextCategory = ({ evaluation }, category) =>
+  fromEvaluation.getNextCategory(evaluation, category);
