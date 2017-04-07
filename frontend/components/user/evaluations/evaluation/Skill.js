@@ -6,7 +6,7 @@ import SkillBody from './SkillBody';
 import '../evaluation.scss'
 
 const Skill = ({ level, skill, updateSkillStatus, navigatePostSkillUpdate, prevSkill, nextSkill, isFirstSkill, isLastSkill }) => {
-  const { name, id, criteria, questions, status } = skill;
+  const { name, id, criteria, questions } = skill;
 
   return (
     <div>
@@ -69,7 +69,6 @@ Skill.propTypes = {
     id: PropTypes.number.isRequired,
     criteria: PropTypes.string.isRequired,
     questions: PropTypes.array,
-    status: PropTypes.object.isRequired,
   }),
   updateSkillStatus: PropTypes.func.isRequired,
   navigatePostSkillUpdate: PropTypes.func.isRequired,
