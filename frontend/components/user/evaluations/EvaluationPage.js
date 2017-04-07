@@ -30,10 +30,9 @@ class EvaluationPageComponent extends React.Component {
       .then(() => this.setState({ evaluationRetrieved: true }))
   }
 
-  updateSkillStatus(skillId, currentStatus) {
-    const newStatus = currentStatus !== SKILL_STATUS.ATTAINED ? SKILL_STATUS.ATTAINED : null;
-    this.props.actions.updateSkillStatus(this.evaluationId, skillId, newStatus);
-  };
+  updateSkillStatus(skillId, newStatus) {
+    return this.props.actions.updateSkillStatus(this.evaluationId, skillId, newStatus);
+  }
 
   render() {
     const { levels, categories, status, skillGroups, skills, view, error } = this.props;

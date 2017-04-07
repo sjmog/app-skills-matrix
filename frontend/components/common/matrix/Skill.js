@@ -10,12 +10,13 @@ const Skill = ({ skill, viewSkillDetails, isBeingEvaluated }) => {
     <tr className={`${attained} ${beginEvaluated}`} onClick={() => viewSkillDetails(skill)}>
       <td>{skill.name}</td>
     </tr>
-  );
-}
+  )
+};
 
 Skill.propTypes = {
   skill: PropTypes.object.isRequired,
   viewSkillDetails: PropTypes.func.isRequired,
   isCurrentSkill: PropTypes.bool,
-}
+};
+
 export default Skill;

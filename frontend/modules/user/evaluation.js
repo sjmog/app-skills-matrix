@@ -112,6 +112,7 @@ export default handleActions({
       const { skillId, status } = action.payload;
       const skills = Object.assign({}, state.skills);
       skills[skillId].status.current = status;
+      skills[skillId].error = null;
       return R.merge(state, { skills });
     },
   [updateSkillStatusFailure]:
@@ -138,7 +139,7 @@ export const getAllSkillsInCategory = (state, category) =>
   R.flatten(
     R.reverse(state.template.levels).map((level) => {
       const { id: skillGroupId, skills } = getSkillGroup(level, category, state.skillGroups);
-      return skills.map((id) => Object.assign({}, { id, skillGroupId }));
+      return R.reverse(skills.map((id) => Object.assign({}, { id, skillGroupId })));
     }));
 
 export const getView = (state) =>
@@ -149,11 +150,6 @@ export const getTemplateName = (state) =>
 
 export const getSubjectName = (state) =>
   R.path(['subject', 'name'], state);
-
-export const getFirstCategory = (state) => {
-  const categories = getCategories(state);
-  return categories ? R.head(categories) : undefined;
-};
 
 export const getEvaluationStatus = (state) =>
   R.path(['status'], state);
@@ -173,3 +169,38 @@ export const getCategories = (state) =>
 
 export const getError = (state) =>
   R.path(['error'], state);
+
+export const getLowestUnattainedSkill = (state, category) => {
+  const skillsInCategory = getAllSkillsInCategory(state, category);
+
+  const hasUnattainedSkills = ({ id }) => {
+    const { current, previous } = state.skills[id].status;
+    return current !== SKILL_STATUS.ATTAINED && previous !== SKILL_STATUS.ATTAINED;
+  };
+
+  const unattainedSkill = R.find(hasUnattainedSkills)(skillsInCategory);
+  return unattainedSkill || R.last(skillsInCategory);
+};
+
+export const getErringSkills = (state) => {
+  const skills = getSkills(state);
+  return R.filter((skill) => skill.error)(R.values(skills));
+};
+
+const unattained = (skill) =>
+  R.path(['status', 'current'], skill) !== SKILL_STATUS.ATTAINED
+  && R.path(['status', 'previous'], skill) !== SKILL_STATUS.ATTAINED;
+
+export const getNextCategory = (state, category) => {
+  const indexOfCurrentCategory = state.template.categories.indexOf(category) || 0;
+  const remainingCategories = R.slice(indexOfCurrentCategory + 1, Infinity, state.template.categories);
+
+  const hasUnattainedSkills = (category) => {
+    const skillsInCategory = getAllSkillsInCategory(state, category).map(({ id }) => state.skills[id]);
+    const unattainedSkills = R.filter(unattained)(R.values(skillsInCategory));
+
+    return unattainedSkills.length > 0;
+  };
+
+  return R.find(hasUnattainedSkills)(remainingCategories);
+};

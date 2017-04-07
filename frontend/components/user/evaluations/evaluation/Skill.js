@@ -5,8 +5,8 @@ import { SKILL_STATUS } from '../../../../modules/user/evaluation';
 import SkillBody from './SkillBody';
 import '../evaluation.scss'
 
-const Skill = ({ level, skill, updateSkillStatus, prevSkill, nextSkill, isFirstSkill, isLastSkill }) => {
-  const { name, id, criteria, questions, status, error } = skill;
+const Skill = ({ level, skill, updateSkillStatus, navigatePostSkillUpdate, prevSkill, nextSkill, isFirstSkill, isLastSkill }) => {
+  const { name, id, criteria, questions } = skill;
 
   return (
     <div>
@@ -19,35 +19,43 @@ const Skill = ({ level, skill, updateSkillStatus, prevSkill, nextSkill, isFirstS
         </div>
       }>
       <SkillBody criteria={criteria} questions={questions} />
-      <Button
-        bsStyle='primary'
-        bsSize='large'
-        onClick={() => updateSkillStatus(id, status.current)}>
-        {'Attained'}
-      </Button>
-      {
-        status.current === SKILL_STATUS.ATTAINED
-          ? <Glyphicon className='skill-attained-icon' glyph='ok-circle' />
-          : false
-      }
-      <ButtonGroup className='pull-right' >
-      <Button
-        bsSize='large'
-        disabled={isFirstSkill}
-        onClick={() => prevSkill(skill.id) }>
-        <Glyphicon glyph='chevron-left'/>
-        Previous skill
-      </Button>
-      <Button
-        bsSize='large'
-        disabled={isLastSkill}
-        onClick={() => nextSkill(skill.id) }>
-        Next skill
-        <Glyphicon glyph='chevron-right'/>
-      </Button>
+      <ButtonGroup>
+        <Button
+          bsStyle='default'
+          bsSize='large'
+          onClick={
+            () => updateSkillStatus(id, SKILL_STATUS.ATTAINED)
+              .then(() => navigatePostSkillUpdate())}>
+          {'Attained'}
+        </Button>
+        <Button
+          bsStyle='default'
+          bsSize='large'
+          onClick={() => updateSkillStatus(id, null)
+            .then(() => navigatePostSkillUpdate())}>
+          {'Not attained'}
+        </Button>
+        {
+          skill.status.current === SKILL_STATUS.ATTAINED
+            ? <Glyphicon className='skill-attained-icon' glyph='ok-circle' />
+            : false
+        }
       </ButtonGroup>
-      { error ? <Alert bsStyle='danger'>Something went wrong: {error.message}</Alert> : false }
     </Panel>
+      <ButtonGroup className='pull-right' >
+        <Button
+          disabled={isFirstSkill}
+          onClick={() => prevSkill(skill.id) }>
+          <Glyphicon glyph='chevron-left'/>
+          Previous skill
+        </Button>
+        <Button
+          disabled={isLastSkill}
+          onClick={() => nextSkill(skill.id) }>
+          Next skill
+          <Glyphicon glyph='chevron-right'/>
+        </Button>
+      </ButtonGroup>
     </div>
   );
 };
@@ -61,10 +69,9 @@ Skill.propTypes = {
     id: PropTypes.number.isRequired,
     criteria: PropTypes.string.isRequired,
     questions: PropTypes.array,
-    status: PropTypes.object.isRequired,
-    error: PropTypes.object,
   }),
   updateSkillStatus: PropTypes.func.isRequired,
+  navigatePostSkillUpdate: PropTypes.func.isRequired,
   nextSkill: PropTypes.func.isRequired,
   prevSkill: PropTypes.func.isRequired,
 };

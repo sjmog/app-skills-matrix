@@ -23,12 +23,12 @@ const CategoryPageHeader = ({
         <Link to={`evaluations/${evaluationId}/category/${previousCategory}`} className={'category-nav-link'}>
           <Button className='nav-btn--left' bsSize='large' disabled={isFirstCategory}>
               <Glyphicon glyph='chevron-left'/>
-              Previous category
+              Previous column
           </Button>
         </Link>
         <Link to={`evaluations/${evaluationId}/category/${nextCategory}`} className={'category-nav-link'}>
           <Button className='nav-btn--right' bsSize='large' disabled={isLastCategory}>
-              Next category
+              Next column
               <Glyphicon glyph='chevron-right'/>
           </Button>
         </Link>

@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import R from 'ramda';
-import { Grid, Col, Row } from 'react-bootstrap';
+import { Grid, Col, Row, Alert } from 'react-bootstrap';
 import { Link } from 'react-router';
 
 import * as selectors from '../../../../modules/user'
@@ -20,14 +20,15 @@ const getIndexOfLevel = (level, levels) => levels.indexOf(level);
 class EvaluationCategoryComponent extends React.Component {
   constructor(props) {
     super(props);
-    const { templateName, levels, categories, skills, skillGroups, view, skillsInCategory, status, params } = this.props;
+    const { templateName, levels, categories, skills, skillGroups, view, skillsInCategory, status, params, lowestUnattainedSkill, nextCategory } = this.props;
 
     this.state = {
-      currentSkill: skillsInCategory[0],
-      indexOfCurrentSkill: 0,
+      currentSkill: lowestUnattainedSkill,
+      indexOfCurrentSkill: getIndexOfSkill(lowestUnattainedSkill.id, skillsInCategory),
       skillsInCategory,
       currentCategory: params.category,
       indexOfCurrentCategory: categories.indexOf(params.category),
+      nextCategory,
     };
 
     this.templateName = templateName;
@@ -40,6 +41,7 @@ class EvaluationCategoryComponent extends React.Component {
     this.skillGroups = skillGroups;
 
     this.updateSkillStatus = this.updateSkillStatus.bind(this);
+    this.navigatePostSkillUpdate = this.navigatePostSkillUpdate.bind(this);
     this.nextSkill = this.nextSkill.bind(this);
     this.prevSkill = this.prevSkill.bind(this);
     this.evaluationComplete = this.evaluationComplete.bind(this);
@@ -48,15 +50,17 @@ class EvaluationCategoryComponent extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps !== this.props) {
       const { category: currentCategory } = nextProps.params;
-      const { skillsInCategory } = this.props;
+      const { skillsInCategory, lowestUnattainedSkill, nextCategory } = this.props;
+      const indexOfLowestUnattainedSkill = getIndexOfSkill(lowestUnattainedSkill.id, skillsInCategory);
       const indexOfCurrentSkill = getIndexOfSkill(this.state.currentSkill.id, skillsInCategory);
 
       this.setState({
-        currentSkill: indexOfCurrentSkill >= 0 ? skillsInCategory[indexOfCurrentSkill] : skillsInCategory[0],
-        indexOfCurrentSkill: indexOfCurrentSkill >= 0 ? indexOfCurrentSkill : 0,
+        currentSkill: indexOfCurrentSkill >= 0 ? skillsInCategory[indexOfCurrentSkill] : lowestUnattainedSkill,
+        indexOfCurrentSkill: indexOfCurrentSkill >= 0 ? indexOfCurrentSkill : indexOfLowestUnattainedSkill,
         skillsInCategory,
         currentCategory: currentCategory,
         indexOfCurrentCategory: this.categories.indexOf(currentCategory),
+        nextCategory,
       });
     }
   }
@@ -75,10 +79,19 @@ class EvaluationCategoryComponent extends React.Component {
     })
   }
 
-  updateSkillStatus(skillId, currentStatus) {
-    const newStatus = currentStatus !== SKILL_STATUS.ATTAINED ? SKILL_STATUS.ATTAINED : null;
-    this.props.actions.updateSkillStatus(this.evaluationId, skillId, newStatus);
-  };
+  navigatePostSkillUpdate() {
+    const isLastSkillInCategory = this.state.indexOfCurrentSkill + 1 === this.state.skillsInCategory.length;
+    const isLastCategory = this.state.indexOfCurrentCategory + 1 === this.categories.length;
+
+    if (isLastSkillInCategory && !isLastCategory) {
+      this.props.router.push(`evaluations/${this.evaluationId}/category/${this.state.nextCategory}`)
+    } else if (!isLastSkillInCategory) {
+      this.nextSkill();
+    }
+  }
+  updateSkillStatus(skillId, newStatus) {
+    return this.props.actions.updateSkillStatus(this.evaluationId, skillId, newStatus);
+  }
 
   evaluationComplete(evaluationId) {
     this.props.actions.evaluationComplete(evaluationId);
@@ -89,6 +102,17 @@ class EvaluationCategoryComponent extends React.Component {
 
     return (
       <Grid>
+        { this.props.erringSkills
+          ? <Row>
+            {this.props.erringSkills.map(
+              ({ name }) =>
+                <Alert bsStyle='danger' key={name}>
+                  {`There was a problem updating a skill: ${name}`}
+                </Alert>
+            )}
+          </Row>
+          : false
+        }
         <Row>
           <CategoryPageHeader
             evaluationId={this.evaluationId}
@@ -102,29 +126,30 @@ class EvaluationCategoryComponent extends React.Component {
           />
         </Row>
         <Row>
-          <Col md={7} className='skill-panel'>
+          <Col md={7} className='evaluation-panel'>
             <Skill
               level={currentLevel}
               skill={this.skills[this.state.currentSkill.id]}
               updateSkillStatus={this.updateSkillStatus}
+              navigatePostSkillUpdate={this.navigatePostSkillUpdate}
               nextSkill={this.nextSkill}
               prevSkill={this.prevSkill}
               isFirstSkill={this.state.indexOfCurrentSkill === 0}
               isLastSkill={this.state.indexOfCurrentSkill + 1 === this.state.skillsInCategory.length}
             />
           </Col>
-          <Col md={5} className='matrix-panel'>
+          <Col md={5} className='evaluation-panel'>
             <Matrix
               skillBeingEvaluated={this.state.currentSkill.id}
               categories={[].concat(this.props.params.category)}
               levels={this.levels.slice(getIndexOfLevel(currentLevel, this.levels), this.levels.length)}
               skillGroups={this.skillGroups}
-              skills={this.skills}
               updateSkillStatus={this.updateSkillStatus}
               canUpdateSkillStatus={
                 this.view === SUBJECT && this.evaluationStatus === NEW
                 || this.view === MENTOR && this.evaluationStatus === SELF_EVALUATION_COMPLETE
               }
+              skills={this.skills}
             />
           </Col>
         </Row>
@@ -157,6 +182,9 @@ export const EvaluationCategoryPage = connect(
       status: selectors.getEvaluationStatus(state),
       view: selectors.getView(state),
       skillsInCategory: selectors.getAllSkillsInCategory(state, params.category),
+      lowestUnattainedSkill: selectors.getLowestUnattainedSkill(state, params.category),
+      erringSkills: selectors.getErringSkills(state),
+      nextCategory: selectors.getNextCategory(state, params.category),
     });
   },
   function mapDispatchToProps(dispatch) {
