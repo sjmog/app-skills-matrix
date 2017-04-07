@@ -41,6 +41,7 @@ class EvaluationCategoryComponent extends React.Component {
     this.skillGroups = skillGroups;
 
     this.updateSkillStatus = this.updateSkillStatus.bind(this);
+    this.postUpdateNavigation = this.postUpdateNavigation.bind(this);
     this.nextSkill = this.nextSkill.bind(this);
     this.prevSkill = this.prevSkill.bind(this);
     this.evaluationComplete = this.evaluationComplete.bind(this);
@@ -78,18 +79,18 @@ class EvaluationCategoryComponent extends React.Component {
     })
   }
 
-  updateSkillStatus(skillId, newStatus) {
+  navigatePostSkillUpdate() {
     const isLastSkillInCategory = this.state.indexOfCurrentSkill + 1 === this.state.skillsInCategory.length;
     const isLastCategory = this.state.indexOfCurrentCategory + 1 === this.categories.length;
 
-    return this.props.actions.updateSkillStatus(this.evaluationId, skillId, newStatus)
-      .then(() => {
-        if (isLastSkillInCategory && !isLastCategory) {
-          this.props.router.push(`evaluations/${this.evaluationId}/category/${this.state.nextCategory}`)
-        } else if (!isLastSkillInCategory) {
-          this.nextSkill();
-        }
-      });
+    if (isLastSkillInCategory && !isLastCategory) {
+      this.props.router.push(`evaluations/${this.evaluationId}/category/${this.state.nextCategory}`)
+    } else if (!isLastSkillInCategory) {
+      this.nextSkill();
+    }
+  }
+  updateSkillStatus(skillId, newStatus) {
+    return this.props.actions.updateSkillStatus(this.evaluationId, skillId, newStatus);
   }
 
   evaluationComplete(evaluationId) {
@@ -130,6 +131,7 @@ class EvaluationCategoryComponent extends React.Component {
               level={currentLevel}
               skill={this.skills[this.state.currentSkill.id]}
               updateSkillStatus={this.updateSkillStatus}
+              navigatePostSkillUpdate={this.navigatePostSkillUpdate}
               nextSkill={this.nextSkill}
               prevSkill={this.prevSkill}
               isFirstSkill={this.state.indexOfCurrentSkill === 0}

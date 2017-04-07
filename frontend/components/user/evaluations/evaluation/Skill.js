@@ -5,7 +5,7 @@ import { SKILL_STATUS } from '../../../../modules/user/evaluation';
 import SkillBody from './SkillBody';
 import '../evaluation.scss'
 
-const Skill = ({ level, skill, updateSkillStatus, prevSkill, nextSkill, isFirstSkill, isLastSkill }) => {
+const Skill = ({ level, skill, updateSkillStatus, navigatePostSkillUpdate, prevSkill, nextSkill, isFirstSkill, isLastSkill }) => {
   const { name, id, criteria, questions, status } = skill;
 
   return (
@@ -23,13 +23,16 @@ const Skill = ({ level, skill, updateSkillStatus, prevSkill, nextSkill, isFirstS
         <Button
           bsStyle='default'
           bsSize='large'
-          onClick={() => updateSkillStatus(id, SKILL_STATUS.ATTAINED)}>
+          onClick={
+            () => updateSkillStatus(id, SKILL_STATUS.ATTAINED)
+              .then(() => navigatePostSkillUpdate())}>
           {'Attained'}
         </Button>
         <Button
           bsStyle='default'
           bsSize='large'
-          onClick={() => updateSkillStatus(id, null)}>
+          onClick={() => updateSkillStatus(id, null)
+            .then(() => navigatePostSkillUpdate())}>
           {'Not attained'}
         </Button>
       </ButtonGroup>
@@ -64,6 +67,7 @@ Skill.propTypes = {
     status: PropTypes.object.isRequired,
   }),
   updateSkillStatus: PropTypes.func.isRequired,
+  navigatePostSkillUpdate: PropTypes.func.isRequired,
   nextSkill: PropTypes.func.isRequired,
   prevSkill: PropTypes.func.isRequired,
 };
