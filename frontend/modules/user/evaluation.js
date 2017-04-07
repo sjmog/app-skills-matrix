@@ -12,6 +12,7 @@ export const EVALUATION_VIEW = keymirror({
 
 export const SKILL_STATUS = keymirror({
   ATTAINED: null,
+  NOT_ATTAINED: null,
   FEEDBACK: null,
   OBJECTIVE: null
 });
@@ -172,14 +173,14 @@ export const getCategories = (state) =>
 export const getError = (state) =>
   R.path(['error'], state);
 
-export const getLowestUnattainedSkill = (state, category) => {
+export const getLowestUnevaluatedSkill = (state, category) => {
   const skillsInCategory = getAllSkillsInCategory(state, category);
 
-  const hasUnattainedSkills = ({ id }) => {
+  const hasUnevaluatedSkills = ({ id }) => {
     return state.skills[id].status.current === null;
   };
 
-  const unattainedSkill = R.find(hasUnattainedSkills)(skillsInCategory);
+  const unattainedSkill = R.find(hasUnevaluatedSkills)(skillsInCategory);
   return unattainedSkill || R.last(skillsInCategory);
 };
 
@@ -188,19 +189,19 @@ export const getErringSkills = (state) => {
   return R.filter((skill) => skill.error)(R.values(skills));
 };
 
-const unattained = (skill) =>
+const unevaluated = (skill) =>
   R.path(['status', 'current'], skill) === null;
 
 export const getNextCategory = (state, category) => {
   const indexOfCurrentCategory = state.template.categories.indexOf(category) || 0;
   const remainingCategories = R.slice(indexOfCurrentCategory + 1, Infinity, state.template.categories);
 
-  const hasUnattainedSkills = (category) => {
+  const hasUnevaluatedSkills = (category) => {
     const skillsInCategory = getAllSkillsInCategory(state, category).map(({ id }) => state.skills[id]);
-    const unattainedSkills = R.filter(unattained)(R.values(skillsInCategory));
+    const unevaluatedSkills = R.filter(unevaluated)(R.values(skillsInCategory));
 
-    return unattainedSkills.length > 0;
+    return unevaluatedSkills.length > 0;
   };
 
-  return R.find(hasUnattainedSkills)(remainingCategories);
+  return R.find(hasUnevaluatedSkills)(remainingCategories);
 };

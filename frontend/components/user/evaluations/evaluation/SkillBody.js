@@ -13,16 +13,8 @@ class SkillBody extends React.Component {
     return (
       <div>
         <h4>
-          <Button bsSize='xsmall' onClick={()=> this.setState({ open: !this.state.open })}>
-            <Glyphicon glyph='info-sign'/>
-          </Button>
           {`  ${this.props.criteria}`}
         </h4>
-        <Panel className='skill-panel___info' collapsible expanded={this.state.open}>
-          <ul>
-          { this.props.questions.map(({ title }) => <li key={title}>{title}</li>) }
-          </ul>
-        </Panel>
       </div>
     );
   }

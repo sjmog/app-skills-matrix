@@ -24,7 +24,7 @@ const Skill = ({ level, skill, updateSkillStatus, navigatePostSkillUpdate, prevS
         <SkillActions
           skillStatus={status}
           onAttained={() => updateSkillStatus(id, SKILL_STATUS.ATTAINED).then(() => navigatePostSkillUpdate())}
-          onNotAttained={() => updateSkillStatus(id, null).then(() => navigatePostSkillUpdate())}
+          onNotAttained={() => updateSkillStatus(id, SKILL_STATUS.NOT_ATTAINED).then(() => navigatePostSkillUpdate())}
           onFeedbackRequest={() => updateSkillStatus(id, SKILL_STATUS.FEEDBACK).then(() => navigatePostSkillUpdate())}
           onSetObjective={() => updateSkillStatus(id, SKILL_STATUS.OBJECTIVE).then(() => navigatePostSkillUpdate())}
         />

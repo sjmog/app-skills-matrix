@@ -36,8 +36,8 @@ export const getCategories = ({ evaluation }) =>
 export const getError = ({ evaluation }) =>
   fromEvaluation.getError(evaluation);
 
-export const getLowestUnattainedSkill = ({ evaluation }, category) =>
-  fromEvaluation.getLowestUnattainedSkill(evaluation, category);
+export const getLowestUnevaluatedSkill = ({ evaluation }, category) =>
+  fromEvaluation.getLowestUnevaluatedSkill(evaluation, category);
 
 export const getErringSkills = ({ evaluation }) =>
   fromEvaluation.getErringSkills(evaluation);
