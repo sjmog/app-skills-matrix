@@ -2,24 +2,22 @@ import React, { PropTypes } from 'react';
 
 import { SKILL_STATUS } from '../../../modules/user/evaluation';
 
-const skillColour = (status) => {
-  switch(status) {
-    case SKILL_STATUS.ATTAINED:
-      return 'skill--attained';
-      break;
-    case SKILL_STATUS.FEEDBACK:
-      return 'skill--feedback';
-      break;
-    case SKILL_STATUS.OBJECTIVE:
-      return 'skill--objective';
-      break;
-    default:
-      return '';
-  };
+const skillColour = (currentStatus, previousStatus) => {
+  if (currentStatus === SKILL_STATUS.ATTAINED && previousStatus !== SKILL_STATUS.ATTAINED) {
+    return 'skill--newly-attained';
+  } else if (currentStatus === SKILL_STATUS.ATTAINED) {
+    return 'skill--attained';
+  } else if (currentStatus === SKILL_STATUS.FEEDBACK) {
+    return 'skill--feedback';
+  } else if (currentStatus === SKILL_STATUS.OBJECTIVE) {
+    return 'skill--objective'
+  }
+
+  return '';
 };
 
 const Skill = ({ skill, viewSkillDetails, isBeingEvaluated }) => {
-  const status = skillColour(skill.status.previous || skill.status.current);
+  const status = skillColour(skill.status.current, skill.status.previous);
   const beginEvaluated = isBeingEvaluated ? 'skill--current' : false;
 
   return (

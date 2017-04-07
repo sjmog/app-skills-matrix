@@ -42,7 +42,7 @@ Header.propTypes = {
   subTitle: PropTypes.string,
   btnUrl: PropTypes.string,
   btnDisabled: PropTypes.bool,
-  btnText: PropTypes.string.isRequired,
+  btnText: PropTypes.string,
   btnOnClick: PropTypes.func,
 };
 

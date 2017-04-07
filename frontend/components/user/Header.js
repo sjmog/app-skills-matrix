@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Navbar, Glyphicon } from 'react-bootstrap';
+import { Nav, Navbar, NavItem, Glyphicon } from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
 
 import './header.scss';
 
@@ -17,6 +18,11 @@ class Header extends Component {
           <Navbar.Toggle />
         </Navbar.Header>
         <Navbar.Collapse>
+            <Nav>
+              <LinkContainer to="/feedback">
+                <NavItem eventKey={1}>Feedback</NavItem>
+              </LinkContainer>
+            </Nav>
             <Navbar.Link
               pullRight
               href="/auth/github">LOGIN
