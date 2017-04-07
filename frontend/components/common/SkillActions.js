@@ -11,12 +11,15 @@ const statusIcon = (status) => {
     case SKILL_STATUS.FEEDBACK:
       return <Glyphicon className='pull-right skill-status-icon skill-status-icon--feedback' glyph='question-sign'/>;
       break;
+    case SKILL_STATUS.OBJECTIVE:
+      return <Glyphicon className='pull-right skill-status-icon skill-status-icon--objective' glyph='exclamation-sign'/>;
+      break;
     default:
       return <Glyphicon className='pull-right skill-status-icon skill-status-icon--not-attained' glyph='remove-sign'/>;
   };
 };
 
-const SkillActions = ({ skillStatus, onAttained, onNotAttained, onFeedbackRequest }) => (
+const SkillActions = ({ skillStatus, onAttained, onNotAttained, onFeedbackRequest, onSetObjective }) => (
   <div>
     <ButtonGroup>
       <Button
@@ -37,6 +40,12 @@ const SkillActions = ({ skillStatus, onAttained, onNotAttained, onFeedbackReques
         onClick={onFeedbackRequest}>
         {'Feedback'}
       </Button>
+      <Button
+        bsStyle='default'
+        bsSize='large'
+        onClick={onSetObjective}>
+        {'Objective'}
+      </Button>
     </ButtonGroup>
     { statusIcon(skillStatus.previous || skillStatus.current) }
   </div>
@@ -50,6 +59,7 @@ SkillActions.propTypes = {
   onAttained: PropTypes.func.isRequired,
   onNotAttained: PropTypes.func.isRequired,
   onFeedbackRequest: PropTypes.func.isRequired,
+  onSetObjective: PropTypes.func.isRequired,
 };
 
 export default SkillActions;

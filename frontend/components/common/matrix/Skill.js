@@ -10,6 +10,9 @@ const skillColour = (status) => {
     case SKILL_STATUS.FEEDBACK:
       return 'skill--feedback';
       break;
+    case SKILL_STATUS.OBJECTIVE:
+      return 'skill--objective';
+      break;
     default:
       return '';
   };

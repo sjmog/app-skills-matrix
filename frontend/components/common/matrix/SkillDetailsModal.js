@@ -37,6 +37,7 @@ const SkillDetailsModal = ({ showModal, onClose, skill, updateSkillStatus, canUp
                         onAttained={() => updateSkillStatus(skill.id, SKILL_STATUS.ATTAINED)}
                         onNotAttained={() => updateSkillStatus(skill.id, null)}
                         onFeedbackRequest={() => updateSkillStatus(skill.id, SKILL_STATUS.FEEDBACK)}
+                        onSetObjective={() => updateSkillStatus(skill.id, SKILL_STATUS.OBJECTIVE)}
                       />
                     : false
                 }

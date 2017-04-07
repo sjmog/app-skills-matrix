@@ -26,6 +26,7 @@ const Skill = ({ level, skill, updateSkillStatus, navigatePostSkillUpdate, prevS
           onAttained={() => updateSkillStatus(id, SKILL_STATUS.ATTAINED).then(() => navigatePostSkillUpdate())}
           onNotAttained={() => updateSkillStatus(id, null).then(() => navigatePostSkillUpdate())}
           onFeedbackRequest={() => updateSkillStatus(id, SKILL_STATUS.FEEDBACK).then(() => navigatePostSkillUpdate())}
+          onSetObjective={() => updateSkillStatus(id, SKILL_STATUS.OBJECTIVE).then(() => navigatePostSkillUpdate())}
         />
       </Panel>
       <ButtonGroup className='pull-right'>
