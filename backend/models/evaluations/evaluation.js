@@ -102,6 +102,30 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status }) =
   },
   mentorReviewCompleted() {
     return status === STATUS.MENTOR_REVIEW_COMPLETE;
+  },
+  mergePreviousEvaluation(previousEvaluation) {
+    const updateSkillGroup = (skillGroup) => {
+      const updateSkill = (skillGroupId) => (skill) => {
+          const skillLens = R.compose(
+            lensById(Number(skillGroupId)),
+            R.lensProp('skills'),
+            lensById(Number(skill.id)),
+            R.lensPath(['status', 'current'])
+          );
+          const oldStatus = R.view(skillLens, previousEvaluation.skillGroups);
+          return Object.assign({}, skill, { status: { previous: oldStatus, current: oldStatus === 'ATTAINED' ? 'ATTAINED' : null }});
+      };
+      const updatedSkills = R.map(updateSkill(skillGroup.id), skillGroup.skills);
+      return Object.assign({}, skillGroup, { skills: updatedSkills });
+    };
+    const updatedSkillGroups = R.map(updateSkillGroup, skillGroups);
+    return {
+      user,
+      createdDate,
+      template,
+      skillGroups: updatedSkillGroups,
+      status: STATUS.NEW,
+    }
   }
 });
 
