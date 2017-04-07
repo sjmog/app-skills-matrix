@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { Modal, ButtonGroup, Button, Glyphicon, Alert } from 'react-bootstrap';
 
 import { SKILL_STATUS } from '../../../modules/user/evaluation';
+import SkillActions from '../SkillActions';
 
 const SkillDetailsModal = ({ showModal, onClose, skill, updateSkillStatus, canUpdateSkillStatus }) =>
   (
@@ -31,27 +32,12 @@ const SkillDetailsModal = ({ showModal, onClose, skill, updateSkillStatus, canUp
                 </dl>
                 {
                   canUpdateSkillStatus
-                    ? <div>
-                      <ButtonGroup>
-                        <Button
-                          bsStyle='default'
-                          bsSize='large'
-                          onClick={() => updateSkillStatus(skill.id, SKILL_STATUS.ATTAINED)}>
-                          {'Attained'}
-                        </Button>
-                        <Button
-                          bsStyle='default'
-                          bsSize='large'
-                          onClick={() => updateSkillStatus(skill.id, null)}>
-                          {'Not attained'}
-                        </Button>
-                      </ButtonGroup>
-                        {
-                          skill.status.current === SKILL_STATUS.ATTAINED
-                            ? <Glyphicon className='skill-attained-icon' glyph='ok-circle' />
-                            : false
-                        }
-                      </div>
+                    ? <SkillActions
+                        skillStatus={skill.status}
+                        onAttained={() => updateSkillStatus(skill.id, SKILL_STATUS.ATTAINED)}
+                        onNotAttained={() => updateSkillStatus(skill.id, null)}
+                        onFeedbackRequest={() => updateSkillStatus(skill.id, SKILL_STATUS.FEEDBACK)}
+                      />
                     : false
                 }
                 { skill.error ? <Alert bsStyle='danger'>Something went wrong: {skill.error.message}</Alert> : false }
