@@ -35,6 +35,11 @@ const Skill = ({ level, skill, updateSkillStatus, navigatePostSkillUpdate, prevS
             .then(() => navigatePostSkillUpdate())}>
           {'Not attained'}
         </Button>
+        {
+          skill.status.current === SKILL_STATUS.ATTAINED
+            ? <Glyphicon className='skill-attained-icon' glyph='ok-circle' />
+            : false
+        }
       </ButtonGroup>
     </Panel>
       <ButtonGroup className='pull-right' >

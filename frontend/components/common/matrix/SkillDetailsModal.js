@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Modal, Button, Glyphicon, Alert } from 'react-bootstrap';
+import { Modal, ButtonGroup, Button, Glyphicon, Alert } from 'react-bootstrap';
 
 import { SKILL_STATUS } from '../../../modules/user/evaluation';
 
@@ -32,12 +32,20 @@ const SkillDetailsModal = ({ showModal, onClose, skill, updateSkillStatus, canUp
                 {
                   canUpdateSkillStatus
                     ? <div>
+                      <ButtonGroup>
                         <Button
-                          bsStyle='primary'
+                          bsStyle='default'
                           bsSize='large'
-                          onClick={() => updateSkillStatus(skill.id, skill.status.current)}>
+                          onClick={() => updateSkillStatus(skill.id, SKILL_STATUS.ATTAINED)}>
                           {'Attained'}
                         </Button>
+                        <Button
+                          bsStyle='default'
+                          bsSize='large'
+                          onClick={() => updateSkillStatus(skill.id, null)}>
+                          {'Not attained'}
+                        </Button>
+                      </ButtonGroup>
                         {
                           skill.status.current === SKILL_STATUS.ATTAINED
                             ? <Glyphicon className='skill-attained-icon' glyph='ok-circle' />
