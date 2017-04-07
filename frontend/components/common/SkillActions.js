@@ -3,20 +3,16 @@ import { ButtonGroup, Button, Glyphicon} from 'react-bootstrap';
 
 import { SKILL_STATUS } from '../../modules/user/evaluation';
 
-const statusIcon = (status) => {
-  switch(status) {
-    case SKILL_STATUS.ATTAINED:
-      return <Glyphicon className='pull-right skill-status-icon skill-status-icon--attained' glyph='ok-sign'/>;
-      break;
-    case SKILL_STATUS.FEEDBACK:
-      return <Glyphicon className='pull-right skill-status-icon skill-status-icon--feedback' glyph='question-sign'/>;
-      break;
-    case SKILL_STATUS.OBJECTIVE:
-      return <Glyphicon className='pull-right skill-status-icon skill-status-icon--objective' glyph='exclamation-sign'/>;
-      break;
-    default:
-      return <Glyphicon className='pull-right skill-status-icon skill-status-icon--not-attained' glyph='remove-sign'/>;
-  };
+const statusIcon = (currentStatus, previousStatus) => {
+  if (currentStatus === SKILL_STATUS.ATTAINED) {
+    return <Glyphicon className='pull-right skill-status-icon skill-status-icon--attained' glyph='ok-sign'/>;
+  } else if (currentStatus === SKILL_STATUS.FEEDBACK) {
+    return <Glyphicon className='pull-right skill-status-icon skill-status-icon--feedback' glyph='question-sign'/>;
+  } else if (currentStatus === SKILL_STATUS.OBJECTIVE) {
+    return <Glyphicon className='pull-right skill-status-icon skill-status-icon--objective' glyph='exclamation-sign'/>;
+  }
+
+  return <Glyphicon className='pull-right skill-status-icon skill-status-icon--not-attained' glyph='remove-sign'/>;
 };
 
 const SkillActions = ({ skillStatus, onAttained, onNotAttained, onFeedbackRequest, onSetObjective }) => (
@@ -47,7 +43,7 @@ const SkillActions = ({ skillStatus, onAttained, onNotAttained, onFeedbackReques
         {'Objective'}
       </Button>
     </ButtonGroup>
-    { statusIcon(skillStatus.previous || skillStatus.current) }
+    { statusIcon(skillStatus.current, skillStatus.previous) }
   </div>
 );
 
