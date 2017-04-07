@@ -78,10 +78,11 @@ const handlerFunctions = Object.freeze({
             return res.status(400).json(USER_HAS_NO_MENTOR(user.manageUserViewModel.name));
           }
 
-          return Promise.all([templates.getById(user.templateId), skills.getAll()])
-            .then(([template, allSkills]) => {
+          return Promise.all([templates.getById(user.templateId), skills.getAll(), evaluations.getLatestByUserId(user.id)])
+            .then(([template, allSkills, latestEvaluation]) => {
               const userEvaluation = newEvaluation(template, user, allSkills);
-              return evaluations.addEvaluation(userEvaluation);
+              const mergedEvaluation = userEvaluation.mergePreviousEvaluation(latestEvaluation);
+              return evaluations.addEvaluation(mergedEvaluation);
             })
             .then((newEval) => {
               sendMail(newEval.newEvaluationEmail);

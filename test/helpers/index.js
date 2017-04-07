@@ -1,4 +1,5 @@
 const { ObjectId } = require('mongodb');
+const R = require('ramda');
 
 const usersData = require('../fixtures/users');
 const database = require('../../backend/database');
@@ -21,7 +22,8 @@ module.exports = {
   skills,
   insertSkill: (skill) => skills.insertOne(Object.assign({}, skill)),
   evaluations,
-  insertEvaluation: (evaluation, user) => evaluations.insertOne(encrypt(Object.assign({}, evaluation, { user: { id: String(user) } }))),
+  insertEvaluation: (evaluation, userId) => evaluations.insertOne(encrypt(Object.assign({}, evaluation, { user: { id: String(userId) } }))),
   getEvaluation: (evaluationId) => evaluations.findOne({ _id: ObjectId(evaluationId) }).then(decrypt),
+  getEvaluations: () => evaluations.find({}).then((e) => e.toArray()).then(R.map(decrypt)),
   clearDb: () => Promise.all([users.remove({}), templates.remove({}), skills.remove({}), evaluations.remove({})])
 };

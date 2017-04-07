@@ -5,7 +5,8 @@
   },
   {
     "email": "user@magic.com",
-    "name": "User Magic"
+    "name": "User Magic",
+    "templateId": "eng-nodejs"
   },
   {
     "email": "user@dragon-riders.com",

@@ -2,11 +2,11 @@ const request = require('supertest');
 const { expect } = require('chai');
 
 const app = require('../backend');
-const { prepopulateUsers, users, evaluations, insertTemplate, clearDb, insertSkill, insertEvaluation, assignMentor } = require('./helpers');
+const { prepopulateUsers, users, evaluations, insertTemplate, clearDb, insertSkill, insertEvaluation, assignMentor, getEvaluations } = require('./helpers');
 const { sign, cookieName } = require('../backend/models/auth');
 const templateData = require('./fixtures/templates');
 const skills = require('./fixtures/skills');
-const [evaluation] = require('./fixtures/evaluations');
+const [evaluation, completedEvaluation] = require('./fixtures/evaluations');
 
 const prefix = '/skillz';
 const templateId = 'eng-nodejs';
@@ -40,20 +40,32 @@ describe('userEvaluations', () => {
   describe('POST /users/:userId/evaluations', () => {
     it('allows admin user to create an evaluation for a user', () =>
       request(app)
-        .post(`${prefix}/users/${normalUserOneId}`)
-        .send({ templateId, action: 'selectTemplate' })
+        .post(`${prefix}/users/${normalUserOneId}/evaluations`)
+        .send({ action: 'create' })
         .set('Cookie', `${cookieName}=${adminToken}`)
+        .expect(201)
+        .then(getEvaluations)
+        .then((evaluationList) => {
+          // see ./unit/evaluation-test.js for test to ensure evaluation is correctly generated
+          expect(evaluationList.length).to.equal(1);
+        }));
+
+    it('takes previous evaluation into account when making new evaluation', () =>
+      insertEvaluation(completedEvaluation, normalUserOneId)
         .then(() =>
           request(app)
             .post(`${prefix}/users/${normalUserOneId}/evaluations`)
             .send({ action: 'create' })
             .set('Cookie', `${cookieName}=${adminToken}`)
             .expect(201)
-            .then(() => evaluations.find({}))
-            .then((results) => results.toArray())
-            .then((evaluationList) => {
+            .then(getEvaluations)
+            .then(([firstEvaluation, secondEvaluation]) => {
               // see ./unit/evaluation-test.js for test to ensure evaluation is correctly generated
-              expect(evaluationList.length).to.equal(1);
+              expect(secondEvaluation).to.be.not.null;
+              expect(secondEvaluation.skillGroups[1].skills[0].status).to.deep.equal({
+                previous: 'FEEDBACK',
+                current: null
+              });
             })));
 
     const errorCases = [

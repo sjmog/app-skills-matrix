@@ -32,6 +32,9 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status }) =
   template,
   skillGroups,
   status,
+  get dataModel() {
+    return { user, createdDate, template, skillGroups, status };
+  },
   get viewModel() {
     return { url: `${HOST}/#/evaluations/${_id}`, id: _id, usersName: user.name, status, templateName: template.name };
   },
@@ -118,27 +121,27 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status }) =
       const updatedSkills = R.map(updateSkill(skillGroup.id), skillGroup.skills);
       return Object.assign({}, skillGroup, { skills: updatedSkills });
     };
-    const updatedSkillGroups = R.map(updateSkillGroup, skillGroups);
-    return {
+    const updatedSkillGroups = previousEvaluation ? R.map(updateSkillGroup, skillGroups) : skillGroups;
+    return evaluation({
       user,
       createdDate,
       template,
       skillGroups: updatedSkillGroups,
       status: STATUS.NEW,
-    }
+    });
   }
 });
 
 module.exports = evaluation;
 module.exports.STATUS = STATUS;
 module.exports.newEvaluation = (template, user, skills, date = new Date()) => {
-  return {
+  return evaluation({
     user: user.evaluationData,
     createdDate: date,
     status: STATUS.NEW,
     template: template.evaluationData,
     skillGroups: template.createSkillGroups(skills),
-  };
+  });
 };
 
 

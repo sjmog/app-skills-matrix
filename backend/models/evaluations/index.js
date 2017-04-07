@@ -9,7 +9,7 @@ evaluationsCollection.ensureIndex({ 'user.id': 1 }, { background: true });
 
 module.exports = {
   addEvaluation: function (newEvaluation) {
-    return evaluationsCollection.insertOne(encrypt(newEvaluation))
+    return evaluationsCollection.insertOne(encrypt(newEvaluation.dataModel))
       .then(({ insertedId }) => evaluationsCollection.findOne({ _id: new ObjectId(insertedId) }))
       .then((res) => res ? evaluation(decrypt(res)) : null);
   },
@@ -21,6 +21,10 @@ module.exports = {
     return evaluationsCollection.find({ 'user.id': userId })
       .then(res => res.toArray())
       .then(res => res.map((e) => evaluation(decrypt(e))))
+  },
+  getLatestByUserId: function (userId) {
+    return evaluationsCollection.findOne({ 'user.id': userId }, { sort: {'createdDate': -1}, limit: 1 })
+      .then(res => res ? evaluation(decrypt(res)) : null);
   },
   updateEvaluation: function (updatedEvaluation) {
     return evaluationsCollection.updateOne(
