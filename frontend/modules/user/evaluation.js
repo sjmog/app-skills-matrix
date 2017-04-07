@@ -175,8 +175,7 @@ export const getLowestUnattainedSkill = (state, category) => {
   const skillsInCategory = getAllSkillsInCategory(state, category);
 
   const hasUnattainedSkills = ({ id }) => {
-    const { current, previous } = state.skills[id].status;
-    return current !== SKILL_STATUS.ATTAINED && previous !== SKILL_STATUS.ATTAINED;
+    return state.skills[id].status.current === null;
   };
 
   const unattainedSkill = R.find(hasUnattainedSkills)(skillsInCategory);
@@ -189,8 +188,7 @@ export const getErringSkills = (state) => {
 };
 
 const unattained = (skill) =>
-  R.path(['status', 'current'], skill) !== SKILL_STATUS.ATTAINED
-  && R.path(['status', 'previous'], skill) !== SKILL_STATUS.ATTAINED;
+  R.path(['status', 'current'], skill) === null;
 
 export const getNextCategory = (state, category) => {
   const indexOfCurrentCategory = state.template.categories.indexOf(category) || 0;
