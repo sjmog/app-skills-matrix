@@ -1,3 +1,5 @@
+@import "./variables";
+
 .skill-status-icon {
   font-size: 36px;
   vertical-align: middle;
@@ -5,23 +7,23 @@
 }
 
 .skill-status-icon--attained {
-  color: #C9DAF8;
+  color: $attained;
 }
 
 .skill-status-icon--newly-attained {
-  color: #D9D2E9;
+  color: $newly-attained;
 }
 
 .skill-status-icon--feedback{
-  color: #FFF2CC;
+  color: $feedback;
 }
 
 .skill-status-icon--not-attained {
-  color: #d9dbd9;
+  color: $not-attained;
 }
 
 .skill-status-icon--objective {
-  color: #F4CCCC;
+  color: $objective;
 }
 
 .alert {

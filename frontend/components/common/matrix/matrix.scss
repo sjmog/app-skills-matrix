@@ -41,19 +41,19 @@ dd {
 }
 
 .skill--attained {
-  background-color: #C9DAF8;
+  background-color: $attained;
 }
 
 .skill--newly-attained {
-  background-color: #D9D2E9;
+  background-color: $newly-attained;
 }
 
 .skill--feedback {
-  background-color: #FFF2CC;
+  background-color: $feedback;
 }
 
 .skill--objective {
-  background-color: #F4CCCC;
+  background-color: $objective;
 }
 
 .skill--current {
