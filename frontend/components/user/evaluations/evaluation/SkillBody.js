@@ -15,6 +15,23 @@ class SkillBody extends React.Component {
         <h4>
           {`  ${this.props.criteria}`}
         </h4>
+        {
+          this.props.questions.length
+          ? <Button
+              active={this.state.open}
+              onClick={() => this.setState({ open: !this.state.open })}>
+              {"I'm not sure"}
+            </Button>
+          : false
+        }
+        { this.state.open
+          ? <div className='skill-panel___info-block'>
+              <ul>
+                { this.props.questions.map(({ title }) => <li key={title}>{title}</li>) }
+              </ul>
+            </div>
+          : false
+        }
       </div>
     );
   }

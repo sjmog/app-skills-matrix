@@ -3,6 +3,8 @@ import { ButtonGroup, Button, Glyphicon} from 'react-bootstrap';
 
 import { SKILL_STATUS } from '../../modules/user/evaluation';
 
+import './skill-actions.scss';
+
 const statusIcon = (currentStatus, previousStatus) => {
   if (currentStatus === SKILL_STATUS.ATTAINED && previousStatus !== SKILL_STATUS.ATTAINED) {
     return <Glyphicon className='pull-right skill-status-icon skill-status-icon--newly-attained' glyph='ok-sign'/>;
@@ -18,7 +20,7 @@ const statusIcon = (currentStatus, previousStatus) => {
 };
 
 const SkillActions = ({ skillStatus, onAttained, onNotAttained, onFeedbackRequest, onSetObjective }) => (
-  <div>
+  <div className='skill-actions'>
     <ButtonGroup>
       <Button
         bsStyle='default'
