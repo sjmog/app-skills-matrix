@@ -17,7 +17,7 @@ const skillColour = (currentStatus, previousStatus) => {
 };
 
 const Skill = ({ skill, viewSkillDetails, isBeingEvaluated }) => {
-  const status = skillColour(skill.status.current, skill.status.previous);
+  const status = skill.status ? skillColour(skill.status.current, skill.status.previous) : '';
   const beginEvaluated = isBeingEvaluated ? 'skill--current' : false;
 
   return (
