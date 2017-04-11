@@ -42,7 +42,7 @@ const handlerFunctions = Object.freeze({
         })
         .catch(next);
     },
-    updateSkillStatus: (req, res, next) => {
+    subjectUpdateSkillStatus: (req, res, next) => {
       const { evaluationId } = req.params;
       const { skillGroupId, skillId, status } = req.body;
       const { user } = res.locals;
@@ -57,15 +57,30 @@ const handlerFunctions = Object.freeze({
             return res.status(401).json(MUST_BE_LOGGED_IN());
           }
 
-          if (evaluation.mentorReviewCompleted()) {
-            return res.status(403).json(MENTOR_REVIEW_COMPLETE())
+          if (user.id !== evaluation.user.id) {
+            return res.status(403).json(MUST_BE_SUBJECT_OF_EVALUATION_OR_MENTOR());
           }
 
-          if (user.id === evaluation.user.id) {
-            return evaluation.isNewEvaluation()
-              ? updateEvaluation(evaluation.updateSkill(skillGroupId, skillId, status))
-                .then(() => res.sendStatus(204))
-              : res.status(403).json(SUBJECT_CAN_ONLY_UPDATE_NEW_EVALUATION());
+          return evaluation.isNewEvaluation()
+            ? updateEvaluation(evaluation.updateSkill(skillGroupId, skillId, status))
+              .then(() => res.sendStatus(204))
+            : res.status(403).json(SUBJECT_CAN_ONLY_UPDATE_NEW_EVALUATION());
+        })
+        .catch(next)
+    },
+    mentorUpdateSkillStatus: (req, res, next) => {
+      const { evaluationId } = req.params;
+      const { skillGroupId, skillId, status } = req.body;
+      const { user } = res.locals;
+
+      Promise.try(() => getEvaluationById(evaluationId))
+        .then((evaluation) => {
+          if (!evaluation) {
+            return res.status(404).json(EVALUATION_NOT_FOUND());
+          }
+
+          if (!user) {
+            return res.status(401).json(MUST_BE_LOGGED_IN());
           }
 
           return getUserById(evaluation.user.id)
