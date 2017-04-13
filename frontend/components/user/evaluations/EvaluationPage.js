@@ -30,8 +30,8 @@ class EvaluationPageComponent extends React.Component {
       .then(() => this.setState({ evaluationRetrieved: true }))
   }
 
-  updateSkillStatus(skillId, newStatus) {
-    return this.props.actions.updateSkillStatus(this.evaluationId, skillId, newStatus);
+  updateSkillStatus(evaluationView) {
+    return (skillId, newStatus) => this.props.actions.updateSkillStatus(evaluationView, this.evaluationId, skillId, newStatus);
   }
 
   render() {
@@ -58,7 +58,7 @@ class EvaluationPageComponent extends React.Component {
             levels={levels}
             skillGroups={skillGroups}
             skills={skills}
-            updateSkillStatus={this.updateSkillStatus}
+            updateSkillStatus={this.updateSkillStatus(view)}
             canUpdateSkillStatus={
               view === SUBJECT && status === NEW
               || view === MENTOR && status === SELF_EVALUATION_COMPLETE
