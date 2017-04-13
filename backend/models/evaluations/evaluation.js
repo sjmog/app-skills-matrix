@@ -51,6 +51,9 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status }) =
       body: `Please visit ${`${HOST}/#/evaluations/${_id}`} to complete your evaluation`,
     }
   },
+  get feedbackData() {
+    return ({ id: _id.toString(), createdDate });
+  },
   getSelfEvaluationCompleteEmail(mentor) {
     return {
       recipients: mentor.email,

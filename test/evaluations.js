@@ -2,7 +2,7 @@ const request = require('supertest');
 const { expect } = require('chai');
 
 const app = require('../backend');
-const { prepopulateUsers, users, assignMentor, evaluations, insertTemplate, clearDb, insertSkill, insertEvaluation, getEvaluation } = require('./helpers');
+const { prepopulateUsers, users, assignMentor, evaluations, insertTemplate, clearDb, insertSkill, insertEvaluation, getEvaluation, getAllFeedback } = require('./helpers');
 const { sign, cookieName } = require('../backend/models/auth');
 const { STATUS } = require('../backend/models/evaluations/evaluation');
 const { NEW, SELF_EVALUATION_COMPLETE, MENTOR_REVIEW_COMPLETE } = STATUS;
@@ -123,6 +123,30 @@ describe('evaluations', () => {
         .then(() => getEvaluation(evaluationId))
         .then(({ skillGroups }) => {
           expect(skillGroups[0].skills[0].status).to.deep.equal({ previous: null, current: 'ATTAINED' });
+        }));
+
+    it('adds feedback when a skill is set to FEEDBACK', () =>
+      insertEvaluation(evaluation, normalUserOneId)
+        .then(({ insertedId }) => {
+          evaluationId = insertedId.toString();
+        })
+        .then(() =>
+          request(app)
+            .post(`${prefix}/evaluations/${evaluationId}`)
+            .send({
+              action: 'subjectUpdateSkillStatus',
+              skillGroupId: 0,
+              skillId: 1,
+              status: 'FEEDBACK'
+            })
+            .set('Cookie', `${cookieName}=${normalUserOneToken}`)
+            .expect(204)
+        )
+        .then(() => getAllFeedback())
+        .then(([feedback]) => {
+          expect(feedback).to.not.be.null;
+          expect(feedback.evaluation.id).to.equal(evaluationId);
+          expect(feedback.skill.id).to.equal(1);
         }));
 
     it('prevents updates by the subject of the evaluation if they have completed their self-evaluation', () =>

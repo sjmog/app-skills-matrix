@@ -1,12 +1,18 @@
 const Promise = require('bluebird');
 
 const createHandler = require('./createHandler');
+
 const { getEvaluationById, updateEvaluation } = require('../models/evaluations');
 const { getUserById } = require('../models/users');
+const { SKILL_STATUS } = require('../models/matrices/skill');
+const { skills } = require('../models/matrices');
+const { addFeedback } = require('../models/feedbacks');
+
 const { sendMail } = require('../services/email');
 
 const {
   EVALUATION_NOT_FOUND,
+  SKILL_NOT_FOUND,
   MUST_BE_SUBJECT_OF_EVALUATION_OR_MENTOR,
   MUST_BE_LOGGED_IN,
   SUBJECT_CAN_ONLY_UPDATE_NEW_EVALUATION,
@@ -47,10 +53,14 @@ const handlerFunctions = Object.freeze({
       const { skillGroupId, skillId, status } = req.body;
       const { user } = res.locals;
 
-      Promise.try(() => getEvaluationById(evaluationId))
-        .then((evaluation) => {
+      Promise.all([getEvaluationById(evaluationId), skills.getById(skillId)])
+        .then(([evaluation, skill]) => {
           if (!evaluation) {
             return res.status(404).json(EVALUATION_NOT_FOUND());
+          }
+
+          if (!skill) {
+            return res.status(404).json(SKILL_NOT_FOUND());
           }
 
           if (!user) {
@@ -63,6 +73,7 @@ const handlerFunctions = Object.freeze({
 
           return evaluation.isNewEvaluation()
             ? updateEvaluation(evaluation.updateSkill(skillGroupId, skillId, status))
+              .then(() => status === SKILL_STATUS.FEEDBACK && addFeedback({ user, skill, evaluation }))
               .then(() => res.sendStatus(204))
             : res.status(403).json(SUBJECT_CAN_ONLY_UPDATE_NEW_EVALUATION());
         })

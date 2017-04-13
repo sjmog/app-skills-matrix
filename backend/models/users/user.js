@@ -14,6 +14,9 @@ const user = ({ _id, name, email, createdDate, modifiedDate, templateId, mentorI
   get manageUserViewModel() {
     return ({ id: _id.toString(), name, email, mentorId, templateId });
   },
+  get feedbackData() {
+    return ({ id: _id.toString(), name, mentorId });
+  },
   get signingData() {
     return ({ id: _id.toString(), email });
   },
