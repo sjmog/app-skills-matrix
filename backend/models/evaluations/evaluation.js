@@ -18,7 +18,7 @@ const VIEW = keymirror({
 const arrayToKeyedObject = (skills) => skills.reduce((acc, item) => Object.assign({}, acc, { [item.id]: item }), {});
 
 const evaluation = ({ _id, user, createdDate, template, skillGroups, status, skills }) => Object.freeze({
-  id: _id,
+  id: _id ? _id.toString() : null,
   user,
   createdDate,
   template,

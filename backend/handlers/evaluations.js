@@ -6,7 +6,7 @@ const { getEvaluationById, updateEvaluation } = require('../models/evaluations')
 const { getUserById } = require('../models/users');
 const { SKILL_STATUS } = require('../models/evaluations/skill');
 const { skills } = require('../models/matrices');
-const { addFeedback } = require('../models/actions');
+const actions = require('../models/actions');
 
 const { sendMail } = require('../services/email');
 
@@ -19,6 +19,20 @@ const {
   MENTOR_REVIEW_COMPLETE,
   MENTOR_CAN_ONLY_UPDATE_AFTER_SELF_EVALUATION,
 } = require('./errors');
+
+
+const addActions = (user, skill, evaluation, newStatus) => {
+  const addFeedback = skill.shouldAddFeedback(newStatus);
+  const removeFeedback = skill.shouldRemoveFeedback(newStatus);
+  const fns = [];
+  if (addFeedback) {
+    fns.push(actions.addFeedback({ user, skill, evaluation }));
+  }
+  if (removeFeedback) {
+    fns.push(actions.removeFeedback(user.id, skill.id, evaluation.id));
+  }
+  return Promise.all(fns);
+};
 
 const handlerFunctions = Object.freeze({
   evaluation: {
@@ -53,14 +67,10 @@ const handlerFunctions = Object.freeze({
       const { skillId, status } = req.body;
       const { user } = res.locals;
 
-      Promise.all([getEvaluationById(evaluationId), skills.getById(skillId)])
-        .then(([evaluation, skill]) => {
+      getEvaluationById(evaluationId)
+        .then((evaluation) => {
           if (!evaluation) {
             return res.status(404).json(EVALUATION_NOT_FOUND());
-          }
-
-          if (!skill) {
-            return res.status(404).json(SKILL_NOT_FOUND());
           }
 
           if (!user) {
@@ -71,9 +81,14 @@ const handlerFunctions = Object.freeze({
             return res.status(403).json(MUST_BE_SUBJECT_OF_EVALUATION_OR_MENTOR());
           }
 
+          const skill = evaluation.findSkill(skillId);
+          if (!skill) {
+            return res.status(400).json(SKILL_NOT_FOUND());
+          }
+
           return evaluation.isNewEvaluation()
             ? updateEvaluation(evaluation.updateSkill(skillId, status))
-              .then(() => status === SKILL_STATUS.FEEDBACK && addFeedback({ user, skill, evaluation }))
+              .then(() => addActions(user, skill, evaluation, status))
               .then(() => res.sendStatus(204))
             : res.status(403).json(SUBJECT_CAN_ONLY_UPDATE_NEW_EVALUATION());
         })

@@ -146,10 +146,44 @@ describe('evaluations', () => {
         )
         .then(() => getAllActions())
         .then(([action]) => {
-          expect(action).to.not.be.null;
-          expect(action.type).to.equal('FEEDBACK')
+          expect(action).to.not.be.undefined;
+          expect(action.type).to.equal('FEEDBACK');
           expect(action.evaluation.id).to.equal(evaluationId);
           expect(action.skill.id).to.equal(1);
+        }));
+
+    it('removes feedback when a skill was previously FEEDBACK', () =>
+      insertEvaluation(evaluation, normalUserOneId)
+        .then(({ insertedId }) => {
+          evaluationId = insertedId.toString();
+        })
+        .then(() =>
+          request(app)
+            .post(`${prefix}/evaluations/${evaluationId}`)
+            .send({
+              action: 'subjectUpdateSkillStatus',
+              skillGroupId: 0,
+              skillId: 1,
+              status: 'FEEDBACK'
+            })
+            .set('Cookie', `${cookieName}=${normalUserOneToken}`)
+            .expect(204)
+        )
+        .then(() =>
+          request(app)
+            .post(`${prefix}/evaluations/${evaluationId}`)
+            .send({
+              action: 'subjectUpdateSkillStatus',
+              skillGroupId: 0,
+              skillId: 1,
+              status: 'ATTAINED'
+            })
+            .set('Cookie', `${cookieName}=${normalUserOneToken}`)
+            .expect(204)
+        )
+        .then(() => getAllActions())
+        .then(([action]) => {
+          expect(action).to.be.undefined;
         }));
 
     it('prevents updates by the subject of the evaluation if they have completed their self-evaluation', () =>
@@ -297,7 +331,7 @@ describe('evaluations', () => {
             .expect(403)));
 
     it('prevents updates by a mentor if the evaluation has not been completed by their mentee', () =>
-      insertEvaluation(Object.assign({}, evaluation, { status: NEW  }), normalUserOneId)
+      insertEvaluation(Object.assign({}, evaluation, { status: NEW }), normalUserOneId)
         .then(({ insertedId }) => {
           evaluationId = insertedId
         })
@@ -449,7 +483,7 @@ describe('evaluations', () => {
             .expect(403)));
 
     it('prevents mentor from completing a review of an evaluation before their mentee has self-evaluated', () =>
-      insertEvaluation(Object.assign({}, evaluation, { status: NEW  }), normalUserOneId)
+      insertEvaluation(Object.assign({}, evaluation, { status: NEW }), normalUserOneId)
         .then(({ insertedId }) => {
           evaluationId = insertedId
         })

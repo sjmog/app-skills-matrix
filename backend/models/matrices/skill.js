@@ -7,9 +7,6 @@ const skill = ({ id, name, version, criteria, type, questions }) => Object.freez
   },
   get evaluationData() {
     return { id, name, version, criteria, type, questions };
-  },
-  get feedbackData() {
-    return ({ id, name, criteria });
   }
 });
 
