@@ -127,7 +127,7 @@ describe('evaluations', () => {
           expect(skills[0].status).to.deep.equal({ previous: null, current: 'ATTAINED' });
         }));
 
-    it('adds feedback when a skill is set to FEEDBACK', () =>
+    it('adds action when a skill is set to FEEDBACK', () =>
       insertEvaluation(evaluation, normalUserOneId)
         .then(({ insertedId }) => {
           evaluationId = insertedId.toString();
@@ -152,7 +152,32 @@ describe('evaluations', () => {
           expect(action.skill.id).to.equal(1);
         }));
 
-    it('removes feedback when a skill was previously FEEDBACK', () =>
+    it('adds action when a skill is set to OBJECTIVE', () =>
+      insertEvaluation(evaluation, normalUserOneId)
+        .then(({ insertedId }) => {
+          evaluationId = insertedId.toString();
+        })
+        .then(() =>
+          request(app)
+            .post(`${prefix}/evaluations/${evaluationId}`)
+            .send({
+              action: 'subjectUpdateSkillStatus',
+              skillGroupId: 0,
+              skillId: 1,
+              status: 'OBJECTIVE'
+            })
+            .set('Cookie', `${cookieName}=${normalUserOneToken}`)
+            .expect(204)
+        )
+        .then(() => getAllActions())
+        .then(([action]) => {
+          expect(action).to.not.be.undefined;
+          expect(action.type).to.equal('OBJECTIVE');
+          expect(action.evaluation.id).to.equal(evaluationId);
+          expect(action.skill.id).to.equal(1);
+        }));
+
+    it('removes action when a skill was previously FEEDBACK', () =>
       insertEvaluation(evaluation, normalUserOneId)
         .then(({ insertedId }) => {
           evaluationId = insertedId.toString();

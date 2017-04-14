@@ -7,6 +7,11 @@ const SKILL_STATUS = keymirror({
   OBJECTIVE: null
 });
 
+const STATUS_WITH_ACTION = keymirror({
+  FEEDBACK: null,
+  OBJECTIVE: null,
+});
+
 module.exports = ({ id, name, criteria, type, questions, status }) => ({
   id,
   get currentStatus() {
@@ -18,11 +23,11 @@ module.exports = ({ id, name, criteria, type, questions, status }) => ({
   get feedbackData() {
     return ({ id, name, criteria });
   },
-  shouldAddFeedback(newStatus) {
-    return newStatus === SKILL_STATUS.FEEDBACK && status.current !== SKILL_STATUS.FEEDBACK
+  addAction(newStatus) {
+    return (STATUS_WITH_ACTION[newStatus] && status.current !== newStatus) && STATUS_WITH_ACTION[newStatus];
   },
-  shouldRemoveFeedback(newStatus) {
-    return newStatus !== SKILL_STATUS.FEEDBACK && status.current === SKILL_STATUS.FEEDBACK
+  removeAction(newStatus) {
+    return (STATUS_WITH_ACTION[status.current] && status.current !== newStatus) && STATUS_WITH_ACTION[status.current];
   },
   updateStatus(newStatus) {
     return {

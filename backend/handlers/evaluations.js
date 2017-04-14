@@ -22,14 +22,14 @@ const {
 
 
 const addActions = (user, skill, evaluation, newStatus) => {
-  const addFeedback = skill.shouldAddFeedback(newStatus);
-  const removeFeedback = skill.shouldRemoveFeedback(newStatus);
+  const actionToAdd = skill.addAction(newStatus);
+  const actionToRemove = skill.removeAction(newStatus);
   const fns = [];
-  if (addFeedback) {
-    fns.push(actions.addFeedback({ user, skill, evaluation }));
+  if (actionToAdd) {
+    fns.push(actions.addAction(actionToAdd, user, skill, evaluation));
   }
-  if (removeFeedback) {
-    fns.push(actions.removeFeedback(user.id, skill.id, evaluation.id));
+  if (actionToRemove) {
+    fns.push(actions.removeAction(actionToRemove, user.id, skill.id, evaluation.id));
   }
   return Promise.all(fns);
 };
