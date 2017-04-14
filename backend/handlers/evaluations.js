@@ -4,7 +4,7 @@ const createHandler = require('./createHandler');
 
 const { getEvaluationById, updateEvaluation } = require('../models/evaluations');
 const { getUserById } = require('../models/users');
-const { SKILL_STATUS } = require('../models/matrices/skill');
+const { SKILL_STATUS } = require('../models/evaluations/skill');
 const { skills } = require('../models/matrices');
 const { addFeedback } = require('../models/actions');
 
@@ -50,7 +50,7 @@ const handlerFunctions = Object.freeze({
     },
     subjectUpdateSkillStatus: (req, res, next) => {
       const { evaluationId } = req.params;
-      const { skillGroupId, skillId, status } = req.body;
+      const { skillId, status } = req.body;
       const { user } = res.locals;
 
       Promise.all([getEvaluationById(evaluationId), skills.getById(skillId)])
@@ -72,7 +72,7 @@ const handlerFunctions = Object.freeze({
           }
 
           return evaluation.isNewEvaluation()
-            ? updateEvaluation(evaluation.updateSkill(skillGroupId, skillId, status))
+            ? updateEvaluation(evaluation.updateSkill(skillId, status))
               .then(() => status === SKILL_STATUS.FEEDBACK && addFeedback({ user, skill, evaluation }))
               .then(() => res.sendStatus(204))
             : res.status(403).json(SUBJECT_CAN_ONLY_UPDATE_NEW_EVALUATION());
@@ -81,7 +81,7 @@ const handlerFunctions = Object.freeze({
     },
     mentorUpdateSkillStatus: (req, res, next) => {
       const { evaluationId } = req.params;
-      const { skillGroupId, skillId, status } = req.body;
+      const { skillId, status } = req.body;
       const { user } = res.locals;
 
       Promise.try(() => getEvaluationById(evaluationId))
@@ -101,7 +101,7 @@ const handlerFunctions = Object.freeze({
               }
 
               return evaluation.selfEvaluationCompleted()
-                ? updateEvaluation(evaluation.updateSkill(skillGroupId, skillId, status))
+                ? updateEvaluation(evaluation.updateSkill(skillId, status))
                   .then(() => res.sendStatus(204))
                 : res.status(403).json(MENTOR_CAN_ONLY_UPDATE_AFTER_SELF_EVALUATION());
             })

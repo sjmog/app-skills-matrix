@@ -1,6 +1,7 @@
 const keymirror = require('keymirror');
 const R = require('ramda');
 
+const skill = require('./skill');
 const HOST = process.env.HOST;
 
 const STATUS = keymirror({
@@ -14,18 +15,9 @@ const VIEW = keymirror({
   MENTOR: null,
 });
 
-const lensMatching = (pred) =>
-  R.lens(
-    R.find(pred),
-    (newVal, arr) => {
-      const index = R.findIndex(pred, arr);
-      return R.update(index, newVal, arr);
-    }
-  );
+const keySkills = (skills) => skills.reduce((acc, aSkill) => Object.assign({}, acc, { [aSkill.id]: skill(aSkill) }), {});
 
-const lensById = R.compose(lensMatching, R.propEq('id'));
-
-const evaluation = ({ _id, user, createdDate, template, skillGroups, status }) => Object.freeze({
+const evaluation = ({ _id, user, createdDate, template, skillGroups, status, skills }) => Object.freeze({
   id: _id,
   user,
   createdDate,
@@ -33,22 +25,36 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status }) =
   skillGroups,
   status,
   get dataModel() {
-    return { user, createdDate, template, skillGroups, status };
+    return { user, createdDate, template, skillGroups, status, skills };
   },
   get viewModel() {
     return { url: `${HOST}/#/evaluations/${_id}`, id: _id, usersName: user.name, status, templateName: template.name };
   },
   get subjectEvaluationViewModel() {
-    return { user, status, template, skillGroups, view: VIEW.SUBJECT  };
+    return {
+      user,
+      status,
+      template,
+      skillGroups,
+      skills: keySkills(skills),
+      view: VIEW.SUBJECT
+    };
   },
   get mentorEvaluationViewModel() {
-    return { user, status, template, skillGroups, view: VIEW.MENTOR };
+    return {
+      user,
+      status,
+      template,
+      skillGroups,
+      skills: keySkills(skills),
+      view: VIEW.MENTOR
+    };
   },
   get newEvaluationEmail() {
     return {
       recipients: user.email,
       subject: 'A new evaluation has been triggered',
-      body: `Please visit ${`${HOST}/#/evaluations/${_id}`} to complete your evaluation`,
+      body: `Please visit ${`${HOST}/#/evaluations/${_id}`} to complete your evaluation.`,
     }
   },
   get feedbackData() {
@@ -61,22 +67,18 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status }) =
       body: `Please book a meeting with them and and visit ${`${HOST}/#/evaluations/${_id}`} to review their evaluation.`,
     }
   },
-  updateSkill(skillGroupId, skillId, newSkillStatus) {
-    const skillLens = R.compose(
-      lensById(Number(skillGroupId)),
-      R.lensProp('skills'),
-      lensById(Number(skillId)),
-      R.lensPath(['status', 'current'])
-    );
-
-    const updatedSkillGroups = R.set(skillLens, newSkillStatus, skillGroups);
-
+  findSkill(skillId) {
+    const val = R.find((skill) => skillId === skill.id, skills);
+    return val ? skill(val) : null;
+  },
+  updateSkill(skillId, newSkillStatus) {
     return {
       id: _id,
       user,
       createdDate,
       template,
-      skillGroups: updatedSkillGroups,
+      skillGroups,
+      skills: skills.map((s) => s.id === skillId ? skill(s).updateStatus(newSkillStatus) : s),
       status
     }
   },
@@ -110,26 +112,17 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status }) =
     return status === STATUS.MENTOR_REVIEW_COMPLETE;
   },
   mergePreviousEvaluation(previousEvaluation) {
-    const updateSkillGroup = (skillGroup) => {
-      const updateSkill = (skillGroupId) => (skill) => {
-          const skillLens = R.compose(
-            lensById(Number(skillGroupId)),
-            R.lensProp('skills'),
-            lensById(Number(skill.id)),
-            R.lensPath(['status', 'current'])
-          );
-          const oldStatus = R.view(skillLens, previousEvaluation.skillGroups);
-          return Object.assign({}, skill, { status: { previous: oldStatus, current: oldStatus === 'ATTAINED' ? 'ATTAINED' : null }});
-      };
-      const updatedSkills = R.map(updateSkill(skillGroup.id), skillGroup.skills);
-      return Object.assign({}, skillGroup, { skills: updatedSkills });
+    const updateSkill = (skill) => {
+      const previousSkill = previousEvaluation.findSkill(skill.id);
+      return Object.assign({}, skill, { status: { previous: previousSkill.currentStatus, current: previousSkill.statusForNextEvaluation } });
     };
-    const updatedSkillGroups = previousEvaluation ? R.map(updateSkillGroup, skillGroups) : skillGroups;
+    const updatedSkills = previousEvaluation ? R.map(updateSkill, skills) : skills;
     return evaluation({
       user,
       createdDate,
       template,
-      skillGroups: updatedSkillGroups,
+      skillGroups,
+      skills: updatedSkills,
       status: STATUS.NEW,
     });
   }
@@ -137,13 +130,15 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status }) =
 
 module.exports = evaluation;
 module.exports.STATUS = STATUS;
-module.exports.newEvaluation = (template, user, skills, date = new Date()) => {
+module.exports.newEvaluation = (template, user, allSkills, date = new Date()) => {
+  const { skillGroups, skills } = template.createSkillGroups(allSkills);
   return evaluation({
     user: user.evaluationData,
     createdDate: date,
     status: STATUS.NEW,
     template: template.evaluationData,
-    skillGroups: template.createSkillGroups(skills),
+    skillGroups,
+    skills,
   });
 };
 

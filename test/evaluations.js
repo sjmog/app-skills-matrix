@@ -121,8 +121,8 @@ describe('evaluations', () => {
             .expect(204)
         )
         .then(() => getEvaluation(evaluationId))
-        .then(({ skillGroups }) => {
-          expect(skillGroups[0].skills[0].status).to.deep.equal({ previous: null, current: 'ATTAINED' });
+        .then(({ skills }) => {
+          expect(skills[0].status).to.deep.equal({ previous: null, current: 'ATTAINED' });
         }));
 
     it('adds feedback when a skill is set to FEEDBACK', () =>
@@ -252,8 +252,8 @@ describe('evaluations', () => {
             .expect(204)
         )
         .then(() => getEvaluation(evaluationId))
-        .then(({ skillGroups }) => {
-          expect(skillGroups[0].skills[0].status).to.deep.equal({ previous: null, current: 'ATTAINED' });
+        .then(({ skills }) => {
+          expect(skills[0].status).to.deep.equal({ previous: null, current: 'ATTAINED' });
         })
     );
 

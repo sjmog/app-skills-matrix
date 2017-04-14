@@ -14,14 +14,6 @@ const skill = ({ id, name, version, criteria, type, questions }) => Object.freez
 });
 
 module.exports = skill;
-
-module.exports.SKILL_STATUS = keymirror({
-  ATTAINED: null,
-  NOT_ATTAINED: null,
-  FEEDBACK: null,
-  OBJECTIVE: null
-});
-
 module.exports.newSkill = (id, name, type, version = 1, criteria, questions) =>
   ({
     id,

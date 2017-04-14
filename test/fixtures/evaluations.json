@@ -20,31 +20,85 @@
         "Novice"
       ]
     },
+    "skills": [
+      {
+        "id": 1,
+        "name": "Dragon Feeding",
+        "criteria": "Can successfully feed their dragon",
+        "type": "skill",
+        "version": 1,
+        "questions": [
+          {
+            "title": "Do you know where to get the dragon food?"
+          },
+          {
+            "title": "Are you able to feed a dragon and retain your hands"
+          }
+        ],
+        "status": {
+          "previous": null,
+          "current": null
+        }
+      },
+      {
+        "id": 2,
+        "name": "Advanced knowledge of Dragon Flight",
+        "criteria": "Is able to fly their dragon in all situations",
+        "type": "skill",
+        "version": 1,
+        "questions": [
+          {
+            "title": "Are you able to fly your dragon in a hurricane?"
+          },
+          {
+            "title": "Can you memoize your dragon?"
+          }
+        ],
+        "status": {
+          "previous": null,
+          "current": null
+        }
+      },
+      {
+        "id": 3,
+        "name": "Advanced knowledge of the Dark Arts",
+        "criteria": "Can execute the Imperius Curse",
+        "type": "skill",
+        "version": 1,
+        "questions": [
+          {
+            "title": "Can you speak parseltongue?"
+          }
+        ],
+        "status": {
+          "previous": null,
+          "current": null
+        }
+      },
+      {
+        "id": 4,
+        "name": "Working knowledge of the Dark Arts",
+        "criteria": "Can execute the Toenail-growing hex",
+        "type": "skill",
+        "version": 1,
+        "questions": [
+          {
+            "title": "Have you hexed anyone in the last month?"
+          }
+        ],
+        "status": {
+          "previous": null,
+          "current": null
+        }
+      }
+    ],
     "skillGroups": [
       {
         "id": 0,
         "level": "Novice",
         "category": "Dragon Flight",
         "skills": [
-          {
-            "id": 1,
-            "name": "Dragon Feeding",
-            "criteria": "Can successfully feed their dragon",
-            "type": "skill",
-            "version": 1,
-            "questions": [
-              {
-                "title": "Do you know where to get the dragon food?"
-              },
-              {
-                "title": "Are you able to feed a dragon and retain your hands"
-              }
-            ],
-            "status": {
-              "previous": null,
-              "current": null
-            }
-          }
+          1
         ]
       },
       {
@@ -52,25 +106,7 @@
         "level": "Expert",
         "category": "Dragon Flight",
         "skills": [
-          {
-            "id": 2,
-            "name": "Advanced knowledge of Dragon Flight",
-            "criteria": "Is able to fly their dragon in all situations",
-            "type": "skill",
-            "version": 1,
-            "questions": [
-              {
-                "title": "Are you able to fly your dragon in a hurricane?"
-              },
-              {
-                "title": "Can you memoize your dragon?"
-              }
-            ],
-            "status": {
-              "previous": null,
-              "current": null
-            }
-          }
+          2
         ]
       },
       {
@@ -78,22 +114,7 @@
         "level": "Expert",
         "category": "Magicness",
         "skills": [
-          {
-            "id": 3,
-            "name": "Advanced knowledge of the Dark Arts",
-            "criteria": "Can execute the Imperius Curse",
-            "type": "skill",
-            "version": 1,
-            "questions": [
-              {
-                "title": "Can you speak parseltongue?"
-              }
-            ],
-            "status": {
-              "previous": null,
-              "current": null
-            }
-          }
+          3
         ]
       },
       {
@@ -101,22 +122,7 @@
         "level": "Novice",
         "category": "Magicness",
         "skills": [
-          {
-            "id": 4,
-            "name": "Working knowledge of the Dark Arts",
-            "criteria": "Can execute the Toenail-growing hex",
-            "type": "skill",
-            "version": 1,
-            "questions": [
-              {
-                "title": "Have you hexed anyone in the last month?"
-              }
-            ],
-            "status": {
-              "previous": null,
-              "current": null
-            }
-          }
+          4
         ]
       }
     ]
@@ -142,31 +148,85 @@
         "Novice"
       ]
     },
+    "skills": [
+      {
+        "id": 1,
+        "name": "Dragon Feeding",
+        "criteria": "Can successfully feed their dragon",
+        "type": "skill",
+        "version": 1,
+        "questions": [
+          {
+            "title": "Do you know where to get the dragon food?"
+          },
+          {
+            "title": "Are you able to feed a dragon and retain your hands"
+          }
+        ],
+        "status": {
+          "previous": null,
+          "current": "ATTAINED"
+        }
+      },
+      {
+        "id": 2,
+        "name": "Advanced knowledge of Dragon Flight",
+        "criteria": "Is able to fly their dragon in all situations",
+        "type": "skill",
+        "version": 1,
+        "questions": [
+          {
+            "title": "Are you able to fly your dragon in a hurricane?"
+          },
+          {
+            "title": "Can you memoize your dragon?"
+          }
+        ],
+        "status": {
+          "previous": null,
+          "current": "FEEDBACK"
+        }
+      },
+      {
+        "id": 3,
+        "name": "Advanced knowledge of the Dark Arts",
+        "criteria": "Can execute the Imperius Curse",
+        "type": "skill",
+        "version": 1,
+        "questions": [
+          {
+            "title": "Can you speak parseltongue?"
+          }
+        ],
+        "status": {
+          "previous": null,
+          "current": "OBJECTIVE"
+        }
+      },
+      {
+        "id": 4,
+        "name": "Working knowledge of the Dark Arts",
+        "criteria": "Can execute the Toenail-growing hex",
+        "type": "skill",
+        "version": 1,
+        "questions": [
+          {
+            "title": "Have you hexed anyone in the last month?"
+          }
+        ],
+        "status": {
+          "previous": null,
+          "current": null
+        }
+      }
+    ],
     "skillGroups": [
       {
         "id": 0,
         "level": "Novice",
         "category": "Dragon Flight",
         "skills": [
-          {
-            "id": 1,
-            "name": "Dragon Feeding",
-            "criteria": "Can successfully feed their dragon",
-            "type": "skill",
-            "version": 1,
-            "questions": [
-              {
-                "title": "Do you know where to get the dragon food?"
-              },
-              {
-                "title": "Are you able to feed a dragon and retain your hands"
-              }
-            ],
-            "status": {
-              "previous": null,
-              "current": "ATTAINED"
-            }
-          }
+          1
         ]
       },
       {
@@ -174,25 +234,7 @@
         "level": "Expert",
         "category": "Dragon Flight",
         "skills": [
-          {
-            "id": 2,
-            "name": "Advanced knowledge of Dragon Flight",
-            "criteria": "Is able to fly their dragon in all situations",
-            "type": "skill",
-            "version": 1,
-            "questions": [
-              {
-                "title": "Are you able to fly your dragon in a hurricane?"
-              },
-              {
-                "title": "Can you memoize your dragon?"
-              }
-            ],
-            "status": {
-              "previous": null,
-              "current": "FEEDBACK"
-            }
-          }
+          2
         ]
       },
       {
@@ -200,22 +242,7 @@
         "level": "Expert",
         "category": "Magicness",
         "skills": [
-          {
-            "id": 3,
-            "name": "Advanced knowledge of the Dark Arts",
-            "criteria": "Can execute the Imperius Curse",
-            "type": "skill",
-            "version": 1,
-            "questions": [
-              {
-                "title": "Can you speak parseltongue?"
-              }
-            ],
-            "status": {
-              "previous": null,
-              "current": "OBJECTIVE"
-            }
-          }
+          3
         ]
       },
       {
@@ -223,22 +250,7 @@
         "level": "Novice",
         "category": "Magicness",
         "skills": [
-          {
-            "id": 4,
-            "name": "Working knowledge of the Dark Arts",
-            "criteria": "Can execute the Toenail-growing hex",
-            "type": "skill",
-            "version": 1,
-            "questions": [
-              {
-                "title": "Have you hexed anyone in the last month?"
-              }
-            ],
-            "status": {
-              "previous": null,
-              "current": null
-            }
-          }
+          4
         ]
       }
     ]
@@ -264,31 +276,85 @@
         "Novice"
       ]
     },
+    "skills": [
+      {
+        "id": 1,
+        "name": "Dragon Feeding",
+        "criteria": "Can successfully feed their dragon",
+        "type": "skill",
+        "version": 1,
+        "questions": [
+          {
+            "title": "Do you know where to get the dragon food?"
+          },
+          {
+            "title": "Are you able to feed a dragon and retain your hands"
+          }
+        ],
+        "status": {
+          "previous": "ATTAINED",
+          "current": "ATTAINED"
+        }
+      },
+      {
+        "id": 2,
+        "name": "Advanced knowledge of Dragon Flight",
+        "criteria": "Is able to fly their dragon in all situations",
+        "type": "skill",
+        "version": 1,
+        "questions": [
+          {
+            "title": "Are you able to fly your dragon in a hurricane?"
+          },
+          {
+            "title": "Can you memoize your dragon?"
+          }
+        ],
+        "status": {
+          "previous": "FEEDBACK",
+          "current": null
+        }
+      },
+      {
+        "id": 3,
+        "name": "Advanced knowledge of the Dark Arts",
+        "criteria": "Can execute the Imperius Curse",
+        "type": "skill",
+        "version": 1,
+        "questions": [
+          {
+            "title": "Can you speak parseltongue?"
+          }
+        ],
+        "status": {
+          "previous": "OBJECTIVE",
+          "current": null
+        }
+      },
+      {
+        "id": 4,
+        "name": "Working knowledge of the Dark Arts",
+        "criteria": "Can execute the Toenail-growing hex",
+        "type": "skill",
+        "version": 1,
+        "questions": [
+          {
+            "title": "Have you hexed anyone in the last month?"
+          }
+        ],
+        "status": {
+          "previous": null,
+          "current": null
+        }
+      }
+    ],
     "skillGroups": [
       {
         "id": 0,
         "level": "Novice",
         "category": "Dragon Flight",
         "skills": [
-          {
-            "id": 1,
-            "name": "Dragon Feeding",
-            "criteria": "Can successfully feed their dragon",
-            "type": "skill",
-            "version": 1,
-            "questions": [
-              {
-                "title": "Do you know where to get the dragon food?"
-              },
-              {
-                "title": "Are you able to feed a dragon and retain your hands"
-              }
-            ],
-            "status": {
-              "previous": "ATTAINED",
-              "current": "ATTAINED"
-            }
-          }
+          1
         ]
       },
       {
@@ -296,25 +362,7 @@
         "level": "Expert",
         "category": "Dragon Flight",
         "skills": [
-          {
-            "id": 2,
-            "name": "Advanced knowledge of Dragon Flight",
-            "criteria": "Is able to fly their dragon in all situations",
-            "type": "skill",
-            "version": 1,
-            "questions": [
-              {
-                "title": "Are you able to fly your dragon in a hurricane?"
-              },
-              {
-                "title": "Can you memoize your dragon?"
-              }
-            ],
-            "status": {
-              "previous": "FEEDBACK",
-              "current": null
-            }
-          }
+          2
         ]
       },
       {
@@ -322,22 +370,7 @@
         "level": "Expert",
         "category": "Magicness",
         "skills": [
-          {
-            "id": 3,
-            "name": "Advanced knowledge of the Dark Arts",
-            "criteria": "Can execute the Imperius Curse",
-            "type": "skill",
-            "version": 1,
-            "questions": [
-              {
-                "title": "Can you speak parseltongue?"
-              }
-            ],
-            "status": {
-              "previous": "OBJECTIVE",
-              "current": null
-            }
-          }
+          3
         ]
       },
       {
@@ -345,22 +378,7 @@
         "level": "Novice",
         "category": "Magicness",
         "skills": [
-          {
-            "id": 4,
-            "name": "Working knowledge of the Dark Arts",
-            "criteria": "Can execute the Toenail-growing hex",
-            "type": "skill",
-            "version": 1,
-            "questions": [
-              {
-                "title": "Have you hexed anyone in the last month?"
-              }
-            ],
-            "status": {
-              "previous": null,
-              "current": null
-            }
-          }
+          4
         ]
       }
     ]
