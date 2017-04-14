@@ -2,7 +2,7 @@ const request = require('supertest');
 const { expect } = require('chai');
 
 const app = require('../backend');
-const { prepopulateUsers, users, assignMentor, evaluations, insertTemplate, clearDb, insertSkill, insertEvaluation, getEvaluation, getAllFeedback } = require('./helpers');
+const { prepopulateUsers, users, assignMentor, evaluations, insertTemplate, clearDb, insertSkill, insertEvaluation, getEvaluation, getAllActions } = require('./helpers');
 const { sign, cookieName } = require('../backend/models/auth');
 const { STATUS } = require('../backend/models/evaluations/evaluation');
 const { NEW, SELF_EVALUATION_COMPLETE, MENTOR_REVIEW_COMPLETE } = STATUS;
@@ -142,11 +142,12 @@ describe('evaluations', () => {
             .set('Cookie', `${cookieName}=${normalUserOneToken}`)
             .expect(204)
         )
-        .then(() => getAllFeedback())
-        .then(([feedback]) => {
-          expect(feedback).to.not.be.null;
-          expect(feedback.evaluation.id).to.equal(evaluationId);
-          expect(feedback.skill.id).to.equal(1);
+        .then(() => getAllActions())
+        .then(([action]) => {
+          expect(action).to.not.be.null;
+          expect(action.type).to.equal('FEEDBACK')
+          expect(action.evaluation.id).to.equal(evaluationId);
+          expect(action.skill.id).to.equal(1);
         }));
 
     it('prevents updates by the subject of the evaluation if they have completed their self-evaluation', () =>

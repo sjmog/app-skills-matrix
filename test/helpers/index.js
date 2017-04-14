@@ -9,7 +9,7 @@ const users = database.collection('users');
 const templates = database.collection('templates');
 const skills = database.collection('skills');
 const evaluations = database.collection('evaluations');
-const feedbacks = database.collection('feedback');
+const actions = database.collection('actions');
 
 const prepopulateUsers = () => users.remove({}).then(() => users.insertMany(usersData));
 
@@ -26,6 +26,6 @@ module.exports = {
   insertEvaluation: (evaluation, userId) => evaluations.insertOne(encrypt(Object.assign({}, evaluation, { user: { id: String(userId) } }))),
   getEvaluation: (evaluationId) => evaluations.findOne({ _id: ObjectId(evaluationId) }).then(decrypt),
   getEvaluations: () => evaluations.find({}).then((e) => e.toArray()).then(R.map(decrypt)),
-  getAllFeedback: () => feedbacks.find({}).then((e) => e.toArray()),
-  clearDb: () => Promise.all([users.remove({}), templates.remove({}), skills.remove({}), evaluations.remove({}), feedbacks.remove({})])
+  getAllActions: () => actions.find({}).then((e) => e.toArray()),
+  clearDb: () => Promise.all([users.remove({}), templates.remove({}), skills.remove({}), evaluations.remove({}), actions.remove({})])
 };

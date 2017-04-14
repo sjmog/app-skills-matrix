@@ -6,7 +6,7 @@ const { getEvaluationById, updateEvaluation } = require('../models/evaluations')
 const { getUserById } = require('../models/users');
 const { SKILL_STATUS } = require('../models/matrices/skill');
 const { skills } = require('../models/matrices');
-const { addFeedback } = require('../models/feedbacks');
+const { addFeedback } = require('../models/actions');
 
 const { sendMail } = require('../services/email');
 
