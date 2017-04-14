@@ -54,7 +54,8 @@ describe('evaluations', () => {
         .then(({ body }) => {
           expect(body.user.id).to.equal(String(normalUserOneId));
           expect(body.template.name).to.equal('Node JS Dev');
-          expect(body.skillGroups.length > 0).to.equal(true);
+          expect(body.skillGroups[1]).to.not.be.undefined;
+          expect(body.skills[1]).to.not.be.undefined;
         }));
 
     it('allows a mentor to view the evaluation of their mentee', () =>
@@ -71,7 +72,8 @@ describe('evaluations', () => {
             .then(({ body }) => {
               expect(body.user.id).to.equal(String(normalUserOneId));
               expect(body.template.name).to.equal('Node JS Dev');
-              expect(body.skillGroups.length > 0).to.equal(true);
+              expect(body.skillGroups[1]).to.not.be.undefined;
+              expect(body.skills[1]).to.not.be.undefined;
             })));
 
     it(`prevents a user that is not the subject, nor the subjects mentor, from viewing an evaluation`, () =>

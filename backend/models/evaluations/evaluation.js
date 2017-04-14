@@ -15,7 +15,7 @@ const VIEW = keymirror({
   MENTOR: null,
 });
 
-const keySkills = (skills) => skills.reduce((acc, aSkill) => Object.assign({}, acc, { [aSkill.id]: skill(aSkill) }), {});
+const arrayToKeyedObject = (skills) => skills.reduce((acc, item) => Object.assign({}, acc, { [item.id]: item }), {});
 
 const evaluation = ({ _id, user, createdDate, template, skillGroups, status, skills }) => Object.freeze({
   id: _id,
@@ -35,8 +35,8 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
       user,
       status,
       template,
-      skillGroups,
-      skills: keySkills(skills),
+      skillGroups: arrayToKeyedObject(skillGroups),
+      skills: arrayToKeyedObject(skills),
       view: VIEW.SUBJECT
     };
   },
@@ -45,8 +45,8 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
       user,
       status,
       template,
-      skillGroups,
-      skills: keySkills(skills),
+      skillGroups: arrayToKeyedObject(skillGroups),
+      skills: arrayToKeyedObject(skills),
       view: VIEW.MENTOR
     };
   },
