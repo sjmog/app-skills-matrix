@@ -27,11 +27,9 @@ build
 .DS_info
 DS_Store
 
-.env
 .env.test
 frontend/dist
 client_secret.json
 google-sheets-token.json
 dokku.md
 .idea
-

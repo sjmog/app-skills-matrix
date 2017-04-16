@@ -21,8 +21,8 @@ describe('matrices', () => {
       .then(() =>
         Promise.all([users.findOne({ email: 'dmorgantini@gmail.com' }), users.findOne({ email: 'user@magic.com' })])
           .then(([adminUser, normalUser]) => {
-            adminToken = sign({ email: adminUser.email, id: adminUser._id });
-            normalUserToken = sign({ email: normalUser.email, id: normalUser._id });
+            adminToken = sign({ username: adminUser.username, id: adminUser._id });
+            normalUserToken = sign({ username: normalUser.username, id: normalUser._id });
             normalUserId = normalUser._id;
             adminUserId = adminUser._id;
           }))

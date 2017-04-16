@@ -8,7 +8,7 @@ const selectMentor = (user, users, onSelectMentor) => {
     <FormControl componentClass="select" placeholder="choose mentor" value={user.mentorId || 'default'} onChange={(e) => onSelectMentor(e, user)}>
       <option disabled value='default'>Select...</option>
       { users.filter((u) => u.email !== user.email).map(user =>
-        <option key={user.id} value={user.id}>{user.name}</option>)}
+        <option key={user.id} value={user.id}>{user.name || user.username}</option>)}
     </FormControl>
   </FormGroup>);
 };
@@ -23,10 +23,11 @@ const selectTemplate = (user, templates, onSelectTemplate) => {
 };
 
 function userDetailsRow(user, isSelected, onUserSelectionChange, makeSelectMentorComponent, makeSelectTemplateComponent) {
-  const { id, name, email } = user;
+  const { id, name, email, username } = user;
   return (
     <tr key={id}>
       <td><Checkbox checked={Boolean(isSelected)} onChange={(e) => onUserSelectionChange(e, user)}/></td>
+      <td>{username}</td>
       <td>{name}</td>
       <td>{email}</td>
       <td>{makeSelectMentorComponent(user)}</td>
@@ -46,6 +47,7 @@ const UserList = ({ users, templates, selectedUsers, onUserSelectionChange, onSe
         <tr>
           <th>Select</th>
           <th>Name</th>
+          <th>Username</th>
           <th>Email</th>
           <th>Select Mentor</th>
           <th>Select Template</th>

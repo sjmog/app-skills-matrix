@@ -22,7 +22,7 @@ describe('actions', () => {
           users.findOne({ email: 'user@magic.com' }),
         ])
           .then(([normalUserOne]) => {
-            normalUserOneToken = sign({ email: normalUserOne.email, id: normalUserOne._id });
+            normalUserOneToken = sign({ username: normalUserOne.username, id: normalUserOne._id });
             normalUserOneId = normalUserOne._id.toString();
           })));
 

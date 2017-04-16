@@ -4,8 +4,8 @@ const handleError = (error) => Promise.reject(error.response ? error.response.da
 const getData = (response) => response.data;
 
 export default ({
-  saveUser: function ({ name, email }) {
-    return axios.post('/skillz/users', { action: 'create', name, email })
+  saveUser: function ({ name, email, username }) {
+    return axios.post('/skillz/users', { action: 'create', name, email, username })
       .then(getData)
       .catch(handleError);
   },

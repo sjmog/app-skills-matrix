@@ -11,9 +11,11 @@ const UserDetails = ({ user, mentor, template }) => {
       <Col xs={12} md={9} className="user-details__col">
         <dl>
           <dt>name</dt>
-          <dd>{user.name}</dd>
+          <dd>{user.name || 'n/a'}</dd>
+          <dt>username</dt>
+          <dd>{user.username}</dd>
           <dt>email</dt>
-          <dd>{user.email}</dd>
+          <dd>{user.email || 'n/a'}</dd>
           <dt>mentor</dt>
           <dd>{mentor ? mentor.name : 'No Mentor Selected'}</dd>
           <dt>type</dt>

@@ -11,10 +11,10 @@ const { USER_EXISTS, MUST_BE_ADMIN, USER_NOT_FOUND, TEMPLATE_NOT_FOUND, USER_HAS
 const handlerFunctions = Object.freeze({
   users: {
     create: (req, res, next) => {
-      Promise.try(() => users.getUserByEmail(req.body.email))
+      Promise.try(() => users.getUserByUsername(req.body.username))
         .then((user) => {
           if (user) {
-            return res.status(409).json(USER_EXISTS(req.body.email));
+            return res.status(409).json(USER_EXISTS(req.body.username));
           }
           return users.addUser(req.body)
             .then((user) => res.status(201).send(user.manageUserViewModel))

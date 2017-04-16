@@ -6,17 +6,18 @@ const user = require('./user');
 const collection = database.collection('users');
 
 collection.ensureIndex({ email: 1 }, { unique: true, background: true });
+collection.ensureIndex({ username: 1 }, { unique: true, background: true });
 collection.ensureIndex({ mentorId: 1 }, { background: true });
 
 module.exports = {
-  addUser: ({ email, name, avatarUrl }) => {
-    const changes = user.newUser(name, email, avatarUrl);
-    return collection.updateOne({ email }, { $set: changes }, { upsert: true })
-      .then(() => collection.findOne({ email }))
+  addUser: ({ email, name, avatarUrl, username }) => {
+    const changes = user.newUser(name, email, avatarUrl, username);
+    return collection.updateOne({ username }, { $set: changes }, { upsert: true })
+      .then(() => collection.findOne({ username }))
       .then(retrievedUser => user(retrievedUser))
   },
-  getUserByEmail: (email) => {
-    return collection.findOne({ email })
+  getUserByUsername: (username) => {
+    return collection.findOne({ username })
       .then((res) => res ? user(res) : null);
   },
   getUserById: (id) => {

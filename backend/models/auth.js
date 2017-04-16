@@ -7,7 +7,7 @@ const isAdmin = (email) => R.contains(email, adminUsers);
 const secret = process.env.JWT_SECRET;
 
 module.exports = {
-  sign: ({id, email}) => jwt.sign({ id, email }, secret),
+  sign: ({id, username}) => jwt.sign({ id, username }, secret),
   verify: token => new Promise((resolve, reject) =>
     jwt.verify(token, secret, (err, data) =>
       err ? reject(err) : resolve(data))),
