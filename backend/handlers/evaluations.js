@@ -109,14 +109,20 @@ const handlerFunctions = Object.freeze({
             return res.status(401).json(MUST_BE_LOGGED_IN());
           }
 
+          const skill = evaluation.findSkill(skillId);
+          if (!skill) {
+            return res.status(400).json(SKILL_NOT_FOUND());
+          }
+
           return getUserById(evaluation.user.id)
-            .then(({ mentorId }) => {
-              if (user.id !== mentorId) {
+            .then((evalUser) => {
+              if (user.id !== evalUser.mentorId) {
                 return res.status(403).json(MUST_BE_SUBJECT_OF_EVALUATION_OR_MENTOR());
               }
 
               return evaluation.selfEvaluationCompleted()
                 ? updateEvaluation(evaluation.updateSkill(skillId, status))
+                  .then(addActions(evalUser, skill, evaluation, status))
                   .then(() => res.sendStatus(204))
                 : res.status(403).json(MENTOR_CAN_ONLY_UPDATE_AFTER_SELF_EVALUATION());
             })

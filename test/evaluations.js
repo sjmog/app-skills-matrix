@@ -318,6 +318,33 @@ describe('evaluations', () => {
         })
     );
 
+    it('adds action when a skill is set to FEEDBACK', () =>
+      insertEvaluation(Object.assign({}, evaluation, { status: SELF_EVALUATION_COMPLETE }), normalUserOneId)
+        .then(({ insertedId }) => {
+          evaluationId = insertedId.toString();
+        })
+        .then(() => assignMentor(normalUserOneId, normalUserTwoId))
+        .then(() =>
+          request(app)
+            .post(`${prefix}/evaluations/${evaluationId}`)
+            .send({
+              action: 'mentorUpdateSkillStatus',
+              skillGroupId: 0,
+              skillId: 1,
+              status: 'FEEDBACK'
+            })
+            .set('Cookie', `${cookieName}=${normalUserTwoToken}`)
+            .expect(204)
+        )
+        .then(() => getAllActions())
+        .then(([action]) => {
+          expect(action).to.not.be.undefined;
+          expect(action.type).to.equal('FEEDBACK');
+          expect(action.evaluation.id).to.equal(evaluationId);
+          expect(action.skill.id).to.equal(1);
+        }));
+
+
     it('prevents updates by a mentor if the status of an evaluation is unknown', () =>
       insertEvaluation(Object.assign({}, evaluation, { status: 'FOO_BAR' }), normalUserOneId)
         .then(({ insertedId }) => {
