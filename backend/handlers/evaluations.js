@@ -4,8 +4,6 @@ const createHandler = require('./createHandler');
 
 const { getEvaluationById, updateEvaluation } = require('../models/evaluations');
 const { getUserById } = require('../models/users');
-const { SKILL_STATUS } = require('../models/evaluations/skill');
-const { skills } = require('../models/matrices');
 const actions = require('../models/actions');
 
 const { sendMail } = require('../services/email');
