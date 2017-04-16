@@ -3,6 +3,7 @@ const Promise = require('bluebird');
 const createHandler = require('./createHandler');
 
 const { getEvaluationById, updateEvaluation, importEvaluation } = require('../models/evaluations');
+const { templates } = require('../models/matrices');
 const { getUserById, getUserByUsername } = require('../models/users');
 const actions = require('../models/actions');
 
@@ -17,6 +18,7 @@ const {
   MENTOR_REVIEW_COMPLETE,
   MENTOR_CAN_ONLY_UPDATE_AFTER_SELF_EVALUATION,
   USER_NOT_FOUND,
+  TEMPLATE_NOT_FOUND,
 } = require('./errors');
 
 
@@ -36,13 +38,18 @@ const addActions = (user, skill, evaluation, newStatus) => {
 const handlerFunctions = Object.freeze({
   evaluations: {
     import: (req, res, next) => {
-      const { evaluation, username } = req.body;
-      getUserByUsername(username)
-        .then((user) => {
+      const { evaluation, username, template } = req.body;
+      Promise.all([getUserByUsername(username), templates.getById(template)])
+        .then(([user, template]) => {
           if (!user) {
             return res.status(404).json(USER_NOT_FOUND());
           }
+          if (!template) {
+            return res.status(404).json(TEMPLATE_NOT_FOUND());
+          }
+
           evaluation.user = user.evaluationData;
+          evaluation.template = template.evaluationData;
           return importEvaluation(evaluation)
             .then(() => {
               return res.status(204);
