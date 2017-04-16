@@ -3,6 +3,7 @@ const express = require('express');
 const users = require('./users');
 const matrices = require('./matrices');
 const evaluations = require('./evaluations');
+const actions = require('./actions');
 const clientApp = require('./clientApp');
 const auth = require('./auth');
 
@@ -10,6 +11,7 @@ const apiRoutes = [
   users,
   matrices,
   evaluations,
+  actions,
 ];
 
 const apiRouter = apiRoutes.reduce((app, route) => route(app), express.Router());

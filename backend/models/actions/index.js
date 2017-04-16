@@ -1,5 +1,4 @@
 const { ObjectId } = require('mongodb');
-const keymirror = require('keymirror');
 
 const database = require('../../database');
 const action = require('./action');
@@ -22,4 +21,14 @@ module.exports = {
   removeAction: (type, userId, skillId, evaluationId) => {
     return collection.deleteOne({ 'user.id': userId, 'skill.id': skillId, 'evaluation.id': evaluationId, type });
   },
+  find: (userId, evaluationId, type) => {
+    const query = { 'user.id': userId };
+    if (evaluationId) {
+      query['evaluation.id'] = evaluationId;
+    }
+    if (type) {
+      query['type'] = type;
+    }
+    return collection.find(query).then((a) => a.toArray()).then(list => list.map(action));
+  }
 };

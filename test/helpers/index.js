@@ -27,5 +27,6 @@ module.exports = {
   getEvaluation: (evaluationId) => evaluations.findOne({ _id: ObjectId(evaluationId) }).then(decrypt),
   getEvaluations: () => evaluations.find({}).then((e) => e.toArray()).then(R.map(decrypt)),
   getAllActions: () => actions.find({}).then((e) => e.toArray()),
+  insertAction: (userId) => (action) => actions.insertOne(Object.assign({}, action, { user: { id: String(userId) } })),
   clearDb: () => Promise.all([users.remove({}), templates.remove({}), skills.remove({}), evaluations.remove({}), actions.remove({})])
 };

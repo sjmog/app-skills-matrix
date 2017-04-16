@@ -15,14 +15,6 @@ npm-debug.log
 node_modules
 build
 
-#elm
-elm-stuff
-
-#Linux
-.*
-!.gitignore
-*~
-
 #OSX
 .DS_Store
 .AppleDouble
@@ -35,15 +27,11 @@ elm-stuff
 .DS_info
 DS_Store
 
-# Windows
-Thumbs.db
-ehthumbs.db
-Desktop.ini
-$RECYCLE.BIN/
-
 .env
 .env.test
 frontend/dist
 client_secret.json
 google-sheets-token.json
 dokku.md
+.idea
+

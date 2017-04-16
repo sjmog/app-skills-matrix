@@ -1,7 +1,7 @@
 module.exports = ({ type, user, skill, evaluation }) => Object.freeze({
   get viewModel() {
     // may want to map as these aren't really appropriate for a viewmodel (up to you @charlie)
-    return ({ user, skill, evaluation });
+    return ({ type, user, skill, evaluation });
   }
 });
 
