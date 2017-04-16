@@ -32,7 +32,7 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
   },
   get subjectEvaluationViewModel() {
     return {
-      user,
+      subject: user,
       status,
       template,
       skillGroups: arrayToKeyedObject(skillGroups),
@@ -42,7 +42,7 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
   },
   get mentorEvaluationViewModel() {
     return {
-      user,
+      subject: user,
       status,
       template,
       skillGroups: arrayToKeyedObject(skillGroups),

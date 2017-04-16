@@ -52,7 +52,7 @@ describe('evaluations', () => {
             .expect(200)
         )
         .then(({ body }) => {
-          expect(body.user.id).to.equal(String(normalUserOneId));
+          expect(body.subject.id).to.equal(String(normalUserOneId));
           expect(body.template.name).to.equal('Node JS Dev');
           expect(body.skillGroups[1]).to.not.be.undefined;
           expect(body.skills[1]).to.not.be.undefined;
@@ -70,7 +70,7 @@ describe('evaluations', () => {
             .set('Cookie', `${cookieName}=${normalUserTwoToken}`)
             .expect(200)
             .then(({ body }) => {
-              expect(body.user.id).to.equal(String(normalUserOneId));
+              expect(body.subject.id).to.equal(String(normalUserOneId));
               expect(body.template.name).to.equal('Node JS Dev');
               expect(body.skillGroups[1]).to.not.be.undefined;
               expect(body.skills[1]).to.not.be.undefined;

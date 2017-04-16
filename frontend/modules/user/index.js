@@ -6,6 +6,9 @@ export default combineReducers({ dashboard, evaluation });
 
 /* EVALUATION SELECTORS */
 
+export const getRetrievedStatus = ({ evaluation }) =>
+  fromEvaluation.getRetrievedStatus(evaluation);
+
 export const getAllSkillsInCategory = ({ evaluation }, category) =>
   fromEvaluation.getAllSkillsInCategory(evaluation, category);
 
