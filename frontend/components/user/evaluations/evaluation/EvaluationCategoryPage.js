@@ -20,25 +20,6 @@ const getIndexOfLevel = (level, levels) => levels.indexOf(level);
 class EvaluationCategoryComponent extends React.Component {
   constructor(props) {
     super(props);
-    const { templateName, levels, categories, skills, skillGroups, view, skillsInCategory, status, params, lowestUnevaluatedSkill, nextCategory } = this.props;
-
-    this.state = {
-      currentSkill: lowestUnevaluatedSkill,
-      indexOfCurrentSkill: getIndexOfSkill(lowestUnevaluatedSkill.id, skillsInCategory),
-      skillsInCategory,
-      currentCategory: params.category,
-      indexOfCurrentCategory: categories.indexOf(params.category),
-      nextCategory,
-    };
-
-    this.templateName = templateName;
-    this.view = view;
-    this.evaluationStatus = status;
-    this.evaluationId = params.evaluationId;
-    this.levels = levels;
-    this.categories = categories;
-    this.skills = skills;
-    this.skillGroups = skillGroups;
 
     this.updateSkillStatus = this.updateSkillStatus.bind(this);
     this.navigatePostSkillUpdate = this.navigatePostSkillUpdate.bind(this);
@@ -47,19 +28,27 @@ class EvaluationCategoryComponent extends React.Component {
     this.evaluationComplete = this.evaluationComplete.bind(this);
   }
 
+  componentDidMount() {
+    if (!this.props.evaluationRetrieved) {
+      this.props.actions.retrieveEvaluation(this.props.params.evaluationId);
+    }
+  }
+
   componentWillReceiveProps(nextProps) {
-    if (nextProps !== this.props) {
+    if (nextProps.evaluationRetrieved && nextProps !== this.props) {
       const { category: currentCategory } = nextProps.params;
-      const { skillsInCategory, lowestUnevaluatedSkill, nextCategory } = this.props;
-      const indexOfLowestUnevaluatedSkill = getIndexOfSkill(lowestUnevaluatedSkill.id, skillsInCategory);
-      const indexOfCurrentSkill = getIndexOfSkill(this.state.currentSkill.id, skillsInCategory);
+      const { categories, skillsInCategory, lowestUnevaluatedSkill, nextCategory } = nextProps;
+
+      const currentSkill = this.state && getIndexOfSkill(this.state.currentSkill.id, skillsInCategory) >= 0
+        ? this.state.currentSkill
+        : lowestUnevaluatedSkill;
 
       this.setState({
-        currentSkill: indexOfCurrentSkill >= 0 ? skillsInCategory[indexOfCurrentSkill] : lowestUnevaluatedSkill,
-        indexOfCurrentSkill: indexOfCurrentSkill >= 0 ? indexOfCurrentSkill : indexOfLowestUnevaluatedSkill,
+        currentSkill,
+        indexOfCurrentSkill: getIndexOfSkill(currentSkill.id, skillsInCategory),
         skillsInCategory,
         currentCategory: currentCategory,
-        indexOfCurrentCategory: this.categories.indexOf(currentCategory),
+        indexOfCurrentCategory: categories.indexOf(currentCategory),
         nextCategory,
       });
     }
@@ -81,16 +70,18 @@ class EvaluationCategoryComponent extends React.Component {
 
   navigatePostSkillUpdate() {
     const isLastSkillInCategory = this.state.indexOfCurrentSkill + 1 === this.state.skillsInCategory.length;
-    const isLastCategory = this.state.indexOfCurrentCategory + 1 === this.categories.length;
+    const isLastCategory = this.state.indexOfCurrentCategory + 1 === this.props.categories.length;
 
     if (isLastSkillInCategory && !isLastCategory) {
-      this.props.router.push(`evaluations/${this.evaluationId}/category/${this.state.nextCategory}`)
+      this.props.router.push(`evaluations/${this.props.params.evaluationId}/category/${this.state.nextCategory}`)
     } else if (!isLastSkillInCategory) {
       this.nextSkill();
     }
   }
+
   updateSkillStatus(evaluationView) {
-    return (skillId, newStatus) => this.props.actions.updateSkillStatus(evaluationView, this.evaluationId, skillId, newStatus);
+    const { evaluationId } = this.props.params;
+    return (skillId, newStatus) => this.props.actions.updateSkillStatus(evaluationView, evaluationId, skillId, newStatus);
   }
 
   evaluationComplete(evaluationId) {
@@ -98,13 +89,24 @@ class EvaluationCategoryComponent extends React.Component {
   }
 
   render() {
-    const currentLevel = this.skillGroups[this.state.currentSkill.skillGroupId].level;
+    const { error, evaluationRetrieved, erringSkills, params, templateName, categories, levels, skills, skillGroups, view, status } = this.props;
+    const { category, evaluationId } = params;
+
+    if (error) {
+      return <Row>{error ? <Alert bsStyle='danger'>Something went wrong: {error.message}</Alert> : false}</Row>;
+    }
+
+    if (!evaluationRetrieved || !this.state) {
+      return false;
+    }
+
+    const currentLevel = skillGroups[this.state.currentSkill.skillGroupId].level;
 
     return (
       <Grid>
-        { this.props.erringSkills
+        { erringSkills
           ? <Row>
-            {this.props.erringSkills.map(
+            {erringSkills.map(
               ({ name }) =>
                 <Alert bsStyle='danger' key={name}>
                   {`There was a problem updating a skill: ${name}`}
@@ -115,13 +117,13 @@ class EvaluationCategoryComponent extends React.Component {
         }
         <Row>
           <CategoryPageHeader
-            evaluationId={this.evaluationId}
-            currentCategory={this.props.params.category}
-            templateName={this.templateName}
+            evaluationId={evaluationId}
+            currentCategory={category}
+            templateName={templateName}
             isFirstCategory={this.state.indexOfCurrentCategory === 0}
-            isLastCategory={this.state.indexOfCurrentCategory + 1 === this.categories.length}
-            previousCategory={this.categories[this.state.indexOfCurrentCategory - 1]}
-            nextCategory={this.categories[this.state.indexOfCurrentCategory + 1]}
+            isLastCategory={this.state.indexOfCurrentCategory + 1 === categories.length}
+            previousCategory={categories[this.state.indexOfCurrentCategory - 1]}
+            nextCategory={categories[this.state.indexOfCurrentCategory + 1]}
             evaluationComplete={this.evaluationComplete}
           />
         </Row>
@@ -129,8 +131,8 @@ class EvaluationCategoryComponent extends React.Component {
           <Col md={7} className='evaluation-panel'>
             <Skill
               level={currentLevel}
-              skill={this.skills[this.state.currentSkill.id]}
-              updateSkillStatus={this.updateSkillStatus(this.view)}
+              skill={skills[this.state.currentSkill.id]}
+              updateSkillStatus={this.updateSkillStatus(view)}
               navigatePostSkillUpdate={this.navigatePostSkillUpdate}
               nextSkill={this.nextSkill}
               prevSkill={this.prevSkill}
@@ -141,15 +143,15 @@ class EvaluationCategoryComponent extends React.Component {
           <Col md={5} className='evaluation-panel'>
             <Matrix
               skillBeingEvaluated={this.state.currentSkill.id}
-              categories={[].concat(this.props.params.category)}
-              levels={this.levels.slice(getIndexOfLevel(currentLevel, this.levels), this.levels.length)}
-              skillGroups={this.skillGroups}
-              updateSkillStatus={this.updateSkillStatus(this.view)}
+              categories={[].concat(category)}
+              levels={levels.slice(getIndexOfLevel(currentLevel, levels), levels.length)}
+              skillGroups={skillGroups}
+              updateSkillStatus={this.updateSkillStatus(view)}
               canUpdateSkillStatus={
-                this.view === SUBJECT && this.evaluationStatus === NEW
-                || this.view === MENTOR && this.evaluationStatus === SELF_EVALUATION_COMPLETE
+                view === SUBJECT && status === NEW
+                || view === MENTOR && status === SELF_EVALUATION_COMPLETE
               }
-              skills={this.skills}
+              skills={skills}
             />
           </Col>
         </Row>
@@ -166,14 +168,25 @@ EvaluationCategoryComponent.propTypes = {
   template: PropTypes.shape({
     levels: PropTypes.array
   }),
-  skills: PropTypes.object.isRequired,
-  skillGroups: PropTypes.object.isRequired,
-  skillsInCategory: PropTypes.array.isRequired,
+  skills: PropTypes.object,
+  skillGroups: PropTypes.object,
+  skillsInCategory: PropTypes.array,
 };
 
 export const EvaluationCategoryPage = connect(
   function mapStateToProps(state, { params }) {
+    const evaluationRetrieved = selectors.getRetrievedStatus(state);
+    const error = selectors.getError(state);
+
+    if (!evaluationRetrieved || error) {
+      return ({
+        evaluationRetrieved,
+        error,
+      })
+    }
+
     return ({
+      evaluationRetrieved,
       templateName: selectors.getTemplateName(state),
       levels: selectors.getLevels(state),
       categories: selectors.getCategories(state),

@@ -17,17 +17,12 @@ class EvaluationPageComponent extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      evaluationRetrieved: false
-    };
-
     this.updateSkillStatus = this.updateSkillStatus.bind(this);
     this.evaluationId = this.props.params.evaluationId;
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.props.actions.retrieveEvaluation(this.evaluationId)
-      .then(() => this.setState({ evaluationRetrieved: true }))
   }
 
   updateSkillStatus(evaluationView) {
@@ -35,14 +30,14 @@ class EvaluationPageComponent extends React.Component {
   }
 
   render() {
-    const { levels, categories, status, skillGroups, skills, view, error } = this.props;
-
-    if (!this.state.evaluationRetrieved) {
-      return false;
-    }
+    const { levels, categories, status, skillGroups, skills, view, error, evaluationRetrieved } = this.props;
 
     if (error) {
       return <Row>{error ? <Alert bsStyle='danger'>Something went wrong: {error.message}</Alert> : false}</Row>;
+    }
+
+    if (!evaluationRetrieved) {
+      return false;
     }
 
     return (
@@ -87,14 +82,23 @@ EvaluationPageComponent.propTypes = {
 
 export const EvaluationPage = connect(
   function mapStateToProps(state) {
+    const evaluationRetrieved = selectors.getRetrievedStatus(state);
+    const error = selectors.getError(state);
+
+     if (!evaluationRetrieved || error) {
+       return ({
+         evaluationRetrieved,
+         error
+       })
+     }
     return ({
+      evaluationRetrieved,
       status: selectors.getEvaluationStatus(state),
       levels: selectors.getLevels(state),
       categories: selectors.getCategories(state),
       skillGroups: selectors.getSkillGroups(state),
       skills: selectors.getSkills(state),
       view: selectors.getView(state),
-      error: selectors.getError(state),
     });
   },
   function mapDispatchToProps(dispatch) {

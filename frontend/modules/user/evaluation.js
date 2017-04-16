@@ -62,7 +62,7 @@ const evaluationCompleteFailure = createAction(
 );
 
 function retrieveEvaluation(evaluationId) {
-  return function(dispatch) {
+  return function (dispatch) {
     return api.retrieveEvaluation(evaluationId)
       .then((evaluation) => dispatch(retrieveEvaluationSuccess(evaluation)))
       .catch((error) => dispatch(retrieveEvaluationFailure(error)))
@@ -83,7 +83,7 @@ function updateSkillStatus(evaluationView, evaluationId, skillId, status) {
 }
 
 function evaluationComplete(evaluationId) {
-  return function(dispatch) {
+  return function (dispatch) {
     return api.evaluationComplete(evaluationId)
       .then((status) => dispatch(evaluationCompleteSuccess(status)))
       .catch((error) => dispatch(evaluationCompleteFailure(error)))
@@ -96,6 +96,7 @@ export const actions = {
 };
 
 const initialSate = {
+  ui: { evaluationRetrieved: false },
   error: null,
   status: null,
   template: {},
@@ -104,36 +105,35 @@ const initialSate = {
 };
 
 export default handleActions({
-  [retrieveEvaluationSuccess]:
-    (state, action) => R.merge(state, action.payload),
-  [retrieveEvaluationFailure]:
-    (state, action) => {
-      return R.merge(state, { error: action.payload });
-    },
-  [updateSkillStatusSuccess]:
-    (state, action) => {
-      const { skillId, status } = action.payload;
-      const skills = Object.assign({}, state.skills);
-      skills[skillId].status.current = status;
-      skills[skillId].error = null;
-      return R.merge(state, { skills });
-    },
-  [updateSkillStatusFailure]:
-    (state, action) => {
-      const { skillId, error } = action.payload;
-      const skills = Object.assign({}, state.skills);
-      skills[skillId].error = error;
-      return R.merge(state, { skills });
-    },
-  [evaluationCompleteSuccess]:
-    (state, action) => {
-      return R.merge(state, { status: action.payload.status });
-    },
-  [evaluationCompleteFailure]:
-    (state, action) => {
-      return R.merge(state, { error: action.payload });
-    },
+  [retrieveEvaluationSuccess]: (state, action) => {
+    return R.merge(state, Object.assign({}, action.payload, { ui: { evaluationRetrieved: true } }));
+  },
+  [retrieveEvaluationFailure]: (state, action) => {
+    return R.merge(state, { ui: { evaluationRetrieved: false }, error: action.payload });
+  },
+  [updateSkillStatusSuccess]: (state, action) => {
+    const { skillId, status } = action.payload;
+    const skills = Object.assign({}, state.skills);
+    skills[skillId].status.current = status;
+    skills[skillId].error = null;
+    return R.merge(state, { skills });
+  },
+  [updateSkillStatusFailure]: (state, action) => {
+    const { skillId, error } = action.payload;
+    const skills = Object.assign({}, state.skills);
+    skills[skillId].error = error;
+    return R.merge(state, { skills });
+  },
+  [evaluationCompleteSuccess]: (state, action) => {
+    return R.merge(state, { status: action.payload.status });
+  },
+  [evaluationCompleteFailure]: (state, action) => {
+    return R.merge(state, { error: action.payload });
+  },
 }, initialSate);
+
+export const getRetrievedStatus = (state) =>
+  R.path(['ui', 'evaluationRetrieved'], state);
 
 const getSkillGroup = (level, category, skillGroups) =>
   R.find(group => (group.level === level && group.category === category), R.values(skillGroups));
@@ -175,7 +175,6 @@ export const getError = (state) =>
 
 export const getLowestUnevaluatedSkill = (state, category) => {
   const skillsInCategory = getAllSkillsInCategory(state, category);
-
   const hasUnevaluatedSkills = ({ id }) => {
     return state.skills[id].status.current === null;
   };
@@ -190,7 +189,7 @@ export const getErringSkills = (state) => {
 };
 
 const unevaluated = (skill) =>
-  R.path(['status', 'current'], skill) === null;
+ R.path(['status', 'current'], skill) === null;
 
 export const getNextCategory = (state, category) => {
   const indexOfCurrentCategory = state.template.categories.indexOf(category) || 0;
