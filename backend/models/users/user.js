@@ -1,6 +1,7 @@
+const R = require('ramda');
 const auth = require('../auth');
 
-const user = ({ _id, name, email, createdDate, modifiedDate, templateId, mentorId, avatarUrl }) => Object.freeze({
+const user = ({ _id, name, email, username, createdDate, modifiedDate, templateId, mentorId, avatarUrl }) => Object.freeze({
   id: _id.toString(),
   name,
   templateId,
@@ -12,19 +13,19 @@ const user = ({ _id, name, email, createdDate, modifiedDate, templateId, mentorI
     return auth.isAdmin(email);
   },
   get manageUserViewModel() {
-    return ({ id: _id.toString(), name, email, mentorId, templateId });
+    return ({ id: _id.toString(), username, name, email, mentorId, templateId });
   },
   get feedbackData() {
-    return ({ id: _id.toString(), name, mentorId });
+    return ({ id: _id.toString(), name: name || username, mentorId });
   },
   get signingData() {
-    return ({ id: _id.toString(), email });
+    return ({ id: _id.toString(), username });
   },
   get evaluationData() {
-    return ({ id: _id.toString(), name, email });
+    return ({ id: _id.toString(), name: name || username, email });
   },
   get userDetailsViewModel() {
-    return ({ name, avatarUrl, email, mentorId, templateId });
+    return ({ name, username, avatarUrl, email, mentorId, templateId });
   },
   hasTemplate: Boolean(templateId),
   hasMentor: Boolean(mentorId),
@@ -44,5 +45,5 @@ const user = ({ _id, name, email, createdDate, modifiedDate, templateId, mentorI
 });
 
 module.exports = user;
-module.exports.newUser = (name, email, avatarUrl) => ({ name, email, createdDate: new Date(), avatarUrl });
+module.exports.newUser = (name, email, avatarUrl, username) => ({ username, name, email, createdDate: new Date(), avatarUrl });
 

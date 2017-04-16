@@ -21,8 +21,8 @@ describe('users', () => {
       .then(() =>
         Promise.all([users.findOne({ email: 'dmorgantini@gmail.com' }), users.findOne({ email: 'user@magic.com' })])
           .then(([adminUser, normalUser]) => {
-            adminToken = sign({ email: adminUser.email, id: adminUser._id });
-            normalUserToken = sign({ email: normalUser.email, id: normalUser._id });
+            adminToken = sign({ username: adminUser.username, id: adminUser._id });
+            normalUserToken = sign({ username: normalUser.username, id: normalUser._id });
             normalUserId = normalUser._id;
             adminUserId = adminUser._id;
           })));
@@ -31,7 +31,7 @@ describe('users', () => {
     it('should let admin create users', () =>
       request(app)
         .post(`${prefix}/users`)
-        .send({ email: 'newuser@user.com', name: 'new name', action: 'create' })
+        .send({ username: 'newuser', email: 'newuser@user.com', name: 'new name', action: 'create' })
         .set('Cookie', `${cookieName}=${adminToken}`)
         .expect(201)
         .then((res) => users.findOne({ email: res.body.email }))
@@ -44,19 +44,19 @@ describe('users', () => {
       () => ({
         desc: 'not authorized',
         token: normalUserToken,
-        body: { email: 'newuser@user.com', name: 'new name', action: 'create' },
+        body: { username: 'newuser', email: 'newuser@user.com', name: 'new name', action: 'create' },
         expect: 403,
       }),
       () => ({
         desc: 'conflict',
         token: adminToken,
-        body: { email: 'user@magic.com', name: 'new name', action: 'create' },
+        body: { username: 'magic', email: 'user@magic.com', name: 'new name', action: 'create' },
         expect: 409,
       }),
       () => ({
         desc: 'bad action',
         token: adminToken,
-        body: { email: 'user@magic.com', name: 'new name', action: 'foo' },
+        body: { username: 'newuser', email: 'user@magic.com', name: 'new name', action: 'foo' },
         expect: 400,
       })
     ].forEach((test) =>

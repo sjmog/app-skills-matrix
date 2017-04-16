@@ -31,9 +31,9 @@ describe('evaluations', () => {
           users.findOne({ email: 'user@dragon-riders.com' })
         ])
           .then(([adminUser, normalUserOne, normalUserTwo]) => {
-            normalUserOneToken = sign({ email: normalUserOne.email, id: normalUserOne._id });
-            normalUserTwoToken = sign({ email: normalUserTwo.email, id: normalUserTwo._id });
-            adminToken = sign({ email: adminUser.email, id: adminUser._id });
+            normalUserOneToken = sign({ username: normalUserOne.username, id: normalUserOne._id });
+            normalUserTwoToken = sign({ username: normalUserTwo.username, id: normalUserTwo._id });
+            adminToken = sign({ username: adminUser.username, id: adminUser._id });
             normalUserOneId = normalUserOne._id;
             normalUserTwoId = normalUserTwo._id;
             adminUserId = adminUser._id;

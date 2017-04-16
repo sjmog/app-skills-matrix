@@ -31,9 +31,9 @@ describe('initial client state', () => {
             users.findOne({ email: 'user@dragon-riders.com' })
           ])
           .then(([adminUser, normalUserOne, normalUserTwo]) => {
-            normalUserOneToken = sign({ email: normalUserOne.email, id: normalUserOne._id });
-            normalUserTwoToken = sign({ email: normalUserTwo.email, id: normalUserTwo._id });
-            adminToken = sign({ email: adminUser.email, id: adminUser._id });
+            normalUserOneToken = sign({ username: normalUserOne.username, id: normalUserOne._id });
+            normalUserTwoToken = sign({ username: normalUserTwo.username, id: normalUserTwo._id });
+            adminToken = sign({ username: adminUser.username, id: adminUser._id });
             normalUserOneId = String(normalUserOne._id);
             normalUserTwoId = String(normalUserTwo._id);
             adminUserId = String(adminUser._id);
@@ -59,6 +59,7 @@ describe('initial client state', () => {
                 email: 'user@magic.com',
                 name: 'User Magic',
                 templateId: 'eng-nodejs',
+                username: 'magic'
               }
             },
           };
@@ -159,7 +160,8 @@ describe('initial client state', () => {
             .then((res) => {
               const expectedMentor = {
                 email: 'dmorgantini@gmail.com',
-                name: 'David Morgantini'
+                name: 'David Morgantini',
+                username: 'dmorgantini'
               };
 
               expect(getInitialState(res.text).dashboard.mentor).to.deep.equal(expectedMentor);
@@ -198,6 +200,7 @@ describe('initial client state', () => {
                 mentorId: adminUserId,
                 name: 'User Magic',
                 templateId: 'eng-nodejs',
+                username: 'magic'
               };
 
               expect(getInitialState(res.text).dashboard.user).to.deep.equal(expectedUser);
@@ -243,20 +246,23 @@ describe('initial client state', () => {
         .then((res) => {
           const expectedUsers = [
             {
-              email: "dmorgantini@gmail.com",
+              email: 'dmorgantini@gmail.com',
               id: adminUserId,
-              name: "David Morgantini"
+              name: 'David Morgantini',
+              username: 'dmorgantini'
             },
             {
-              email: "user@magic.com",
+              email: 'user@magic.com',
               id: normalUserOneId,
-              name: "User Magic",
+              name: 'User Magic',
+              username: 'magic',
               templateId: 'eng-nodejs',
             },
             {
-              email: "user@dragon-riders.com",
+              email: 'user@dragon-riders.com',
               id: normalUserTwoId,
-              name: "User Dragon Rider"
+              name: 'User Dragon Rider',
+              username: 'dragon-riders',
             }
           ];
 

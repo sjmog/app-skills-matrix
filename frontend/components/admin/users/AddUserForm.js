@@ -27,6 +27,16 @@ const AddUserForm = ({ error, newUser, updateNewUserState, onAddUser }) =>
             />
           </FormGroup>
           {' '}
+          <FormGroup>
+            <FormControl
+              type='text'
+              placeholder='Username'
+              name='username'
+              value={newUser.username || ''}
+              onChange={updateNewUserState}
+            />
+          </FormGroup>
+          {' '}
           <Button bsStyle='primary' type="submit">
             <Glyphicon glyph='plus' /> Add user</Button>
         </Form>
@@ -41,7 +51,8 @@ AddUserForm.propTypes = {
   error: PropTypes.object,
   newUser: PropTypes.shape({
     name: PropTypes.string,
-    email: PropTypes.string
+    email: PropTypes.string,
+    username: PropTypes.string
   }),
   updateNewUserState: PropTypes.func.isRequired,
   onAddUser: PropTypes.func.isRequired
