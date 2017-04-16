@@ -2,8 +2,8 @@ const Promise = require('bluebird');
 
 const createHandler = require('./createHandler');
 
-const { getEvaluationById, updateEvaluation } = require('../models/evaluations');
-const { getUserById } = require('../models/users');
+const { getEvaluationById, updateEvaluation, importEvaluation } = require('../models/evaluations');
+const { getUserById, getUserByUsername } = require('../models/users');
 const actions = require('../models/actions');
 
 const { sendMail } = require('../services/email');
@@ -16,6 +16,7 @@ const {
   SUBJECT_CAN_ONLY_UPDATE_NEW_EVALUATION,
   MENTOR_REVIEW_COMPLETE,
   MENTOR_CAN_ONLY_UPDATE_AFTER_SELF_EVALUATION,
+  USER_NOT_FOUND,
 } = require('./errors');
 
 
@@ -33,6 +34,23 @@ const addActions = (user, skill, evaluation, newStatus) => {
 };
 
 const handlerFunctions = Object.freeze({
+  evaluations: {
+    import: (req, res, next) => {
+      const { evaluation, username } = req.body;
+      getUserByUsername(username)
+        .then((user) => {
+          if (!user) {
+            return res.status(404).json(USER_NOT_FOUND());
+          }
+          evaluation.user = user.evaluationData;
+          return importEvaluation(evaluation)
+            .then(() => {
+              return res.status(204);
+            });
+        })
+        .catch(next);
+    },
+  },
   evaluation: {
     retrieve: (req, res, next) => {
       const { evaluationId } = req.params;
