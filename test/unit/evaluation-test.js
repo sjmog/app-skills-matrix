@@ -25,7 +25,7 @@ describe('new evaluation', () => {
 describe('second evaluation', () => {
   it('should handle no changes to the template', () => {
     const newEval = newEvaluation(testTemplate, testUser, testSkills, "new Date()");
-    const mergedEvaluation = newEval.mergePreviousEvaluation(completedEvaluation);
+    const mergedEvaluation = newEval.mergePreviousEvaluation(evaluation(completedEvaluation));
     expect(mergedEvaluation.dataModel).to.deep.equal(expectedMergedEvaluation);
   });
 });

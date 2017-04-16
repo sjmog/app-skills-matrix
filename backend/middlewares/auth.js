@@ -14,6 +14,9 @@ module.exports = {
             }))
         .catch(next) :
       next(),
+  ensureLoggedIn: (req, res, next) => {
+    return !res.locals.user ? res.status(401).json(MUST_BE_LOGGED_IN()) : next();
+  },
   ensureAdmin: (req, res, next) => {
     if (!res.locals.user) {
       return res.status(401).json(MUST_BE_LOGGED_IN())

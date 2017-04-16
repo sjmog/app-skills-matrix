@@ -2,7 +2,7 @@ const request = require('supertest');
 const { expect } = require('chai');
 
 const app = require('../backend');
-const { prepopulateUsers, users, assignMentor, evaluations, insertTemplate, clearDb, insertSkill, insertEvaluation, getEvaluation } = require('./helpers');
+const { prepopulateUsers, users, assignMentor, evaluations, insertTemplate, clearDb, insertSkill, insertEvaluation, getEvaluation, getAllActions } = require('./helpers');
 const { sign, cookieName } = require('../backend/models/auth');
 const { STATUS } = require('../backend/models/evaluations/evaluation');
 const { NEW, SELF_EVALUATION_COMPLETE, MENTOR_REVIEW_COMPLETE } = STATUS;
@@ -54,7 +54,8 @@ describe('evaluations', () => {
         .then(({ body }) => {
           expect(body.user.id).to.equal(String(normalUserOneId));
           expect(body.template.name).to.equal('Node JS Dev');
-          expect(body.skillGroups.length > 0).to.equal(true);
+          expect(body.skillGroups[1]).to.not.be.undefined;
+          expect(body.skills[1]).to.not.be.undefined;
         }));
 
     it('allows a mentor to view the evaluation of their mentee', () =>
@@ -71,7 +72,8 @@ describe('evaluations', () => {
             .then(({ body }) => {
               expect(body.user.id).to.equal(String(normalUserOneId));
               expect(body.template.name).to.equal('Node JS Dev');
-              expect(body.skillGroups.length > 0).to.equal(true);
+              expect(body.skillGroups[1]).to.not.be.undefined;
+              expect(body.skills[1]).to.not.be.undefined;
             })));
 
     it(`prevents a user that is not the subject, nor the subjects mentor, from viewing an evaluation`, () =>
@@ -102,7 +104,7 @@ describe('evaluations', () => {
           .expect(test().expect)))
   });
 
-  describe('POST /evaluations/:evaluationId { action: updateSkillStatus }', () => {
+  describe('POST /evaluations/:evaluationId { action: subjectUpdateSkillStatus }', () => {
     it('allows a user to update the status of a skill for a new evaluation', () =>
       insertEvaluation(evaluation, normalUserOneId)
         .then(({ insertedId }) => {
@@ -112,7 +114,7 @@ describe('evaluations', () => {
           request(app)
             .post(`${prefix}/evaluations/${evaluationId}`)
             .send({
-              action: 'updateSkillStatus',
+              action: 'subjectUpdateSkillStatus',
               skillGroupId: 0,
               skillId: 1,
               status: 'ATTAINED'
@@ -121,33 +123,93 @@ describe('evaluations', () => {
             .expect(204)
         )
         .then(() => getEvaluation(evaluationId))
-        .then(({ skillGroups }) => {
-          expect(skillGroups[0].skills[0].status).to.deep.equal({ previous: null, current: 'ATTAINED' });
+        .then(({ skills }) => {
+          expect(skills[0].status).to.deep.equal({ previous: null, current: 'ATTAINED' });
         }));
 
-    it('allows a mentor to update a skill for their mentee if they have already self-evaluated', () =>
-      insertEvaluation(Object.assign({}, evaluation, { status: SELF_EVALUATION_COMPLETE }), normalUserOneId)
+    it('adds action when a skill is set to FEEDBACK', () =>
+      insertEvaluation(evaluation, normalUserOneId)
         .then(({ insertedId }) => {
-          evaluationId = insertedId
+          evaluationId = insertedId.toString();
         })
-        .then(() => assignMentor(normalUserOneId, normalUserTwoId))
         .then(() =>
           request(app)
             .post(`${prefix}/evaluations/${evaluationId}`)
             .send({
-              action: 'updateSkillStatus',
+              action: 'subjectUpdateSkillStatus',
+              skillGroupId: 0,
+              skillId: 1,
+              status: 'FEEDBACK'
+            })
+            .set('Cookie', `${cookieName}=${normalUserOneToken}`)
+            .expect(204)
+        )
+        .then(() => getAllActions())
+        .then(([action]) => {
+          expect(action).to.not.be.undefined;
+          expect(action.type).to.equal('FEEDBACK');
+          expect(action.evaluation.id).to.equal(evaluationId);
+          expect(action.skill.id).to.equal(1);
+        }));
+
+    it('adds action when a skill is set to OBJECTIVE', () =>
+      insertEvaluation(evaluation, normalUserOneId)
+        .then(({ insertedId }) => {
+          evaluationId = insertedId.toString();
+        })
+        .then(() =>
+          request(app)
+            .post(`${prefix}/evaluations/${evaluationId}`)
+            .send({
+              action: 'subjectUpdateSkillStatus',
+              skillGroupId: 0,
+              skillId: 1,
+              status: 'OBJECTIVE'
+            })
+            .set('Cookie', `${cookieName}=${normalUserOneToken}`)
+            .expect(204)
+        )
+        .then(() => getAllActions())
+        .then(([action]) => {
+          expect(action).to.not.be.undefined;
+          expect(action.type).to.equal('OBJECTIVE');
+          expect(action.evaluation.id).to.equal(evaluationId);
+          expect(action.skill.id).to.equal(1);
+        }));
+
+    it('removes action when a skill was previously FEEDBACK', () =>
+      insertEvaluation(evaluation, normalUserOneId)
+        .then(({ insertedId }) => {
+          evaluationId = insertedId.toString();
+        })
+        .then(() =>
+          request(app)
+            .post(`${prefix}/evaluations/${evaluationId}`)
+            .send({
+              action: 'subjectUpdateSkillStatus',
+              skillGroupId: 0,
+              skillId: 1,
+              status: 'FEEDBACK'
+            })
+            .set('Cookie', `${cookieName}=${normalUserOneToken}`)
+            .expect(204)
+        )
+        .then(() =>
+          request(app)
+            .post(`${prefix}/evaluations/${evaluationId}`)
+            .send({
+              action: 'subjectUpdateSkillStatus',
               skillGroupId: 0,
               skillId: 1,
               status: 'ATTAINED'
             })
-            .set('Cookie', `${cookieName}=${normalUserTwoToken}`)
+            .set('Cookie', `${cookieName}=${normalUserOneToken}`)
             .expect(204)
         )
-        .then(() => getEvaluation(evaluationId))
-        .then(({ skillGroups }) => {
-          expect(skillGroups[0].skills[0].status).to.deep.equal({ previous: null, current: 'ATTAINED' });
-        })
-    );
+        .then(() => getAllActions())
+        .then(([action]) => {
+          expect(action).to.be.undefined;
+        }));
 
     it('prevents updates by the subject of the evaluation if they have completed their self-evaluation', () =>
       insertEvaluation(Object.assign({}, evaluation, { status: SELF_EVALUATION_COMPLETE }), normalUserOneId)
@@ -158,7 +220,7 @@ describe('evaluations', () => {
           request(app)
             .post(`${prefix}/evaluations/${evaluationId}`)
             .send({
-              action: 'updateSkillStatus',
+              action: 'subjectUpdateSkillStatus',
               skillGroupId: 0,
               skillId: 1,
               status: 'ATTAINED'
@@ -175,30 +237,12 @@ describe('evaluations', () => {
           request(app)
             .post(`${prefix}/evaluations/${evaluationId}`)
             .send({
-              action: 'updateSkillStatus',
+              action: 'subjectUpdateSkillStatus',
               skillGroupId: 0,
               skillId: 1,
               status: 'ATTAINED'
             })
             .set('Cookie', `${cookieName}=${normalUserOneToken}`)
-            .expect(403)));
-
-    it('prevents updates by a mentor if the status of an evaluation is unknown', () =>
-      insertEvaluation(Object.assign({}, evaluation, { status: 'FOO_BAR' }), normalUserOneId)
-        .then(({ insertedId }) => {
-          evaluationId = insertedId
-        })
-        .then(() => assignMentor(normalUserOneId, normalUserTwoId))
-        .then(() =>
-          request(app)
-            .post(`${prefix}/evaluations/${evaluationId}`)
-            .send({
-              action: 'updateSkillStatus',
-              skillGroupId: 0,
-              skillId: 1,
-              status: 'ATTAINED'
-            })
-            .set('Cookie', `${cookieName}=${normalUserTwoToken}`)
             .expect(403)));
 
     it('prevents updates by the subject of the evaluation if the evaluation has been reviewed by their mentor', () =>
@@ -210,13 +254,115 @@ describe('evaluations', () => {
           request(app)
             .post(`${prefix}/evaluations/${evaluationId}`)
             .send({
-              action: 'updateSkillStatus',
+              action: 'subjectUpdateSkillStatus',
               skillGroupId: 0,
               skillId: 1,
               status: 'ATTAINED'
             })
             .set('Cookie', `${cookieName}=${normalUserOneToken}`)
             .expect(403)));
+
+    it('prevents a user that is not the subject, from updating a skill', () =>
+      insertEvaluation(evaluation, normalUserOneId)
+        .then(({ insertedId }) => {
+          evaluationId = insertedId
+        })
+        .then(() =>
+          request(app)
+            .post(`${prefix}/evaluations/${evaluationId}`)
+            .send({
+              action: 'subjectUpdateSkillStatus',
+              skillGroupId: 0,
+              skillId: 1,
+              status: 'ATTAINED'
+            })
+            .set('Cookie', `${cookieName}=${normalUserTwoToken}`)
+            .expect(403)));
+
+    it('returns not found if an attempt is made to update an evaluation that does not exist', () =>
+      request(app)
+        .post(`${prefix}/evaluations/noMatchingId`)
+        .send({
+          action: 'subjectUpdateSkillStatus',
+          skillGroupId: 0,
+          skillId: 1,
+          status: 'ATTAINED'
+        })
+        .set('Cookie', `${cookieName}=${normalUserOneToken}`)
+        .expect(404));
+  });
+
+  describe('POST /evaluations/:evaluationId { action: mentorUpdateSkillStatus }', () => {
+
+    it('allows a mentor to update a skill for their mentee if they have already self-evaluated', () =>
+      insertEvaluation(Object.assign({}, evaluation, { status: SELF_EVALUATION_COMPLETE }), normalUserOneId)
+        .then(({ insertedId }) => {
+          evaluationId = insertedId
+        })
+        .then(() => assignMentor(normalUserOneId, normalUserTwoId))
+        .then(() =>
+          request(app)
+            .post(`${prefix}/evaluations/${evaluationId}`)
+            .send({
+              action: 'mentorUpdateSkillStatus',
+              skillGroupId: 0,
+              skillId: 1,
+              status: 'ATTAINED'
+            })
+            .set('Cookie', `${cookieName}=${normalUserTwoToken}`)
+            .expect(204)
+        )
+        .then(() => getEvaluation(evaluationId))
+        .then(({ skills }) => {
+          expect(skills[0].status).to.deep.equal({ previous: null, current: 'ATTAINED' });
+        })
+    );
+
+    it('adds action when a skill is set to FEEDBACK', () =>
+      insertEvaluation(Object.assign({}, evaluation, { status: SELF_EVALUATION_COMPLETE }), normalUserOneId)
+        .then(({ insertedId }) => {
+          evaluationId = insertedId.toString();
+        })
+        .then(() => assignMentor(normalUserOneId, normalUserTwoId))
+        .then(() =>
+          request(app)
+            .post(`${prefix}/evaluations/${evaluationId}`)
+            .send({
+              action: 'mentorUpdateSkillStatus',
+              skillGroupId: 0,
+              skillId: 1,
+              status: 'FEEDBACK'
+            })
+            .set('Cookie', `${cookieName}=${normalUserTwoToken}`)
+            .expect(204)
+        )
+        .then(() => getAllActions())
+        .then(([action]) => {
+          expect(action).to.not.be.undefined;
+          expect(action.type).to.equal('FEEDBACK');
+          expect(action.evaluation.id).to.equal(evaluationId);
+          expect(action.skill.id).to.equal(1);
+        }));
+
+
+    it('prevents updates by a mentor if the status of an evaluation is unknown', () =>
+      insertEvaluation(Object.assign({}, evaluation, { status: 'FOO_BAR' }), normalUserOneId)
+        .then(({ insertedId }) => {
+          evaluationId = insertedId
+        })
+        .then(() => assignMentor(normalUserOneId, normalUserTwoId))
+        .then(() =>
+          request(app)
+            .post(`${prefix}/evaluations/${evaluationId}`)
+            .send({
+              action: 'mentorUpdateSkillStatus',
+              skillGroupId: 0,
+              skillId: 1,
+              status: 'ATTAINED'
+            })
+            .set('Cookie', `${cookieName}=${normalUserTwoToken}`)
+            .expect(403)));
+
 
     it('prevents updates by a mentor if they have already completed their review of an evaluation', () =>
       insertEvaluation(Object.assign({}, evaluation, { status: MENTOR_REVIEW_COMPLETE }), normalUserOneId)
@@ -228,7 +374,7 @@ describe('evaluations', () => {
           request(app)
             .post(`${prefix}/evaluations/${evaluationId}`)
             .send({
-              action: 'updateSkillStatus',
+              action: 'mentorUpdateSkillStatus',
               skillGroupId: 0,
               skillId: 1,
               status: 'ATTAINED'
@@ -237,7 +383,7 @@ describe('evaluations', () => {
             .expect(403)));
 
     it('prevents updates by a mentor if the evaluation has not been completed by their mentee', () =>
-      insertEvaluation(Object.assign({}, evaluation, { status: NEW  }), normalUserOneId)
+      insertEvaluation(Object.assign({}, evaluation, { status: NEW }), normalUserOneId)
         .then(({ insertedId }) => {
           evaluationId = insertedId
         })
@@ -246,7 +392,7 @@ describe('evaluations', () => {
           request(app)
             .post(`${prefix}/evaluations/${evaluationId}`)
             .send({
-              action: 'updateSkillStatus',
+              action: 'mentorUpdateSkillStatus',
               skillGroupId: 0,
               skillId: 1,
               status: 'ATTAINED'
@@ -263,7 +409,7 @@ describe('evaluations', () => {
           request(app)
             .post(`${prefix}/evaluations/${evaluationId}`)
             .send({
-              action: 'updateSkillStatus',
+              action: 'mentorUpdateSkillStatus',
               skillGroupId: 0,
               skillId: 1,
               status: 'ATTAINED'
@@ -275,7 +421,7 @@ describe('evaluations', () => {
       request(app)
         .post(`${prefix}/evaluations/noMatchingId`)
         .send({
-          action: 'updateSkillStatus',
+          action: 'mentorUpdateSkillStatus',
           skillGroupId: 0,
           skillId: 1,
           status: 'ATTAINED'
@@ -389,7 +535,7 @@ describe('evaluations', () => {
             .expect(403)));
 
     it('prevents mentor from completing a review of an evaluation before their mentee has self-evaluated', () =>
-      insertEvaluation(Object.assign({}, evaluation, { status: NEW  }), normalUserOneId)
+      insertEvaluation(Object.assign({}, evaluation, { status: NEW }), normalUserOneId)
         .then(({ insertedId }) => {
           evaluationId = insertedId
         })

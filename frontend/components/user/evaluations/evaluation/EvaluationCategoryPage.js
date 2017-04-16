@@ -89,8 +89,8 @@ class EvaluationCategoryComponent extends React.Component {
       this.nextSkill();
     }
   }
-  updateSkillStatus(skillId, newStatus) {
-    return this.props.actions.updateSkillStatus(this.evaluationId, skillId, newStatus);
+  updateSkillStatus(evaluationView) {
+    return (skillId, newStatus) => this.props.actions.updateSkillStatus(evaluationView, this.evaluationId, skillId, newStatus);
   }
 
   evaluationComplete(evaluationId) {
@@ -130,7 +130,7 @@ class EvaluationCategoryComponent extends React.Component {
             <Skill
               level={currentLevel}
               skill={this.skills[this.state.currentSkill.id]}
-              updateSkillStatus={this.updateSkillStatus}
+              updateSkillStatus={this.updateSkillStatus(this.view)}
               navigatePostSkillUpdate={this.navigatePostSkillUpdate}
               nextSkill={this.nextSkill}
               prevSkill={this.prevSkill}
@@ -144,7 +144,7 @@ class EvaluationCategoryComponent extends React.Component {
               categories={[].concat(this.props.params.category)}
               levels={this.levels.slice(getIndexOfLevel(currentLevel, this.levels), this.levels.length)}
               skillGroups={this.skillGroups}
-              updateSkillStatus={this.updateSkillStatus}
+              updateSkillStatus={this.updateSkillStatus(this.view)}
               canUpdateSkillStatus={
                 this.view === SUBJECT && this.evaluationStatus === NEW
                 || this.view === MENTOR && this.evaluationStatus === SELF_EVALUATION_COMPLETE

@@ -1,18 +1,36 @@
 const Promise = require('bluebird');
 
 const createHandler = require('./createHandler');
+
 const { getEvaluationById, updateEvaluation } = require('../models/evaluations');
 const { getUserById } = require('../models/users');
+const actions = require('../models/actions');
+
 const { sendMail } = require('../services/email');
 
 const {
   EVALUATION_NOT_FOUND,
+  SKILL_NOT_FOUND,
   MUST_BE_SUBJECT_OF_EVALUATION_OR_MENTOR,
   MUST_BE_LOGGED_IN,
   SUBJECT_CAN_ONLY_UPDATE_NEW_EVALUATION,
   MENTOR_REVIEW_COMPLETE,
   MENTOR_CAN_ONLY_UPDATE_AFTER_SELF_EVALUATION,
 } = require('./errors');
+
+
+const addActions = (user, skill, evaluation, newStatus) => {
+  const actionToAdd = skill.addAction(newStatus);
+  const actionToRemove = skill.removeAction(newStatus);
+  const fns = [];
+  if (actionToAdd) {
+    fns.push(actions.addAction(actionToAdd, user, skill, evaluation));
+  }
+  if (actionToRemove) {
+    fns.push(actions.removeAction(actionToRemove, user.id, skill.id, evaluation.id));
+  }
+  return Promise.all(fns);
+};
 
 const handlerFunctions = Object.freeze({
   evaluation: {
@@ -42,9 +60,41 @@ const handlerFunctions = Object.freeze({
         })
         .catch(next);
     },
-    updateSkillStatus: (req, res, next) => {
+    subjectUpdateSkillStatus: (req, res, next) => {
       const { evaluationId } = req.params;
-      const { skillGroupId, skillId, status } = req.body;
+      const { skillId, status } = req.body;
+      const { user } = res.locals;
+
+      getEvaluationById(evaluationId)
+        .then((evaluation) => {
+          if (!evaluation) {
+            return res.status(404).json(EVALUATION_NOT_FOUND());
+          }
+
+          if (!user) {
+            return res.status(401).json(MUST_BE_LOGGED_IN());
+          }
+
+          if (user.id !== evaluation.user.id) {
+            return res.status(403).json(MUST_BE_SUBJECT_OF_EVALUATION_OR_MENTOR());
+          }
+
+          const skill = evaluation.findSkill(skillId);
+          if (!skill) {
+            return res.status(400).json(SKILL_NOT_FOUND());
+          }
+
+          return evaluation.isNewEvaluation()
+            ? updateEvaluation(evaluation.updateSkill(skillId, status))
+              .then(() => addActions(user, skill, evaluation, status))
+              .then(() => res.sendStatus(204))
+            : res.status(403).json(SUBJECT_CAN_ONLY_UPDATE_NEW_EVALUATION());
+        })
+        .catch(next)
+    },
+    mentorUpdateSkillStatus: (req, res, next) => {
+      const { evaluationId } = req.params;
+      const { skillId, status } = req.body;
       const { user } = res.locals;
 
       Promise.try(() => getEvaluationById(evaluationId))
@@ -57,25 +107,20 @@ const handlerFunctions = Object.freeze({
             return res.status(401).json(MUST_BE_LOGGED_IN());
           }
 
-          if (evaluation.mentorReviewCompleted()) {
-            return res.status(403).json(MENTOR_REVIEW_COMPLETE())
-          }
-
-          if (user.id === evaluation.user.id) {
-            return evaluation.isNewEvaluation()
-              ? updateEvaluation(evaluation.updateSkill(skillGroupId, skillId, status))
-                .then(() => res.sendStatus(204))
-              : res.status(403).json(SUBJECT_CAN_ONLY_UPDATE_NEW_EVALUATION());
+          const skill = evaluation.findSkill(skillId);
+          if (!skill) {
+            return res.status(400).json(SKILL_NOT_FOUND());
           }
 
           return getUserById(evaluation.user.id)
-            .then(({ mentorId }) => {
-              if (user.id !== mentorId) {
+            .then((evalUser) => {
+              if (user.id !== evalUser.mentorId) {
                 return res.status(403).json(MUST_BE_SUBJECT_OF_EVALUATION_OR_MENTOR());
               }
 
               return evaluation.selfEvaluationCompleted()
-                ? updateEvaluation(evaluation.updateSkill(skillGroupId, skillId, status))
+                ? updateEvaluation(evaluation.updateSkill(skillId, status))
+                  .then(addActions(evalUser, skill, evaluation, status))
                   .then(() => res.sendStatus(204))
                 : res.status(403).json(MENTOR_CAN_ONLY_UPDATE_AFTER_SELF_EVALUATION());
             })

@@ -62,7 +62,7 @@ describe('userEvaluations', () => {
             .then(([firstEvaluation, secondEvaluation]) => {
               // see ./unit/evaluation-test.js for test to ensure evaluation is correctly generated
               expect(secondEvaluation).to.be.not.null;
-              expect(secondEvaluation.skillGroups[1].skills[0].status).to.deep.equal({
+              expect(secondEvaluation.skills[1].status).to.deep.equal({
                 previous: 'FEEDBACK',
                 current: null
               });

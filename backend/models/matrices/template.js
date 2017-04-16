@@ -1,5 +1,6 @@
 const template = ({ id, name, version, categories, levels, skillGroups }) => Object.freeze({
   id,
+  skillGroups,
   get viewModel() {
     return { id, name };
   },
@@ -21,15 +22,20 @@ const template = ({ id, name, version, categories, levels, skillGroups }) => Obj
   get userDetailsViewModel() {
     return { name };
   },
-  createSkillGroups: function (skills) {
-    return skillGroups.map((skillGroup, index) => ({
-      id: index,
-      category: skillGroup.category,
-      level: skillGroup.level,
-      skills: skillGroup.skills.map((skillId) =>
-        Object.assign({}, skills[skillId].evaluationData, { status: { previous: null, current: null } }))
-    }));
-  }
+  createSkillGroups: function (allSkills) {
+    let skills = [];
+    const newSkillGroups = skillGroups.map((skillGroup, index) => {
+      skills = skills.concat(skillGroup.skills.map((skillId) =>
+        Object.assign({}, allSkills[skillId].evaluationData, { status: { previous: null, current: null } })));
+      return ({
+        id: index,
+        category: skillGroup.category,
+        level: skillGroup.level,
+        skills: skillGroup.skills,
+      });
+    });
+    return { skills, skillGroups: newSkillGroups }
+  },
 });
 
 module.exports = template;
