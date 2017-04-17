@@ -5,7 +5,7 @@ import moment from 'moment';
 const EvaluationsList = ({ evaluations }) => (
   <div>
     {
-      evaluations.map(({ id, createdDate, templateName, status, url}) =>
+      evaluations.map(({ id, createdDate, templateName, status, evaluationUrl, feedbackUrl}) =>
         (
           <ListGroupItem key={id} bsStyle={null}>
             <dl>
@@ -16,7 +16,11 @@ const EvaluationsList = ({ evaluations }) => (
               <dt>status</dt>
               <dd>{status}</dd>
               <dt>actions</dt>
-              <dd><a href={url}>view</a></dd>
+              <dd>
+                <a href={evaluationUrl}>view</a>
+                {' '}
+                <a href={feedbackUrl}>feedback</a>
+              </dd>
             </dl>
           </ListGroupItem>
         )
