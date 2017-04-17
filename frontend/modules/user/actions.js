@@ -39,7 +39,7 @@ export const actions = {
 
 const initialSate = {
   feedback: [],
-  objectives: [],
+  objective: [],
 };
 
 export default handleActions({

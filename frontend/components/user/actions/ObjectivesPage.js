@@ -8,13 +8,13 @@ import { actions, ACTION_TYPES } from '../../../modules/user/actions';
 import PageHeader from './../../common/PageHeader';
 import ActionsList from './ActionsList';
 
-class FeedbackPageComponent extends React.Component {
+class ObjectivesPageComponent extends React.Component {
   componentDidMount() {
-    this.props.actions.retrieveActions(this.props.userId, ACTION_TYPES.FEEDBACK);
+    this.props.actions.retrieveActions(this.props.userId, ACTION_TYPES.OBJECTIVE);
   }
 
   render() {
-    const { error, actions } = this.props.feedback;
+    const { error, actions } = this.props.objectives;
 
     if (error) {
       return (
@@ -28,20 +28,20 @@ class FeedbackPageComponent extends React.Component {
 
     return (
       <Grid>
-        <PageHeader title='Feedback' />
-        { actions ? <ActionsList actions={actions} />  : false}
+        <PageHeader title='Objectives' />
+        { actions ? <ActionsList actions={actions} /> : false}
       </Grid>
     )
   }
 }
 
-FeedbackPageComponent.propTypes = {};
+ObjectivesPageComponent.propTypes = {};
 
-export const FeedbackPage = connect(
+export const ObjectivesPage = connect(
   function mapStateToProps(state) {
     return ({
       userId: state.dashboard.user.id,
-      feedback: state.actions.feedback
+      objectives: state.actions.objective
     });
   },
   function mapDispatchToProps(dispatch) {
@@ -49,4 +49,4 @@ export const FeedbackPage = connect(
       actions: bindActionCreators(actions, dispatch)
     };
   }
-)(FeedbackPageComponent);
+)(ObjectivesPageComponent);

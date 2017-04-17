@@ -6,6 +6,7 @@ import AdminApp from './components/admin/App';
 import { Dashboard as AdminDashboard } from './components/admin/Dashboard';
 import { DashboardPage as UserDashboard } from './components/user/dashboard/Dashboard';
 import { FeedbackPage } from './components/user/actions/FeedbackPage';
+import { ObjectivesPage } from './components/user/actions/ObjectivesPage';
 import { ManageUsersPage } from './components/admin/users/ManageUsersPage';
 import { ManageMatricesPage } from './components/admin/matrices/ManageMatricesPage';
 import { TemplatePage } from './components/admin/template/TemplatePage';
@@ -30,6 +31,7 @@ export const userRoutes = (
       <IndexRoute component={UserDashboard}/>
       <Route path="dashboard" name="Dashboard" component={UserDashboard}/>
       <Route path="feedback" name="Feedback" component={FeedbackPage}/>
+      <Route path="objectives" name="Objectives" component={ObjectivesPage}/>
       <Route path="evaluations/:evaluationId" component={EvaluationPage} />
       <Route path="evaluations/:evaluationId/category/:category" component={EvaluationCategoryPage} />
     </Route>

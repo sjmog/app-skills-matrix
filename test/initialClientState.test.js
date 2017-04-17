@@ -92,13 +92,17 @@ describe('initial client state', () => {
                   id: String(evaluationId_NEW),
                   status: 'NEW',
                   templateName: 'Node JS Dev',
-                  url: `undefined/#/evaluations/${String(evaluationId_NEW)}`
+                  evaluationUrl: `undefined/#/evaluations/${String(evaluationId_NEW)}`,
+                  feedbackUrl: 'undefined/#/feedback',
+                  objectivesUrl: 'undefined/#/objectives'
                 },
                 {
                   id: String(evaluationId_OLD),
                   status: 'NEW',
                   templateName: 'Node JS Dev',
-                  url: `undefined/#/evaluations/${String(evaluationId_OLD)}`
+                  evaluationUrl: `undefined/#/evaluations/${String(evaluationId_OLD)}`,
+                  feedbackUrl: 'undefined/#/feedback',
+                  objectivesUrl: 'undefined/#/objectives'
                 }
               ];
 
@@ -134,13 +138,17 @@ describe('initial client state', () => {
                     id: String(menteeEvaluationId_NEW),
                     status: 'NEW',
                     templateName: 'Node JS Dev',
-                    url: `undefined/#/evaluations/${String(menteeEvaluationId_NEW)}`
+                    evaluationUrl: `undefined/#/evaluations/${String(menteeEvaluationId_NEW)}`,
+                    feedbackUrl: 'undefined/#/feedback',
+                    objectivesUrl: 'undefined/#/objectives'
                   },
                   {
                     id: String(menteeEvaluationId_OLD),
                     status: 'NEW',
                     templateName: 'Node JS Dev',
-                    url: `undefined/#/evaluations/${String(menteeEvaluationId_OLD)}`
+                    evaluationUrl: `undefined/#/evaluations/${String(menteeEvaluationId_OLD)}`,
+                    feedbackUrl: 'undefined/#/feedback',
+                    objectivesUrl: 'undefined/#/objectives'
                   }
                 ]
               }

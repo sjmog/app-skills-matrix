@@ -31,6 +31,7 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
     return {
       evaluationUrl: `${HOST}/#/evaluations/${_id}`,
       feedbackUrl: `${HOST}/#/feedback`,
+      objectivesUrl: `${HOST}/#/objectives`,
       id: _id, usersName: user.name,
       status,
       templateName: template.name
