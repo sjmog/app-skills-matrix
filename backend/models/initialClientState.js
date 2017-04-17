@@ -17,9 +17,9 @@ const getEvaluations = (id) =>
 
 const getMenteeEvaluations = (id) => Promise.map(
   users.getByMentorId(id),
-  ({ id, name }) =>
-    getEvaluations(id)
-      .then(evaluations => ({ name, evaluations }))
+    ({ id, name, username }) =>
+      getEvaluations(id)
+        .then(evaluations => ({ name: name || username , evaluations }))
 );
 
 const adminClientState = () => {
@@ -49,8 +49,8 @@ const clientState = (user) =>
             user: user ? user.userDetailsViewModel : null,
             mentor: mentor ? mentor.userDetailsViewModel : null,
             template: template ? template.viewModel : null,
-            evaluations: evaluations,
-            menteeEvaluations: menteeEvaluations,
+            evaluations,
+            menteeEvaluations,
           }
         }))
     :

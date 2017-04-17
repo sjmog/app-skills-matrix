@@ -4,6 +4,7 @@ const auth = require('../auth');
 const user = ({ _id, name, email, username, createdDate, modifiedDate, templateId, mentorId, avatarUrl }) => Object.freeze({
   id: _id.toString(),
   name,
+  username,
   templateId,
   mentorId,
   get email() {
