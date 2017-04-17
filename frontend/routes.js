@@ -12,7 +12,7 @@ import { ManageMatricesPage } from './components/admin/matrices/ManageMatricesPa
 import { TemplatePage } from './components/admin/template/TemplatePage';
 import { EvaluationPage } from './components/user/evaluations/EvaluationPage';
 import { EvaluationCategoryPage } from './components/user/evaluations/evaluation/EvaluationCategoryPage';
-import { EvaluationActionPage } from './components/user/actions/EvaluationActionPage';
+import { EvaluationFeedbackPage } from './components/user/actions/EvaluationFeedbackPage';
 import { EvaluationObjectivesPage } from './components/user/actions/EvaluationObjectivesPage';
 
 export const adminRoutes = (
@@ -36,7 +36,7 @@ export const userRoutes = (
       <Route path="objectives" name="Objectives" component={ObjectivesPage}/>
       <Route path="evaluations/:evaluationId" component={EvaluationPage} />
       <Route path="evaluations/:evaluationId/category/:category" component={EvaluationCategoryPage} />
-      <Route path="evaluations/:evaluationId/feedback" component={EvaluationActionPage} />
+      <Route path="evaluations/:evaluationId/feedback" component={EvaluationFeedbackPage} />
       <Route path="evaluations/:evaluationId/objectives" component={EvaluationObjectivesPage} />
     </Route>
   </Router>

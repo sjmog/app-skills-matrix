@@ -8,7 +8,7 @@ import { actions, ACTION_TYPES } from '../../../modules/user/actions';
 import PageHeader from './../../common/PageHeader';
 import ActionsList from './ActionsList';
 
-class EvaluationActionPageComponent extends React.Component {
+class EvaluationFeedbackPageComponent extends React.Component {
   componentDidMount() {
     if (!this.props.retrieved) {
       this.props.actions.retrieveActions(this.props.userId, ACTION_TYPES.FEEDBACK);
@@ -41,9 +41,9 @@ class EvaluationActionPageComponent extends React.Component {
   }
 }
 
-EvaluationActionPageComponent.propTypes = {};
+EvaluationFeedbackPageComponent.propTypes = {};
 
-export const EvaluationActionPage = connect(
+export const EvaluationFeedbackPage = connect(
   function mapStateToProps(state, { params }) {
     const { evaluationId } = params;
     const retrieved = selectors.getFeedbackRetrievedStatus(state);
@@ -68,4 +68,4 @@ export const EvaluationActionPage = connect(
       actions: bindActionCreators(actions, dispatch)
     };
   }
-)(EvaluationActionPageComponent);
+)(EvaluationFeedbackPageComponent);
