@@ -27,7 +27,7 @@ const retrieveActionsFailure = createAction(
 
 function retrieveActions(userId, actionType) {
   return function (dispatch) {
-    return api.retrieveActions(userId, actionType)
+    return api.retrieveAllActions(userId, actionType)
       .then((actions) => dispatch(retrieveActionsSuccess(actionType, actions)))
       .catch((error) => dispatch(retrieveActionsFailure(actionType, error)))
   }
@@ -38,23 +38,56 @@ export const actions = {
 };
 
 const initialSate = {
-  feedback: [],
-  objective: [],
+  feedback: {
+    ui: { retrieved: false }
+  },
+  objective: {
+    ui: { retrieved: false }
+  },
 };
 
 export default handleActions({
   [retrieveActionsSuccess]: (state, action) => {
     const { actionType, actions } = action.payload;
-    const newestToOldest = (a, b) => moment(a).isBefore(b);
-    const uniqueCreatedDates = R.uniq(R.map(R.path(['evaluation', 'createdDate']), actions)).sort(newestToOldest);
+    const newestToOldest = (a, b) => moment(a.createdDate).isBefore(b.createdDate);
+
+    const uniqueEvals = R.uniq(
+      R.map((action) => ({
+        createdDate: R.path(['evaluation', 'createdDate'], action),
+        evaluationId: R.path(['evaluation', 'id'], action)
+      }), actions)
+    ).sort(newestToOldest);
+
     const actionsGroupedByEvaluation = R.map(
-      (createdDate) => ({ createdDate, actions: R.filter(R.pathEq(['evaluation', 'createdDate'], createdDate), actions) }),
-      uniqueCreatedDates
+      ({ createdDate, evaluationId}) =>
+        ({ createdDate, evaluationId, actions: R.filter(R.pathEq(['evaluation', 'createdDate'], createdDate), actions) }),
+      uniqueEvals
     );
-    return R.merge(state, { [actionType.toLowerCase()]: { actions: actionsGroupedByEvaluation }});
+    return R.merge(state, { [actionType.toLowerCase()]: { actions: actionsGroupedByEvaluation, ui: { retrieved: true } }});
   },
   [retrieveActionsFailure]: (state, action) => {
     const { actionType, error } = action.payload;
-    return R.merge(state, { [actionType.toLowerCase()]: { error }});
+    return R.merge(state, { [actionType.toLowerCase()]: { error, ui: { retrieved: false } }});
   },
 }, initialSate);
+
+
+export const getFeedbackForEvaluation = (state, evaluationId) => {
+  return R.filter(R.pathEq(['evaluationId'], evaluationId))(R.path(['feedback', 'actions'], state));
+};
+
+export const getFeedbackRetrievedStatus = (state) =>
+  R.path(['feedback', 'ui', 'retrieved'], state);
+
+export const getFeedbackError = (state) =>
+  R.path(['feedback', 'error'], state);
+
+export const geObjectivesForEvaluation = (state, evaluationId) => {
+  return R.filter(R.pathEq(['evaluationId'], evaluationId))(R.path(['objective', 'actions'], state));
+};
+
+export const getObjectivesRetrievedStatus = (state) =>
+  R.path(['objective', 'ui', 'retrieved'], state);
+
+export const getObjectivesError = (state) =>
+  R.path(['objective', 'error'], state);

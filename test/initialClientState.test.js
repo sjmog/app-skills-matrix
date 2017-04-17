@@ -87,26 +87,17 @@ describe('initial client state', () => {
             .set('Cookie', `${cookieName}=${normalUserOneToken}`)
             .expect(200)
             .then((res) => {
-              const expectedEvaluations = [
-                {
-                  id: String(evaluationId_NEW),
-                  status: 'NEW',
-                  templateName: 'Node JS Dev',
-                  evaluationUrl: `undefined/#/evaluations/${String(evaluationId_NEW)}`,
-                  feedbackUrl: 'undefined/#/feedback',
-                  objectivesUrl: 'undefined/#/objectives'
-                },
-                {
-                  id: String(evaluationId_OLD),
-                  status: 'NEW',
-                  templateName: 'Node JS Dev',
-                  evaluationUrl: `undefined/#/evaluations/${String(evaluationId_OLD)}`,
-                  feedbackUrl: 'undefined/#/feedback',
-                  objectivesUrl: 'undefined/#/objectives'
-                }
-              ];
+              const [firstEvaluation, secondEvaluation] = getInitialState(res.text).dashboard.evaluations;
 
-              expect(getInitialState(res.text).dashboard.evaluations).to.deep.equal(expectedEvaluations);
+              expect(firstEvaluation.id).to.equal(String(evaluationId_NEW));
+              expect(firstEvaluation).to.have.property('createdDate');
+              expect(firstEvaluation.status).to.equal('NEW');
+              expect(firstEvaluation.templateName).to.equal('Node JS Dev');
+              expect(firstEvaluation.evaluationUrl).to.equal(`undefined/#/evaluations/${String(evaluationId_NEW)}`);
+              expect(firstEvaluation.feedbackUrl).to.equal(`undefined/#/evaluations/${String(evaluationId_NEW)}/feedback`);
+              expect(firstEvaluation.objectivesUrl).to.equal(`undefined/#/evaluations/${String(evaluationId_NEW)}/objectives`);
+
+              expect(secondEvaluation.id).to.equal(String(evaluationId_OLD));
             })
         )
     });
@@ -129,32 +120,20 @@ describe('initial client state', () => {
           .set('Cookie', `${cookieName}=${normalUserOneToken}`)
           .expect(200)
           .then((res) => {
+            const [mentee] = getInitialState(res.text).dashboard.menteeEvaluations;
+            const [firstEvaluation, secondEvaluation] = mentee.evaluations;
 
-            const expectedMenteeEvaluations = [
-              {
-                name: 'User Dragon Rider',
-                evaluations: [
-                  {
-                    id: String(menteeEvaluationId_NEW),
-                    status: 'NEW',
-                    templateName: 'Node JS Dev',
-                    evaluationUrl: `undefined/#/evaluations/${String(menteeEvaluationId_NEW)}`,
-                    feedbackUrl: 'undefined/#/feedback',
-                    objectivesUrl: 'undefined/#/objectives'
-                  },
-                  {
-                    id: String(menteeEvaluationId_OLD),
-                    status: 'NEW',
-                    templateName: 'Node JS Dev',
-                    evaluationUrl: `undefined/#/evaluations/${String(menteeEvaluationId_OLD)}`,
-                    feedbackUrl: 'undefined/#/feedback',
-                    objectivesUrl: 'undefined/#/objectives'
-                  }
-                ]
-              }
-            ];
+            expect(mentee.name).to.equal('User Dragon Rider');
 
-            expect(getInitialState(res.text).dashboard.menteeEvaluations).to.deep.equal(expectedMenteeEvaluations);
+            expect(firstEvaluation.id).to.equal(String(menteeEvaluationId_NEW));
+            expect(firstEvaluation).to.have.property('createdDate');
+            expect(firstEvaluation.status).to.equal('NEW');
+            expect(firstEvaluation.templateName).to.equal('Node JS Dev');
+            expect(firstEvaluation.evaluationUrl).to.equal(`undefined/#/evaluations/${String(menteeEvaluationId_NEW)}`);
+            expect(firstEvaluation.feedbackUrl).to.equal(`undefined/#/evaluations/${String(menteeEvaluationId_NEW)}/feedback`);
+            expect(firstEvaluation.objectivesUrl).to.equal(`undefined/#/evaluations/${String(menteeEvaluationId_NEW)}/objectives`);
+
+            expect(secondEvaluation.id).to.equal(String(menteeEvaluationId_OLD));
           })
         )
     });

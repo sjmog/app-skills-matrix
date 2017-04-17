@@ -2,7 +2,6 @@ import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Row, Grid, Alert, ListGroup, ListGroupItem } from 'react-bootstrap';
-import moment from 'moment';
 
 import { actions, ACTION_TYPES } from '../../../modules/user/actions';
 import PageHeader from './../../common/PageHeader';

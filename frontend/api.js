@@ -62,7 +62,7 @@ export default ({
       .then(getData)
       .catch(handleError)
   },
-  retrieveActions: function(userId, actionType) {
+  retrieveAllActions: function(userId, actionType) {
     return axios.get(`/skillz/users/${userId}/actions?type=${actionType}`)
       .then(getData)
       .catch(handleError)
