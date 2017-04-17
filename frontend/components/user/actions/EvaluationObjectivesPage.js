@@ -10,9 +10,7 @@ import ActionsList from './ActionsList';
 
 class EvalutionObjectivesPageComponent extends React.Component {
   componentDidMount() {
-    if (!this.props.retrieved) {
-      this.props.actions.retrieveActions(this.props.userId, ACTION_TYPES.OBJECTIVE);
-    }
+    this.props.actions.retrieveActions(this.props.userId, ACTION_TYPES.OBJECTIVE);
   }
 
   render() {
@@ -45,19 +43,20 @@ EvalutionObjectivesPageComponent.propTypes = {};
 
 export const EvaluationObjectivesPage = connect(
   function mapStateToProps(state, { params }) {
-    const { evaluationId } = params;
+    const { evaluationId, userId } = params;
     const retrieved = selectors.getObjectivesRetrievedStatus(state);
     const error = selectors.getObjectivesError(state);
 
     if (!retrieved || error) {
       return ({
-        userId: state.dashboard.user.id,
+        userId,
         error,
         retrieved,
       })
     }
 
     return ({
+      userId,
       retrieved,
       objectives: selectors.geObjectivesForEvaluation(state, evaluationId),
       evaluationId

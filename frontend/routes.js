@@ -36,8 +36,8 @@ export const userRoutes = (
       <Route path="objectives" name="Objectives" component={ObjectivesPage}/>
       <Route path="evaluations/:evaluationId" component={EvaluationPage} />
       <Route path="evaluations/:evaluationId/category/:category" component={EvaluationCategoryPage} />
-      <Route path="evaluations/:evaluationId/feedback" component={EvaluationFeedbackPage} />
-      <Route path="evaluations/:evaluationId/objectives" component={EvaluationObjectivesPage} />
+      <Route path="user/:userId/evaluations/:evaluationId/feedback" component={EvaluationFeedbackPage} />
+      <Route path="user/:userId/evaluations/:evaluationId/objectives" component={EvaluationObjectivesPage} />
     </Route>
   </Router>
 );

@@ -49,7 +49,6 @@ export const getErringSkills = ({ evaluation }) =>
 export const getNextCategory = ({ evaluation }, category) =>
   fromEvaluation.getNextCategory(evaluation, category);
 
-
 /* ACTIONS SELECTORS */
 
 export const getFeedbackForEvaluation = ({ actions }, evaluationId) =>
