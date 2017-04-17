@@ -58,6 +58,7 @@ describe('initial client state', () => {
               user: {
                 email: 'user@magic.com',
                 name: 'User Magic',
+                id: normalUserOneId,
                 templateId: 'eng-nodejs',
                 username: 'magic'
               }
@@ -161,7 +162,8 @@ describe('initial client state', () => {
               const expectedMentor = {
                 email: 'dmorgantini@gmail.com',
                 name: 'David Morgantini',
-                username: 'dmorgantini'
+                username: 'dmorgantini',
+                id: adminUserId,
               };
 
               expect(getInitialState(res.text).dashboard.mentor).to.deep.equal(expectedMentor);
@@ -197,6 +199,7 @@ describe('initial client state', () => {
             .then((res) => {
               const expectedUser = {
                 email: 'user@magic.com',
+                id: normalUserOneId,
                 mentorId: adminUserId,
                 name: 'User Magic',
                 templateId: 'eng-nodejs',

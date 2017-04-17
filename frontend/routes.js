@@ -5,7 +5,7 @@ import UserApp from './components/user/App';
 import AdminApp from './components/admin/App';
 import { Dashboard as AdminDashboard } from './components/admin/Dashboard';
 import { DashboardPage as UserDashboard } from './components/user/dashboard/Dashboard';
-import { FeedbackPage } from './components/user/feedback/FeedbackPage';
+import { FeedbackPage } from './components/user/actions/FeedbackPage';
 import { ManageUsersPage } from './components/admin/users/ManageUsersPage';
 import { ManageMatricesPage } from './components/admin/matrices/ManageMatricesPage';
 import { TemplatePage } from './components/admin/template/TemplatePage';

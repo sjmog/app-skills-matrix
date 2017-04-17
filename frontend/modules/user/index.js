@@ -1,8 +1,9 @@
 import { combineReducers } from 'redux';
 import dashboard from './dashboard';
 import evaluation, * as fromEvaluation from './evaluation';
+import actions from './actions';
 
-export default combineReducers({ dashboard, evaluation });
+export default combineReducers({ dashboard, evaluation, actions });
 
 /* EVALUATION SELECTORS */
 
