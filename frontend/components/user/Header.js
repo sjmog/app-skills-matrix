@@ -22,6 +22,9 @@ class Header extends Component {
               <LinkContainer to="/feedback">
                 <NavItem eventKey={1}>Feedback</NavItem>
               </LinkContainer>
+              <LinkContainer to="/objectives">
+                <NavItem eventKey={2}>Objectives</NavItem>
+              </LinkContainer>
             </Nav>
             <Navbar.Link
               pullRight

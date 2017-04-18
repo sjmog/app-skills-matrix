@@ -28,7 +28,16 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
     return { user, createdDate, template, skillGroups, status, skills };
   },
   get viewModel() {
-    return { url: `${HOST}/#/evaluations/${_id}`, id: _id, usersName: user.name, status, templateName: template.name };
+    return {
+      createdDate,
+      evaluationUrl: `/evaluations/${_id}`,
+      feedbackUrl: `/user/${user.id}/evaluations/${_id}/feedback`,
+      objectivesUrl: `/user/${user.id}/evaluations/${_id}/objectives`,
+      id: _id,
+      usersName: user.name,
+      status,
+      templateName: template.name
+    };
   },
   get subjectEvaluationViewModel() {
     return {

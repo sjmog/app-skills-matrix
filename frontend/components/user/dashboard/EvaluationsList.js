@@ -1,28 +1,49 @@
 import React, { PropTypes } from 'react';
-import { ListGroupItem } from 'react-bootstrap';
+import { Table, Button, ButtonGroup } from 'react-bootstrap';
+import { Link } from 'react-router';
 import moment from 'moment';
 
 const EvaluationsList = ({ evaluations }) => (
-  <div>
+  <Table responsive>
+    <thead>
+    <tr>
+      <th>Date</th>
+      <th>Type</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
     {
-      evaluations.map(({ id, createdDate, templateName, status, url}) =>
-        (
-          <ListGroupItem key={id} bsStyle={null}>
-            <dl>
-              <dt>date</dt>
-              <dd>{moment(createdDate).format('D MMM YYYY')}</dd>
-              <dt>type</dt>
-              <dd>{templateName}</dd>
-              <dt>status</dt>
-              <dd>{status}</dd>
-              <dt>actions</dt>
-              <dd><a href={url}>view</a></dd>
-            </dl>
-          </ListGroupItem>
-        )
+      evaluations.map(({ id, createdDate, templateName, status, evaluationUrl, feedbackUrl, objectivesUrl }) =>
+        <tr key={id}>
+          <td>{moment(createdDate).format('D MMM YYYY')}</td>
+          <td>{templateName}</td>
+          <td>{status}</td>
+          <td>
+            <ButtonGroup>
+              <Link to={evaluationUrl}>
+                <Button>
+                  View
+                </Button>
+              </Link>
+              <Link to={feedbackUrl}>
+                <Button>
+                  Feedback
+                </Button>
+              </Link>
+              <Link to={objectivesUrl}>
+                <Button>
+                  Objectives
+                </Button>
+              </Link>
+            </ButtonGroup>
+          </td>
+        </tr>
       )
     }
-  </div>
+    </tbody>
+  </Table>
 );
 
 EvaluationsList.propTypes = {

@@ -58,6 +58,7 @@ describe('initial client state', () => {
               user: {
                 email: 'user@magic.com',
                 name: 'User Magic',
+                id: normalUserOneId,
                 templateId: 'eng-nodejs',
                 username: 'magic'
               }
@@ -86,22 +87,17 @@ describe('initial client state', () => {
             .set('Cookie', `${cookieName}=${normalUserOneToken}`)
             .expect(200)
             .then((res) => {
-              const expectedEvaluations = [
-                {
-                  id: String(evaluationId_NEW),
-                  status: 'NEW',
-                  templateName: 'Node JS Dev',
-                  url: `undefined/#/evaluations/${String(evaluationId_NEW)}`
-                },
-                {
-                  id: String(evaluationId_OLD),
-                  status: 'NEW',
-                  templateName: 'Node JS Dev',
-                  url: `undefined/#/evaluations/${String(evaluationId_OLD)}`
-                }
-              ];
+              const [firstEvaluation, secondEvaluation] = getInitialState(res.text).dashboard.evaluations;
 
-              expect(getInitialState(res.text).dashboard.evaluations).to.deep.equal(expectedEvaluations);
+              expect(firstEvaluation.id).to.equal(String(evaluationId_NEW));
+              expect(firstEvaluation).to.have.property('createdDate');
+              expect(firstEvaluation.status).to.equal('NEW');
+              expect(firstEvaluation.templateName).to.equal('Node JS Dev');
+              expect(firstEvaluation.evaluationUrl).to.equal(`/evaluations/${String(evaluationId_NEW)}`);
+              expect(firstEvaluation.feedbackUrl).to.equal(`/user/${String(normalUserOneId)}/evaluations/${String(evaluationId_NEW)}/feedback`);
+              expect(firstEvaluation.objectivesUrl).to.equal(`/user/${String(normalUserOneId)}/evaluations/${String(evaluationId_NEW)}/objectives`);
+
+              expect(secondEvaluation.id).to.equal(String(evaluationId_OLD));
             })
         )
     });
@@ -124,28 +120,20 @@ describe('initial client state', () => {
           .set('Cookie', `${cookieName}=${normalUserOneToken}`)
           .expect(200)
           .then((res) => {
+            const [mentee] = getInitialState(res.text).dashboard.menteeEvaluations;
+            const [firstEvaluation, secondEvaluation] = mentee.evaluations;
 
-            const expectedMenteeEvaluations = [
-              {
-                name: 'User Dragon Rider',
-                evaluations: [
-                  {
-                    id: String(menteeEvaluationId_NEW),
-                    status: 'NEW',
-                    templateName: 'Node JS Dev',
-                    url: `undefined/#/evaluations/${String(menteeEvaluationId_NEW)}`
-                  },
-                  {
-                    id: String(menteeEvaluationId_OLD),
-                    status: 'NEW',
-                    templateName: 'Node JS Dev',
-                    url: `undefined/#/evaluations/${String(menteeEvaluationId_OLD)}`
-                  }
-                ]
-              }
-            ];
+            expect(mentee.name).to.equal('User Dragon Rider');
 
-            expect(getInitialState(res.text).dashboard.menteeEvaluations).to.deep.equal(expectedMenteeEvaluations);
+            expect(firstEvaluation.id).to.equal(String(menteeEvaluationId_NEW));
+            expect(firstEvaluation).to.have.property('createdDate');
+            expect(firstEvaluation.status).to.equal('NEW');
+            expect(firstEvaluation.templateName).to.equal('Node JS Dev');
+            expect(firstEvaluation.evaluationUrl).to.equal(`/evaluations/${String(menteeEvaluationId_NEW)}`);
+            expect(firstEvaluation.feedbackUrl).to.equal(`/user/${String(normalUserTwoId)}/evaluations/${String(menteeEvaluationId_NEW)}/feedback`);
+            expect(firstEvaluation.objectivesUrl).to.equal(`/user/${String(normalUserTwoId)}/evaluations/${String(menteeEvaluationId_NEW)}/objectives`);
+
+            expect(secondEvaluation.id).to.equal(String(menteeEvaluationId_OLD));
           })
         )
     });
@@ -161,7 +149,8 @@ describe('initial client state', () => {
               const expectedMentor = {
                 email: 'dmorgantini@gmail.com',
                 name: 'David Morgantini',
-                username: 'dmorgantini'
+                username: 'dmorgantini',
+                id: adminUserId,
               };
 
               expect(getInitialState(res.text).dashboard.mentor).to.deep.equal(expectedMentor);
@@ -197,6 +186,7 @@ describe('initial client state', () => {
             .then((res) => {
               const expectedUser = {
                 email: 'user@magic.com',
+                id: normalUserOneId,
                 mentorId: adminUserId,
                 name: 'User Magic',
                 templateId: 'eng-nodejs',

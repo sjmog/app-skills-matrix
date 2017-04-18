@@ -1,8 +1,9 @@
 import { combineReducers } from 'redux';
 import dashboard from './dashboard';
 import evaluation, * as fromEvaluation from './evaluation';
+import actions, * as fromActions from './actions';
 
-export default combineReducers({ dashboard, evaluation });
+export default combineReducers({ dashboard, evaluation, actions });
 
 /* EVALUATION SELECTORS */
 
@@ -47,3 +48,23 @@ export const getErringSkills = ({ evaluation }) =>
 
 export const getNextCategory = ({ evaluation }, category) =>
   fromEvaluation.getNextCategory(evaluation, category);
+
+/* ACTIONS SELECTORS */
+
+export const getFeedbackForEvaluation = ({ actions }, evaluationId) =>
+  fromActions.getFeedbackForEvaluation(actions, evaluationId);
+
+export const getFeedbackRetrievedStatus = ({ actions }) =>
+  fromActions.getFeedbackRetrievedStatus(actions);
+
+export const getFeedbackError = ({ actions }) =>
+  fromActions.getFeedbackError(actions);
+
+export const geObjectivesForEvaluation = ({ actions }, evaluationId) =>
+  fromActions.geObjectivesForEvaluation(actions, evaluationId);
+
+export const getObjectivesRetrievedStatus = ({ actions }) =>
+  fromActions.getObjectivesRetrievedStatus(actions);
+
+export const getObjectivesError = ({ actions }) =>
+  fromActions.getObjectivesError(actions);

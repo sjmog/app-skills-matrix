@@ -61,5 +61,10 @@ export default ({
     return axios.post(`/skillz/evaluations/${evaluationId}`, { action: 'complete' })
       .then(getData)
       .catch(handleError)
+  },
+  retrieveAllActions: function(userId, actionType) {
+    return axios.get(`/skillz/users/${userId}/actions?type=${actionType}`)
+      .then(getData)
+      .catch(handleError)
   }
 });

@@ -12,5 +12,5 @@ module.exports = Object.freeze({
   SUBJECT_CAN_ONLY_UPDATE_NEW_EVALUATION: () => ({ message: "You can't make any changes to this evaluation." }),
   MENTOR_REVIEW_COMPLETE: () => ({ message: 'This evaluation has been reviewed and is now complete.'}),
   MENTOR_CAN_ONLY_UPDATE_AFTER_SELF_EVALUATION: () => ({ message: "You can't update this evaluation until your mentee has completed their self-evaluation."}),
-  USER_CAN_ONLY_SEE_THEIR_OWN_ACTIONS: () => ({ message: "You can't see actions from another user."})
+  ONLY_USER_AND_MENTOR_CAN_SEE_ACTIONS: () => ({ message: "You can't see actions for another user unless you are their mentor."})
 });

@@ -3,7 +3,8 @@ const Promise = require('bluebird');
 const createHandler = require('./createHandler');
 
 const actions = require('../models/actions');
-const { USER_CAN_ONLY_SEE_THEIR_OWN_ACTIONS } = require('./errors');
+const { getUserById } = require('../models/users');
+const { ONLY_USER_AND_MENTOR_CAN_SEE_ACTIONS } = require('./errors');
 
 const handlerFunctions = Object.freeze({
   actions: {
@@ -12,15 +13,19 @@ const handlerFunctions = Object.freeze({
       const { userId } = req.params;
       const { user } = res.locals;
 
-      if (user.id !== userId) {
-        return res.status(403).json(USER_CAN_ONLY_SEE_THEIR_OWN_ACTIONS())
+      if (user.id === userId) {
+        return Promise.try(() => actions.find(userId, evaluationId, type))
+          .then((actions) => res.status(200).json(actions.map((action) => action.viewModel)))
+          .catch(next);
       }
 
-      Promise.try(() => actions.find(userId, evaluationId, type))
-        .then((actions) => {
-          return res.status(200).json(actions.map((action) => action.viewModel))
-        })
-        .catch(next);
+      return getUserById(userId)
+        .then(({ mentorId }) =>
+          (user.id === mentorId
+            ? Promise.try(() => actions.find(userId, evaluationId, type))
+                .then((actions) => res.status(200).json(actions.map((action) => action.viewModel)))
+                .catch(next)
+            : res.status(403).json(ONLY_USER_AND_MENTOR_CAN_SEE_ACTIONS())));
     },
   }
 });

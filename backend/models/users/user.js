@@ -4,6 +4,7 @@ const auth = require('../auth');
 const user = ({ _id, name, email, username, createdDate, modifiedDate, templateId, mentorId, avatarUrl }) => Object.freeze({
   id: _id.toString(),
   name,
+  username,
   templateId,
   mentorId,
   get email() {
@@ -25,7 +26,7 @@ const user = ({ _id, name, email, username, createdDate, modifiedDate, templateI
     return ({ id: _id.toString(), name: name || username, email });
   },
   get userDetailsViewModel() {
-    return ({ name, username, avatarUrl, email, mentorId, templateId });
+    return ({ id: _id.toString(), name, username, avatarUrl, email, mentorId, templateId });
   },
   hasTemplate: Boolean(templateId),
   hasMentor: Boolean(mentorId),

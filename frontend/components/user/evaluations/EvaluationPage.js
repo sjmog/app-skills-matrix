@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Row, Alert, Col } from 'react-bootstrap';
+import { Grid, Row, Alert, Col } from 'react-bootstrap';
 
 import * as selectors from '../../../modules/user';
 import { actions, SKILL_STATUS, EVALUATION_VIEW, EVALUATION_STATUS } from '../../../modules/user/evaluation';
@@ -33,7 +33,13 @@ class EvaluationPageComponent extends React.Component {
     const { levels, categories, status, skillGroups, skills, view, error, evaluationRetrieved } = this.props;
 
     if (error) {
-      return <Row>{error ? <Alert bsStyle='danger'>Something went wrong: {error.message}</Alert> : false}</Row>;
+      return (
+        <Grid>
+          <Row>
+            <Alert bsStyle='danger'>Something went wrong: {error.message}</Alert>
+          </Row>
+        </Grid>
+      );
     }
 
     if (!evaluationRetrieved) {
