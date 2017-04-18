@@ -39,7 +39,13 @@ class EvalutionObjectivesPageComponent extends React.Component {
   }
 }
 
-EvalutionObjectivesPageComponent.propTypes = {};
+EvalutionObjectivesPageComponent.propTypes = {
+  userId: PropTypes.string.isRequired,
+  error: PropTypes.object,
+  retrieved: PropTypes.bool.isRequired,
+  objectives: PropTypes.array,
+  evaluationId: PropTypes.string,
+};
 
 export const EvaluationObjectivesPage = connect(
   function mapStateToProps(state, { params }) {

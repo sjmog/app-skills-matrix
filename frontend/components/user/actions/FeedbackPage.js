@@ -34,7 +34,10 @@ class FeedbackPageComponent extends React.Component {
   }
 }
 
-FeedbackPageComponent.propTypes = {};
+FeedbackPageComponent.propTypes = {
+  userId: PropTypes.string.isRequired,
+  feedback: PropTypes.object,
+};
 
 export const FeedbackPage = connect(
   function mapStateToProps(state) {

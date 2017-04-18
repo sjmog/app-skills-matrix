@@ -34,7 +34,10 @@ class ObjectivesPageComponent extends React.Component {
   }
 }
 
-ObjectivesPageComponent.propTypes = {};
+ObjectivesPageComponent.propTypes = {
+  userId: PropTypes.string.isRequired,
+  objectives: PropTypes.object,
+};
 
 export const ObjectivesPage = connect(
   function mapStateToProps(state) {

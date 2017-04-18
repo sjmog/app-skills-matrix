@@ -39,7 +39,13 @@ class EvaluationFeedbackPageComponent extends React.Component {
   }
 }
 
-EvaluationFeedbackPageComponent.propTypes = {};
+EvaluationFeedbackPageComponent.propTypes = {
+  userId: PropTypes.string.isRequired,
+  error: PropTypes.object,
+  retrieved: PropTypes.bool.isRequired,
+  feedback: PropTypes.array,
+  evaluationId: PropTypes.string,
+};
 
 export const EvaluationFeedbackPage = connect(
   function mapStateToProps(state, { params }) {
