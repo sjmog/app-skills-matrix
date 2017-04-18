@@ -93,9 +93,9 @@ describe('initial client state', () => {
               expect(firstEvaluation).to.have.property('createdDate');
               expect(firstEvaluation.status).to.equal('NEW');
               expect(firstEvaluation.templateName).to.equal('Node JS Dev');
-              expect(firstEvaluation.evaluationUrl).to.equal(`undefined/#/evaluations/${String(evaluationId_NEW)}`);
-              expect(firstEvaluation.feedbackUrl).to.equal(`undefined/#/user/${String(normalUserOneId)}/evaluations/${String(evaluationId_NEW)}/feedback`);
-              expect(firstEvaluation.objectivesUrl).to.equal(`undefined/#/user/${String(normalUserOneId)}/evaluations/${String(evaluationId_NEW)}/objectives`);
+              expect(firstEvaluation.evaluationUrl).to.equal(`/evaluations/${String(evaluationId_NEW)}`);
+              expect(firstEvaluation.feedbackUrl).to.equal(`/user/${String(normalUserOneId)}/evaluations/${String(evaluationId_NEW)}/feedback`);
+              expect(firstEvaluation.objectivesUrl).to.equal(`/user/${String(normalUserOneId)}/evaluations/${String(evaluationId_NEW)}/objectives`);
 
               expect(secondEvaluation.id).to.equal(String(evaluationId_OLD));
             })
@@ -129,9 +129,9 @@ describe('initial client state', () => {
             expect(firstEvaluation).to.have.property('createdDate');
             expect(firstEvaluation.status).to.equal('NEW');
             expect(firstEvaluation.templateName).to.equal('Node JS Dev');
-            expect(firstEvaluation.evaluationUrl).to.equal(`undefined/#/evaluations/${String(menteeEvaluationId_NEW)}`);
-            expect(firstEvaluation.feedbackUrl).to.equal(`undefined/#/user/${String(normalUserTwoId)}/evaluations/${String(menteeEvaluationId_NEW)}/feedback`);
-            expect(firstEvaluation.objectivesUrl).to.equal(`undefined/#/user/${String(normalUserTwoId)}/evaluations/${String(menteeEvaluationId_NEW)}/objectives`);
+            expect(firstEvaluation.evaluationUrl).to.equal(`/evaluations/${String(menteeEvaluationId_NEW)}`);
+            expect(firstEvaluation.feedbackUrl).to.equal(`/user/${String(normalUserTwoId)}/evaluations/${String(menteeEvaluationId_NEW)}/feedback`);
+            expect(firstEvaluation.objectivesUrl).to.equal(`/user/${String(normalUserTwoId)}/evaluations/${String(menteeEvaluationId_NEW)}/objectives`);
 
             expect(secondEvaluation.id).to.equal(String(menteeEvaluationId_OLD));
           })

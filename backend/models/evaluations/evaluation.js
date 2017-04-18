@@ -30,9 +30,9 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
   get viewModel() {
     return {
       createdDate,
-      evaluationUrl: `${HOST}/#/evaluations/${_id}`,
-      feedbackUrl: `${HOST}/#/user/${user.id}/evaluations/${_id}/feedback`,
-      objectivesUrl: `${HOST}/#/user/${user.id}/evaluations/${_id}/objectives`,
+      evaluationUrl: `/evaluations/${_id}`,
+      feedbackUrl: `/user/${user.id}/evaluations/${_id}/feedback`,
+      objectivesUrl: `/user/${user.id}/evaluations/${_id}/objectives`,
       id: _id,
       usersName: user.name,
       status,
