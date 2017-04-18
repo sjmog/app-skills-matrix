@@ -42,7 +42,7 @@ FeedbackPageComponent.propTypes = {
 export const FeedbackPage = connect(
   function mapStateToProps(state) {
     return ({
-      userId: state.dashboard.user.id,
+      userId: state.user.userDetails.id,
       feedback: state.actions.feedback
     });
   },
