@@ -3,6 +3,8 @@ import { Table, Button, ButtonGroup } from 'react-bootstrap';
 import { Link } from 'react-router';
 import moment from 'moment';
 
+import './evaluationsList.scss';
+
 const EvaluationsList = ({ evaluations }) => (
   <Table responsive>
     <thead>
@@ -21,23 +23,23 @@ const EvaluationsList = ({ evaluations }) => (
           <td>{templateName}</td>
           <td>{status}</td>
           <td>
-            <ButtonGroup>
+            <div>
               <Link to={evaluationUrl}>
                 <Button>
                   View
                 </Button>
               </Link>
               <Link to={feedbackUrl}>
-                <Button>
+                <Button className='action-btn'>
                   Feedback
                 </Button>
               </Link>
               <Link to={objectivesUrl}>
-                <Button>
+                <Button className='action-btn'>
                   Objectives
                 </Button>
               </Link>
-            </ButtonGroup>
+            </div>
           </td>
         </tr>
       )
