@@ -7,8 +7,8 @@ export default combineReducers({ user, evaluation, actions });
 
 /* EVALUATION SELECTORS */
 
-export const getRetrievedStatus = ({ evaluation }) =>
-  fromEvaluation.getRetrievedStatus(evaluation);
+export const getIdOfEvaluationInState = ({ evaluation }) =>
+  fromEvaluation.getIdOfEvaluationInState(evaluation);
 
 export const getAllSkillsInCategory = ({ evaluation }, category) =>
   fromEvaluation.getAllSkillsInCategory(evaluation, category);
