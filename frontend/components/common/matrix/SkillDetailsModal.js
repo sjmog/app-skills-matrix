@@ -15,6 +15,8 @@ const SkillDetailsModal = ({ showModal, onClose, skill, updateSkillStatus, canUp
           { skill
             ? <div>
                 <dl>
+                  <dt>id</dt>
+                  <dd>{skill.id}</dd>
                   <dt>name</dt>
                   <dd>{skill.name}</dd>
                   <dt>criteria</dt>
