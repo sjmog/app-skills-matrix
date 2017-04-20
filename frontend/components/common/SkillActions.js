@@ -23,24 +23,28 @@ const SkillActions = ({ skillStatus, onAttained, onNotAttained, onFeedbackReques
   <div className='skill-actions'>
     <ButtonGroup>
       <Button
+        active={skillStatus.current === SKILL_STATUS.ATTAINED}
         bsStyle='default'
         bsSize='large'
         onClick={onAttained}>
         {'Attained'}
       </Button>
       <Button
+        active={skillStatus.current === SKILL_STATUS.NOT_ATTAINED}
         bsStyle='default'
         bsSize='large'
         onClick={onNotAttained}>
         {'Not attained'}
       </Button>
       <Button
+        active={skillStatus.current === SKILL_STATUS.FEEDBACK}
         bsStyle='default'
         bsSize='large'
         onClick={onFeedbackRequest}>
         {'Feedback'}
       </Button>
       <Button
+        active={skillStatus.current === SKILL_STATUS.OBJECTIVE}
         bsStyle='default'
         bsSize='large'
         onClick={onSetObjective}>
