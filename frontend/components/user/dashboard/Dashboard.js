@@ -2,20 +2,19 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Grid } from 'react-bootstrap';
 
-
 import UserDetails from './UserDetails';
 import Evaluations from './Evaluations';
 import MenteeEvaluations from './MenteeEvaluations';
 
-const Dashboard = ({ user, mentor, template, evaluations, menteeEvaluations }) => (
+const Dashboard = ({ userDetails, mentorDetails, template, evaluations, menteeEvaluations }) => (
   <Grid>
     {
-      user
+      userDetails
         ? <div>
             <h1 className="header">Dashboard</h1>
             <UserDetails
-              user={user}
-              mentor={mentor}
+              user={userDetails}
+              mentor={mentorDetails}
               template={template}
             />
             <Evaluations
@@ -32,8 +31,8 @@ const Dashboard = ({ user, mentor, template, evaluations, menteeEvaluations }) =
 
 
 Dashboard.propTypes = {
-  user: PropTypes.object,
-  mentor: PropTypes.object,
+  userDetails: PropTypes.object,
+  mentorDetails: PropTypes.object,
   template: PropTypes.object,
   evaluations: PropTypes.array,
   menteeEvaluations: PropTypes.array,
@@ -41,6 +40,6 @@ Dashboard.propTypes = {
 
 export const DashboardPage = connect(
   function mapStateToProps(state) {
-    return state.dashboard;
+    return state.user;
   }
 )(Dashboard);

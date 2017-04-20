@@ -45,16 +45,16 @@ const clientState = (user) =>
       ])
       .then(([mentor, template, evaluations, menteeEvaluations]) =>
         ({
-          dashboard: {
-            user: user ? user.userDetailsViewModel : null,
-            mentor: mentor ? mentor.userDetailsViewModel : null,
+          user: {
+            userDetails: user ? user.userDetailsViewModel : null,
+            mentorDetails: mentor ? mentor.userDetailsViewModel : null,
             template: template ? template.viewModel : null,
             evaluations,
             menteeEvaluations,
           }
         }))
     :
-    Promise.resolve({ dashboard: {} });
+    Promise.resolve({ user: {} });
 
 module.exports = {
   adminClientState,

@@ -96,7 +96,6 @@ export const actions = {
 };
 
 const initialSate = {
-  ui: { evaluationRetrieved: false },
   error: null,
   status: null,
   template: {},
@@ -106,10 +105,10 @@ const initialSate = {
 
 export default handleActions({
   [retrieveEvaluationSuccess]: (state, action) => {
-    return R.merge(state, Object.assign({}, action.payload, { ui: { evaluationRetrieved: true } }));
+    return R.merge(state, action.payload);
   },
   [retrieveEvaluationFailure]: (state, action) => {
-    return R.merge(state, { ui: { evaluationRetrieved: false }, error: action.payload });
+    return R.merge(state, { error: action.payload });
   },
   [updateSkillStatusSuccess]: (state, action) => {
     const { skillId, status } = action.payload;
@@ -132,8 +131,8 @@ export default handleActions({
   },
 }, initialSate);
 
-export const getRetrievedStatus = (state) =>
-  R.path(['ui', 'evaluationRetrieved'], state);
+export const getIdOfEvaluationInState = (state) =>
+  R.prop('id', state);
 
 const getSkillGroup = (level, category, skillGroups) =>
   R.find(group => (group.level === level && group.category === category), R.values(skillGroups));

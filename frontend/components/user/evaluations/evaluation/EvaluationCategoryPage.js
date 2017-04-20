@@ -11,7 +11,7 @@ const { SUBJECT, MENTOR } = EVALUATION_VIEW;
 const { NEW, SELF_EVALUATION_COMPLETE } = EVALUATION_STATUS;
 
 import CategoryPageHeader from './CategoryPageHeader';
-import Matrix from '../../../common/matrix/Matrix'
+import Matrix from '../../../common/matrix/Matrix';
 import Skill from './Skill';
 
 const getIndexOfSkill = (id, skillsInCategory) => R.findIndex(R.propEq('id', id))(skillsInCategory);
@@ -29,13 +29,11 @@ class EvaluationCategoryComponent extends React.Component {
   }
 
   componentDidMount() {
-    if (!this.props.evaluationRetrieved) {
-      this.props.actions.retrieveEvaluation(this.props.params.evaluationId);
-    }
+    this.props.actions.retrieveEvaluation(this.props.params.evaluationId);
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.evaluationRetrieved && nextProps !== this.props) {
+    if (nextProps.evaluationInState === nextProps.params.evaluationId && nextProps !== this.props) {
       const { category: currentCategory } = nextProps.params;
       const { categories, skillsInCategory, lowestUnevaluatedSkill, nextCategory } = nextProps;
 
@@ -89,14 +87,14 @@ class EvaluationCategoryComponent extends React.Component {
   }
 
   render() {
-    const { error, evaluationRetrieved, erringSkills, params, templateName, categories, levels, skills, skillGroups, view, status } = this.props;
+    const { error, evaluationInState, erringSkills, params, templateName, categories, levels, skills, skillGroups, view, status } = this.props;
     const { category, evaluationId } = params;
 
     if (error) {
       return <Row>{error ? <Alert bsStyle='danger'>Something went wrong: {error.message}</Alert> : false}</Row>;
     }
 
-    if (!evaluationRetrieved || !this.state) {
+    if (evaluationInState !== evaluationId || !this.state) {
       return false;
     }
 
@@ -120,6 +118,7 @@ class EvaluationCategoryComponent extends React.Component {
             evaluationId={evaluationId}
             currentCategory={category}
             templateName={templateName}
+            remainingCategories={categories.length - (this.state.indexOfCurrentCategory + 1)}
             isFirstCategory={this.state.indexOfCurrentCategory === 0}
             isLastCategory={this.state.indexOfCurrentCategory + 1 === categories.length}
             previousCategory={categories[this.state.indexOfCurrentCategory - 1]}
@@ -140,7 +139,7 @@ class EvaluationCategoryComponent extends React.Component {
               isLastSkill={this.state.indexOfCurrentSkill + 1 === this.state.skillsInCategory.length}
             />
           </Col>
-          <Col md={5} className='evaluation-panel'>
+          <Col md={5} className='evaluation-panel evaluation-panel--right'>
             <Matrix
               skillBeingEvaluated={this.state.currentSkill.id}
               categories={[].concat(category)}
@@ -175,18 +174,18 @@ EvaluationCategoryComponent.propTypes = {
 
 export const EvaluationCategoryPage = connect(
   function mapStateToProps(state, { params }) {
-    const evaluationRetrieved = selectors.getRetrievedStatus(state);
+    const evaluationInState = selectors.getIdOfEvaluationInState(state);
     const error = selectors.getError(state);
 
-    if (!evaluationRetrieved || error) {
+    if (!evaluationInState || error) {
       return ({
-        evaluationRetrieved,
+        evaluationInState,
         error,
       })
     }
 
     return ({
-      evaluationRetrieved,
+      evaluationInState,
       templateName: selectors.getTemplateName(state),
       levels: selectors.getLevels(state),
       categories: selectors.getCategories(state),

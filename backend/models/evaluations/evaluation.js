@@ -41,6 +41,7 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
   },
   get subjectEvaluationViewModel() {
     return {
+      id: _id,
       subject: user,
       status,
       template,
@@ -51,6 +52,7 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
   },
   get mentorEvaluationViewModel() {
     return {
+      id: _id,
       subject: user,
       status,
       template,

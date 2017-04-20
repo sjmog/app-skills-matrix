@@ -1,14 +1,14 @@
 import { combineReducers } from 'redux';
-import dashboard from './dashboard';
+import user from './user';
 import evaluation, * as fromEvaluation from './evaluation';
 import actions, * as fromActions from './actions';
 
-export default combineReducers({ dashboard, evaluation, actions });
+export default combineReducers({ user, evaluation, actions });
 
 /* EVALUATION SELECTORS */
 
-export const getRetrievedStatus = ({ evaluation }) =>
-  fromEvaluation.getRetrievedStatus(evaluation);
+export const getIdOfEvaluationInState = ({ evaluation }) =>
+  fromEvaluation.getIdOfEvaluationInState(evaluation);
 
 export const getAllSkillsInCategory = ({ evaluation }, category) =>
   fromEvaluation.getAllSkillsInCategory(evaluation, category);

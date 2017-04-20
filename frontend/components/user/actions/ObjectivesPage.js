@@ -42,7 +42,7 @@ ObjectivesPageComponent.propTypes = {
 export const ObjectivesPage = connect(
   function mapStateToProps(state) {
     return ({
-      userId: state.dashboard.user.id,
+      userId: state.user.userDetails.id,
       objectives: state.actions.objective
     });
   },

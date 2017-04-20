@@ -47,15 +47,15 @@ describe('initial client state', () => {
         .expect(200)
         .then((res) => {
           const expectedState = {
-            dashboard: {
+            user: {
               evaluations: [],
               menteeEvaluations: [],
-              mentor: null,
+              mentorDetails: null,
               template: {
                 id: 'eng-nodejs',
                 name: 'Node JS Dev',
               },
-              user: {
+              userDetails: {
                 email: 'user@magic.com',
                 name: 'User Magic',
                 id: normalUserOneId,
@@ -87,7 +87,7 @@ describe('initial client state', () => {
             .set('Cookie', `${cookieName}=${normalUserOneToken}`)
             .expect(200)
             .then((res) => {
-              const [firstEvaluation, secondEvaluation] = getInitialState(res.text).dashboard.evaluations;
+              const [firstEvaluation, secondEvaluation] = getInitialState(res.text).user.evaluations;
 
               expect(firstEvaluation.id).to.equal(String(evaluationId_NEW));
               expect(firstEvaluation).to.have.property('createdDate');
@@ -120,7 +120,7 @@ describe('initial client state', () => {
           .set('Cookie', `${cookieName}=${normalUserOneToken}`)
           .expect(200)
           .then((res) => {
-            const [mentee] = getInitialState(res.text).dashboard.menteeEvaluations;
+            const [mentee] = getInitialState(res.text).user.menteeEvaluations;
             const [firstEvaluation, secondEvaluation] = mentee.evaluations;
 
             expect(mentee.name).to.equal('User Dragon Rider');
@@ -153,7 +153,7 @@ describe('initial client state', () => {
                 id: adminUserId,
               };
 
-              expect(getInitialState(res.text).dashboard.mentor).to.deep.equal(expectedMentor);
+              expect(getInitialState(res.text).user.mentorDetails).to.deep.equal(expectedMentor);
             })
         )
     );
@@ -171,7 +171,7 @@ describe('initial client state', () => {
                 name: 'Node JS Dev'
               };
 
-              expect(getInitialState(res.text).dashboard.template).to.deep.equal(expectedTemplate);
+              expect(getInitialState(res.text).user.template).to.deep.equal(expectedTemplate);
             })
         )
     );
@@ -193,7 +193,7 @@ describe('initial client state', () => {
                 username: 'magic'
               };
 
-              expect(getInitialState(res.text).dashboard.user).to.deep.equal(expectedUser);
+              expect(getInitialState(res.text).user.userDetails).to.deep.equal(expectedUser);
             })
         )
     );

@@ -2,8 +2,9 @@ import React from 'react';
 import { Col } from 'react-bootstrap';
 import './userDetails.scss';
 
-const UserDetails = ({ user, mentor, template }) => {
-  return (<div>
+const UserDetails = ({ user, mentor, template }) =>
+  (
+    <div>
       <Col xs={12} md={3}>
         <h2>My Details</h2>
         <img src={user.avatarUrl}/>
@@ -17,13 +18,12 @@ const UserDetails = ({ user, mentor, template }) => {
           <dt>email</dt>
           <dd>{user.email || 'n/a'}</dd>
           <dt>mentor</dt>
-          <dd>{mentor ? mentor.name : 'No Mentor Selected'}</dd>
+          <dd>{mentor ? mentor.name || mentor.username : 'No Mentor Selected'}</dd>
           <dt>type</dt>
           <dd>{template ? template.name : 'No Type Selected'}</dd>
         </dl>
       </Col>
     </div>
   );
-};
 
 export default UserDetails;

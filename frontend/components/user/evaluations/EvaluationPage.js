@@ -30,7 +30,8 @@ class EvaluationPageComponent extends React.Component {
   }
 
   render() {
-    const { levels, categories, status, skillGroups, skills, view, error, evaluationRetrieved } = this.props;
+    const { levels, categories, status, skillGroups, skills, view, error, evaluationInState, params } = this.props;
+    const { evaluationId } = params;
 
     if (error) {
       return (
@@ -42,7 +43,7 @@ class EvaluationPageComponent extends React.Component {
       );
     }
 
-    if (!evaluationRetrieved) {
+    if (evaluationInState !== evaluationId) {
       return false;
     }
 
@@ -88,17 +89,17 @@ EvaluationPageComponent.propTypes = {
 
 export const EvaluationPage = connect(
   function mapStateToProps(state) {
-    const evaluationRetrieved = selectors.getRetrievedStatus(state);
+    const evaluationInState = selectors.getIdOfEvaluationInState(state);
     const error = selectors.getError(state);
 
-     if (!evaluationRetrieved || error) {
+     if (!evaluationInState || error) {
        return ({
-         evaluationRetrieved,
+         evaluationInState,
          error
        })
      }
     return ({
-      evaluationRetrieved,
+      evaluationInState,
       status: selectors.getEvaluationStatus(state),
       levels: selectors.getLevels(state),
       categories: selectors.getCategories(state),
