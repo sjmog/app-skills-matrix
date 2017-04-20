@@ -138,7 +138,7 @@ class EvaluationCategoryComponent extends React.Component {
               isLastSkill={this.state.indexOfCurrentSkill + 1 === this.state.skillsInCategory.length}
             />
           </Col>
-          <Col md={5} className='evaluation-panel'>
+          <Col md={5} className='evaluation-panel evaluation-panel--right'>
             <Matrix
               skillBeingEvaluated={this.state.currentSkill.id}
               categories={[].concat(category)}
