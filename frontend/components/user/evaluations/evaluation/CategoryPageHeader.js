@@ -8,6 +8,7 @@ const CategoryPageHeader = ({
   evaluationId,
   currentCategory,
   templateName,
+  remainingCategories,
   isFirstCategory,
   isLastCategory,
   previousCategory,
@@ -28,7 +29,7 @@ const CategoryPageHeader = ({
         </Link>
         <Link to={`evaluations/${evaluationId}/category/${nextCategory}`} className={'category-nav-link'}>
           <Button className='nav-btn--right' bsSize='large' disabled={isLastCategory}>
-              Next column
+              {`Next column (${remainingCategories} remaining)`}
               <Glyphicon glyph='chevron-right'/>
           </Button>
         </Link>
@@ -52,6 +53,7 @@ CategoryPageHeader.propTypes = {
   evaluationId: PropTypes.string.isRequired,
   currentCategory: PropTypes.string.isRequired,
   templateName: PropTypes.string.isRequired,
+  remainingCategories: PropTypes.number.isRequired,
   isFirstCategory: PropTypes.bool.isRequired,
   isLastCategory: PropTypes.bool.isRequired,
   previousCategory: PropTypes.string,

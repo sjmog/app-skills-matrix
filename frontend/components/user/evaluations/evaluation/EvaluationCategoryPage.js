@@ -118,6 +118,7 @@ class EvaluationCategoryComponent extends React.Component {
             evaluationId={evaluationId}
             currentCategory={category}
             templateName={templateName}
+            remainingCategories={categories.length - (this.state.indexOfCurrentCategory + 1)}
             isFirstCategory={this.state.indexOfCurrentCategory === 0}
             isLastCategory={this.state.indexOfCurrentCategory + 1 === categories.length}
             previousCategory={categories[this.state.indexOfCurrentCategory - 1]}
