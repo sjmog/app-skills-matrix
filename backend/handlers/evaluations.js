@@ -62,7 +62,7 @@ const handlerFunctions = Object.freeze({
 
           return importEvaluation(evaluation)
             .then(() => {
-              return res.status(204);
+              return res.status(204).send();
             });
         })
         .catch(next);
