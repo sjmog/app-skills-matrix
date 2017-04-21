@@ -28,7 +28,7 @@ class Header extends Component {
             </Nav>
             <Navbar.Link
               pullRight
-              href="/auth/github">LOGIN
+              href="/auth/github">Log In
             </Navbar.Link>
         </Navbar.Collapse>
       </Navbar>
