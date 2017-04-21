@@ -16,7 +16,7 @@ module.exports = {
   importEvaluation: function (rawEvaluation) {
     return evaluationsCollection.insertOne(encrypt(rawEvaluation))
       .then(({ insertedId }) => evaluationsCollection.findOne({ _id: new ObjectId(insertedId) }))
-      .then((res) => res ? evalution(decrypt(res)) : null);
+      .then((res) => res ? evaluation(decrypt(res)) : null);
   },
   getEvaluationById: function (id) {
     return evaluationsCollection.findOne({ _id: ObjectId(id) })
