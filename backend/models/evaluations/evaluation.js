@@ -126,7 +126,7 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
     const updateSkill = (skill) => {
       const previousSkill = previousEvaluation.findSkill(skill.id);
       if (!previousSkill) {
-        return skill;
+        return Object.assign({}, skill, { status: { previous: null, current: null } });
       }
       return Object.assign({}, skill, { status: { previous: previousSkill.currentStatus, current: previousSkill.statusForNextEvaluation } });
     };
