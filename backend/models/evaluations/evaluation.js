@@ -125,6 +125,9 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
   mergePreviousEvaluation(previousEvaluation) {
     const updateSkill = (skill) => {
       const previousSkill = previousEvaluation.findSkill(skill.id);
+      if (!previousSkill) {
+        return skill;
+      }
       return Object.assign({}, skill, { status: { previous: previousSkill.currentStatus, current: previousSkill.statusForNextEvaluation } });
     };
     const updatedSkills = previousEvaluation ? R.map(updateSkill, skills) : skills;
