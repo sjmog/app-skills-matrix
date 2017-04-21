@@ -1,6 +1,6 @@
 const { Router } = require('express');
 
-const { evaluation } = require('../handlers/evaluations');
+const { evaluation, evaluations } = require('../handlers/evaluations');
 const { ensureAdmin } = require('../middlewares/auth');
 
 module.exports = (app) => {
