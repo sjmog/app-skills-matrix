@@ -1,4 +1,5 @@
 const Promise = require('bluebird');
+const R = require('ramda');
 
 const createHandler = require('./createHandler');
 
@@ -50,6 +51,15 @@ const handlerFunctions = Object.freeze({
 
           evaluation.user = user.evaluationData;
           evaluation.template = template.evaluationData;
+
+          if (template === 'eng-nodejs') {
+            // have to map drupal skills to node skills :-(
+            const badSkill = R.find((skill) => skill.id === 32, evaluation.skills);
+            badSkill.id = 249;
+            const badSkillGroup = R.find((skillGroup) => skillGroup.category === 'Technical Skill' && skillGroup.level === 'Experienced Beginner');
+            badSkillGroup.skills = [259].concat(R.filter((skillId) => skillId !== 32, badSkillGroup.skills));
+          }
+
           return importEvaluation(evaluation)
             .then(() => {
               return res.status(204);
