@@ -3,7 +3,23 @@ import { Table, Button, ButtonGroup } from 'react-bootstrap';
 import { Link } from 'react-router';
 import moment from 'moment';
 
+import { EVALUATION_VIEW, EVALUATION_STATUS } from '../../../modules/user/evaluation'
+const { MENTOR, SUBJECT } = EVALUATION_VIEW;
+const { NEW, SELF_EVALUATION_COMPLETE } = EVALUATION_STATUS;
+
 import './evaluationsList.scss';
+
+const evaluationBtn = (status, view) => {
+  if (status === NEW && view === SUBJECT) {
+    return <Button bsStyle="primary">Evaluate</Button>;
+  }
+
+  if (status === SELF_EVALUATION_COMPLETE && view === MENTOR) {
+    return <Button bsStyle="primary">Review</Button>;
+  }
+
+  return <Button>View</Button>;
+};
 
 const EvaluationsList = ({ evaluations }) => (
   <Table responsive>
@@ -17,7 +33,7 @@ const EvaluationsList = ({ evaluations }) => (
     </thead>
     <tbody>
     {
-      evaluations.map(({ id, createdDate, templateName, status, evaluationUrl, feedbackUrl, objectivesUrl }) =>
+      evaluations.map(({ id, createdDate, templateName, status, evaluationUrl, feedbackUrl, objectivesUrl, view }) =>
         <tr key={id}>
           <td>{moment(createdDate).format('D MMM YYYY')}</td>
           <td>{templateName}</td>
@@ -25,9 +41,7 @@ const EvaluationsList = ({ evaluations }) => (
           <td>
             <div>
               <Link to={evaluationUrl}>
-                <Button>
-                  View
-                </Button>
+                { evaluationBtn(status, view) }
               </Link>
               <Link to={feedbackUrl}>
                 <Button className='action-btn'>

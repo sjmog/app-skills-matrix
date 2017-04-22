@@ -7,7 +7,7 @@ const Evaluations = ({ evaluations }) => (
   <div>
     <Col xs={12} md={12}>
       <h2>My Evaluations</h2>
-      <EvaluationsList evaluations={evaluations}/>
+      <EvaluationsList evaluations={evaluations} />
     </Col>
   </div>
 );

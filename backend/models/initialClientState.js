@@ -6,21 +6,27 @@ const users = require('./users');
 const { templates } = require('./matrices');
 const evaluations = require('./evaluations');
 
-const viewModels = R.map(domainObject => domainObject.viewModel);
-
 const sortNewestToOldest = (evaluations) => evaluations.sort((a, b) => moment(a.createdDate).isBefore(b.createdDate));
 
-const getEvaluations = (id) =>
+const getEvaluations = (id, menteeEvaluations = false) =>
   evaluations.getByUserId(id)
     .then(sortNewestToOldest)
-    .then(viewModels);
+    .then((sortedEvaluations) =>
+      R.map((evaluation) => (
+        menteeEvaluations
+          ? evaluation.mentorMetadataViewModel
+          : evaluation.subjectMetadataViewModel),
+        sortedEvaluations));
 
-const getMenteeEvaluations = (id) => Promise.map(
-  users.getByMentorId(id),
-    ({ id, name, username }) =>
-      getEvaluations(id)
+const getMenteeEvaluations = (id) =>
+  Promise.map(
+   users.getByMentorId(id),
+    ({ id, name, username }) => {
+      const menteeEvaluations = true;
+      return getEvaluations(id, menteeEvaluations)
         .then(evaluations => ({ name: name || username , evaluations }))
-);
+    }
+  );
 
 const adminClientState = () => {
   return Promise.all([users.getAll(), templates.getAll()])
