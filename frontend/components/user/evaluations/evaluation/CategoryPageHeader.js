@@ -42,12 +42,12 @@ class CategoryPageHeader extends React.Component {
             <Link to={`evaluations/${evaluationId}/category/${previousCategory}`} className={'category-nav-link'}>
               <Button className='nav-btn--left' bsSize='large' disabled={isFirstCategory}>
                 <Glyphicon glyph='chevron-left'/>
-                Previous column
+                Previous category
               </Button>
             </Link>
             <Link to={`evaluations/${evaluationId}/category/${nextCategory}`} className={'category-nav-link'}>
               <Button className='nav-btn--right' bsSize='large' disabled={isLastCategory}>
-                {`Next column (${remainingCategories} remaining)`}
+                {`Next category (${remainingCategories} remaining)`}
                 <Glyphicon glyph='chevron-right'/>
               </Button>
             </Link>
