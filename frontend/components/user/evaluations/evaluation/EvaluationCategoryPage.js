@@ -67,13 +67,20 @@ class EvaluationCategoryComponent extends React.Component {
   }
 
   navigatePostSkillUpdate() {
-    const isLastSkillInCategory = this.state.indexOfCurrentSkill + 1 === this.state.skillsInCategory.length;
-    const isLastCategory = this.state.indexOfCurrentCategory + 1 === this.props.categories.length;
+    const { indexOfCurrentSkill, skillsInCategory, nextCategory } = this.state;
+    const { skills, params, router } = this.props;
 
-    if (isLastSkillInCategory && !isLastCategory) {
-      this.props.router.push(`evaluations/${this.props.params.evaluationId}/category/${this.state.nextCategory}`)
-    } else if (!isLastSkillInCategory) {
-      this.nextSkill();
+    const remainingSkillsInCategory = R.slice(indexOfCurrentSkill, Infinity, skillsInCategory);
+    const hasUnevaluatedSkills = ({ id }) => skills[id].status.current === null;
+    const nextUnevaluatedSkillInCategory = R.find(hasUnevaluatedSkills)(remainingSkillsInCategory);
+
+    if (!nextUnevaluatedSkillInCategory && nextCategory) {
+      router.push(`evaluations/${params.evaluationId}/category/${nextCategory}`)
+    } else if (nextUnevaluatedSkillInCategory) {
+      this.setState({
+        currentSkill: nextUnevaluatedSkillInCategory,
+        indexOfCurrentSkill: skillsInCategory.indexOf(nextUnevaluatedSkillInCategory)
+      })
     }
   }
 
