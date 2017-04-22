@@ -71,8 +71,8 @@ class EvaluationCategoryComponent extends React.Component {
     const { skills, params, router } = this.props;
 
     const remainingSkillsInCategory = R.slice(indexOfCurrentSkill, Infinity, skillsInCategory);
-    const hasUnevaluatedSkills = ({ id }) => skills[id].status.current === null;
-    const nextUnevaluatedSkillInCategory = R.find(hasUnevaluatedSkills)(remainingSkillsInCategory);
+    const unevaluatedSkill = ({ id }) => skills[id].status.current === null;
+    const nextUnevaluatedSkillInCategory = R.find(unevaluatedSkill)(remainingSkillsInCategory);
 
     if (!nextUnevaluatedSkillInCategory && nextCategory) {
       router.push(`evaluations/${params.evaluationId}/category/${nextCategory}`)
