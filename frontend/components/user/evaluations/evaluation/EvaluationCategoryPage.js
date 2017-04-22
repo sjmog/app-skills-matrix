@@ -33,7 +33,7 @@ class EvaluationCategoryComponent extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.evaluationInState === nextProps.params.evaluationId && nextProps !== this.props) {
+    if (nextProps.evaluationInState === nextProps.params.evaluationId && nextProps !== this.props && !nextProps.error) {
       const { category: currentCategory } = nextProps.params;
       const { categories, skillsInCategory, lowestUnevaluatedSkill, nextCategory } = nextProps;
 
@@ -98,7 +98,11 @@ class EvaluationCategoryComponent extends React.Component {
     const { category, evaluationId } = params;
 
     if (error) {
-      return <Row>{error ? <Alert bsStyle='danger'>Something went wrong: {error.message}</Alert> : false}</Row>;
+      return (
+        <Grid>
+          <Row>{error ? <Alert bsStyle='danger'>Something went wrong: {error.message}</Alert> : false}</Row>
+        </Grid>
+      );
     }
 
     if (evaluationInState !== evaluationId || !this.state) {
@@ -131,6 +135,7 @@ class EvaluationCategoryComponent extends React.Component {
             previousCategory={categories[this.state.indexOfCurrentCategory - 1]}
             nextCategory={categories[this.state.indexOfCurrentCategory + 1]}
             evaluationComplete={this.evaluationComplete}
+            router={this.props.router}
           />
         </Row>
         <Row>

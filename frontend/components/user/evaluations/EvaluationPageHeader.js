@@ -45,7 +45,7 @@ class EvaluationPageHeader extends React.Component {
   }
 
   render() {
-    const { evaluationId, view, templateName, category, subjectName, status } = this.props;
+    const { view, templateName, subjectName, status } = this.props;
 
     if (view === MENTOR) {
       return (
@@ -68,9 +68,6 @@ class EvaluationPageHeader extends React.Component {
             alertText={alertText(view, status)}
             title='Evaluation'
             subTitle={templateName}
-            btnUrl={`evaluations/${evaluationId}/category/${category}`}
-            btnDisabled={status === MENTOR_REVIEW_COMPLETE || status === SELF_EVALUATION_COMPLETE}
-            btnText='Evaluate'
           />
         </Row>
       )

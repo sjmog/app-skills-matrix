@@ -4,61 +4,81 @@ import { Link } from 'react-router';
 
 import '../evaluation.scss'
 
-const CategoryPageHeader = ({
-  evaluationId,
-  currentCategory,
-  templateName,
-  remainingCategories,
-  isFirstCategory,
-  isLastCategory,
-  previousCategory,
-  nextCategory,
-  evaluationComplete
-  }) => (
-  <PageHeader>
-    {templateName}
-    {' '}
-    <small>{currentCategory}</small>
-    <ButtonToolbar className='pull-right'>
-      <ButtonGroup>
-        <Link to={`evaluations/${evaluationId}/category/${previousCategory}`} className={'category-nav-link'}>
-          <Button className='nav-btn--left' bsSize='large' disabled={isFirstCategory}>
-              <Glyphicon glyph='chevron-left'/>
-              Previous column
-          </Button>
-        </Link>
-        <Link to={`evaluations/${evaluationId}/category/${nextCategory}`} className={'category-nav-link'}>
-          <Button className='nav-btn--right' bsSize='large' disabled={isLastCategory}>
-              {`Next column (${remainingCategories} remaining)`}
-              <Glyphicon glyph='chevron-right'/>
-          </Button>
-        </Link>
-      </ButtonGroup>
-      <ButtonGroup>
-        <Link to={`evaluations/${evaluationId}`}>
-          <Button
-            bsStyle='primary'
-            bsSize='large'
-            className='pull-right'
-            onClick={() => evaluationComplete(evaluationId)}>
-            Evaluation complete
-          </Button>
-        </Link>
-      </ButtonGroup>
-    </ButtonToolbar>
-  </PageHeader>
-);
+class CategoryPageHeader extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { isLoading: false };
+    this.handleEvalCompleteClick = this.handleEvalCompleteClick.bind(this);
+  }
+
+  handleEvalCompleteClick() {
+    const { evaluationComplete, router, evaluationId } = this.props;
+
+    this.setState({ isLoading: true });
+    evaluationComplete(evaluationId);
+    setTimeout(() => router.push(`evaluations/${evaluationId}`), 2000);
+  }
+
+  render() {
+    const { evaluationId,
+      currentCategory,
+      templateName,
+      remainingCategories,
+      isFirstCategory,
+      isLastCategory,
+      previousCategory,
+      nextCategory,
+      } = this.props;
+
+    const { isLoading } = this.state;
+
+    return (
+      <PageHeader>
+        {templateName}
+        {' '}
+        <small>{currentCategory}</small>
+        <ButtonToolbar className='pull-right'>
+          <ButtonGroup>
+            <Link to={`evaluations/${evaluationId}/category/${previousCategory}`} className={'category-nav-link'}>
+              <Button className='nav-btn--left' bsSize='large' disabled={isFirstCategory}>
+                <Glyphicon glyph='chevron-left'/>
+                Previous column
+              </Button>
+            </Link>
+            <Link to={`evaluations/${evaluationId}/category/${nextCategory}`} className={'category-nav-link'}>
+              <Button className='nav-btn--right' bsSize='large' disabled={isLastCategory}>
+                {`Next column (${remainingCategories} remaining)`}
+                <Glyphicon glyph='chevron-right'/>
+              </Button>
+            </Link>
+          </ButtonGroup>
+          <ButtonGroup>
+            <Button
+              bsStyle="primary"
+              bsSize="large"
+              disabled={isLoading}
+              onClick={!isLoading ? this.handleEvalCompleteClick : null}
+            >
+              Evaluation complete
+            </Button>
+          </ButtonGroup>
+        </ButtonToolbar>
+      </PageHeader>
+    );
+  }
+}
 
 CategoryPageHeader.propTypes = {
-  evaluationId: PropTypes.string.isRequired,
-  currentCategory: PropTypes.string.isRequired,
-  templateName: PropTypes.string.isRequired,
-  remainingCategories: PropTypes.number.isRequired,
-  isFirstCategory: PropTypes.bool.isRequired,
-  isLastCategory: PropTypes.bool.isRequired,
-  previousCategory: PropTypes.string,
-  nextCategory: PropTypes.string,
-  evaluationComplete: PropTypes.func.isRequired,
-};
+    evaluationId: PropTypes.string.isRequired,
+    currentCategory: PropTypes.string.isRequired,
+    templateName: PropTypes.string.isRequired,
+    remainingCategories: PropTypes.number.isRequired,
+    isFirstCategory: PropTypes.bool.isRequired,
+    isLastCategory: PropTypes.bool.isRequired,
+    previousCategory: PropTypes.string,
+    nextCategory: PropTypes.string,
+    evaluationComplete: PropTypes.func.isRequired,
+    router: PropTypes.object.isRequired,
+  };
 
 export default CategoryPageHeader;
