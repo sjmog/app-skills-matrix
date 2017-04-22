@@ -11,7 +11,6 @@ const Dashboard = ({ userDetails, mentorDetails, template, evaluations, menteeEv
     {
       userDetails
         ? <div>
-        <PageHeader>Dashboard</PageHeader>
         <Row>
           <UserDetails
             user={userDetails}
