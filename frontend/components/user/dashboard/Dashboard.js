@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Grid } from 'react-bootstrap';
+import { Grid, Row, PageHeader } from 'react-bootstrap';
 
 import UserDetails from './UserDetails';
 import Evaluations from './Evaluations';
@@ -11,19 +11,24 @@ const Dashboard = ({ userDetails, mentorDetails, template, evaluations, menteeEv
     {
       userDetails
         ? <div>
-            <h1 className="header">Dashboard</h1>
-            <UserDetails
-              user={userDetails}
-              mentor={mentorDetails}
-              template={template}
-            />
-            <Evaluations
-              evaluations={evaluations}
-            />
-            <MenteeEvaluations
-              menteeEvaluations={menteeEvaluations}
-            />
-          </div>
+        <Row>
+          <UserDetails
+            user={userDetails}
+            mentor={mentorDetails}
+            template={template}
+          />
+        </Row>
+        <Row>
+          <Evaluations
+            evaluations={evaluations}
+          />
+        </Row>
+        <Row>
+          <MenteeEvaluations
+            menteeEvaluations={menteeEvaluations}
+          />
+        </Row>
+      </div>
         : <h1>{`You aren't logged in!`}</h1>
     }
   </Grid>

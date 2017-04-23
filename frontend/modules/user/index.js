@@ -1,9 +1,14 @@
 import { combineReducers } from 'redux';
-import user from './user';
+import user, * as fromUser  from './user';
 import evaluation, * as fromEvaluation from './evaluation';
 import actions, * as fromActions from './actions';
 
 export default combineReducers({ user, evaluation, actions });
+
+/* USER SELECTORS */
+
+export const getUsername = ({ user }) =>
+  fromUser.getUsername(user);
 
 /* EVALUATION SELECTORS */
 

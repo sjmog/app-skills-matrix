@@ -27,7 +27,7 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
   get dataModel() {
     return { user, createdDate, template, skillGroups, status, skills };
   },
-  get viewModel() {
+  get subjectMetadataViewModel() {
     return {
       createdDate,
       evaluationUrl: `/evaluations/${_id}`,
@@ -36,7 +36,21 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
       id: _id,
       usersName: user.name,
       status,
-      templateName: template.name
+      templateName: template.name,
+      view: VIEW.SUBJECT,
+    };
+  },
+  get mentorMetadataViewModel() {
+    return {
+      createdDate,
+      evaluationUrl: `/evaluations/${_id}`,
+      feedbackUrl: `/user/${user.id}/evaluations/${_id}/feedback`,
+      objectivesUrl: `/user/${user.id}/evaluations/${_id}/objectives`,
+      id: _id,
+      usersName: user.name,
+      status,
+      templateName: template.name,
+      view: VIEW.MENTOR,
     };
   },
   get subjectEvaluationViewModel() {

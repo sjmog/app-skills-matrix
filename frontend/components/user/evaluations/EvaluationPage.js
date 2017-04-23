@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Grid, Row, Alert, Col } from 'react-bootstrap';
+import { Grid, Row, Alert, Col, Jumbotron, Button } from 'react-bootstrap';
+import { Link } from 'react-router';
 
 import * as selectors from '../../../modules/user';
 import { actions, SKILL_STATUS, EVALUATION_VIEW, EVALUATION_STATUS } from '../../../modules/user/evaluation';
@@ -30,7 +31,7 @@ class EvaluationPageComponent extends React.Component {
   }
 
   render() {
-    const { levels, categories, status, skillGroups, skills, view, error, evaluationInState, params } = this.props;
+    const { levels, categories, status, skillGroups, skills, view, error, evaluationInState, params, firstCategory, templateName } = this.props;
     const { evaluationId } = params;
 
     if (error) {
@@ -47,27 +48,43 @@ class EvaluationPageComponent extends React.Component {
       return false;
     }
 
+    if (view === SUBJECT && status === NEW) {
+      return (
+        <Grid>
+          <Jumbotron>
+            <p>{`Are you ready to start your ${templateName} evaluation?`}</p>
+            <Link to={`evaluations/${evaluationId}/category/${firstCategory}`}>
+              <Button bsStyle="primary" bsSize="large">Start evaluation</Button>
+            </Link>
+          </Jumbotron>
+        </Grid>
+      );
+    }
+
     return (
       <div className='evaluation-grid'>
         <div className='evaluation-grid__item'>
-          <EvaluationPageHeader evaluationId={this.evaluationId}/>
+          <EvaluationPageHeader
+            evaluationId={this.evaluationId}
+            router={this.props.router}
+          />
         </div>
         <div className='evaluation-grid__item'>
-        <Row>
-          <Col md={20}>
-          <Matrix
-            categories={categories}
-            levels={levels}
-            skillGroups={skillGroups}
-            skills={skills}
-            updateSkillStatus={this.updateSkillStatus(view)}
-            canUpdateSkillStatus={
+          <Row>
+            <Col md={20}>
+              <Matrix
+                categories={categories}
+                levels={levels}
+                skillGroups={skillGroups}
+                skills={skills}
+                updateSkillStatus={this.updateSkillStatus(view)}
+                canUpdateSkillStatus={
               view === SUBJECT && status === NEW
               || view === MENTOR && status === SELF_EVALUATION_COMPLETE
             }
-          />
-          </Col>
-        </Row>
+              />
+            </Col>
+          </Row>
         </div>
       </div>
     )
@@ -92,20 +109,23 @@ export const EvaluationPage = connect(
     const evaluationInState = selectors.getIdOfEvaluationInState(state);
     const error = selectors.getError(state);
 
-     if (!evaluationInState || error) {
-       return ({
-         evaluationInState,
-         error
-       })
-     }
+    if (!evaluationInState || error) {
+      return ({
+        evaluationInState,
+        error
+      })
+    }
+
     return ({
       evaluationInState,
       status: selectors.getEvaluationStatus(state),
+      templateName: selectors.getTemplateName(state),
       levels: selectors.getLevels(state),
       categories: selectors.getCategories(state),
       skillGroups: selectors.getSkillGroups(state),
       skills: selectors.getSkills(state),
       view: selectors.getView(state),
+      firstCategory: selectors.getNextCategory(state)
     });
   },
   function mapDispatchToProps(dispatch) {

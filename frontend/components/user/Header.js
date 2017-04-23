@@ -1,11 +1,16 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { Nav, Navbar, NavItem, Glyphicon } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
+import * as selectors from '../../modules/user';
+
 import './header.scss';
 
-class Header extends Component {
+class HeaderComponent extends Component {
   render() {
+    const { username } = this.props;
+
     return (
       <Navbar inverse collapseOnSelect>
         <Navbar.Header>
@@ -26,14 +31,24 @@ class Header extends Component {
                 <NavItem eventKey={2}>Objectives</NavItem>
               </LinkContainer>
             </Nav>
-            <Navbar.Link
-              pullRight
-              href="/auth/github">Log In
-            </Navbar.Link>
+            {
+              username
+                ? <Navbar.Text pullRight>{username}</Navbar.Text>
+                : <Navbar.Link pullRight href="/auth/github">Log In</Navbar.Link>
+              }
         </Navbar.Collapse>
       </Navbar>
     )
   }
 }
 
+const Header = connect(
+  function mapStateToProps(state) {
+    return {
+      username: selectors.getUsername(state)
+    };
+  }
+)(HeaderComponent);
+
 export default Header;
+

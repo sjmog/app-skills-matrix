@@ -174,12 +174,10 @@ export const getError = (state) =>
 
 export const getLowestUnevaluatedSkill = (state, category) => {
   const skillsInCategory = getAllSkillsInCategory(state, category);
-  const hasUnevaluatedSkills = ({ id }) => {
-    return state.skills[id].status.current === null;
-  };
+  const hasUnevaluatedSkills = ({ id }) => state.skills[id].status.current === null;
 
-  const unattainedSkill = R.find(hasUnevaluatedSkills)(skillsInCategory);
-  return unattainedSkill || R.last(skillsInCategory);
+  const unevaluatedSkill = R.find(hasUnevaluatedSkills)(skillsInCategory);
+  return unevaluatedSkill || R.last(skillsInCategory);
 };
 
 export const getErringSkills = (state) => {

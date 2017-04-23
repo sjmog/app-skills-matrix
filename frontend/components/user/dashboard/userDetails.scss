@@ -1,7 +1,7 @@
-img {
-  max-height: 100%;
-  max-width: 100%;
+.avatar {
+  max-height: 150px
 }
+
 dl {
   padding: 0.5em;
   margin-bottom: 0px;
@@ -20,8 +20,4 @@ dt:after {
 dd {
   margin: 0 0 0 110px;
   padding: 0 0 0.5em 0;
-}
-
-.user-details__col {
-  padding-top: 100px;
 }

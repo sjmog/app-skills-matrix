@@ -33,7 +33,7 @@ class EvaluationCategoryComponent extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.evaluationInState === nextProps.params.evaluationId && nextProps !== this.props) {
+    if (nextProps.evaluationInState === nextProps.params.evaluationId && nextProps !== this.props && !nextProps.error) {
       const { category: currentCategory } = nextProps.params;
       const { categories, skillsInCategory, lowestUnevaluatedSkill, nextCategory } = nextProps;
 
@@ -67,13 +67,20 @@ class EvaluationCategoryComponent extends React.Component {
   }
 
   navigatePostSkillUpdate() {
-    const isLastSkillInCategory = this.state.indexOfCurrentSkill + 1 === this.state.skillsInCategory.length;
-    const isLastCategory = this.state.indexOfCurrentCategory + 1 === this.props.categories.length;
+    const { indexOfCurrentSkill, skillsInCategory, nextCategory } = this.state;
+    const { skills, params, router } = this.props;
 
-    if (isLastSkillInCategory && !isLastCategory) {
-      this.props.router.push(`evaluations/${this.props.params.evaluationId}/category/${this.state.nextCategory}`)
-    } else if (!isLastSkillInCategory) {
-      this.nextSkill();
+    const remainingSkillsInCategory = R.slice(indexOfCurrentSkill, Infinity, skillsInCategory);
+    const unevaluatedSkill = ({ id }) => skills[id].status.current === null;
+    const nextUnevaluatedSkillInCategory = R.find(unevaluatedSkill)(remainingSkillsInCategory);
+
+    if (!nextUnevaluatedSkillInCategory && nextCategory) {
+      router.push(`evaluations/${params.evaluationId}/category/${nextCategory}`)
+    } else if (nextUnevaluatedSkillInCategory) {
+      this.setState({
+        currentSkill: nextUnevaluatedSkillInCategory,
+        indexOfCurrentSkill: skillsInCategory.indexOf(nextUnevaluatedSkillInCategory)
+      })
     }
   }
 
@@ -91,7 +98,11 @@ class EvaluationCategoryComponent extends React.Component {
     const { category, evaluationId } = params;
 
     if (error) {
-      return <Row>{error ? <Alert bsStyle='danger'>Something went wrong: {error.message}</Alert> : false}</Row>;
+      return (
+        <Grid>
+          <Row>{error ? <Alert bsStyle='danger'>Something went wrong: {error.message}</Alert> : false}</Row>
+        </Grid>
+      );
     }
 
     if (evaluationInState !== evaluationId || !this.state) {
@@ -124,6 +135,7 @@ class EvaluationCategoryComponent extends React.Component {
             previousCategory={categories[this.state.indexOfCurrentCategory - 1]}
             nextCategory={categories[this.state.indexOfCurrentCategory + 1]}
             evaluationComplete={this.evaluationComplete}
+            router={this.props.router}
           />
         </Row>
         <Row>
