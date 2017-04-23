@@ -11,10 +11,8 @@ class SkillBody extends React.Component {
 
   render() {
     return (
-      <div>
-        <h4>
-          {`  ${this.props.criteria}`}
-        </h4>
+      <div className='skill-body'>
+        <p>{`  ${this.props.criteria}`}</p>
         {
           this.props.questions.length
           ? <Button
@@ -25,7 +23,7 @@ class SkillBody extends React.Component {
           : false
         }
         { this.state.open
-          ? <div className='skill-panel___info-block'>
+          ? <div className='skill-body___info-block'>
               <ul>
                 { this.props.questions.map(({ title }) => <li key={title}>{title}</li>) }
               </ul>
