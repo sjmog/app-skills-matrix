@@ -100,8 +100,18 @@ class ManageUsersPageComponent extends React.Component {
           onSelectTemplate={this.onSelectTemplate}
           onUserSelectionChange={this.onUserSelectionChange}
         />
-        <ul>{this.props.users.newEvaluations.map((e) => (<li key={e.id}>{e.success ? (
-          <div>New evaluation created for {e.usersName}</div>) : e.message}</li>))}
+        <ul>
+          {
+            this.props.users.newEvaluations.map((e) => (
+              <li key={e.id}>
+                {
+                  e.success
+                  ? <div>New evaluation created for {e.subject.name}</div>
+                  : e.message
+                }
+              </li>
+            ))
+          }
         </ul>
       </div>
     );

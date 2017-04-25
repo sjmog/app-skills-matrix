@@ -53,6 +53,16 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
       view: VIEW.MENTOR,
     };
   },
+  get viewModel() {
+    return {
+      id: _id,
+      subject: user,
+      status,
+      template,
+      skillGroups: arrayToKeyedObject(skillGroups),
+      skills: arrayToKeyedObject(skills),
+    };
+  },
   get subjectEvaluationViewModel() {
     return {
       id: _id,
