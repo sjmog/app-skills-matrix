@@ -22,7 +22,6 @@ class CategoryPageHeader extends React.Component {
   render() {
     const { evaluationId,
       currentCategory,
-      templateName,
       remainingCategories,
       isFirstCategory,
       isLastCategory,
@@ -34,9 +33,7 @@ class CategoryPageHeader extends React.Component {
 
     return (
       <PageHeader>
-        {templateName}
-        {' '}
-        <small>{currentCategory}</small>
+        {currentCategory}
         <ButtonToolbar className='pull-right'>
           <ButtonGroup>
             <Link to={`evaluations/${evaluationId}/category/${previousCategory}`} className={'category-nav-link'}>
@@ -71,7 +68,6 @@ class CategoryPageHeader extends React.Component {
 CategoryPageHeader.propTypes = {
     evaluationId: PropTypes.string.isRequired,
     currentCategory: PropTypes.string.isRequired,
-    templateName: PropTypes.string.isRequired,
     remainingCategories: PropTypes.number.isRequired,
     isFirstCategory: PropTypes.bool.isRequired,
     isLastCategory: PropTypes.bool.isRequired,

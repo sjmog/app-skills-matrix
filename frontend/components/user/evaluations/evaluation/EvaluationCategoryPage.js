@@ -94,7 +94,7 @@ class EvaluationCategoryComponent extends React.Component {
   }
 
   render() {
-    const { error, evaluationInState, erringSkills, params, templateName, categories, levels, skills, skillGroups, view, status } = this.props;
+    const { error, evaluationInState, erringSkills, params, categories, levels, skills, skillGroups, view, status } = this.props;
     const { category, evaluationId } = params;
 
     if (error) {
@@ -128,7 +128,6 @@ class EvaluationCategoryComponent extends React.Component {
           <CategoryPageHeader
             evaluationId={evaluationId}
             currentCategory={category}
-            templateName={templateName}
             remainingCategories={categories.length - (this.state.indexOfCurrentCategory + 1)}
             isFirstCategory={this.state.indexOfCurrentCategory === 0}
             isLastCategory={this.state.indexOfCurrentCategory + 1 === categories.length}
@@ -198,7 +197,6 @@ export const EvaluationCategoryPage = connect(
 
     return ({
       evaluationInState,
-      templateName: selectors.getTemplateName(state),
       levels: selectors.getLevels(state),
       categories: selectors.getCategories(state),
       skills: selectors.getSkills(state),
