@@ -90,7 +90,11 @@ class ManageUsersPageComponent extends React.Component {
           />
         </Row>
         <Row>
-          <Button bsStyle="primary" disabled={this.state.selectedUsers.length === 0} onClick={this.onStartEvaluation}>
+          <Button
+            bsStyle="primary"
+            disabled={this.state.selectedUsers.length === 0}
+            onClick={this.onStartEvaluation}
+          >
             Start evaluation
           </Button>
         </Row>
@@ -130,8 +134,11 @@ ManageUsersPageComponent.propTypes = {
 };
 
 export const ManageUsersPage = connect(
-  function mapStateToProps(state) {
-    return { users: state.users, matrices: state.matrices }
+  function mapStateToProps({ users, matrices }) {
+    return {
+      users,
+      matrices
+    }
   },
   function mapDispatchToProps(dispatch) {
     return {
