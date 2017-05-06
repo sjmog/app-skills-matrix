@@ -41,23 +41,21 @@ const UserList = ({ users, templates, selectedUsers, onUserSelectionChange, onSe
   const makeSelectMentorComponent = R.curry(selectMentor)(R.__, users, onSelectMentor);
 
   return (
-    <Row>
-      <Table responsive bordered>
-        <thead>
-        <tr>
-          <th>Select</th>
-          <th>Name</th>
-          <th>Username</th>
-          <th>Email</th>
-          <th>Select Mentor</th>
-          <th>Select Template</th>
-        </tr>
-        </thead>
-        <tbody>
-        { users.map(user => userDetailsRow(user, R.contains(user.id, selectedUsers), onUserSelectionChange, makeSelectMentorComponent, makeSelectTemplateComponent)) }
-        </tbody>
-      </Table>
-    </Row>
+    <Table responsive bordered>
+      <thead>
+      <tr>
+        <th>Select</th>
+        <th>Name</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Select Mentor</th>
+        <th>Select Template</th>
+      </tr>
+      </thead>
+      <tbody>
+      { users.map(user => userDetailsRow(user, R.contains(user.id, selectedUsers), onUserSelectionChange, makeSelectMentorComponent, makeSelectTemplateComponent)) }
+      </tbody>
+    </Table>
   );
 };
 

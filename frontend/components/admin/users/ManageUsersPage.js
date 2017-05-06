@@ -81,38 +81,44 @@ class ManageUsersPageComponent extends React.Component {
         <Row>
           <h1 className="header">Users</h1>
         </Row>
-        <AddUserForm
-          newUser={this.state.newUser}
-          updateNewUserState={this.updateNewUserState}
-          onAddUser={this.onAddUser}
-          error={this.props.error}
-        />
-        <div>
+        <Row>
+          <AddUserForm
+            newUser={this.state.newUser}
+            updateNewUserState={this.updateNewUserState}
+            onAddUser={this.onAddUser}
+            error={this.props.error}
+          />
+        </Row>
+        <Row>
           <Button bsStyle="primary" disabled={this.state.selectedUsers.length === 0} onClick={this.onStartEvaluation}>
             Start evaluation
           </Button>
-        </div>
-        <UserList
-          selectedUsers={this.state.selectedUsers}
-          users={this.props.users.users}
-          templates={this.props.matrices.templates}
-          onSelectMentor={this.onSelectMentor}
-          onSelectTemplate={this.onSelectTemplate}
-          onUserSelectionChange={this.onUserSelectionChange}
-        />
-        <ul>
-          {
-            this.props.users.newEvaluations.map((e) => (
-              <li key={e.id}>
-                {
-                  e.success
-                  ? <div>New evaluation created for {e.subject.name}</div>
-                  : e.message
-                }
-              </li>
-            ))
-          }
-        </ul>
+        </Row>
+        <Row>
+          <UserList
+            selectedUsers={this.state.selectedUsers}
+            users={this.props.users.users}
+            templates={this.props.matrices.templates}
+            onSelectMentor={this.onSelectMentor}
+            onSelectTemplate={this.onSelectTemplate}
+            onUserSelectionChange={this.onUserSelectionChange}
+          />
+        </Row>
+        <Row>
+          <ul>
+            {
+              this.props.users.newEvaluations.map((e) => (
+                <li key={e.id}>
+                  {
+                    e.success
+                      ? <div>New evaluation created for {e.subject.name}</div>
+                      : e.message
+                  }
+                </li>
+              ))
+            }
+          </ul>
+        </Row>
       </div>
     );
   }
