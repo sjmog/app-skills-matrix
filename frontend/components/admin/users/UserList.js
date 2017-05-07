@@ -48,7 +48,7 @@ function userDetailsRow(user, isSelected, onUserSelectionChange, makeSelectMento
       <td>{name}</td>
       <td>{email}</td>
       <td>
-        <Button onClick={viewSkillDetails} >
+        <Button onClick={() => viewSkillDetails(user)} >
           View evaluations
         </Button>
       </td>
@@ -69,16 +69,16 @@ class UserList extends React.Component {
     this.hideSkillDetails = this.hideSkillDetails.bind(this);
   }
 
-  viewSkillDetails(skill) {
+  viewSkillDetails(user) {
     this.setState({
       showModal: true,
-      currentSkill: skill,
+      currentUser: user,
     });
   }
 
   hideSkillDetails() {
     this.setState({
-      currentSkill: null,
+      currentUser: null,
       showModal: false,
     })
   }
@@ -109,6 +109,7 @@ class UserList extends React.Component {
         <UserEvaluationsModal
           showModal={this.state.showModal}
           onClose={this.hideSkillDetails}
+          user={this.state.currentUser || {}}
         />
       </div>
     );

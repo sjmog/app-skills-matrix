@@ -7,6 +7,7 @@ import api from '../../api';
 export const EVALUATION_VIEW = keymirror({
   MENTOR: null,
   SUBJECT: null,
+  ADMIN: null,
 });
 
 export const SKILL_STATUS = keymirror({

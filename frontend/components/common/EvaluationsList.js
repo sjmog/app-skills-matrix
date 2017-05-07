@@ -3,8 +3,8 @@ import { Label, Table, Button, ButtonGroup } from 'react-bootstrap';
 import { Link } from 'react-router';
 import moment from 'moment';
 
-import { EVALUATION_VIEW, EVALUATION_STATUS } from '../../../modules/user/evaluation'
-const { MENTOR, SUBJECT } = EVALUATION_VIEW;
+import { EVALUATION_VIEW, EVALUATION_STATUS } from '../../modules/user/evaluation'
+const { MENTOR, SUBJECT, ADMIN } = EVALUATION_VIEW;
 const { NEW, SELF_EVALUATION_COMPLETE, MENTOR_REVIEW_COMPLETE } = EVALUATION_STATUS;
 
 import './evaluationsList.scss';
@@ -16,6 +16,10 @@ const evaluationBtn = (status, view) => {
 
   if (status === SELF_EVALUATION_COMPLETE && view === MENTOR) {
     return <Button bsStyle="primary">Review</Button>;
+  }
+
+  if (view === ADMIN) {
+    return <Button>View</Button>;
   }
 
   return <Button>View</Button>;
