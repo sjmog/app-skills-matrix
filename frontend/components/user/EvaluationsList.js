@@ -3,9 +3,10 @@ import { Label, Table, Button, ButtonGroup } from 'react-bootstrap';
 import { Link } from 'react-router';
 import moment from 'moment';
 
+import EvalutionStatusLabel from '../common/EvaluationStatusLabel';
 import { EVALUATION_VIEW, EVALUATION_STATUS } from '../../modules/user/evaluation'
-const { MENTOR, SUBJECT, ADMIN } = EVALUATION_VIEW;
-const { NEW, SELF_EVALUATION_COMPLETE, MENTOR_REVIEW_COMPLETE } = EVALUATION_STATUS;
+const { MENTOR, SUBJECT } = EVALUATION_VIEW;
+const { NEW, SELF_EVALUATION_COMPLETE } = EVALUATION_STATUS;
 
 import './evaluationsList.scss';
 
@@ -18,25 +19,7 @@ const evaluationBtn = (status, view) => {
     return <Button bsStyle="primary">Review</Button>;
   }
 
-  if (view === ADMIN) {
-    return <Button>View</Button>;
-  }
-
   return <Button>View</Button>;
-};
-
-const statusLabel = (status) => {
-  switch(status) {
-    case NEW:
-      return <h4><Label bsStyle="primary">New</Label></h4>;
-      break;
-    case SELF_EVALUATION_COMPLETE:
-      return <h4><Label bsStyle="info">Self evaluation complete</Label></h4>;
-      break;
-    case MENTOR_REVIEW_COMPLETE:
-      return <h4><Label bsStyle="success">Mentor review complete</Label></h4>;
-      break;
-  }
 };
 
 const EvaluationsList = ({ evaluations }) => (
@@ -55,7 +38,9 @@ const EvaluationsList = ({ evaluations }) => (
         <tr key={id}>
           <td>{moment(createdDate).format('D MMM YYYY')}</td>
           <td>{templateName}</td>
-          <td>{statusLabel(status)}</td>
+          <td>
+            <EvalutionStatusLabel status={status} />
+          </td>
           <td>
             <div>
               <Link to={evaluationUrl}>

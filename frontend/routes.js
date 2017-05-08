@@ -1,5 +1,5 @@
 import React from 'react';
-import { Router, Route, IndexRoute, hashHistory } from 'react-router';
+import { Router, Route, IndexRoute, browserHistory } from 'react-router';
 
 import UserApp from './components/user/App';
 import AdminApp from './components/admin/App';
@@ -16,19 +16,19 @@ import { EvaluationFeedbackPage } from './components/user/actions/EvaluationFeed
 import { EvaluationObjectivesPage } from './components/user/actions/EvaluationObjectivesPage';
 
 export const adminRoutes = (
-  <Router history={hashHistory}>
-    <Route path="/" name="Home" component={AdminApp}>
+  <Router history={browserHistory}>
+    <Route path="/admin" name="Home" component={AdminApp}>
       <IndexRoute component={AdminDashboard}/>
-      <Route path="dashboard" name="Dashboard" component={AdminDashboard}/>
-      <Route path="users" component={ManageUsersPage} />
-      <Route path="matrices" component={ManageMatricesPage} />
-      <Route path="matrices/templates/:templateId" component={TemplatePage} />
+      <Route path="/admin/dashboard" name="Dashboard" component={AdminDashboard} />
+      <Route path="/admin/users" component={ManageUsersPage} />
+      <Route path="/admin/matrices" component={ManageMatricesPage} />
+      <Route path="/admin/matrices/templates/:templateId" component={TemplatePage} />
     </Route>
   </Router>
 );
 
 export const userRoutes = (
-  <Router history={hashHistory}>
+  <Router history={browserHistory}>
     <Route path="/" name="Home" component={UserApp}>
       <IndexRoute component={UserDashboard}/>
       <Route path="dashboard" name="Dashboard" component={UserDashboard}/>

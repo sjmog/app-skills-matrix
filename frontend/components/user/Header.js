@@ -15,7 +15,7 @@ class HeaderComponent extends Component {
       <Navbar inverse collapseOnSelect>
         <Navbar.Header>
           <Navbar.Brand>
-            <a href="#">
+            <a href="/">
               <Glyphicon glyph='equalizer'/>
               {` SKILLS MATRIX`}
             </a>

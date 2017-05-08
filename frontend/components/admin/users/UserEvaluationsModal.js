@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 
-import EvaluationsList from '../../common/EvaluationsList';
+import UserEvaluationsList from './UserEvaluationsList';
 
 const UserEvaluationsModal = ({ showModal, onClose, user }) => (
   <div>
@@ -11,7 +11,7 @@ const UserEvaluationsModal = ({ showModal, onClose, user }) => (
       </Modal.Header>
       <Modal.Body>
         { user.evaluations && user.evaluations.length
-          ? <EvaluationsList evaluations={user.evaluations}/>
+          ? <UserEvaluationsList evaluations={user.evaluations}/>
           : <div>This user has no evaluations</div>
         }
       </Modal.Body>

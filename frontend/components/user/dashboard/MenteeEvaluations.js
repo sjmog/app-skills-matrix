@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Col, ListGroup, Accordion, Panel } from 'react-bootstrap';
 
-import EvaluationsList from './../../common/EvaluationsList';
+import EvaluationsList from './../EvaluationsList';
 
 const MenteeEvaluations = ({ menteeEvaluations }) => (
   <div>
