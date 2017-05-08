@@ -83,7 +83,7 @@ const handlerFunctions = Object.freeze({
             return res.status(401).json(MUST_BE_LOGGED_IN());
           }
 
-          if (user.id === evaluation.user.id) {
+          if (user.id === evaluation.user.id || user.isAdmin) {
             return res.status(200).json(evaluation.subjectEvaluationViewModel);
           }
 

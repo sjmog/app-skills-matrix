@@ -76,7 +76,24 @@ describe('evaluations', () => {
               expect(body.skills[1]).to.not.be.undefined;
             })));
 
-    it(`prevents a user that is not the subject, nor the subjects mentor, from viewing an evaluation`, () =>
+    it('allows an admin user to view all evaluations', () =>
+      insertEvaluation(evaluation, normalUserOneId)
+        .then(({ insertedId }) => {
+          evaluationId = insertedId
+        })
+        .then(() =>
+          request(app)
+            .get(`${prefix}/evaluations/${evaluationId}`)
+            .set('Cookie', `${cookieName}=${adminToken}`)
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.subject.id).to.equal(String(normalUserOneId));
+              expect(body.template.name).to.equal('Node JS Dev');
+              expect(body.skillGroups[1]).to.not.be.undefined;
+              expect(body.skills[1]).to.not.be.undefined;
+            })));
+
+    it(`prevents a user that is not the subject, the subjects mentor, nor the admin from viewing an evaluation`, () =>
       insertEvaluation(evaluation, normalUserOneId)
         .then(({ insertedId }) => {
           evaluationId = insertedId
