@@ -56,9 +56,10 @@ describe('evaluations', () => {
           expect(body.template.name).to.equal('Node JS Dev');
           expect(body.skillGroups[1]).to.not.be.undefined;
           expect(body.skills[1]).to.not.be.undefined;
+          expect(body.view).to.equal('SUBJECT');
         }));
 
-    it('allows a mentor to view the evaluation of their mentee', () =>
+    it('allows a MENTOR to view the evaluation of their mentee', () =>
       insertEvaluation(evaluation, normalUserOneId)
         .then(({ insertedId }) => {
           evaluationId = insertedId
@@ -74,9 +75,10 @@ describe('evaluations', () => {
               expect(body.template.name).to.equal('Node JS Dev');
               expect(body.skillGroups[1]).to.not.be.undefined;
               expect(body.skills[1]).to.not.be.undefined;
+              expect(body.view).to.equal('MENTOR');
             })));
 
-    it('allows an admin user to view all evaluations', () =>
+    it('allows an ADMIN user to view all evaluations', () =>
       insertEvaluation(evaluation, normalUserOneId)
         .then(({ insertedId }) => {
           evaluationId = insertedId
@@ -91,6 +93,36 @@ describe('evaluations', () => {
               expect(body.template.name).to.equal('Node JS Dev');
               expect(body.skillGroups[1]).to.not.be.undefined;
               expect(body.skills[1]).to.not.be.undefined;
+              expect(body.view).to.equal('ADMIN');
+            })));
+
+    it('sets evaluation view to SUBJECT if user is SUBJECT and ADMIN', () =>
+      insertEvaluation(evaluation, adminUserId)
+        .then(({ insertedId }) => {
+          evaluationId = insertedId
+        })
+        .then(() =>
+          request(app)
+            .get(`${prefix}/evaluations/${evaluationId}`)
+            .set('Cookie', `${cookieName}=${adminToken}`)
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.view).to.equal('SUBJECT');
+            })));
+
+    it('sets evaluation view to MENTOR if user is subjects mentor and they are an ADMIN', () =>
+      insertEvaluation(evaluation, normalUserOneId)
+        .then(({ insertedId }) => {
+          evaluationId = insertedId
+        })
+        .then(() => assignMentor(normalUserOneId, adminUserId))
+        .then(() =>
+          request(app)
+            .get(`${prefix}/evaluations/${evaluationId}`)
+            .set('Cookie', `${cookieName}=${adminToken}`)
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.view).to.equal('MENTOR');
             })));
 
     it(`prevents a user that is not the subject, the subjects mentor, nor the admin from viewing an evaluation`, () =>

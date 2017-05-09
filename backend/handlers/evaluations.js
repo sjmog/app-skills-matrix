@@ -83,15 +83,22 @@ const handlerFunctions = Object.freeze({
             return res.status(401).json(MUST_BE_LOGGED_IN());
           }
 
-          if (user.id === evaluation.user.id || user.isAdmin) {
+          if (user.id === evaluation.user.id) {
             return res.status(200).json(evaluation.subjectEvaluationViewModel);
           }
 
           return getUserById(evaluation.user.id)
-            .then(({ mentorId }) =>
-              (user.id === mentorId
-                ? res.status(200).json(evaluation.mentorEvaluationViewModel)
-                : res.status(403).json(MUST_BE_SUBJECT_OF_EVALUATION_OR_MENTOR())));
+            .then(({ mentorId }) => {
+              if (user.id === mentorId) {
+                return res.status(200).json(evaluation.mentorEvaluationViewModel)
+              }
+
+              if (user.isAdmin) {
+                return res.status(200).json(evaluation.adminEvaluationViewModel)
+              }
+
+              return res.status(403).json(MUST_BE_SUBJECT_OF_EVALUATION_OR_MENTOR())
+            })
         })
         .catch(next);
     },

@@ -30,6 +30,15 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
     templateName: template.name,
   };
 
+  const viewModel = {
+    id: _id,
+    subject: user,
+    status,
+    template,
+    skillGroups: arrayToKeyedObject(skillGroups),
+    skills: arrayToKeyedObject(skills),
+  };
+
   return Object.freeze({
     id: _id ? _id.toString() : null,
     user,
@@ -50,36 +59,16 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
       return Object.assign({}, metadata, { view: VIEW.ADMIN });
     },
     get viewModel() {
-      return {
-        id: _id,
-        subject: user,
-        status,
-        template,
-        skillGroups: arrayToKeyedObject(skillGroups),
-        skills: arrayToKeyedObject(skills),
-      };
+      return viewModel;
     },
     get subjectEvaluationViewModel() {
-      return {
-        id: _id,
-        subject: user,
-        status,
-        template,
-        skillGroups: arrayToKeyedObject(skillGroups),
-        skills: arrayToKeyedObject(skills),
-        view: VIEW.SUBJECT
-      };
+      return Object.assign({}, viewModel, { view: VIEW.SUBJECT });
     },
     get mentorEvaluationViewModel() {
-      return {
-        id: _id,
-        subject: user,
-        status,
-        template,
-        skillGroups: arrayToKeyedObject(skillGroups),
-        skills: arrayToKeyedObject(skills),
-        view: VIEW.MENTOR
-      };
+      return Object.assign({}, viewModel, { view: VIEW.MENTOR });
+    },
+    get adminEvaluationViewModel() {
+      return Object.assign({}, viewModel, { view: VIEW.ADMIN });
     },
     get newEvaluationEmail() {
       return {
