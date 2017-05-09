@@ -522,6 +522,53 @@ describe('evaluations', () => {
             .expect(403)
         )
     );
+
+    it('returns not found if an attempt is made to update an evaluation that does not exist', () =>
+      request(app)
+        .post(`${prefix}/evaluations/noMatchingId`)
+        .send({
+          action: 'mentorUpdateSkillStatus',
+          skillGroupId: 0,
+          skillId: 1,
+          status: 'ATTAINED'
+        })
+        .set('Cookie', `${cookieName}=${adminToken}`)
+        .expect(404));
+
+    it('prevents a user that is not logged in from updating the status of a skill', () =>
+      insertEvaluation(evaluation, normalUserOneId)
+        .then(({ insertedId }) => {
+          evaluationId = insertedId
+        })
+        .then(() =>
+          request(app)
+            .post(`${prefix}/evaluations/${evaluationId}`)
+            .send({
+              action: 'adminUpdateSkillStatus',
+              skillGroupId: 0,
+              skillId: 1,
+              status: 'ATTAINED'
+            })
+            .expect(401)));
+
+    it('returns bad request if attempt is made to update status of a skill that does not exist', () =>
+      insertEvaluation(Object.assign({}, evaluation, { status: NEW }), normalUserOneId)
+        .then(({ insertedId }) => {
+          evaluationId = insertedId
+        })
+        .then(() =>
+          request(app)
+            .post(`${prefix}/evaluations/${evaluationId}`)
+            .send({
+              action: 'adminUpdateSkillStatus',
+              skillGroupId: 0,
+              skillId: 1111111,
+              status: 'ATTAINED'
+            })
+            .set('Cookie', `${cookieName}=${adminToken}`)
+            .expect(400)
+        )
+    );
   });
 
   describe('POST /evaluations/:evaluationId { action: complete }', () => {
