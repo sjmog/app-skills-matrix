@@ -5,47 +5,39 @@ const moment = require('moment');
 const users = require('./users');
 const { templates } = require('./matrices');
 const evaluations = require('./evaluations');
-const { VIEW } = require('./evaluations/evaluation');
 
 const sortNewestToOldest = evaluations => evaluations.sort((a, b) => moment(a.createdDate).isBefore(b.createdDate));
 
-const getViewModel = (evaluation, view) => {
-  switch (view) {
-    case VIEW.ADMIN:
-      return evaluation.adminMetadataViewModel;
-    case VIEW.MENTOR:
-      return evaluation.mentorMetadataViewModel;
-    case VIEW.SUBJECT:
-      return evaluation.subjectMetadataViewModel;
-  }
-};
-
-const getEvaluations = (id, view) =>
+const getEvaluations = (id) =>
   evaluations.getByUserId(id)
-    .then(sortNewestToOldest)
-    .then((sortedEvaluations) =>
-      sortedEvaluations.map((evaluation) => getViewModel(evaluation, view)));
+    .then(sortNewestToOldest);
+
+const getSubjectEvaluations = (id) =>
+  getEvaluations(id)
+    .then((evaluations) => evaluations.map((evaluation) => evaluation.subjectMetadataViewModel));
 
 const getMenteeEvaluations = (id) =>
   Promise.map(
     users.getByMentorId(id),
     ({ id, name, username }) =>
-      getEvaluations(id, VIEW.MENTOR)
+      getEvaluations(id)
+        .then((evaluations) => evaluations.map((evaluation) => evaluation.mentorMetadataViewModel))
         .then(evaluations => ({ name: name || username, evaluations }))
   );
 
-const augmentWithEvaluations = (users, view) =>
+const augmentWithEvaluations = (users) =>
   Promise.map(
     users,
     (user) =>
-      getEvaluations(user.id, view)
+      getEvaluations(user.id)
+        .then((evaluations) => evaluations.map((evaluation) => evaluation.adminMetadataViewModel))
         .then((evaluations) => Object.assign({}, user.manageUserViewModel, { evaluations }))
   );
 
 const adminClientState = () => {
   return Promise.all([users.getAll(), templates.getAll()])
     .then(([allUsers = [], allTemplates = []]) =>
-      augmentWithEvaluations(allUsers, VIEW.ADMIN)
+      augmentWithEvaluations(allUsers)
         .then((users) => ({
             users: {
               users,
@@ -63,7 +55,7 @@ const clientState = (user) =>
     Promise.all([
         users.getUserById(user.mentorId),
         templates.getById(user.templateId),
-        getEvaluations(user.id, VIEW.SUBJECT),
+        getSubjectEvaluations(user.id),
         getMenteeEvaluations(user.id)
       ])
       .then(([mentor, template, evaluations, menteeEvaluations]) =>
