@@ -6,7 +6,7 @@ import { Link } from 'react-router';
 
 import * as selectors from '../../../modules/user';
 import { actions, SKILL_STATUS, EVALUATION_VIEW, EVALUATION_STATUS } from '../../../modules/user/evaluation';
-const { SUBJECT, MENTOR } = EVALUATION_VIEW;
+const { SUBJECT, MENTOR, ADMIN } = EVALUATION_VIEW;
 const { NEW, SELF_EVALUATION_COMPLETE } = EVALUATION_STATUS;
 
 import EvaluationPageHeader from './EvaluationPageHeader';
@@ -79,9 +79,10 @@ class EvaluationPageComponent extends React.Component {
                 skills={skills}
                 updateSkillStatus={this.updateSkillStatus(view)}
                 canUpdateSkillStatus={
-              view === SUBJECT && status === NEW
-              || view === MENTOR && status === SELF_EVALUATION_COMPLETE
-            }
+                  view === ADMIN
+                  || view === SUBJECT && status === NEW
+                  || view === MENTOR && status === SELF_EVALUATION_COMPLETE
+                 }
               />
             </Col>
           </Row>

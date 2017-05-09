@@ -75,7 +75,16 @@ function updateSkillStatus(evaluationView, evaluationId, skillId, status) {
     const { skillGroups } = getState().evaluation;
     const skillGroupId = R.keys(R.filter((group, key) => R.contains(skillId, group.skills), skillGroups))[0];
 
-    const updateSkillFn = evaluationView === EVALUATION_VIEW.MENTOR ? api.mentorUpdateSkillStatus : api.subjectUpdateSkillStatus;
+    let updateSkillFn;
+    if (evaluationView === EVALUATION_VIEW.MENTOR) {
+      updateSkillFn = api.mentorUpdateSkillStatus;
+    } else if (evaluationView === EVALUATION_VIEW.SUBJECT) {
+      updateSkillFn = api.subjectUpdateSkillStatus;
+    } else if (evaluationView === EVALUATION_VIEW.ADMIN) {
+      updateSkillFn = api.adminUpdateSkillStatus;
+    } else {
+      updateSkillFn = () => Promise.reject(new Error('Unknown user role'));
+    }
 
     return updateSkillFn(evaluationId, skillGroupId, skillId, status)
       .then((update) => dispatch(updateSkillStatusSuccess(skillId, status)))

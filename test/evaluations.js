@@ -78,7 +78,7 @@ describe('evaluations', () => {
               expect(body.view).to.equal('MENTOR');
             })));
 
-    it('allows an ADMIN user to view all evaluations', () =>
+    it('allows an admin user to view all evaluations', () =>
       insertEvaluation(evaluation, normalUserOneId)
         .then(({ insertedId }) => {
           evaluationId = insertedId
@@ -96,7 +96,7 @@ describe('evaluations', () => {
               expect(body.view).to.equal('ADMIN');
             })));
 
-    it('sets evaluation view to SUBJECT if user is SUBJECT and ADMIN', () =>
+    it('sets evaluation view to subject if user is subject and admin', () =>
       insertEvaluation(evaluation, adminUserId)
         .then(({ insertedId }) => {
           evaluationId = insertedId
@@ -110,7 +110,7 @@ describe('evaluations', () => {
               expect(body.view).to.equal('SUBJECT');
             })));
 
-    it('sets evaluation view to MENTOR if user is subjects mentor and they are an ADMIN', () =>
+    it('sets evaluation view to mentor if user is mento and they are an admin', () =>
       insertEvaluation(evaluation, normalUserOneId)
         .then(({ insertedId }) => {
           evaluationId = insertedId
@@ -477,6 +477,51 @@ describe('evaluations', () => {
         })
         .set('Cookie', `${cookieName}=${normalUserOneToken}`)
         .expect(404));
+  });
+
+  describe('POST /evaluations/:evaluationId { action: adminUpdateSkillStatus }', () => {
+
+    it('allows a admin to update a skill for any evaluation', () =>
+      insertEvaluation(Object.assign({}, evaluation, { status: NEW }), normalUserOneId)
+        .then(({ insertedId }) => {
+          evaluationId = insertedId
+        })
+        .then(() =>
+          request(app)
+            .post(`${prefix}/evaluations/${evaluationId}`)
+            .send({
+              action: 'adminUpdateSkillStatus',
+              skillGroupId: 0,
+              skillId: 1,
+              status: 'ATTAINED'
+            })
+            .set('Cookie', `${cookieName}=${adminToken}`)
+            .expect(204)
+        )
+        .then(() => getEvaluation(evaluationId))
+        .then(({ skills }) => {
+          expect(skills[0].status).to.deep.equal({ previous: null, current: 'ATTAINED' });
+        })
+    );
+
+    it('prevents users from updating the status of a skill via the admin handler if they are not an admin user', () =>
+      insertEvaluation(Object.assign({}, evaluation, { status: NEW }), normalUserOneId)
+        .then(({ insertedId }) => {
+          evaluationId = insertedId
+        })
+        .then(() =>
+          request(app)
+            .post(`${prefix}/evaluations/${evaluationId}`)
+            .send({
+              action: 'adminUpdateSkillStatus',
+              skillGroupId: 0,
+              skillId: 1,
+              status: 'ATTAINED'
+            })
+            .set('Cookie', `${cookieName}=${normalUserOneToken}`)
+            .expect(403)
+        )
+    );
   });
 
   describe('POST /evaluations/:evaluationId { action: complete }', () => {
