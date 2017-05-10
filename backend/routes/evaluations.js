@@ -1,7 +1,6 @@
 const { Router } = require('express');
 
 const { evaluation, evaluations } = require('../handlers/evaluations');
-const { ensureAdmin } = require('../middlewares/auth');
 
 module.exports = (app) => {
   const router = Router();

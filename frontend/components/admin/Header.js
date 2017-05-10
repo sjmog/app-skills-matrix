@@ -8,16 +8,16 @@ class Header extends Component {
       <Navbar inverse collapseOnSelect>
         <Navbar.Header>
           <Navbar.Brand>
-            <a href="#">Skills Matrix</a>
+            <a href="/admin">Skills Matrix</a>
           </Navbar.Brand>
           <Navbar.Toggle />
         </Navbar.Header>
         <Navbar.Collapse>
           <Nav>
-            <LinkContainer to="/users">
+            <LinkContainer to="/admin/users">
               <NavItem eventKey={1}>Users</NavItem>
             </LinkContainer>
-            <LinkContainer to="/matrices">
+            <LinkContainer to="/admin/matrices">
               <NavItem eventKey={1}>Matrices</NavItem>
             </LinkContainer>
           </Nav>

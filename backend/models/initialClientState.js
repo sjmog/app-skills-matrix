@@ -6,39 +6,48 @@ const users = require('./users');
 const { templates } = require('./matrices');
 const evaluations = require('./evaluations');
 
-const sortNewestToOldest = (evaluations) => evaluations.sort((a, b) => moment(a.createdDate).isBefore(b.createdDate));
+const sortNewestToOldest = evaluations => evaluations.sort((a, b) => moment(a.createdDate).isBefore(b.createdDate));
 
-const getEvaluations = (id, menteeEvaluations = false) =>
+const getEvaluations = (id) =>
   evaluations.getByUserId(id)
-    .then(sortNewestToOldest)
-    .then((sortedEvaluations) =>
-      R.map((evaluation) => (
-        menteeEvaluations
-          ? evaluation.mentorMetadataViewModel
-          : evaluation.subjectMetadataViewModel),
-        sortedEvaluations));
+    .then(sortNewestToOldest);
+
+const getSubjectEvaluations = (id) =>
+  getEvaluations(id)
+    .then((evaluations) => evaluations.map((evaluation) => evaluation.subjectMetadataViewModel));
 
 const getMenteeEvaluations = (id) =>
   Promise.map(
-   users.getByMentorId(id),
-    ({ id, name, username }) => {
-      const menteeEvaluations = true;
-      return getEvaluations(id, menteeEvaluations)
-        .then(evaluations => ({ name: name || username , evaluations }))
-    }
+    users.getByMentorId(id),
+    ({ id, name, username }) =>
+      getEvaluations(id)
+        .then((evaluations) => evaluations.map((evaluation) => evaluation.mentorMetadataViewModel))
+        .then(evaluations => ({ name: name || username, evaluations }))
+  );
+
+const augmentWithEvaluations = (users) =>
+  Promise.map(
+    users,
+    (user) =>
+      getEvaluations(user.id)
+        .then((evaluations) => evaluations.map((evaluation) => evaluation.adminMetadataViewModel))
+        .then((evaluations) => Object.assign({}, user.manageUserViewModel, { evaluations }))
   );
 
 const adminClientState = () => {
   return Promise.all([users.getAll(), templates.getAll()])
-    .then(([allUsers = [], allTemplates = []]) => ({
-      users: {
-        users: R.map((domainUser) => domainUser.manageUserViewModel, allUsers),
-        newEvaluations: [],
-      },
-      matrices: {
-        templates: R.map((domainTemplate) => domainTemplate.viewModel, allTemplates),
-      },
-    }));
+    .then(([allUsers = [], allTemplates = []]) =>
+      augmentWithEvaluations(allUsers)
+        .then((users) => ({
+            users: {
+              users,
+              newEvaluations: []
+            },
+            matrices: {
+              templates: R.map((domainTemplate) => domainTemplate.viewModel, allTemplates),
+            },
+          })
+        ));
 };
 
 const clientState = (user) =>
@@ -46,7 +55,7 @@ const clientState = (user) =>
     Promise.all([
         users.getUserById(user.mentorId),
         templates.getById(user.templateId),
-        getEvaluations(user.id),
+        getSubjectEvaluations(user.id),
         getMenteeEvaluations(user.id)
       ])
       .then(([mentor, template, evaluations, menteeEvaluations]) =>

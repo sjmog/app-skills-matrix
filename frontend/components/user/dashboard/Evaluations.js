@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Col } from 'react-bootstrap';
 
-import EvaluationsList from './EvaluationsList';
+import EvaluationsList from './../EvaluationsList';
 
 const Evaluations = ({ evaluations }) => (
   <div>

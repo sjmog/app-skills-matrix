@@ -11,7 +11,7 @@ import PageHeader from './../../common/PageHeader';
 
 import './evaluation.scss'
 
-const { MENTOR, SUBJECT } = EVALUATION_VIEW;
+const { MENTOR, SUBJECT, ADMIN } = EVALUATION_VIEW;
 const { NEW, SELF_EVALUATION_COMPLETE, MENTOR_REVIEW_COMPLETE } = EVALUATION_STATUS;
 
 const alertText = (view, status) => {
@@ -68,6 +68,16 @@ class EvaluationPageHeader extends React.Component {
             alertText={alertText(view, status)}
             title='Evaluation'
             subTitle={templateName}
+          />
+        </Row>
+      )
+    }
+
+    if (view === ADMIN) {
+      return (
+        <Row>
+          <PageHeader
+            title={subjectName}
           />
         </Row>
       )

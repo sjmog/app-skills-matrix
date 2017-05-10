@@ -20,6 +20,7 @@ const {
   MENTOR_CAN_ONLY_UPDATE_AFTER_SELF_EVALUATION,
   USER_NOT_FOUND,
   TEMPLATE_NOT_FOUND,
+  USER_NOT_ADMIN,
 } = require('./errors');
 
 
@@ -88,10 +89,17 @@ const handlerFunctions = Object.freeze({
           }
 
           return getUserById(evaluation.user.id)
-            .then(({ mentorId }) =>
-              (user.id === mentorId
-                ? res.status(200).json(evaluation.mentorEvaluationViewModel)
-                : res.status(403).json(MUST_BE_SUBJECT_OF_EVALUATION_OR_MENTOR())));
+            .then(({ mentorId }) => {
+              if (user.id === mentorId) {
+                return res.status(200).json(evaluation.mentorEvaluationViewModel)
+              }
+
+              if (user.isAdmin) {
+                return res.status(200).json(evaluation.adminEvaluationViewModel)
+              }
+
+              return res.status(403).json(MUST_BE_SUBJECT_OF_EVALUATION_OR_MENTOR())
+            })
         })
         .catch(next);
     },
@@ -159,6 +167,36 @@ const handlerFunctions = Object.freeze({
                   .then(() => res.sendStatus(204))
                 : res.status(403).json(MENTOR_CAN_ONLY_UPDATE_AFTER_SELF_EVALUATION());
             })
+        })
+        .catch(next)
+    },
+    adminUpdateSkillStatus: (req, res, next) => {
+      const { evaluationId } = req.params;
+      const { skillId, status } = req.body;
+      const { user } = res.locals;
+
+      Promise.try(() => getEvaluationById(evaluationId))
+        .then((evaluation) => {
+          if (!evaluation) {
+            return res.status(404).json(EVALUATION_NOT_FOUND());
+          }
+
+          if (!user) {
+            return res.status(401).json(MUST_BE_LOGGED_IN());
+          }
+
+          const skill = evaluation.findSkill(skillId);
+          if (!skill) {
+            return res.status(400).json(SKILL_NOT_FOUND());
+          }
+
+          if (user.isAdmin) {
+            return updateEvaluation(evaluation.updateSkill(skillId, status))
+              .then(() => addActions(user, skill, evaluation, status))
+              .then(() => res.sendStatus(204))
+          }
+
+          return res.status(403).json(USER_NOT_ADMIN());
         })
         .catch(next)
     },

@@ -18,5 +18,5 @@ const apiRouter = apiRoutes.reduce((app, route) => route(app), express.Router())
 
 module.exports = basePath => app =>
   app.use(basePath, apiRouter)
-  && clientApp(app)
-  && auth(app);
+  && auth(app)
+  && clientApp(app);
