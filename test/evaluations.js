@@ -59,7 +59,7 @@ describe('evaluations', () => {
           expect(body.view).to.equal('SUBJECT');
         }));
 
-    it('allows a MENTOR to view the evaluation of their mentee', () =>
+    it('allows a mentor to view the evaluation of their mentee', () =>
       insertEvaluation(evaluation, normalUserOneId)
         .then(({ insertedId }) => {
           evaluationId = insertedId
@@ -110,7 +110,7 @@ describe('evaluations', () => {
               expect(body.view).to.equal('SUBJECT');
             })));
 
-    it('sets evaluation view to mentor if user is mento and they are an admin', () =>
+    it('sets evaluation view to mentor if user is a mentor and they are an admin', () =>
       insertEvaluation(evaluation, normalUserOneId)
         .then(({ insertedId }) => {
           evaluationId = insertedId
@@ -125,7 +125,7 @@ describe('evaluations', () => {
               expect(body.view).to.equal('MENTOR');
             })));
 
-    it(`prevents a user that is not the subject, the subjects mentor, nor the admin from viewing an evaluation`, () =>
+    it(`prevents a user that is not the subject, the subjects mentor, nor an admin user, from viewing an evaluation`, () =>
       insertEvaluation(evaluation, normalUserOneId)
         .then(({ insertedId }) => {
           evaluationId = insertedId
@@ -481,7 +481,7 @@ describe('evaluations', () => {
 
   describe('POST /evaluations/:evaluationId { action: adminUpdateSkillStatus }', () => {
 
-    it('allows a admin to update a skill for any evaluation', () =>
+    it('allows an admin user to update a skill for any evaluation', () =>
       insertEvaluation(Object.assign({}, evaluation, { status: NEW }), normalUserOneId)
         .then(({ insertedId }) => {
           evaluationId = insertedId

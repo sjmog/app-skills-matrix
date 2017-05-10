@@ -154,7 +154,6 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
 
 module.exports = evaluation;
 module.exports.STATUS = STATUS;
-module.exports.VIEW = VIEW;
 module.exports.newEvaluation = (template, user, allSkills, date = new Date()) => {
   const { skillGroups, skills } = template.createSkillGroups(allSkills);
   return evaluation({

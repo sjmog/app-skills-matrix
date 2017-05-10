@@ -1,6 +1,6 @@
 import React from 'react';
 import R from 'ramda';
-import { Row, Table, FormGroup, FormControl, Checkbox, Button } from 'react-bootstrap';
+import { Table, FormGroup, FormControl, Checkbox, Button } from 'react-bootstrap';
 import { Link } from 'react-router';
 
 import UserEvaluationsModal from './UserEvaluationsModal';
@@ -39,7 +39,7 @@ const selectTemplate = (user, templates, onSelectTemplate) => {
   );
 };
 
-function userDetailsRow(user, isSelected, onUserSelectionChange, makeSelectMentorComponent, makeSelectTemplateComponent, viewSkillDetails) {
+function userDetailsRow(user, isSelected, onUserSelectionChange, makeSelectMentorComponent, makeSelectTemplateComponent, viewUserEvaluations) {
   const { id, name, email, username } = user;
   return (
     <tr key={id}>
@@ -48,7 +48,7 @@ function userDetailsRow(user, isSelected, onUserSelectionChange, makeSelectMento
       <td>{name}</td>
       <td>{email}</td>
       <td>
-        <Button onClick={() => viewSkillDetails(user)} >
+        <Button onClick={() => viewUserEvaluations(user)} >
           View evaluations
         </Button>
       </td>
@@ -65,18 +65,18 @@ class UserList extends React.Component {
       showModal: false,
     };
 
-    this.viewSkillDetails = this.viewSkillDetails.bind(this);
-    this.hideSkillDetails = this.hideSkillDetails.bind(this);
+    this.viewUserEvaluations = this.viewUserEvaluations.bind(this);
+    this.hideUserEvaluations = this.hideUserEvaluations.bind(this);
   }
 
-  viewSkillDetails(user) {
+  viewUserEvaluations(user) {
     this.setState({
       showModal: true,
       currentUser: user,
     });
   }
 
-  hideSkillDetails() {
+  hideUserEvaluations() {
     this.setState({
       currentUser: null,
       showModal: false,
@@ -103,12 +103,12 @@ class UserList extends React.Component {
         </tr>
         </thead>
         <tbody>
-        { users.map(user => userDetailsRow(user, R.contains(user.id, selectedUsers), onUserSelectionChange, makeSelectMentorComponent, makeSelectTemplateComponent, this.viewSkillDetails)) }
+        { users.map(user => userDetailsRow(user, R.contains(user.id, selectedUsers), onUserSelectionChange, makeSelectMentorComponent, makeSelectTemplateComponent, this.viewUserEvaluations)) }
         </tbody>
       </Table>
         <UserEvaluationsModal
           showModal={this.state.showModal}
-          onClose={this.hideSkillDetails}
+          onClose={this.hideUserEvaluations}
           user={this.state.currentUser || {}}
         />
       </div>
