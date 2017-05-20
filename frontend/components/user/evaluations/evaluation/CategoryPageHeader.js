@@ -36,13 +36,13 @@ class CategoryPageHeader extends React.Component {
         {currentCategory}
         <ButtonToolbar className='pull-right'>
           <ButtonGroup>
-            <Link to={`evaluations/${evaluationId}/category/${previousCategory}`} className={'category-nav-link'}>
+            <Link to={`/evaluations/${evaluationId}/category/${previousCategory}`} className={'category-nav-link'}>
               <Button className='nav-btn--left' bsSize='large' disabled={isFirstCategory}>
                 <Glyphicon glyph='chevron-left'/>
                 Previous category
               </Button>
             </Link>
-            <Link to={`evaluations/${evaluationId}/category/${nextCategory}`} className={'category-nav-link'}>
+            <Link to={`/evaluations/${evaluationId}/category/${nextCategory}`} className={'category-nav-link'}>
               <Button className='nav-btn--right' bsSize='large' disabled={isLastCategory}>
                 {`Next category (${remainingCategories} remaining)`}
                 <Glyphicon glyph='chevron-right'/>

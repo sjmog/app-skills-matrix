@@ -75,7 +75,7 @@ class EvaluationCategoryComponent extends React.Component {
     const nextUnevaluatedSkillInCategory = R.find(unevaluatedSkill)(remainingSkillsInCategory);
 
     if (!nextUnevaluatedSkillInCategory && nextCategory) {
-      router.push(`evaluations/${params.evaluationId}/category/${nextCategory}`)
+      router.push(`/evaluations/${params.evaluationId}/category/${nextCategory}`)
     } else if (nextUnevaluatedSkillInCategory) {
       this.setState({
         currentSkill: nextUnevaluatedSkillInCategory,
