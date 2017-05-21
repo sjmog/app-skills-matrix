@@ -5,7 +5,7 @@ import { Grid, Row, Alert, Col, Jumbotron, Button } from 'react-bootstrap';
 import { Link } from 'react-router';
 
 import * as selectors from '../../../modules/user';
-import { actions, SKILL_STATUS, EVALUATION_VIEW, EVALUATION_STATUS } from '../../../modules/user/evaluation';
+import { actions, SKILL_STATUS, EVALUATION_VIEW, EVALUATION_STATUS, EVALUATION_FETCH_STATUS } from '../../../modules/user/evaluation';
 const { SUBJECT, MENTOR, ADMIN } = EVALUATION_VIEW;
 const { NEW, SELF_EVALUATION_COMPLETE } = EVALUATION_STATUS;
 
@@ -31,7 +31,7 @@ class EvaluationPageComponent extends React.Component {
   }
 
   render() {
-    const { levels, categories, status, skillGroups, skills, view, error, evaluationInState, params, nextCategory, templateName } = this.props;
+    const { levels, categories, status, skillGroups, skills, view, error, params, nextCategory, templateName, fetchStatus } = this.props;
     const { evaluationId } = params;
 
     if (error) {
@@ -44,7 +44,7 @@ class EvaluationPageComponent extends React.Component {
       );
     }
 
-    if (evaluationInState !== evaluationId) {
+    if (fetchStatus !== EVALUATION_FETCH_STATUS.LOADED) {
       return false;
     }
 
@@ -106,27 +106,20 @@ EvaluationPageComponent.propTypes = {
 };
 
 export const EvaluationPage = connect(
-  function mapStateToProps(state) {
-    const evaluationInState = selectors.getIdOfEvaluationInState(state);
-    const error = selectors.getError(state);
-
-    if (!evaluationInState || error) {
-      return ({
-        evaluationInState,
-        error
-      })
-    }
+  function mapStateToProps(state, props) {
+    const evalId = props.params.evaluationId;
 
     return ({
-      evaluationInState,
-      status: selectors.getEvaluationStatus(state),
-      templateName: selectors.getTemplateName(state),
-      levels: selectors.getLevels(state),
-      categories: selectors.getCategories(state),
-      skillGroups: selectors.getSkillGroups(state),
-      skills: selectors.getSkills(state),
-      view: selectors.getView(state),
-      nextCategory: selectors.getNextCategory(state)
+      error: selectors.getError(state, evalId),
+      fetchStatus: selectors.getEvaluationFetchStatus(state, evalId),
+      status: selectors.getEvaluationStatus(state, evalId),
+      templateName: selectors.getTemplateName(state, evalId),
+      levels: selectors.getLevels(state, evalId),
+      categories: selectors.getCategories(state, evalId),
+      skillGroups: selectors.getSkillGroups(state, evalId),
+      skills: selectors.getSkills(state, evalId),
+      view: selectors.getView(state, evalId),
+      nextCategory: selectors.getNextCategory(state, null, evalId)
     });
   },
   function mapDispatchToProps(dispatch) {

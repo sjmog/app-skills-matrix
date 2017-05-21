@@ -23,6 +23,11 @@ export const EVALUATION_STATUS = keymirror({
   NEW: null,
 });
 
+export const EVALUATION_FETCH_STATUS = keymirror({
+  LOADED: null,
+  FAILED: null,
+});
+
 export const constants = keymirror({
   RETRIEVE_EVALUATION_SUCCESS: null,
   RETRIEVE_EVALUATION_FAILURE: null,
@@ -39,7 +44,7 @@ const retrieveEvaluationSuccess = createAction(
 
 const retrieveEvaluationFailure = createAction(
   constants.RETRIEVE_EVALUATION_FAILURE,
-  error => error
+  (error, evaluationId) => ({ error, evaluationId })
 );
 
 const updateSkillStatusSuccess = createAction(
@@ -66,7 +71,7 @@ function retrieveEvaluation(evaluationId) {
   return function (dispatch) {
     return api.retrieveEvaluation(evaluationId)
       .then((evaluation) => dispatch(retrieveEvaluationSuccess(evaluation)))
-      .catch((error) => dispatch(retrieveEvaluationFailure(error)))
+      .catch((error) => dispatch(retrieveEvaluationFailure(error, evaluationId)))
   }
 }
 
@@ -106,19 +111,22 @@ export const actions = {
 };
 
 const initialSate = {
-  error: null,
-  status: null,
-  template: {},
-  skills: {},
-  skillGroups: {}
+  entities: {},
+  errors: {},
+  fetchStatus: {},
 };
 
 export default handleActions({
   [retrieveEvaluationSuccess]: (state, action) => {
-    return R.merge(state, action.payload);
+    const entities = R.merge(state.entities, { [action.payload.id]: action.payload });
+    const fetchStatus = R.merge(state.fetchStatus, { [action.payload.id]: EVALUATION_FETCH_STATUS.LOADED });
+    return R.merge(state, { entities, fetchStatus });
   },
   [retrieveEvaluationFailure]: (state, action) => {
-    return R.merge(state, { error: action.payload });
+    const { evaluationId, error } = action.payload;
+    const errors = R.merge(state.errors, { [evaluationId]: error });
+    const fetchStatus = R.merge(state.fetchStatus, { [evaluationId]: EVALUATION_FETCH_STATUS.FAILED });
+    return R.merge(state, { errors, fetchStatus });
   },
   [updateSkillStatusSuccess]: (state, action) => {
     const { skillId, status } = action.payload;
@@ -141,46 +149,53 @@ export default handleActions({
   },
 }, initialSate);
 
+export const getEvaluationFetchStatus = (state, evalId) =>
+  R.path([evalId], state.fetchStatus);
+
 export const getIdOfEvaluationInState = (state) =>
   R.prop('id', state);
 
 const getSkillGroup = (level, category, skillGroups) =>
   R.find(group => (group.level === level && group.category === category), R.values(skillGroups));
 
-export const getAllSkillsInCategory = (state, category) =>
-  R.flatten(
-    R.reverse(state.template.levels).map((level) => {
-      const { id: skillGroupId, skills } = getSkillGroup(level, category, state.skillGroups);
+export const getAllSkillsInCategory = (state, category, evalId) => {
+  const evaluation = state[evalId];
+
+  if (!evaluation) return null;
+
+  return R.flatten(
+    R.reverse(evaluation.template.levels).map((level) => {
+      const { id: skillGroupId, skills } = getSkillGroup(level, category, evaluation.skillGroups);
       return R.reverse(skills.map((id) => Object.assign({}, { id, skillGroupId })));
     }));
+};
 
-export const getView = (state) =>
-  R.path(['view'], state);
+export const getView = (state, evalId) =>
+  R.path([evalId, 'view'], state.entities);
 
-export const getTemplateName = (state) =>
-  R.path(['template', 'name'], state);
+export const getTemplateName = (state, evalId) =>
+  R.path([evalId, 'template', 'name'], state.entities);
 
 export const getSubjectName = (state) =>
   R.path(['subject', 'name'], state);
 
-export const getEvaluationStatus = (state) =>
-  R.path(['status'], state);
+export const getEvaluationStatus = (state, evalId) =>
+  R.path([evalId, 'status'], state.entities);
 
-export const getSkillGroups = (state) =>
-  R.path(['skillGroups'], state);
+export const getSkillGroups = (state, evalId) =>
+  R.path([evalId, 'skillGroups'], state.entities);
 
-export const getSkills = (state) =>
-  R.path(['skills'], state);
+export const getSkills = (state, evalId) =>
+  R.path([evalId, 'skills'], state.entities);
 
-export const getLevels = (state) => {
-  return R.path(['template', 'levels'], state);
-};
+export const getLevels = (state, evalId) =>
+  R.path([evalId, 'template', 'levels'], state.entities);
 
-export const getCategories = (state) =>
-  R.path(['template', 'categories'], state);
+export const getCategories = (state, evalId) =>
+  R.path([evalId, 'template', 'categories'], state.entities);
 
-export const getError = (state) =>
-  R.path(['error'], state);
+export const getError = (state, evalId) =>
+  R.path([evalId], state.errors);
 
 export const getLowestUnevaluatedSkill = (state, category) => {
   const skillsInCategory = getAllSkillsInCategory(state, category);
@@ -198,12 +213,16 @@ export const getErringSkills = (state) => {
 const unevaluated = (skill) =>
  R.path(['status', 'current'], skill) === null;
 
-export const getNextCategory = (state, category) => {
-  const indexOfCurrentCategory = state.template.categories.indexOf(category) || 0;
-  const remainingCategories = R.slice(indexOfCurrentCategory + 1, Infinity, state.template.categories);
+export const getNextCategory = (state, category, evalId) => {
+  const evaluation = R.path([evalId, 'entities'], state);
+
+  if (!evaluation) return null;
+
+  const indexOfCurrentCategory = evaluation.template.categories.indexOf(category) || 0;
+  const remainingCategories = R.slice(indexOfCurrentCategory + 1, Infinity, evaluation.template.categories);
 
   const hasUnevaluatedSkills = (category) => {
-    const skillsInCategory = getAllSkillsInCategory(state, category).map(({ id }) => state.skills[id]);
+    const skillsInCategory = getAllSkillsInCategory(state, category, evalId).map(({ id }) => evaluation.skills[id]);
     const unevaluatedSkills = R.filter(unevaluated)(R.values(skillsInCategory));
 
     return unevaluatedSkills.length > 0;
