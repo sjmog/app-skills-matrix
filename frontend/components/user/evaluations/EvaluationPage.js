@@ -31,7 +31,7 @@ class EvaluationPageComponent extends React.Component {
   }
 
   render() {
-    const { levels, categories, status, skillGroups, skills, view, error, evaluationInState, params, firstCategory, templateName } = this.props;
+    const { levels, categories, status, skillGroups, skills, view, error, evaluationInState, params, nextCategory, templateName } = this.props;
     const { evaluationId } = params;
 
     if (error) {
@@ -53,7 +53,7 @@ class EvaluationPageComponent extends React.Component {
         <Grid>
           <Jumbotron>
             <p>{`Are you ready to start your ${templateName} evaluation?`}</p>
-            <Link to={`evaluations/${evaluationId}/category/${firstCategory}`}>
+            <Link to={`/evaluations/${evaluationId}/category/${nextCategory || categories[0]}`}>
               <Button bsStyle="primary" bsSize="large">Start evaluation</Button>
             </Link>
           </Jumbotron>
@@ -126,7 +126,7 @@ export const EvaluationPage = connect(
       skillGroups: selectors.getSkillGroups(state),
       skills: selectors.getSkills(state),
       view: selectors.getView(state),
-      firstCategory: selectors.getNextCategory(state)
+      nextCategory: selectors.getNextCategory(state)
     });
   },
   function mapDispatchToProps(dispatch) {
