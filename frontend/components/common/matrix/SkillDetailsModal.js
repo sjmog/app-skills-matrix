@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Modal, ButtonGroup, Button, Glyphicon, Alert } from 'react-bootstrap';
 
-import { SKILL_STATUS } from '../../../modules/user/evaluation';
+import { SKILL_STATUS } from '../../../modules/user/evaluations';
 import SkillActions from '../SkillActions';
 
 const SkillDetailsModal = ({ showModal, onClose, skill, updateSkillStatus, canUpdateSkillStatus }) =>

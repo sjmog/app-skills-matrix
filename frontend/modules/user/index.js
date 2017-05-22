@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 import user, * as fromUser  from './user';
-import evaluations, * as fromEvaluations from './evaluation';
+import evaluations, * as fromEvaluations from './evaluations';
 import actions, * as fromActions from './actions';
 
 const entities = combineReducers({ evaluations });
