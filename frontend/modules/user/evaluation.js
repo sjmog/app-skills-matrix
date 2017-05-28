@@ -2,15 +2,30 @@ import { handleActions, createAction } from 'redux-actions';
 import keymirror from 'keymirror';
 import R from 'ramda';
 
-export const constructEvaluationView = (evaluation) => {
+const constructEvaluationView = (evaluation) => {
   const skillGroups = R.path(['skillGroups'], evaluation);
+  const levels = R.path(['template', 'levels'], evaluation);
+  const categories = R.path(['template', 'categories'], evaluation);
+
+  const category = skillGroup => skillGroup.category;
+
+  const sortByLevel = (category) => {
+    const indexOfLevel = (a, b) => levels.indexOf(a.level) > levels.indexOf(b.level);
+    return R.sort(indexOfLevel)(R.values(category));
+  };
 
   const assignSkillGroupIdToSkills = ({ id: skillGroupId, skills }) =>
-    R.map((skillId) => ({ skillId, skillGroupId}))(skills);
+    R.map((skillId) => ({ skillId, skillGroupId }))(skills);
+
+  const sortByCategoryOrder = obj =>
+    R.reduce((acc, curr) => [].concat(acc, obj[curr]), [])(categories);
 
   return R.compose(
     R.flatten,
     R.map(assignSkillGroupIdToSkills),
+    sortByCategoryOrder,
+    R.map(sortByLevel),
+    R.groupBy(category),
     R.values
   )(skillGroups);
 };
