@@ -149,14 +149,20 @@ export default handleActions({
   },
 }, initialSate);
 
+export const getSkill = (state, skillId, evalId) =>
+  R.path([evalId, 'skills', skillId], state.entities);
+
+export const getSkillGroup = (state, skillGroupId, evalId) =>
+  R.path([evalId, 'skillGroups', skillGroupId], state.entities);
+
+export const getSubjectName = (state, evalId) =>
+  R.path([evalId, 'subject', 'name'], state.entities);
+
+export const getEvaluationName = (state, evalId) =>
+  R.path([evalId, 'template', 'name'], state.entities);
+
 export const getEvaluationFetchStatus = (state, evalId) =>
   R.path([evalId], state.fetchStatus);
-
-export const getIdOfEvaluationInState = (state) =>
-  R.prop('id', state);
-
-const getSkillGroup = (level, category, skillGroups) =>
-  R.find(group => (group.level === level && group.category === category), R.values(skillGroups));
 
 export const getAllSkillsInCategory = (state, category, evalId) => {
   const evaluation = state[evalId];
@@ -175,9 +181,6 @@ export const getView = (state, evalId) =>
 
 export const getTemplateName = (state, evalId) =>
   R.path([evalId, 'template', 'name'], state.entities);
-
-export const getSubjectName = (state) =>
-  R.path(['subject', 'name'], state);
 
 export const getEvaluationStatus = (state, evalId) =>
   R.path([evalId, 'status'], state.entities);

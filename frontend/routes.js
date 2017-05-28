@@ -10,8 +10,7 @@ import { ObjectivesPage } from './components/user/actions/ObjectivesPage';
 import { ManageUsersPage } from './components/admin/users/ManageUsersPage';
 import { ManageMatricesPage } from './components/admin/matrices/ManageMatricesPage';
 import { TemplatePage } from './components/admin/template/TemplatePage';
-import { EvaluationPage } from './components/user/evaluations/EvaluationPage';
-import { EvaluationCategoryPage } from './components/user/evaluations/evaluation/EvaluationCategoryPage';
+import { EvaluationPage } from './components/user/evaluations/evaluation/EvaluationCategoryPageV2';
 import { EvaluationFeedbackPage } from './components/user/actions/EvaluationFeedbackPage';
 import { EvaluationObjectivesPage } from './components/user/actions/EvaluationObjectivesPage';
 
@@ -35,7 +34,6 @@ export const userRoutes = (
       <Route path="feedback" name="Feedback" component={FeedbackPage}/>
       <Route path="objectives" name="Objectives" component={ObjectivesPage}/>
       <Route path="evaluations/:evaluationId" component={EvaluationPage} />
-      <Route path="evaluations/:evaluationId/category/:category" component={EvaluationCategoryPage} />
       <Route path="user/:userId/evaluations/:evaluationId/feedback" component={EvaluationFeedbackPage} />
       <Route path="user/:userId/evaluations/:evaluationId/objectives" component={EvaluationObjectivesPage} />
     </Route>

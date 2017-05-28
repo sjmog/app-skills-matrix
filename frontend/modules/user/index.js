@@ -1,11 +1,12 @@
 import { combineReducers } from 'redux';
 import user, * as fromUser  from './user';
+import evaluation, * as fromEvaluation from './evaluation';
 import evaluations, * as fromEvaluations from './evaluations';
 import actions, * as fromActions from './actions';
 
 const entities = combineReducers({ evaluations });
 
-export default combineReducers({ user, entities, actions });
+export default combineReducers({ user, entities, actions, evaluation });
 
 /* USER SELECTORS */
 
@@ -13,6 +14,26 @@ export const getUsername = ({ user }) =>
   fromUser.getUsername(user);
 
 /* EVALUATION SELECTORS */
+
+export const getCurrentEvaluation = ({ entities: { evaluation } }) =>
+  fromEvaluation.getCurrentEvaluation(evaluation);
+
+export const getCurrentSkill = ({ evaluation }) =>
+  fromEvaluation.getCurrentSkill(evaluation);
+
+/* EVALUATIONS SELECTORS */
+
+export const getSkill = ({ entities: { evaluations } }, skillId, evalId) =>
+  fromEvaluations.getSkill(evaluations,skillId, evalId);
+
+export const getSkillGroup = ({ entities: { evaluations } }, skillGroupId, evalId) =>
+  fromEvaluations.getSkillGroup(evaluations, skillGroupId, evalId);
+
+export const getSubjectName = ({ entities: { evaluations } }, evalId) =>
+  fromEvaluations.getSubjectName(evaluations, evalId);
+
+export const getEvaluationName = ({ entities: { evaluations } }, evalId) =>
+  fromEvaluations.getEvaluationName(evaluations, evalId);
 
 export const getEvaluationFetchStatus = ({ entities: { evaluations } }, category) =>
   fromEvaluations.getEvaluationFetchStatus(evaluations, category);
@@ -25,9 +46,6 @@ export const getView = ({ entities: { evaluations } }, evalId) =>
 
 export const getTemplateName = ({ entities: { evaluations } }, evalId) =>
   fromEvaluations.getTemplateName(evaluations, evalId);
-
-export const getSubjectName = ({ evaluation }) =>
-  fromEvaluations.getSubjectName(evaluation);
 
 export const getEvaluationStatus = ({ entities: { evaluations } }, evalId) =>
   fromEvaluations.getEvaluationStatus(evaluations, evalId);
