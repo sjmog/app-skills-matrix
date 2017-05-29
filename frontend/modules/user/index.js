@@ -15,7 +15,7 @@ export const getUsername = ({ user }) =>
 
 /* EVALUATION SELECTORS */
 
-export const getCurrentEvaluation = ({ entities: { evaluation } }) =>
+export const getCurrentEvaluation = ({ evaluation }) =>
   fromEvaluation.getCurrentEvaluation(evaluation);
 
 export const getCurrentSkill = ({ evaluation }) =>

@@ -2,11 +2,11 @@ import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import R from 'ramda';
-import { Grid, Col, Row, Alert } from 'react-bootstrap';
+import { Grid, Col, Row, Alert, Button } from 'react-bootstrap';
 import { Link } from 'react-router';
 
 import * as selectors from '../../../../modules/user'
-// import { actions, SKILL_STATUS, EVALUATION_VIEW, EVALUATION_STATUS } from '../../../../modules/user/evaluations';
+import { actions, SKILL_STATUS } from '../../../../modules/user/evaluations';
 import { actions as uiActions } from '../../../../modules/user/evaluation';
 import { actions as entityActions } from '../../../../modules/user/evaluations';
 // const { SUBJECT, MENTOR } = EVALUATION_VIEW;
@@ -23,16 +23,15 @@ class EvaluationPageComponent extends React.Component {
 
   componentDidMount() {
     const { params: { evaluationId }, fetchStatus, entityActions } = this.props;
-
     if (!fetchStatus) {
       entityActions.retrieveEvaluation(evaluationId)
     }
   }
 
-  componentWillReceiveProps() {
-    const {  params: { evaluationId }, uiActions, initialisedEvaluation } = this.props;
+  componentWillReceiveProps(nextProps) {
+    const {  params: { evaluationId }, fetchStatus, uiActions, initialisedEvaluation } = nextProps;
 
-    if (!initialisedEvaluation || initialisedEvaluation !== evaluationId) {
+    if ((!initialisedEvaluation || initialisedEvaluation !== evaluationId) && fetchStatus === 'LOADED') {
       uiActions.initEvaluation(evaluationId);
     }
   }
@@ -48,15 +47,22 @@ class EvaluationPageComponent extends React.Component {
   evaluationComplete(evaluationId) {}
 
   render() {
+    const { updateSkillStatus } = this.props.entityActions;
+    const { params: { evaluationId }, currentSkill, currentSkillGroup, view  } = this.props;
+    const currentSkillId = R.path(['id'], currentSkill);
+    const currentSkillGroupId = R.path(['id'], currentSkillGroup);
+
     return (
       <Grid>
         <Row>
-          <h1>{`Subject name: ${this.props.subjectName}`}</h1>
-          <h1>{`Evaluation name: ${this.props.evaluationName}`}</h1>
-          <h1>{`Current skill: ${this.props.currentSkill ? this.props.currentSkill.name : null}`}</h1>
-          <h1>{`Current skill status: ${this.props.currentSkill ? this.props.currentSkill.status.current : null}`}</h1>
-          <h1>{`Skill level: ${this.props.currentSkillGroup ? this.props.currentSkillGroup.level : null}`}</h1>
-          <h1>{`Skill category: ${this.props.currentSkillGroup ? this.props.currentSkillGroup.category : null}`}</h1>
+          <h4>{`Subject name: ${this.props.subjectName}`}</h4>
+          <h4>{`Evaluation name: ${this.props.evaluationName}`}</h4>
+          <h4>{`Current skill: ${this.props.currentSkill ? this.props.currentSkill.name : null}`}</h4>
+          <h4>{`Current skill status: ${this.props.currentSkill ? this.props.currentSkill.status.current : null}`}</h4>
+          <h4>{`Skill level: ${this.props.currentSkillGroup ? this.props.currentSkillGroup.level : null}`}</h4>
+          <h4>{`Skill category: ${this.props.currentSkillGroup ? this.props.currentSkillGroup.category : null}`}</h4>
+          <Button onClick={() => updateSkillStatus(view, evaluationId, currentSkillId, currentSkillGroupId, SKILL_STATUS.ATTAINED)}>Attained</Button>
+          <Button onClick={() => updateSkillStatus(view, evaluationId, currentSkillId, currentSkillGroupId, SKILL_STATUS.NOT_ATTAINED)}>Not attained</Button>
         </Row>
       </Grid>
     )
@@ -86,6 +92,7 @@ export const EvaluationPage = connect(
       fetchStatus: selectors.getEvaluationFetchStatus(state, evaluationId),
       currentSkill: selectors.getSkill(state, skillId, evaluationId),
       currentSkillGroup: selectors.getSkillGroup(state, skillGroupId, evaluationId),
+      view: selectors.getView(state, evaluationId),
     })
   },
   function mapDispatchToProps(dispatch) {

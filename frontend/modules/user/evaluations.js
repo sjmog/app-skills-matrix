@@ -49,7 +49,7 @@ const retrieveEvaluationFailure = createAction(
 
 const updateSkillStatusSuccess = createAction(
   constants.SKILL_STATUS_UPDATE_SUCCESS,
-  (skillId, status) => ({ skillId, status })
+  (evaluationId, skillId, status) => ({ evaluationId, skillId, status })
 );
 
 const updateSkillStatusFailure = createAction(
@@ -75,10 +75,8 @@ function retrieveEvaluation(evaluationId) {
   }
 }
 
-function updateSkillStatus(evaluationView, evaluationId, skillId, status) {
-  return function(dispatch, getState) {
-    const { skillGroups } = getState().evaluation;
-    const skillGroupId = R.keys(R.filter((group, key) => R.contains(skillId, group.skills), skillGroups))[0];
+function updateSkillStatus(evaluationView, evaluationId, skillId, skillGroupId, status) {
+  return function(dispatch) {
 
     let updateSkillFn;
     if (evaluationView === EVALUATION_VIEW.MENTOR) {
@@ -92,7 +90,7 @@ function updateSkillStatus(evaluationView, evaluationId, skillId, status) {
     }
 
     return updateSkillFn(evaluationId, skillGroupId, skillId, status)
-      .then((update) => dispatch(updateSkillStatusSuccess(skillId, status)))
+      .then((update) => dispatch(updateSkillStatusSuccess(evaluationId, skillId, status)))
       .catch((error) => dispatch(updateSkillStatusFailure(skillId, error)))
   }
 }
@@ -129,18 +127,16 @@ export default handleActions({
     return R.merge(state, { errors, fetchStatus });
   },
   [updateSkillStatusSuccess]: (state, action) => {
-    const { skillId, status } = action.payload;
-    const skills = Object.assign({}, state.skills);
-    skills[skillId].status.current = status;
-    skills[skillId].error = null;
-    return R.merge(state, { skills });
+    const { evaluationId, skillId, status } = action.payload;
+    var skillStatusLens =  R.lensPath(['entities', evaluationId, 'skills', skillId, 'status', 'current']);
+    return R.set(skillStatusLens, status, state);
   },
-  [updateSkillStatusFailure]: (state, action) => {
-    const { skillId, error } = action.payload;
-    const skills = Object.assign({}, state.skills);
-    skills[skillId].error = error;
-    return R.merge(state, { skills });
-  },
+  //[updateSkillStatusFailure]: (state, action) => {
+  //  const { skillId, error } = action.payload;
+  //  const skills = Object.assign({}, state.skills);
+  //  skills[skillId].error = error;
+  //  return R.merge(state, { skills });
+  //},
   [evaluationCompleteSuccess]: (state, action) => {
     return R.merge(state, { status: action.payload.status });
   },
