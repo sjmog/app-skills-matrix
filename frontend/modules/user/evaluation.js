@@ -5,10 +5,13 @@ import R from 'ramda';
 import constructPaginatedView from './constructPaginatedView';
 
 const getFirstUnevaluatedSkill = (elements, skills) =>
-  R.find(({ skillId }) => !skills[skillId].status.current)(elements);
+  R.find(({ skillId }) => {
+    return !skills[skillId].status.current
+  })(elements);
 
 const getNextUnevaluatedSkill = (paginatedView, skills, currentSkillId) => {
   const indexOfCurrentSkill = R.findIndex(R.propEq('skillId', currentSkillId))(paginatedView);
+
   const remainingPaginatedView = R.slice(indexOfCurrentSkill, Infinity, paginatedView);
 
   return getFirstUnevaluatedSkill(remainingPaginatedView, skills);
@@ -32,9 +35,9 @@ const init = createAction(
     ({ evaluationId, paginatedView, currentSkill })
 );
 
-const moveToNextUnevaluatedSkill = createAction(
+const moveToSkill = createAction(
   actionTypes.MOVE_TO_NEXT_UNEVALUATED_SKILL, // TODO: Consider restructuring.
-  nextSkill => nextSkill
+  skill => skill
 );
 
 function initEvaluation(evaluationId) {
@@ -50,24 +53,38 @@ function initEvaluation(evaluationId) {
 
 function moveToNextSkill(currentSkillId, evaluationId) { // TODO: Is it right to pass in these values?
   return function(dispatch, getState) {
-    const state = getState();
-    const evaluation = R.path(['entities', 'evaluations', 'entities', evaluationId], state);
-    const paginatedView = R.path(['evaluation', 'paginatedView'], state);
+    const appState = getState();
+    const evaluation = R.path(['entities', 'evaluations', 'entities', evaluationId], appState);
+    const paginatedView = R.path(['evaluation', 'paginatedView'], appState);
     const nextUnevaluatedSkill = getNextUnevaluatedSkill(paginatedView, evaluation.skills, currentSkillId);
-    return dispatch(moveToNextUnevaluatedSkill(nextUnevaluatedSkill));
+    return dispatch(moveToSkill(nextUnevaluatedSkill));
+  }
+};
+
+function moveToNextCategory(currentSkillId, evaluationId) {
+  return function(dispatch, getState) {
+    const appState = getState();
+    const evaluation = R.path(['entities', 'evaluations', 'entities', evaluationId], appState);
+    const paginatedView = R.path(['evaluation', 'paginatedView'], appState);
+    const currentSkillDetails = R.find(R.propEq('skillId', currentSkillId), paginatedView); // TODO: Could pass in the current category.
+    const indexOfLastSkillInCurrentCategory = R.findLastIndex(R.propEq('category', currentSkillDetails.category), paginatedView);
+    const remainingElements = R.slice(indexOfLastSkillInCurrentCategory + 1, Infinity, paginatedView);
+    const nextUnevaluatedSkill = getFirstUnevaluatedSkill(remainingElements, evaluation.skills);
+    return dispatch(moveToSkill(nextUnevaluatedSkill))
   }
 };
 
 export const actions = {
   initEvaluation,
   moveToNextSkill,
+  moveToNextCategory,
 };
 
 export default handleActions({
   [init]: (state, action) => {
     return Object.assign({}, state, action.payload);
   },
-  [moveToNextUnevaluatedSkill]: (state, action ) => {
+  [moveToSkill]: (state, action ) => {
     return Object.assign({}, state, { currentSkill: action.payload })
   },
 }, initialValues);

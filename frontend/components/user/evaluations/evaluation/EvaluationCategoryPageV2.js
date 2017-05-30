@@ -34,20 +34,16 @@ class EvaluationPageComponent extends React.Component {
     }
   }
 
-  nextSkill() {};
-
-  prevSkill() {}
-
-  navigatePostSkillUpdate() {}
-
   updateSkillStatus(view, evaluationId, currentSkillId, currentSkillGroupId, newSkillStatus) {
     const { entityActions: { updateSkillStatus }, uiActions: { moveToNextSkill } } = this.props;
+
     // TODO: Handle errors properly.
     updateSkillStatus(view, evaluationId, currentSkillId, currentSkillGroupId, newSkillStatus)
       .then(() => moveToNextSkill(currentSkillId, evaluationId));
   }
 
-  evaluationComplete(evaluationId) {}
+  evaluationComplete(evaluationId) {
+  }
 
   render() {
     const { params: { evaluationId }, currentSkill, view  } = this.props;
@@ -64,14 +60,22 @@ class EvaluationPageComponent extends React.Component {
           <h4>{`Current skill status: ${this.props.currentSkillStatus ? this.props.currentSkillStatus : null}`}</h4>
           <h4>{`Skill level: ${this.props.currentSkill ? this.props.currentSkill.level : null}`}</h4>
           <h4>{`Skill category: ${this.props.currentSkill ? this.props.currentSkill.category : null}`}</h4>
-          <Button
-            onClick={() => this.updateSkillStatus(view, evaluationId, currentSkillId, currentSkillGroupId, SKILL_STATUS.ATTAINED)}>
-            Attained
-          </Button>
-          <Button
-            onClick={() => this.updateSkillStatus(view, evaluationId, currentSkillId, currentSkillGroupId, SKILL_STATUS.NOT_ATTAINED)}>
-            Not attained
-          </Button>
+          <Row>
+            <Button
+              onClick={() => this.updateSkillStatus(view, evaluationId, currentSkillId, currentSkillGroupId, SKILL_STATUS.ATTAINED)}>
+              Attained
+            </Button>
+            <Button
+              onClick={() => this.updateSkillStatus(view, evaluationId, currentSkillId, currentSkillGroupId, SKILL_STATUS.NOT_ATTAINED)}>
+              Not attained
+            </Button>
+          </Row>
+          <Row>
+            <Button
+              onClick={() => this.props.uiActions.moveToNextCategory(currentSkillId, evaluationId)}>
+              Next catgory
+            </Button>
+          </Row>
         </Row>
       </Grid>
     )
