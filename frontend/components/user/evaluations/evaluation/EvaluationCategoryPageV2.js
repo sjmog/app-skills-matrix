@@ -9,8 +9,6 @@ import * as selectors from '../../../../modules/user'
 import { actions, SKILL_STATUS } from '../../../../modules/user/evaluations';
 import { actions as uiActions } from '../../../../modules/user/evaluation';
 import { actions as entityActions } from '../../../../modules/user/evaluations';
-// const { SUBJECT, MENTOR } = EVALUATION_VIEW;
-// const { NEW, SELF_EVALUATION_COMPLETE } = EVALUATION_STATUS;
 
 import CategoryPageHeader from './CategoryPageHeader';
 import Matrix from '../../../common/matrix/Matrix';
@@ -42,15 +40,20 @@ class EvaluationPageComponent extends React.Component {
 
   navigatePostSkillUpdate() {}
 
-  updateSkillStatus(evaluationView) {}
+  updateSkillStatus(view, evaluationId, currentSkillId, currentSkillGroupId, newSkillStatus) {
+    const { entityActions: { updateSkillStatus }, uiActions: { moveToNextSkill } } = this.props;
+    // TODO: Handle errors properly.
+    updateSkillStatus(view, evaluationId, currentSkillId, currentSkillGroupId, newSkillStatus)
+      .then(() => moveToNextSkill(currentSkillId, evaluationId));
+  }
 
   evaluationComplete(evaluationId) {}
 
   render() {
-    const { updateSkillStatus } = this.props.entityActions;
-    const { params: { evaluationId }, currentSkill, currentSkillGroup, view  } = this.props;
-    const currentSkillId = R.path(['id'], currentSkill);
-    const currentSkillGroupId = R.path(['id'], currentSkillGroup);
+    const { params: { evaluationId }, currentSkill, view  } = this.props;
+
+    const currentSkillId = R.path(['skillId'], currentSkill);
+    const currentSkillGroupId = R.path(['skillGroupId'], currentSkill);
 
     return (
       <Grid>
@@ -58,11 +61,17 @@ class EvaluationPageComponent extends React.Component {
           <h4>{`Subject name: ${this.props.subjectName}`}</h4>
           <h4>{`Evaluation name: ${this.props.evaluationName}`}</h4>
           <h4>{`Current skill: ${this.props.currentSkill ? this.props.currentSkill.name : null}`}</h4>
-          <h4>{`Current skill status: ${this.props.currentSkill ? this.props.currentSkill.status.current : null}`}</h4>
-          <h4>{`Skill level: ${this.props.currentSkillGroup ? this.props.currentSkillGroup.level : null}`}</h4>
-          <h4>{`Skill category: ${this.props.currentSkillGroup ? this.props.currentSkillGroup.category : null}`}</h4>
-          <Button onClick={() => updateSkillStatus(view, evaluationId, currentSkillId, currentSkillGroupId, SKILL_STATUS.ATTAINED)}>Attained</Button>
-          <Button onClick={() => updateSkillStatus(view, evaluationId, currentSkillId, currentSkillGroupId, SKILL_STATUS.NOT_ATTAINED)}>Not attained</Button>
+          <h4>{`Current skill status: ${this.props.currentSkillStatus ? this.props.currentSkillStatus : null}`}</h4>
+          <h4>{`Skill level: ${this.props.currentSkill ? this.props.currentSkill.level : null}`}</h4>
+          <h4>{`Skill category: ${this.props.currentSkill ? this.props.currentSkill.category : null}`}</h4>
+          <Button
+            onClick={() => this.updateSkillStatus(view, evaluationId, currentSkillId, currentSkillGroupId, SKILL_STATUS.ATTAINED)}>
+            Attained
+          </Button>
+          <Button
+            onClick={() => this.updateSkillStatus(view, evaluationId, currentSkillId, currentSkillGroupId, SKILL_STATUS.NOT_ATTAINED)}>
+            Not attained
+          </Button>
         </Row>
       </Grid>
     )
@@ -83,15 +92,15 @@ EvaluationPageComponent.propTypes = {
 
 export const EvaluationPage = connect(
   function mapStateToProps(state, { params: { evaluationId } }) {
-    const { skillId, skillGroupId } = selectors.getCurrentSkill(state);
+    const currentSkill = selectors.getCurrentSkill(state);
 
     return ({
       initialisedEvaluation: selectors.getCurrentEvaluation(state),
       subjectName: selectors.getSubjectName(state, evaluationId),
       evaluationName: selectors.getEvaluationName(state, evaluationId),
       fetchStatus: selectors.getEvaluationFetchStatus(state, evaluationId),
-      currentSkill: selectors.getSkill(state, skillId, evaluationId),
-      currentSkillGroup: selectors.getSkillGroup(state, skillGroupId, evaluationId),
+      currentSkill,
+      currentSkillStatus: selectors.getCurrentSkillStatus(state, currentSkill.skillId, evaluationId),
       view: selectors.getView(state, evaluationId),
     })
   },

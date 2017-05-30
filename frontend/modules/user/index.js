@@ -23,11 +23,8 @@ export const getCurrentSkill = ({ evaluation }) =>
 
 /* EVALUATIONS SELECTORS */
 
-export const getSkill = ({ entities: { evaluations } }, skillId, evalId) =>
-  fromEvaluations.getSkill(evaluations,skillId, evalId);
-
-export const getSkillGroup = ({ entities: { evaluations } }, skillGroupId, evalId) =>
-  fromEvaluations.getSkillGroup(evaluations, skillGroupId, evalId);
+export const getCurrentSkillStatus = ({ entities: { evaluations } }, skillId, evalId) =>
+  fromEvaluations.getCurrentSkillStatus(evaluations,skillId, evalId);
 
 export const getSubjectName = ({ entities: { evaluations } }, evalId) =>
   fromEvaluations.getSubjectName(evaluations, evalId);
