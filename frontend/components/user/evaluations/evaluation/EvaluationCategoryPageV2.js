@@ -39,7 +39,7 @@ class EvaluationPageComponent extends React.Component {
 
     // TODO: Handle errors properly.
     updateSkillStatus(view, evaluationId, currentSkillId, currentSkillGroupId, newSkillStatus)
-      .then(() => moveToNextSkill(currentSkillId, evaluationId));
+      .then(() => moveToNextSkill(evaluationId));
   }
 
   evaluationComplete(evaluationId) {
@@ -72,11 +72,11 @@ class EvaluationPageComponent extends React.Component {
           </Row>
           <Row>
             <Button
-              onClick={() => this.props.uiActions.moveToPreviousCategory(currentSkillId, evaluationId)}>
+              onClick={() => this.props.uiActions.moveToPreviousCategory(evaluationId)}>
               Previous category
             </Button>
             <Button
-              onClick={() => this.props.uiActions.moveToNextCategory(currentSkillId, evaluationId)}>
+              onClick={() => this.props.uiActions.moveToNextCategory(evaluationId)}>
               Next category
             </Button>
           </Row>
@@ -85,6 +85,8 @@ class EvaluationPageComponent extends React.Component {
     )
   }
 }
+
+// TODO: Prev/Next buttons when on first/last categories. May want to have first/last stored in state.
 
 EvaluationPageComponent.propTypes = {
   params: PropTypes.shape({
