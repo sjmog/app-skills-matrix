@@ -61,7 +61,7 @@ function moveToNextSkill(currentSkillId, evaluationId) { // TODO: Is it right to
   }
 };
 
-function moveToNextCategory(currentSkillId, evaluationId) {
+function moveToNextCategory(currentSkillId, evaluationId) { // TODO: This is actually moving to the next category where there is an unevaluated skill.
   return function(dispatch, getState) {
     const appState = getState();
     const evaluation = R.path(['entities', 'evaluations', 'entities', evaluationId], appState);
@@ -70,14 +70,33 @@ function moveToNextCategory(currentSkillId, evaluationId) {
     const indexOfLastSkillInCurrentCategory = R.findLastIndex(R.propEq('category', currentSkillDetails.category), paginatedView);
     const remainingElements = R.slice(indexOfLastSkillInCurrentCategory + 1, Infinity, paginatedView);
     const nextUnevaluatedSkill = getFirstUnevaluatedSkill(remainingElements, evaluation.skills);
-    return dispatch(moveToSkill(nextUnevaluatedSkill))
+    return dispatch(moveToSkill(nextUnevaluatedSkill)); // TODO: May choose to say that if there are no unevaluated skills then we want to go to the last.
   }
 };
+
+function moveToPreviousCategory(currentSkillId, evaluationId) { // TODO: What if current skill had category stored against it?
+  return function(dispatch, getState) { // TODO: Look at some Redux docs to see how we can avoid calling get state all the time.
+    const appState = getState();
+    const evaluation = R.path(['entities', 'evaluations', 'entities', evaluationId], appState);
+    const paginatedView = R.path(['evaluation', 'paginatedView'], appState);
+    const currentSkillDetails = R.find(R.propEq('skillId', currentSkillId), paginatedView);
+    const indexOfFirstSkillInCurrentCategory = R.findIndex(R.propEq('category', currentSkillDetails.category), paginatedView);
+    const lastSkillInPreviousCategory = paginatedView[indexOfFirstSkillInCurrentCategory - 1]; // TODO: What about first and last elements? Look at descend.
+    const firstSkillInPreviousCategory = R.findIndex(R.propEq('category', lastSkillInPreviousCategory.category), paginatedView);
+    const elementsInPreviousCategory = R.slice(firstSkillInPreviousCategory, indexOfFirstSkillInCurrentCategory - 1, paginatedView);
+    const firstUnevaluatedSkillInPreviousCategory = getFirstUnevaluatedSkill(elementsInPreviousCategory, evaluation.skills);
+
+    return firstUnevaluatedSkillInPreviousCategory
+      ? dispatch(moveToSkill(firstUnevaluatedSkillInPreviousCategory))
+      : dispatch(moveToSkill(lastSkillInPreviousCategory));
+  }
+}
 
 export const actions = {
   initEvaluation,
   moveToNextSkill,
   moveToNextCategory,
+  moveToPreviousCategory,
 };
 
 export default handleActions({

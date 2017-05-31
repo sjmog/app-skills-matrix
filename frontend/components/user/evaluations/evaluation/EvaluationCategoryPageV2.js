@@ -72,8 +72,12 @@ class EvaluationPageComponent extends React.Component {
           </Row>
           <Row>
             <Button
+              onClick={() => this.props.uiActions.moveToPreviousCategory(currentSkillId, evaluationId)}>
+              Previous category
+            </Button>
+            <Button
               onClick={() => this.props.uiActions.moveToNextCategory(currentSkillId, evaluationId)}>
-              Next catgory
+              Next category
             </Button>
           </Row>
         </Row>
