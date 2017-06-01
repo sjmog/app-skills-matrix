@@ -35,18 +35,18 @@ class EvaluationPageComponent extends React.Component {
   }
 
   updateSkillStatus(view, evaluationId, currentSkillId, currentSkillGroupId, newSkillStatus) {
-    const { entityActions: { updateSkillStatus }, uiActions: { moveToNextSkill } } = this.props;
+    const { entityActions: { updateSkillStatus }, uiActions: { nextSkill } } = this.props;
 
     // TODO: Handle errors properly.
     updateSkillStatus(view, evaluationId, currentSkillId, currentSkillGroupId, newSkillStatus)
-      .then(() => moveToNextSkill(evaluationId));
+      .then(() => nextSkill(evaluationId));
   }
 
   evaluationComplete(evaluationId) {
   }
 
   render() {
-    const { params: { evaluationId }, currentSkill, view  } = this.props;
+    const { params: { evaluationId }, currentSkill, firstCategory, lastCategory, view  } = this.props;
 
     const currentSkillId = R.path(['skillId'], currentSkill);
     const currentSkillGroupId = R.path(['skillGroupId'], currentSkill);
@@ -72,11 +72,13 @@ class EvaluationPageComponent extends React.Component {
           </Row>
           <Row>
             <Button
-              onClick={() => this.props.uiActions.moveToPreviousCategory(evaluationId)}>
+              disabled={currentSkill.category === firstCategory}
+              onClick={() => this.props.uiActions.previousCategory(evaluationId)}>
               Previous category
             </Button>
             <Button
-              onClick={() => this.props.uiActions.moveToNextCategory(evaluationId)}>
+              disabled={currentSkill.category === lastCategory}
+              onClick={() => this.props.uiActions.nextCategory(evaluationId)}>
               Next category
             </Button>
           </Row>
@@ -85,8 +87,6 @@ class EvaluationPageComponent extends React.Component {
     )
   }
 }
-
-// TODO: Prev/Next buttons when on first/last categories. May want to have first/last stored in state.
 
 EvaluationPageComponent.propTypes = {
   params: PropTypes.shape({
@@ -111,6 +111,8 @@ export const EvaluationPage = connect(
       fetchStatus: selectors.getEvaluationFetchStatus(state, evaluationId),
       currentSkill,
       currentSkillStatus: selectors.getCurrentSkillStatus(state, currentSkill.skillId, evaluationId),
+      firstCategory: selectors.firstCategory(state), // TODO: Add 'get' to this.
+      lastCategory: selectors.getLastCategory(state),
       view: selectors.getView(state, evaluationId),
     })
   },

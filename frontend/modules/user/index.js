@@ -21,6 +21,12 @@ export const getCurrentEvaluation = ({ evaluation }) =>
 export const getCurrentSkill = ({ evaluation }) =>
   fromEvaluation.getCurrentSkill(evaluation);
 
+export const firstCategory = ({ evaluation }) =>
+  fromEvaluation.getFirstCategory(evaluation);
+
+export const getLastCategory = ({ evaluation }) =>
+  fromEvaluation.getLastCategory(evaluation);
+
 /* EVALUATIONS SELECTORS */
 
 export const getCurrentSkillStatus = ({ entities: { evaluations } }, skillId, evalId) =>
