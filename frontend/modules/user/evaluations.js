@@ -71,7 +71,9 @@ function retrieveEvaluation(evaluationId) {
   return function (dispatch) {
     return api.retrieveEvaluation(evaluationId)
       .then((evaluation) => dispatch(retrieveEvaluationSuccess(evaluation)))
-      .catch((error) => dispatch(retrieveEvaluationFailure(error, evaluationId)))
+      .catch((error) => {
+        return dispatch(retrieveEvaluationFailure(error, evaluationId))
+      })
   }
 }
 
@@ -173,13 +175,13 @@ export const getAllSkillsInCategory = (state, category, evalId) => {
 };
 
 export const getView = (state, evalId) =>
-  R.path([evalId, 'view'], state.entities);
+  R.path(['entities', evalId, 'view'], state);
 
 export const getTemplateName = (state, evalId) =>
   R.path([evalId, 'template', 'name'], state.entities);
 
 export const getEvaluationStatus = (state, evalId) =>
-  R.path([evalId, 'status'], state.entities);
+  R.path(['entities', evalId, 'status'], state);
 
 export const getSkillGroups = (state, evalId) =>
   R.path([evalId, 'skillGroups'], state.entities);

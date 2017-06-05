@@ -9,6 +9,7 @@ import { actions, SKILL_STATUS, EVALUATION_VIEW, EVALUATION_STATUS, EVALUATION_F
 const { SUBJECT, MENTOR, ADMIN } = EVALUATION_VIEW;
 const { NEW, SELF_EVALUATION_COMPLETE } = EVALUATION_STATUS;
 
+import Evaluation from './evaluation/Evaluation';
 import EvaluationPageHeader from './EvaluationPageHeader';
 import Matrix from '../../common/matrix/Matrix';
 
@@ -23,26 +24,29 @@ class EvaluationPageComponent extends React.Component {
   }
 
   componentDidMount() {
-    this.props.actions.retrieveEvaluation(this.evaluationId)
+    const { params: { evaluationId }, fetchStatus, actions } = this.props;
+
+    if (!fetchStatus) {
+      actions.retrieveEvaluation(evaluationId)
+    }
   }
 
   updateSkillStatus(evaluationView) {
-    return (skillId, newStatus) => this.props.actions.updateSkillStatus(evaluationView, this.evaluationId, skillId, newStatus);
+    return (skillId, newStatus) =>
+      this.props.actions.updateSkillStatus(evaluationView, this.evaluationId, skillId, newStatus);
   }
 
-  render() {
-    const { levels, categories, status, skillGroups, skills, view, error, params, nextCategory, templateName, fetchStatus } = this.props;
-    const { evaluationId } = params;
+  /*
+    ROUTES:
+      IF SUBJECT && NEW  => EVALUATION VIEW
+      IF SUBJECT && !NEW || MENTOR => FULL MATRIX VIEW
+      IF ADMIN => FULL MATRIX ADMIN VIEW
+      MAY WANT TABS FOR FEEBBACK & OBJECTIVES?
+   */
 
-    if (error) {
-      return (
-        <Grid>
-          <Row>
-            <Alert bsStyle='danger'>Something went wrong: {error.message}</Alert>
-          </Row>
-        </Grid>
-      );
-    }
+  render() {
+    const { levels, categories, status, skillGroups, skills, view, params, templateName, fetchStatus } = this.props;
+    const { evaluationId } = params;
 
     if (fetchStatus !== EVALUATION_FETCH_STATUS.LOADED) {
       return false;
@@ -50,43 +54,13 @@ class EvaluationPageComponent extends React.Component {
 
     if (view === SUBJECT && status === NEW) {
       return (
-        <Grid>
-          <Jumbotron>
-            <p>{`Are you ready to start your ${templateName} evaluation?`}</p>
-            <Link to={`/evaluations/${evaluationId}/category/${nextCategory || categories[0]}`}>
-              <Button bsStyle="primary" bsSize="large">Start evaluation</Button>
-            </Link>
-          </Jumbotron>
-        </Grid>
+        <Evaluation evaluationId={params.evaluationId} />
       );
     }
 
     return (
       <div className='evaluation-grid'>
-        <div className='evaluation-grid__item'>
-          <EvaluationPageHeader
-            evaluationId={this.evaluationId}
-            router={this.props.router}
-          />
-        </div>
-        <div className='evaluation-grid__item'>
-          <Row>
-            <Col md={20}>
-              <Matrix
-                categories={categories}
-                levels={levels}
-                skillGroups={skillGroups}
-                skills={skills}
-                updateSkillStatus={this.updateSkillStatus(view)}
-                canUpdateSkillStatus={
-                  view === ADMIN
-                  || view === SUBJECT && status === NEW
-                  || view === MENTOR && status === SELF_EVALUATION_COMPLETE
-                 }
-              />
-            </Col>
-          </Row>
-        </div>
+        Hey
       </div>
     )
   }
@@ -110,16 +84,15 @@ export const EvaluationPage = connect(
     const evalId = props.params.evaluationId;
 
     return ({
-      error: selectors.getError(state, evalId),
+      // error: selectors.getError(state, evalId),
       fetchStatus: selectors.getEvaluationFetchStatus(state, evalId),
       status: selectors.getEvaluationStatus(state, evalId),
-      templateName: selectors.getTemplateName(state, evalId),
-      levels: selectors.getLevels(state, evalId),
-      categories: selectors.getCategories(state, evalId),
-      skillGroups: selectors.getSkillGroups(state, evalId),
-      skills: selectors.getSkills(state, evalId),
+      //templateName: selectors.getTemplateName(state, evalId),
+      //levels: selectors.getLevels(state, evalId),
+      //categories: selectors.getCategories(state, evalId),
+      //skillGroups: selectors.getSkillGroups(state, evalId),
+      //skills: selectors.getSkills(state, evalId),
       view: selectors.getView(state, evalId),
-      nextCategory: selectors.getNextCategory(state, null, evalId)
     });
   },
   function mapDispatchToProps(dispatch) {

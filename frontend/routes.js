@@ -10,7 +10,7 @@ import { ObjectivesPage } from './components/user/actions/ObjectivesPage';
 import { ManageUsersPage } from './components/admin/users/ManageUsersPage';
 import { ManageMatricesPage } from './components/admin/matrices/ManageMatricesPage';
 import { TemplatePage } from './components/admin/template/TemplatePage';
-import { EvaluationPage } from './components/user/evaluations/evaluation/EvaluationCategoryPageV2';
+import { EvaluationPage } from './components/user/evaluations/EvaluationPage';
 import { EvaluationFeedbackPage } from './components/user/actions/EvaluationFeedbackPage';
 import { EvaluationObjectivesPage } from './components/user/actions/EvaluationObjectivesPage';
 

@@ -15,19 +15,8 @@ import Matrix from '../../../common/matrix/Matrix';
 import Skill from './Skill';
 
 class EvaluationPageComponent extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   componentDidMount() {
-    const { params: { evaluationId }, fetchStatus, entityActions } = this.props;
-    if (!fetchStatus) {
-      entityActions.retrieveEvaluation(evaluationId)
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const {  params: { evaluationId }, fetchStatus, uiActions, initialisedEvaluation } = nextProps;
+    const { evaluationId, fetchStatus, uiActions, initialisedEvaluation } = this.props;
 
     if ((!initialisedEvaluation || initialisedEvaluation !== evaluationId) && fetchStatus === 'LOADED') {
       uiActions.initEvaluation(evaluationId);
@@ -46,7 +35,7 @@ class EvaluationPageComponent extends React.Component {
   }
 
   render() {
-    const { params: { evaluationId }, currentSkill, firstCategory, lastCategory, view  } = this.props;
+    const { evaluationId, currentSkill, firstCategory, lastCategory, view  } = this.props;
 
     const currentSkillId = R.path(['skillId'], currentSkill);
     const currentSkillGroupId = R.path(['skillGroupId'], currentSkill);
@@ -100,15 +89,17 @@ EvaluationPageComponent.propTypes = {
   skillsInCategory: PropTypes.array,
 };
 
-export const EvaluationPage = connect(
-  function mapStateToProps(state, { params: { evaluationId } }) {
+export default connect(
+  function mapStateToProps(state, props) {
+    const { evaluationId } = props;
     const currentSkill = selectors.getCurrentSkill(state);
-
+    // TODO: May want to move this to EvaluationPage.
     return ({
+      evaluationId,
       initialisedEvaluation: selectors.getCurrentEvaluation(state),
       subjectName: selectors.getSubjectName(state, evaluationId),
       evaluationName: selectors.getEvaluationName(state, evaluationId),
-      fetchStatus: selectors.getEvaluationFetchStatus(state, evaluationId),
+      fetchStatus: selectors.getEvaluationFetchStatus(state, evaluationId), // TODO: Consider getting rid of this
       currentSkill,
       currentSkillStatus: selectors.getCurrentSkillStatus(state, currentSkill.skillId, evaluationId),
       firstCategory: selectors.firstCategory(state), // TODO: Add 'get' to this.
