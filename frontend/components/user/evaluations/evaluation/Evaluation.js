@@ -18,8 +18,9 @@ class EvaluationPageComponent extends React.Component {
   constructor(props) {
     super(props);
 
-    this.updateSkillStatus = this.updateSkillStatus.bind(this)
-    this.nextSkill = this.nextSkill.bind(this)
+    this.updateSkillStatus = this.updateSkillStatus.bind(this);
+    this.nextSkill = this.nextSkill.bind(this);
+    this.prevSkill = this.prevSkill.bind(this);
   }
   componentDidMount() {
     const { evaluationId, fetchStatus, uiActions, initialisedEvaluation } = this.props;
@@ -30,21 +31,22 @@ class EvaluationPageComponent extends React.Component {
   }
 
   updateSkillStatus(newSkillStatus) {
-    const {
-      entityActions: { updateSkillStatus },
-      uiActions: { nextUnevaluatedSkill },
-      currentSkill: { skillId, skillGroupId },
-      view,
-      evaluationId
-    } = this.props;
+    const { entityActions, uiActions, currentSkill: { skillId, skillGroupId }, view, evaluationId } = this.props;
 
-    updateSkillStatus(view, evaluationId, skillId, skillGroupId, newSkillStatus)
-      .then(() => nextUnevaluatedSkill(evaluationId));
+    entityActions.updateSkillStatus(view, evaluationId, skillId, skillGroupId, newSkillStatus)
+      .then(() => uiActions.nextUnevaluatedSkill(evaluationId));
   }
 
   nextSkill() {
-    const { uiActions, evaluationId } = this.props;
-    uiActions.nextSkill(evaluationId);
+    const { uiActions } = this.props;
+
+    uiActions.nextSkill();
+  }
+
+  prevSkill() {
+    const { uiActions } = this.props;
+
+    uiActions.prevSkill();
   }
 
   evaluationComplete(evaluationId) {}
@@ -53,7 +55,6 @@ class EvaluationPageComponent extends React.Component {
     const { evaluationId, currentSkill, firstCategory, lastCategory, view, currentSkillStatus, skillStatus  } = this.props;
 
     const currentSkillId = R.path(['skillId'], currentSkill);
-    const currentSkillGroupId = R.path(['skillGroupId'], currentSkill);
 
     if (!currentSkillId) { // TODO: May want to use init flag.
       return false;
@@ -69,7 +70,7 @@ class EvaluationPageComponent extends React.Component {
               skillStatus={skillStatus}
               updateSkillStatus={this.updateSkillStatus}
               nextSkill={this.nextSkill}
-              prevSkill={() => {}}
+              prevSkill={this.prevSkill}
               isFirstSkill={false}
               isLastSkill={false}
             />
