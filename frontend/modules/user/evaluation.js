@@ -126,14 +126,24 @@ export default handleActions({
     return Object.assign({}, state, action.payload);
   },
   [moveToNextSkill]: (state) => {
-    const { paginatedView, currentSkill: { skillId } } = state;
+    const { paginatedView, currentSkill: { skillId }, lastSkill } = state;
+
+    if (skillId === lastSkill.skillId) {
+      return state;
+    }
+
     const indexOfCurrentSkill =  R.findIndex(R.propEq('skillId', skillId), paginatedView);
     const nextSkill = paginatedView[indexOfCurrentSkill + 1];
 
     return Object.assign({}, state, { currentSkill: nextSkill })
   },
   [moveToPrevSkill]: (state) => {
-    const { paginatedView, currentSkill: { skillId } } = state;
+    const { paginatedView, currentSkill: { skillId }, firstSkill } = state;
+
+    if (skillId === firstSkill.skillId) {
+      return state;
+    }
+
     const indexOfCurrentSkill =  R.findIndex(R.propEq('skillId', skillId), paginatedView);
     const prevSkill = paginatedView[indexOfCurrentSkill - 1];
 
@@ -185,3 +195,9 @@ export const getFirstCategory = (evaluation) =>
 
 export const getLastCategory = (evaluation) =>
   R.path(['lastCategory'], evaluation);
+
+export const getFirstSkill = (evaluation) =>
+  R.path(['firstSkill'], evaluation);
+
+export const getLastSkill = (evaluation) =>
+  R.path(['lastSkill'], evaluation);

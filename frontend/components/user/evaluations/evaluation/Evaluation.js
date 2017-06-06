@@ -21,6 +21,9 @@ class EvaluationPageComponent extends React.Component {
     this.updateSkillStatus = this.updateSkillStatus.bind(this);
     this.nextSkill = this.nextSkill.bind(this);
     this.prevSkill = this.prevSkill.bind(this);
+    this.nextCategory = this.nextCategory.bind(this);
+    this.previousCategory = this.previousCategory.bind(this);
+    this.evaluationComplete = this.evaluationComplete.bind(this);
   }
   componentDidMount() {
     const { evaluationId, fetchStatus, uiActions, initialisedEvaluation } = this.props;
@@ -39,29 +42,46 @@ class EvaluationPageComponent extends React.Component {
 
   nextSkill() {
     const { uiActions } = this.props;
-
     uiActions.nextSkill();
   }
 
   prevSkill() {
     const { uiActions } = this.props;
-
     uiActions.prevSkill();
+  }
+
+  nextCategory() {
+    const { uiActions, evaluationId } = this.props;
+    uiActions.nextCategory(evaluationId);
+  }
+
+  previousCategory() {
+    const { uiActions, evaluationId } = this.props;
+    uiActions.previousCategory(evaluationId);
   }
 
   evaluationComplete(evaluationId) {}
 
   render() {
-    const { evaluationId, currentSkill, firstCategory, lastCategory, view, currentSkillStatus, skillStatus  } = this.props;
-
+    const { currentSkill, skillStatus, lastSkill, firstSkill, evaluationId, lastCategory, firstCategory } = this.props;
     const currentSkillId = R.path(['skillId'], currentSkill);
 
     if (!currentSkillId) { // TODO: May want to use init flag.
       return false;
     }
-
     return (
       <Grid>
+        <Row>
+          <CategoryPageHeader
+            evaluationId={evaluationId}
+            currentCategory={currentSkill.category}
+            isFirstCategory={currentSkill.category === firstCategory}
+            isLastCategory={currentSkill.category === lastCategory}
+            nextCategory={this.nextCategory}
+            previousCategory={this.previousCategory}
+            evaluationComplete={this.evaluationComplete}
+          />
+        </Row>
         <Row>
           <Col md={7} className='evaluation-panel'>
             <Skill
@@ -71,8 +91,8 @@ class EvaluationPageComponent extends React.Component {
               updateSkillStatus={this.updateSkillStatus}
               nextSkill={this.nextSkill}
               prevSkill={this.prevSkill}
-              isFirstSkill={false}
-              isLastSkill={false}
+              isFirstSkill={currentSkillId === firstSkill.skillId}
+              isLastSkill={currentSkillId === lastSkill.skillId}
             />
           </Col>
         </Row>
@@ -109,6 +129,8 @@ export default connect(
       skillStatus: selectors.getSkillStatus(state, currentSkill.skillId, evaluationId),
       firstCategory: selectors.firstCategory(state), // TODO: Add 'get' to this.
       lastCategory: selectors.getLastCategory(state),
+      firstSkill: selectors.getFirstSkill(state),
+      lastSkill: selectors.getLastSkill(state),
       view: selectors.getView(state, evaluationId),
     })
   },

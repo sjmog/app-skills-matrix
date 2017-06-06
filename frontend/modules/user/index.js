@@ -27,6 +27,13 @@ export const firstCategory = ({ evaluation }) =>
 export const getLastCategory = ({ evaluation }) =>
   fromEvaluation.getLastCategory(evaluation);
 
+export const getFirstSkill = ({ evaluation }) =>
+  fromEvaluation.getFirstSkill(evaluation);
+
+export const getLastSkill = ({ evaluation }) =>
+  fromEvaluation.getLastSkill(evaluation);
+
+
 /* EVALUATIONS SELECTORS */
 
 export const getCurrentSkillStatus = ({ entities: { evaluations } }, skillId, evalId) =>

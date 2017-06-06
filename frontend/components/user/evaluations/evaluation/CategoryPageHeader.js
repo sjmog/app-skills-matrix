@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import { PageHeader, ButtonToolbar, ButtonGroup, Button, Glyphicon } from 'react-bootstrap';
-import { Link } from 'react-router';
 
 import '../evaluation.scss'
 
@@ -20,9 +19,8 @@ class CategoryPageHeader extends React.Component {
   }
 
   render() {
-    const { evaluationId,
+    const {
       currentCategory,
-      remainingCategories,
       isFirstCategory,
       isLastCategory,
       previousCategory,
@@ -36,18 +34,24 @@ class CategoryPageHeader extends React.Component {
         {currentCategory}
         <ButtonToolbar className='pull-right'>
           <ButtonGroup>
-            <Link to={`/evaluations/${evaluationId}/category/${previousCategory}`} className={'category-nav-link'}>
-              <Button className='nav-btn--left' bsSize='large' disabled={isFirstCategory}>
-                <Glyphicon glyph='chevron-left'/>
-                Previous category
-              </Button>
-            </Link>
-            <Link to={`/evaluations/${evaluationId}/category/${nextCategory}`} className={'category-nav-link'}>
-              <Button className='nav-btn--right' bsSize='large' disabled={isLastCategory}>
-                {`Next category (${remainingCategories} remaining)`}
-                <Glyphicon glyph='chevron-right'/>
-              </Button>
-            </Link>
+            <Button
+              className='nav-btn--left'
+              bsSize='large'
+              onClick={() => previousCategory()}
+              disabled={isFirstCategory}
+            >
+              <Glyphicon glyph='chevron-left'/>
+              Previous category
+            </Button>
+            <Button
+              className='nav-btn--right'
+              bsSize='large'
+              disabled={isLastCategory}
+              onClick={() => nextCategory()}
+            >
+              Next category
+              <Glyphicon glyph='chevron-right'/>
+            </Button>
           </ButtonGroup>
           <ButtonGroup>
             <Button
@@ -66,15 +70,14 @@ class CategoryPageHeader extends React.Component {
 }
 
 CategoryPageHeader.propTypes = {
-    evaluationId: PropTypes.string.isRequired,
-    currentCategory: PropTypes.string.isRequired,
-    remainingCategories: PropTypes.number.isRequired,
-    isFirstCategory: PropTypes.bool.isRequired,
-    isLastCategory: PropTypes.bool.isRequired,
-    previousCategory: PropTypes.string,
-    nextCategory: PropTypes.string,
-    evaluationComplete: PropTypes.func.isRequired,
-    router: PropTypes.object.isRequired,
-  };
+  evaluationId: PropTypes.string.isRequired,
+  currentCategory: PropTypes.string.isRequired,
+  isFirstCategory: PropTypes.bool.isRequired,
+  isLastCategory: PropTypes.bool.isRequired,
+  previousCategory: PropTypes.string,
+  nextCategory: PropTypes.string,
+  evaluationComplete: PropTypes.func.isRequired,
+  router: PropTypes.object.isRequired,
+};
 
 export default CategoryPageHeader;
