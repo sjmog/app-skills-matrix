@@ -20,7 +20,8 @@ export const actionTypes = keymirror({
   SET_AS_CURRENT_EVALUATION: null,
   MOVE_TO_NEXT_UNEVALUATED_SKILL: null,
   MOVE_TO_NEXT_CATEGORY: null,
-  MOVE_TO_PREVIOUS_CATEGORY: null
+  MOVE_TO_PREVIOUS_CATEGORY: null,
+  MOVE_TO_NEXT_SKILL: null,
 });
 
 const initialValues = {
@@ -36,9 +37,13 @@ const init = createAction(
 );
 
 // TODO: Sort out naming here.
-const moveToSkill = createAction(
+const moveToNextUnevaluatedSkill = createAction(
   actionTypes.MOVE_TO_NEXT_UNEVALUATED_SKILL,
   skills => skills
+);
+
+const moveToNextSkill = createAction(
+  actionTypes.MOVE_TO_NEXT_SKILL
 );
 
 const moveToNextCategory = createAction(
@@ -69,12 +74,18 @@ function initEvaluation(evaluationId) {
 const getSkillsFromAppState = (appState, evaluationId) =>
   R.path(['entities', 'evaluations', 'entities', evaluationId, 'skills'], appState);
 
-function nextSkill(evaluationId) {
+function nextUnevaluatedSkill(evaluationId) {
   return function(dispatch, getState) {
     const skills = getSkillsFromAppState(getState(), evaluationId);
-    return dispatch(moveToSkill(skills));
+    return dispatch(moveToNextUnevaluatedSkill(skills));
   }
 };
+
+function nextSkill() {
+  return function(dispatch) {
+    return dispatch(moveToNextSkill());
+  }
+}
 
 function nextCategory(evaluationId) {
   return function(dispatch, getState) {
@@ -93,6 +104,7 @@ function previousCategory(evaluationId) {
 export const actions = {
   initEvaluation,
   nextSkill,
+  nextUnevaluatedSkill,
   nextCategory,
   previousCategory,
 };
@@ -101,7 +113,14 @@ export default handleActions({
   [init]: (state, action) => {
     return Object.assign({}, state, action.payload);
   },
-  [moveToSkill]: (state, action) => {
+  [moveToNextSkill]: (state) => {
+    const { paginatedView, currentSkill: { skillId } } = state;
+    const indexOfCurrentSkill =  R.findIndex(R.propEq('skillId', skillId), paginatedView);
+    const nextSkill = paginatedView[indexOfCurrentSkill + 1];
+
+    return Object.assign({}, state, { currentSkill: nextSkill })
+  },
+  [moveToNextUnevaluatedSkill]: (state, action) => {
     const { paginatedView, currentSkill: { skillId }, lastSkill } = state;
 
     if (skillId === lastSkill.skillId) {

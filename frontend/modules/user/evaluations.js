@@ -150,6 +150,9 @@ export default handleActions({
 export const getCurrentSkillStatus = (state, skillId, evalId) =>
   R.path([evalId, 'skills', skillId, 'status', 'current'], state.entities);
 
+export const getSkillStatus = (state, skillId, evalId) =>
+  R.path([evalId, 'skills', skillId, 'status'], state.entities);
+
 export const getSkillGroup = (state, skillGroupId, evalId) =>
   R.path([evalId, 'skillGroups', skillGroupId], state.entities);
 

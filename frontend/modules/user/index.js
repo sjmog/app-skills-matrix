@@ -32,6 +32,9 @@ export const getLastCategory = ({ evaluation }) =>
 export const getCurrentSkillStatus = ({ entities: { evaluations } }, skillId, evalId) =>
   fromEvaluations.getCurrentSkillStatus(evaluations,skillId, evalId);
 
+export const getSkillStatus = ({ entities: { evaluations } }, skillId, evalId) =>
+  fromEvaluations.getSkillStatus(evaluations,skillId, evalId);
+
 export const getSubjectName = ({ entities: { evaluations } }, evalId) =>
   fromEvaluations.getSubjectName(evaluations, evalId);
 

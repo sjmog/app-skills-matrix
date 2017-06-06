@@ -15,6 +15,12 @@ import Matrix from '../../../common/matrix/Matrix';
 import Skill from './Skill';
 
 class EvaluationPageComponent extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.updateSkillStatus = this.updateSkillStatus.bind(this)
+    this.nextSkill = this.nextSkill.bind(this)
+  }
   componentDidMount() {
     const { evaluationId, fetchStatus, uiActions, initialisedEvaluation } = this.props;
 
@@ -23,54 +29,51 @@ class EvaluationPageComponent extends React.Component {
     }
   }
 
-  updateSkillStatus(view, evaluationId, currentSkillId, currentSkillGroupId, newSkillStatus) {
-    const { entityActions: { updateSkillStatus }, uiActions: { nextSkill } } = this.props;
+  updateSkillStatus(newSkillStatus) {
+    const {
+      entityActions: { updateSkillStatus },
+      uiActions: { nextUnevaluatedSkill },
+      currentSkill: { skillId, skillGroupId },
+      view,
+      evaluationId
+    } = this.props;
 
-    // TODO: Handle errors properly.
-    updateSkillStatus(view, evaluationId, currentSkillId, currentSkillGroupId, newSkillStatus)
-      .then(() => nextSkill(evaluationId));
+    updateSkillStatus(view, evaluationId, skillId, skillGroupId, newSkillStatus)
+      .then(() => nextUnevaluatedSkill(evaluationId));
   }
 
-  evaluationComplete(evaluationId) {
+  nextSkill() {
+    const { uiActions, evaluationId } = this.props;
+    uiActions.nextSkill(evaluationId);
   }
+
+  evaluationComplete(evaluationId) {}
 
   render() {
-    const { evaluationId, currentSkill, firstCategory, lastCategory, view  } = this.props;
+    const { evaluationId, currentSkill, firstCategory, lastCategory, view, currentSkillStatus, skillStatus  } = this.props;
 
     const currentSkillId = R.path(['skillId'], currentSkill);
     const currentSkillGroupId = R.path(['skillGroupId'], currentSkill);
 
+    if (!currentSkillId) { // TODO: May want to use init flag.
+      return false;
+    }
+
     return (
       <Grid>
         <Row>
-          <h4>{`Subject name: ${this.props.subjectName}`}</h4>
-          <h4>{`Evaluation name: ${this.props.evaluationName}`}</h4>
-          <h4>{`Current skill: ${this.props.currentSkill ? this.props.currentSkill.name : null}`}</h4>
-          <h4>{`Current skill status: ${this.props.currentSkillStatus ? this.props.currentSkillStatus : null}`}</h4>
-          <h4>{`Skill level: ${this.props.currentSkill ? this.props.currentSkill.level : null}`}</h4>
-          <h4>{`Skill category: ${this.props.currentSkill ? this.props.currentSkill.category : null}`}</h4>
-          <Row>
-            <Button
-              onClick={() => this.updateSkillStatus(view, evaluationId, currentSkillId, currentSkillGroupId, SKILL_STATUS.ATTAINED)}>
-              Attained
-            </Button>
-            <Button
-              onClick={() => this.updateSkillStatus(view, evaluationId, currentSkillId, currentSkillGroupId, SKILL_STATUS.NOT_ATTAINED)}>
-              Not attained
-            </Button>
-          </Row>
-          <Row>
-            <Button
-              disabled={currentSkill.category === firstCategory}
-              onClick={() => this.props.uiActions.previousCategory(evaluationId)}>
-              Previous category
-            </Button>
-            <Button
-              disabled={currentSkill.category === lastCategory}
-              onClick={() => this.props.uiActions.nextCategory(evaluationId)}>
-              Next category
-            </Button>
-          </Row>
+          <Col md={7} className='evaluation-panel'>
+            <Skill
+              level={currentSkill.level}
+              skill={currentSkill}
+              skillStatus={skillStatus}
+              updateSkillStatus={this.updateSkillStatus}
+              nextSkill={this.nextSkill}
+              prevSkill={() => {}}
+              isFirstSkill={false}
+              isLastSkill={false}
+            />
+          </Col>
         </Row>
       </Grid>
     )
@@ -102,6 +105,7 @@ export default connect(
       fetchStatus: selectors.getEvaluationFetchStatus(state, evaluationId), // TODO: Consider getting rid of this
       currentSkill,
       currentSkillStatus: selectors.getCurrentSkillStatus(state, currentSkill.skillId, evaluationId),
+      skillStatus: selectors.getSkillStatus(state, currentSkill.skillId, evaluationId),
       firstCategory: selectors.firstCategory(state), // TODO: Add 'get' to this.
       lastCategory: selectors.getLastCategory(state),
       view: selectors.getView(state, evaluationId),
