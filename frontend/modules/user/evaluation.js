@@ -4,10 +4,11 @@ import R from 'ramda';
 
 import constructPaginatedView from './constructPaginatedView';
 
+const getSkillsFromAppState = (appState, evaluationId) =>
+  R.path(['entities', 'evaluations', 'entities', evaluationId, 'skills'], appState);
+
 const getFirstUnevaluatedSkill = (elements, skills) =>
-  R.find(({ skillId }) => {
-    return !skills[skillId].status.current
-  })(elements);
+  R.find(({ skillId }) => !skills[skillId].status.current)(elements);
 
 const getNextUnevaluatedSkill = (paginatedView, skills, currentSkillId) => {
   const indexOfCurrentSkill = R.findIndex(R.propEq('skillId', currentSkillId))(paginatedView);
@@ -33,8 +34,7 @@ const initialValues = {
 
 const init = createAction(
  actionTypes.SET_AS_CURRENT_EVALUATION,
-  (evaluationId, paginatedView, currentSkill, firstSkill, firstCategory, lastSkill, lastCategory) =>
-    ({ evaluationId, paginatedView, currentSkill, firstSkill, firstCategory, lastSkill, lastCategory })
+  evaluation => evaluation
 );
 
 // TODO: Sort out naming here.
@@ -64,20 +64,9 @@ const moveToPreviousCategory = createAction(
 function initEvaluation(evaluationId) {
   return function(dispatch, getState) {
     const evaluation = R.path(['entities', 'evaluations', 'entities', evaluationId], getState());
-    const evaluationView = constructPaginatedView(evaluation);
-    const currentSkill = getFirstUnevaluatedSkill(evaluationView, evaluation.skills);
-    const firstSkill = R.head(evaluationView);
-    const firstCategory = firstSkill.category;
-    const lastSkill = R.last(evaluationView);
-    const lastCategory = lastSkill.category;
-
-    return dispatch(init(evaluationId, evaluationView, currentSkill, firstSkill, firstCategory, lastSkill, lastCategory));
+    return dispatch(init(evaluation));
   }
 };
-
-// TODO: Could I use a selector here?
-const getSkillsFromAppState = (appState, evaluationId) =>
-  R.path(['entities', 'evaluations', 'entities', evaluationId, 'skills'], appState);
 
 function nextUnevaluatedSkill(evaluationId) {
   return function(dispatch, getState) {
@@ -123,7 +112,25 @@ export const actions = {
 
 export default handleActions({
   [init]: (state, action) => {
-    return Object.assign({}, state, action.payload);
+    const evaluation = action.payload;
+    const paginatedView = constructPaginatedView(evaluation);
+    const currentSkill = getFirstUnevaluatedSkill(paginatedView, evaluation.skills);
+    const firstSkill = R.head(paginatedView);
+    const firstCategory = firstSkill.category;
+    const lastSkill = R.last(paginatedView);
+    const lastCategory = lastSkill.category;
+
+    const initialisedEvaluation = {
+      evaluationId: evaluation.id,
+      paginatedView,
+      currentSkill,
+      firstSkill,
+      firstCategory,
+      lastSkill,
+      lastCategory
+    };
+
+    return Object.assign({}, state, initialisedEvaluation);
   },
   [moveToNextSkill]: (state) => {
     const { paginatedView, currentSkill: { skillId }, lastSkill } = state;
