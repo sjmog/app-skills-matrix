@@ -6,7 +6,9 @@ import { Grid, Col, Row, Alert, Button } from 'react-bootstrap';
 import { Link } from 'react-router';
 
 import * as selectors from '../../../../modules/user'
-import { actions, SKILL_STATUS } from '../../../../modules/user/evaluations';
+import { actions, SKILL_STATUS, EVALUATION_VIEW, EVALUATION_STATUS } from '../../../../modules/user/evaluations';
+const { SUBJECT, MENTOR } = EVALUATION_VIEW;
+const { NEW, SELF_EVALUATION_COMPLETE } = EVALUATION_STATUS;
 import { actions as uiActions } from '../../../../modules/user/evaluation';
 import { actions as entityActions } from '../../../../modules/user/evaluations';
 
@@ -63,12 +65,15 @@ class EvaluationPageComponent extends React.Component {
   evaluationComplete(evaluationId) {}
 
   render() {
-    const { currentSkill, skillStatus, lastSkill, firstSkill, evaluationId, lastCategory, firstCategory } = this.props;
+    const { currentSkill, skillStatus, lastSkill, firstSkill, evaluationId, lastCategory, firstCategory, skills, levels, skillGroups, view } = this.props;
     const currentSkillId = R.path(['skillId'], currentSkill);
 
-    if (!currentSkillId) { // TODO: May want to use init flag.
+    if (typeof currentSkillId !== 'number') { // TODO: May want to use init flag.
       return false;
     }
+
+    // TODO: FIRST VIEW OF EVALUATION TAKES YOU TO THE WRONG PLACE (VISION AND OWNERSHIP) -> skill details === (0)
+
     return (
       <Grid>
         <Row>
@@ -93,6 +98,20 @@ class EvaluationPageComponent extends React.Component {
               prevSkill={this.prevSkill}
               isFirstSkill={currentSkillId === firstSkill.skillId}
               isLastSkill={currentSkillId === lastSkill.skillId}
+            />
+          </Col>
+          <Col md={5} className='evaluation-panel evaluation-panel--right'>
+            <Matrix
+              skillBeingEvaluated={currentSkillId}
+              categories={[].concat(currentSkill.category)}
+              levels={R.reverse(R.slice(0, levels.indexOf(currentSkill.level) + 1, levels))}
+              skillGroups={skillGroups}
+              updateSkillStatus={this.updateSkillStatus}
+              canUpdateSkillStatus={
+                view === SUBJECT && status === NEW
+                || view === MENTOR && status === SELF_EVALUATION_COMPLETE
+              }
+              skills={skills}
             />
           </Col>
         </Row>
@@ -132,6 +151,9 @@ export default connect(
       firstSkill: selectors.getFirstSkill(state),
       lastSkill: selectors.getLastSkill(state),
       view: selectors.getView(state, evaluationId),
+      levels: selectors.getLevels(state, evaluationId),
+      skillGroups: selectors.getSkillGroups(state, evaluationId),
+      skills: selectors.getSkills(state, evaluationId),
     })
   },
   function mapDispatchToProps(dispatch) {

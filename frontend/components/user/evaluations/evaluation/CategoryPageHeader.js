@@ -74,10 +74,9 @@ CategoryPageHeader.propTypes = {
   currentCategory: PropTypes.string.isRequired,
   isFirstCategory: PropTypes.bool.isRequired,
   isLastCategory: PropTypes.bool.isRequired,
-  previousCategory: PropTypes.string,
-  nextCategory: PropTypes.string,
+  previousCategory: PropTypes.func.isRequired,
+  nextCategory: PropTypes.func.isRequired,
   evaluationComplete: PropTypes.func.isRequired,
-  router: PropTypes.object.isRequired,
 };
 
 export default CategoryPageHeader;

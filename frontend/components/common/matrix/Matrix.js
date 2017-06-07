@@ -9,6 +9,7 @@ import '../../common/matrix/matrix.scss'
 class Matrix extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
       showModal: false,
     };
