@@ -58,6 +58,12 @@ class EvaluationPageComponent extends React.Component {
       );
     }
 
+    if (view === SUBJECT && status !== NEW) {
+      return (
+        <div>{`HERE IS THE NEW STATUS:${status}`}</div>
+      );
+    }
+
     return (
       <div className='evaluation-grid'>
         Hey

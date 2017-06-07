@@ -59,7 +59,7 @@ const updateSkillStatusFailure = createAction(
 
 const evaluationCompleteSuccess = createAction(
   constants.EVALUATION_COMPLETE_SUCCESS,
-  status => status
+  (evaluationId, status) => ({ evaluationId, status })
 );
 
 const evaluationCompleteFailure = createAction(
@@ -100,7 +100,7 @@ function updateSkillStatus(evaluationView, evaluationId, skillId, skillGroupId, 
 function evaluationComplete(evaluationId) {
   return function (dispatch) {
     return api.evaluationComplete(evaluationId)
-      .then((status) => dispatch(evaluationCompleteSuccess(status)))
+      .then(({ status }) => dispatch(evaluationCompleteSuccess(evaluationId, status)))
       .catch((error) => dispatch(evaluationCompleteFailure(error)))
   }
 }
@@ -130,7 +130,7 @@ export default handleActions({
   },
   [updateSkillStatusSuccess]: (state, action) => {
     const { evaluationId, skillId, status } = action.payload;
-    var skillStatusLens =  R.lensPath(['entities', evaluationId, 'skills', skillId, 'status', 'current']);
+    const skillStatusLens =  R.lensPath(['entities', evaluationId, 'skills', skillId, 'status', 'current']);
     return R.set(skillStatusLens, status, state);
   },
   //[updateSkillStatusFailure]: (state, action) => {
@@ -140,7 +140,10 @@ export default handleActions({
   //  return R.merge(state, { skills });
   //},
   [evaluationCompleteSuccess]: (state, action) => {
-    return R.merge(state, { status: action.payload.status });
+    const { evaluationId, status } = action.payload;
+    const evaluationStatusLens =  R.lensPath(['entities',  evaluationId, 'status']);
+
+    return R.set(evaluationStatusLens, status, state);
   },
   [evaluationCompleteFailure]: (state, action) => {
     return R.merge(state, { error: action.payload });

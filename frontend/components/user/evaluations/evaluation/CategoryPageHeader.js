@@ -11,11 +11,10 @@ class CategoryPageHeader extends React.Component {
   }
 
   handleEvalCompleteClick() {
-    const { evaluationComplete, router, evaluationId } = this.props;
+    const { evaluationComplete, evaluationId } = this.props;
 
     this.setState({ isLoading: true });
-    evaluationComplete(evaluationId);
-    setTimeout(() => router.push(`evaluations/${evaluationId}`), 2000);
+    setTimeout(() => evaluationComplete(evaluationId), 1000);
   }
 
   render() {

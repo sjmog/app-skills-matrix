@@ -62,7 +62,10 @@ class EvaluationPageComponent extends React.Component {
     uiActions.previousCategory(evaluationId);
   }
 
-  evaluationComplete(evaluationId) {}
+  evaluationComplete() {
+    const { entityActions, evaluationId } = this.props;
+    entityActions.evaluationComplete(evaluationId);
+  }
 
   render() {
     const { currentSkill, skillStatus, lastSkill, firstSkill, evaluationId, lastCategory, firstCategory, skills, levels, skillGroups, view } = this.props;
@@ -72,7 +75,7 @@ class EvaluationPageComponent extends React.Component {
       return false;
     }
 
-    // TODO: FIRST VIEW OF EVALUATION TAKES YOU TO THE WRONG PLACE (VISION AND OWNERSHIP) -> skill details === (0)
+    // TODO: DISPLAY ERRORS ON FORM RETREIVAL, UPDATE FAILURE & MARK AS COMPLETE FAILURE
 
     return (
       <Grid>
