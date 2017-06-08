@@ -51,9 +51,6 @@ export const getEvaluationName = ({ entities: { evaluations } }, evalId) =>
 export const getEvaluationFetchStatus = ({ entities: { evaluations } }, category) =>
   fromEvaluations.getEvaluationFetchStatus(evaluations, category);
 
-export const getAllSkillsInCategory = ({ evaluation }, category) =>
-  fromEvaluations.getAllSkillsInCategory(evaluation, category);
-
 export const getView = ({ entities: { evaluations } }, evalId) =>
   fromEvaluations.getView(evaluations, evalId);
 
@@ -78,14 +75,8 @@ export const getCategories = ({ entities: { evaluations } }, evalId) =>
 export const getError = ({ entities: { evaluations } }, evalId) =>
   fromEvaluations.getError(evaluations, evalId);
 
-export const getLowestUnevaluatedSkill = ({ evaluation }, category) =>
-  fromEvaluations.getLowestUnevaluatedSkill(evaluation, category);
-
-export const getErringSkills = ({ evaluation }) =>
-  fromEvaluations.getErringSkills(evaluation);
-
-export const getNextCategory = ({ entities: { evaluations } }, category, evalId) =>
-  fromEvaluations.getNextCategory(evaluations, category, evalId);
+export const getErringSkills = ({ entities: { evaluations } }, evalId) =>
+  fromEvaluations.getErringSkills(evaluations, evalId);
 
 /* ACTIONS SELECTORS */
 

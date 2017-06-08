@@ -12,7 +12,7 @@ const { NEW, SELF_EVALUATION_COMPLETE } = EVALUATION_STATUS;
 import { actions as uiActions } from '../../../../modules/user/evaluation';
 import { actions as entityActions } from '../../../../modules/user/evaluations';
 
-import CategoryPageHeader from './CategoryPageHeader';
+import EvaluationHeader from './EvaluationHeader';
 import Matrix from '../../../common/matrix/Matrix';
 import Skill from './Skill';
 
@@ -68,19 +68,43 @@ class EvaluationPageComponent extends React.Component {
   }
 
   render() {
-    const { currentSkill, skillStatus, lastSkill, firstSkill, evaluationId, lastCategory, firstCategory, skills, levels, skillGroups, view } = this.props;
+    const {
+      currentSkill,
+      skillStatus,
+      lastSkill,
+      firstSkill,
+      evaluationId,
+      lastCategory,
+      firstCategory,
+      skills,
+      levels,
+      skillGroups,
+      view,
+      erringSkills
+    } = this.props;
+
     const currentSkillId = R.path(['skillId'], currentSkill);
 
     if (typeof currentSkillId !== 'number') { // TODO: May want to use init flag.
       return false;
     }
 
-    // TODO: DISPLAY ERRORS ON FORM RETREIVAL, UPDATE FAILURE & MARK AS COMPLETE FAILURE
 
     return (
       <Grid>
+        { erringSkills
+          ? <Row>
+              {erringSkills.map(
+                ({ name }) =>
+                  <Alert bsStyle='danger' key={name}>
+                    {`There was a problem updating a skill: ${name}`}
+                  </Alert>
+              )}
+            </Row>
+          : false
+        }
         <Row>
-          <CategoryPageHeader
+          <EvaluationHeader
             evaluationId={evaluationId}
             currentCategory={currentSkill.category}
             isFirstCategory={currentSkill.category === firstCategory}
@@ -157,6 +181,7 @@ export default connect(
       levels: selectors.getLevels(state, evaluationId),
       skillGroups: selectors.getSkillGroups(state, evaluationId),
       skills: selectors.getSkills(state, evaluationId),
+      erringSkills: selectors.getErringSkills(state, evaluationId),
     })
   },
   function mapDispatchToProps(dispatch) {

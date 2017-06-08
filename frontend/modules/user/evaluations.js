@@ -54,7 +54,7 @@ const updateSkillStatusSuccess = createAction(
 
 const updateSkillStatusFailure = createAction(
   constants.SKILL_STATUS_UPDATE_FAILURE,
-  (skillId, error) => ({ skillId, error })
+  (evaluationId, skillId, error) => ({ evaluationId, skillId, error })
 );
 
 const evaluationCompleteSuccess = createAction(
@@ -93,7 +93,7 @@ function updateSkillStatus(evaluationView, evaluationId, skillId, skillGroupId, 
 
     return updateSkillFn(evaluationId, skillGroupId, skillId, status)
       .then((update) => dispatch(updateSkillStatusSuccess(evaluationId, skillId, status)))
-      .catch((error) => dispatch(updateSkillStatusFailure(skillId, error)))
+      .catch((error) => dispatch(updateSkillStatusFailure(evaluationId, skillId, error)))
   }
 }
 
@@ -129,16 +129,16 @@ export default handleActions({
     return R.merge(state, { errors, fetchStatus });
   },
   [updateSkillStatusSuccess]: (state, action) => {
+    // TODO: Clear errors.
     const { evaluationId, skillId, status } = action.payload;
     const skillStatusLens =  R.lensPath(['entities', evaluationId, 'skills', skillId, 'status', 'current']);
     return R.set(skillStatusLens, status, state);
   },
-  //[updateSkillStatusFailure]: (state, action) => {
-  //  const { skillId, error } = action.payload;
-  //  const skills = Object.assign({}, state.skills);
-  //  skills[skillId].error = error;
-  //  return R.merge(state, { skills });
-  //},
+  [updateSkillStatusFailure]: (state, action) => {
+    const { evaluationId, skillId, error } = action.payload;
+    const skillLens = R.lensPath(['entities', evaluationId, 'skills', skillId, 'error']);
+    return R.set(skillLens, error, state);
+  },
   [evaluationCompleteSuccess]: (state, action) => {
     const { evaluationId, status } = action.payload;
     const evaluationStatusLens =  R.lensPath(['entities',  evaluationId, 'status']);
@@ -156,9 +156,6 @@ export const getCurrentSkillStatus = (state, skillId, evalId) =>
 export const getSkillStatus = (state, skillId, evalId) =>
   R.path([evalId, 'skills', skillId, 'status'], state.entities);
 
-export const getSkillGroup = (state, skillGroupId, evalId) =>
-  R.path([evalId, 'skillGroups', skillGroupId], state.entities);
-
 export const getSubjectName = (state, evalId) =>
   R.path([evalId, 'subject', 'name'], state.entities);
 
@@ -167,18 +164,6 @@ export const getEvaluationName = (state, evalId) =>
 
 export const getEvaluationFetchStatus = (state, evalId) =>
   R.path([evalId], state.fetchStatus);
-
-export const getAllSkillsInCategory = (state, category, evalId) => {
-  const evaluation = state[evalId];
-
-  if (!evaluation) return null;
-
-  return R.flatten(
-    R.reverse(evaluation.template.levels).map((level) => {
-      const { id: skillGroupId, skills } = getSkillGroup(level, category, evaluation.skillGroups);
-      return R.reverse(skills.map((id) => Object.assign({}, { id, skillGroupId })));
-    }));
-};
 
 export const getView = (state, evalId) =>
   R.path(['entities', evalId, 'view'], state);
@@ -204,36 +189,8 @@ export const getCategories = (state, evalId) =>
 export const getError = (state, evalId) =>
   R.path([evalId], state.errors);
 
-export const getLowestUnevaluatedSkill = (state, category) => {
-  const skillsInCategory = getAllSkillsInCategory(state, category);
-  const hasUnevaluatedSkills = ({ id }) => state.skills[id].status.current === null;
-
-  const unevaluatedSkill = R.find(hasUnevaluatedSkills)(skillsInCategory);
-  return unevaluatedSkill || R.last(skillsInCategory);
-};
-
-export const getErringSkills = (state) => {
-  const skills = getSkills(state);
+export const getErringSkills = (state, evalId) => {
+  const skills = getSkills(state, evalId);
+  console.log(R.values(skills));
   return R.filter((skill) => skill.error)(R.values(skills));
-};
-
-const unevaluated = (skill) =>
- R.path(['status', 'current'], skill) === null;
-
-export const getNextCategory = (state, category, evalId) => {
-  const evaluation = R.path([evalId, 'entities'], state);
-
-  if (!evaluation) return null;
-
-  const indexOfCurrentCategory = evaluation.template.categories.indexOf(category) || 0;
-  const remainingCategories = R.slice(indexOfCurrentCategory + 1, Infinity, evaluation.template.categories);
-
-  const hasUnevaluatedSkills = (category) => {
-    const skillsInCategory = getAllSkillsInCategory(state, category, evalId).map(({ id }) => evaluation.skills[id]);
-    const unevaluatedSkills = R.filter(unevaluated)(R.values(skillsInCategory));
-
-    return unevaluatedSkills.length > 0;
-  };
-
-  return R.find(hasUnevaluatedSkills)(remainingCategories);
 };

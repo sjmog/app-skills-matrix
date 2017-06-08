@@ -21,7 +21,6 @@ class EvaluationPageComponent extends React.Component {
     super(props);
 
     this.updateSkillStatus = this.updateSkillStatus.bind(this);
-    this.evaluationId = this.props.params.evaluationId;
   }
 
   componentDidMount() {
@@ -34,19 +33,11 @@ class EvaluationPageComponent extends React.Component {
 
   updateSkillStatus(evaluationView) {
     return (skillId, newStatus) =>
-      this.props.actions.updateSkillStatus(evaluationView, this.evaluationId, skillId, newStatus);
+      this.props.actions.updateSkillStatus(evaluationView, this.props.evaluationId, skillId, newStatus);
   }
 
-  /*
-    ROUTES:
-      IF SUBJECT && NEW  => EVALUATION VIEW
-      IF SUBJECT && !NEW || MENTOR => FULL MATRIX VIEW
-      IF ADMIN => FULL MATRIX ADMIN VIEW
-      MAY WANT TABS FOR FEEBBACK & OBJECTIVES?
-   */
-
   render() {
-    const { levels, categories, status, skillGroups, skills, view, params, templateName, fetchStatus } = this.props;
+    const { levels, categories, status, skillGroups, skills, view, params, fetchStatus } = this.props;
     const { evaluationId } = params;
 
     if (fetchStatus !== EVALUATION_FETCH_STATUS.LOADED) {
@@ -55,27 +46,33 @@ class EvaluationPageComponent extends React.Component {
 
     if (view === SUBJECT && status === NEW) {
       return (
-        <Evaluation evaluationId={evaluationId} />
+        <Evaluation evaluationId={evaluationId}/>
       );
     }
 
     return (
-      <div>
-        <EvaluationPageHeader
-          evaluationId={evaluationId}
-        />
-        <div className='evaluation-grid'>
-          <Matrix
-            categories={categories}
-            levels={R.reverse(levels)}
-            skillGroups={skillGroups}
-            updateSkillStatus={this.updateSkillStatus}
-            canUpdateSkillStatus={
-              view === SUBJECT && status === NEW
-              || view === MENTOR && status === SELF_EVALUATION_COMPLETE
-            }
-            skills={skills}
+      <div className='evaluation-grid'>
+        <div className='evaluation-grid__item'>
+          <EvaluationPageHeader
+            evaluationId={evaluationId}
           />
+        </div>
+        <div className='evaluation-grid__item'>
+          <Row>
+            <Col md={20}>
+              <Matrix
+                categories={categories}
+                levels={R.reverse(levels)}
+                skillGroups={skillGroups}
+                updateSkillStatus={this.updateSkillStatus}
+                canUpdateSkillStatus={
+                view === SUBJECT && status === NEW
+                || view === MENTOR && status === SELF_EVALUATION_COMPLETE
+                }
+                skills={skills}
+              />
+            </Col>
+          </Row>
         </div>
       </div>
     )
@@ -103,7 +100,6 @@ export const EvaluationPage = connect(
       error: selectors.getError(state, evalId),
       fetchStatus: selectors.getEvaluationFetchStatus(state, evalId),
       status: selectors.getEvaluationStatus(state, evalId),
-      templateName: selectors.getTemplateName(state, evalId),
       levels: selectors.getLevels(state, evalId),
       categories: selectors.getCategories(state, evalId),
       skillGroups: selectors.getSkillGroups(state, evalId),
