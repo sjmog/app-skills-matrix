@@ -18,14 +18,7 @@ class CategoryPageHeader extends React.Component {
   }
 
   render() {
-    const {
-      currentCategory,
-      isFirstCategory,
-      isLastCategory,
-      previousCategory,
-      nextCategory,
-      } = this.props;
-
+    const { currentCategory, isFirstCategory, isLastCategory, previousCategory, nextCategory } = this.props;
     const { isLoading } = this.state;
 
     return (

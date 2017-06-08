@@ -3,6 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Grid, Row, Alert, Col, Jumbotron, Button } from 'react-bootstrap';
 import { Link } from 'react-router';
+import R from 'ramda';
 
 import * as selectors from '../../../modules/user';
 import { actions, SKILL_STATUS, EVALUATION_VIEW, EVALUATION_STATUS, EVALUATION_FETCH_STATUS } from '../../../modules/user/evaluations';
@@ -54,19 +55,28 @@ class EvaluationPageComponent extends React.Component {
 
     if (view === SUBJECT && status === NEW) {
       return (
-        <Evaluation evaluationId={params.evaluationId} />
-      );
-    }
-
-    if (view === SUBJECT && status !== NEW) {
-      return (
-        <div>{`HERE IS THE NEW STATUS:${status}`}</div>
+        <Evaluation evaluationId={evaluationId} />
       );
     }
 
     return (
-      <div className='evaluation-grid'>
-        Hey
+      <div>
+        <EvaluationPageHeader
+          evaluationId={evaluationId}
+        />
+        <div className='evaluation-grid'>
+          <Matrix
+            categories={categories}
+            levels={R.reverse(levels)}
+            skillGroups={skillGroups}
+            updateSkillStatus={this.updateSkillStatus}
+            canUpdateSkillStatus={
+              view === SUBJECT && status === NEW
+              || view === MENTOR && status === SELF_EVALUATION_COMPLETE
+            }
+            skills={skills}
+          />
+        </div>
       </div>
     )
   }
@@ -90,14 +100,14 @@ export const EvaluationPage = connect(
     const evalId = props.params.evaluationId;
 
     return ({
-      // error: selectors.getError(state, evalId),
+      error: selectors.getError(state, evalId),
       fetchStatus: selectors.getEvaluationFetchStatus(state, evalId),
       status: selectors.getEvaluationStatus(state, evalId),
-      //templateName: selectors.getTemplateName(state, evalId),
-      //levels: selectors.getLevels(state, evalId),
-      //categories: selectors.getCategories(state, evalId),
-      //skillGroups: selectors.getSkillGroups(state, evalId),
-      //skills: selectors.getSkills(state, evalId),
+      templateName: selectors.getTemplateName(state, evalId),
+      levels: selectors.getLevels(state, evalId),
+      categories: selectors.getCategories(state, evalId),
+      skillGroups: selectors.getSkillGroups(state, evalId),
+      skills: selectors.getSkills(state, evalId),
       view: selectors.getView(state, evalId),
     });
   },

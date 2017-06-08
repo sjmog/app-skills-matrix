@@ -89,20 +89,20 @@ class EvaluationPageHeader extends React.Component {
 EvaluationPageHeader.propTypes = {
   view: PropTypes.string.isRequired,
   templateName:  PropTypes.string.isRequired,
-  category:  PropTypes.string.isRequired,
   subjectName:  PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,
   evaluationId: PropTypes.string.isRequired,
 };
 
 export default connect(
-  function mapStateToProps(state) {
+  function mapStateToProps(state, props) {
+    const evalId = props.evaluationId;
+
     return ({
-      view: selectors.getView(state),
-      templateName: selectors.getTemplateName(state),
-      category: selectors.getNextCategory(state),
-      subjectName: selectors.getSubjectName(state),
-      status: selectors.getEvaluationStatus(state),
+      view: selectors.getView(state, evalId),
+      templateName: selectors.getTemplateName(state, evalId),
+      subjectName: selectors.getSubjectName(state, evalId),
+      status:  selectors.getEvaluationStatus(state, evalId),
     })
   },
   function mapDispatchToProps(dispatch) {
