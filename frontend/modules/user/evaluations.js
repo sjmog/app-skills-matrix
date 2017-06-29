@@ -71,9 +71,7 @@ function retrieveEvaluation(evaluationId) {
   return function (dispatch) {
     return api.retrieveEvaluation(evaluationId)
       .then((evaluation) => dispatch(retrieveEvaluationSuccess(evaluation)))
-      .catch((error) => {
-        return dispatch(retrieveEvaluationFailure(error, evaluationId))
-      })
+      .catch((error) => dispatch(retrieveEvaluationFailure(error, evaluationId)))
   }
 }
 

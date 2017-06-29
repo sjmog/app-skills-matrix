@@ -9,7 +9,7 @@ import * as selectors from '../../../../modules/user'
 import { actions, SKILL_STATUS, EVALUATION_VIEW, EVALUATION_STATUS } from '../../../../modules/user/evaluations';
 const { SUBJECT, MENTOR } = EVALUATION_VIEW;
 const { NEW, SELF_EVALUATION_COMPLETE } = EVALUATION_STATUS;
-import { actions as uiActions } from '../../../../modules/user/evaluation';
+import { actionCreators as uiActionCreators } from '../../../../modules/user/evaluation';
 import { actions as entityActions } from '../../../../modules/user/evaluations';
 
 import EvaluationHeader from './EvaluationHeader';
@@ -173,7 +173,7 @@ export default connect(
       currentSkill,
       currentSkillStatus: selectors.getCurrentSkillStatus(state, currentSkill.skillId, evaluationId),
       skillStatus: selectors.getSkillStatus(state, currentSkill.skillId, evaluationId),
-      firstCategory: selectors.firstCategory(state), // TODO: Add 'get' to this.
+      firstCategory: selectors.getFirstCategory(state),
       lastCategory: selectors.getLastCategory(state),
       firstSkill: selectors.getFirstSkill(state),
       lastSkill: selectors.getLastSkill(state),
@@ -186,7 +186,7 @@ export default connect(
   },
   function mapDispatchToProps(dispatch) {
     return {
-      uiActions: bindActionCreators(uiActions, dispatch),
+      uiActions: bindActionCreators(uiActionCreators, dispatch),
       entityActions: bindActionCreators(entityActions, dispatch)
     };
   }
