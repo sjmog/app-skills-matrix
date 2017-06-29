@@ -129,15 +129,23 @@ export default handleActions({
     return R.merge(state, { errors, fetchStatus });
   },
   [updateSkillStatusSuccess]: (state, action) => {
-    // TODO: Clear errors.
     const { evaluationId, skillId, status } = action.payload;
-    const skillStatusLens =  R.lensPath(['entities', evaluationId, 'skills', skillId, 'status', 'current']);
-    return R.set(skillStatusLens, status, state);
+    const skillLens = R.lensPath(['entities', evaluationId, 'skills', skillId]);
+    const skill = R.view(skillLens, state);
+
+    const updatedSkill = {
+      ...skill,
+      status: { ...skill.status, current: status },
+      error: null
+    };
+
+    return R.set(skillLens, updatedSkill, state);
   },
   [updateSkillStatusFailure]: (state, action) => {
     const { evaluationId, skillId, error } = action.payload;
-    const skillLens = R.lensPath(['entities', evaluationId, 'skills', skillId, 'error']);
-    return R.set(skillLens, error, state);
+    const skillErrorLens = R.lensPath(['entities', evaluationId, 'skills', skillId, 'error']);
+
+    return R.set(skillErrorLens, error, state);
   },
   [evaluationCompleteSuccess]: (state, action) => {
     const { evaluationId, status } = action.payload;
@@ -191,6 +199,5 @@ export const getError = (state, evalId) =>
 
 export const getErringSkills = (state, evalId) => {
   const skills = getSkills(state, evalId);
-  console.log(R.values(skills));
   return R.filter((skill) => skill.error)(R.values(skills));
 };
