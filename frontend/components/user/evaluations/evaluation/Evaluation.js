@@ -69,6 +69,7 @@ class EvaluationPageComponent extends React.Component {
 
   render() {
     const {
+      initialisedEvaluation,
       currentSkill,
       skillStatus,
       lastSkill,
@@ -85,10 +86,9 @@ class EvaluationPageComponent extends React.Component {
 
     const currentSkillId = R.path(['skillId'], currentSkill);
 
-    if (typeof currentSkillId !== 'number') { // TODO: May want to use init flag.
+    if (!initialisedEvaluation) {
       return false;
     }
-
 
     return (
       <Grid>
