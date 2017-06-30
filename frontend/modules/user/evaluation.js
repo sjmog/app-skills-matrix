@@ -27,7 +27,7 @@ export const actionTypes = keymirror({
 });
 
 const actions = {
-  init: createAction(actionTypes.SET_AS_CURRENT_EVALUATION, evaluation => evaluation),
+  setAsCurrentEvaluation: createAction(actionTypes.SET_AS_CURRENT_EVALUATION, evaluation => evaluation),
   nextUnevaluatedSkill: createAction(actionTypes.NEXT_UNEVALUATED_SKILL, skills => skills),
   nextSkill: createAction(actionTypes.NEXT_SKILL),
   previousSkill: createAction(actionTypes.PREVIOUS_SKILL),
@@ -38,7 +38,7 @@ const actions = {
 function initEvaluation(evaluationId) {
   return function(dispatch, getState) {
     const evaluation = R.path(['entities', 'evaluations', 'entities', evaluationId], getState());
-    return dispatch(actions.init(evaluation));
+    return dispatch(actions.setAsCurrentEvaluation(evaluation));
   }
 }
 
@@ -84,14 +84,14 @@ export const actionCreators = {
   previousCategory,
 };
 
-const initialValues = {
+export const initialValues = {
   evaluationId: '',
   paginatedView: [],
   currentSkill: {},
 };
 
 export default handleActions({
-  [actions.init]: (state, action) => {
+  [actions.setAsCurrentEvaluation]: (state, action) => {
     const evaluation = action.payload;
     const paginatedView = constructPaginatedView(evaluation);
     const currentSkill = getFirstUnevaluatedSkill(paginatedView, evaluation.skills);
@@ -168,7 +168,6 @@ export default handleActions({
 
     return Object.assign({}, state, { currentSkill })
   }
-
 }, initialValues);
 
 export const getCurrentEvaluation = (evaluation) =>
