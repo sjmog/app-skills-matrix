@@ -18,13 +18,18 @@ const hydrateSkillsWithStaticData = (skills) =>
       }
     )(skillsInSkillGroup);
 
-const sortByLevel = (levels) =>
-  (category) => {
-    const indexOfLevel = (a, b) => levels.indexOf(a.level) > levels.indexOf(b.level);
-    return R.sort(indexOfLevel)(R.values(category));
+const sortSkillGroupsByLevel = (levels) =>
+  (skillGroups) => {
+    const indexOfLevel = (a, b) => {
+      if (levels.indexOf(a.level) < levels.indexOf(b.level)) return -1;
+      if (levels.indexOf(a.level) > levels.indexOf(b.level)) return 1;
+      return 0;
+    };
+
+    return R.sort(indexOfLevel)(R.values(skillGroups));
   };
 
-const sortByCategoryOrder = (categories) =>
+const orderCategories = (categories) =>
   obj => R.reduce((acc, curr) => [].concat(acc, obj[curr]), [])(categories);
 
 module.exports = (evaluation) => {
@@ -38,8 +43,8 @@ module.exports = (evaluation) => {
   return R.compose(
     R.flatten,
     R.map(hydrateSkillsWithStaticData(skills)),
-    sortByCategoryOrder(categories),
-    R.map(sortByLevel(levels)),
+    orderCategories(categories),
+    R.map(sortSkillGroupsByLevel(levels)),
     R.groupBy(category),
     R.values
   )(skillGroups);

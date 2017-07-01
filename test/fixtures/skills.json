@@ -55,29 +55,98 @@
   },
   {
     "id": 5,
-    "name": "Powerful Sword Arm",
-    "criteria": "Can chop a pumpkin in half with 1 slice",
+    "name": "Knows what slaying a dragon means",
+    "criteria": "",
     "type": "skill",
     "version": 1,
-    "questions": [
-      {
-        "title": "Can you chop all the things?"
-      },
-      {
-        "title": "Can you use multiple chopping devices?"
-      }
-    ]
+    "questions": [],
+    "status": {
+      "previous": null,
+      "current": null
+    }
   },
   {
     "id": 6,
-    "name": "Bash",
-    "criteria": "Can smite enemies with a single bash",
+    "name": "Has successfully slayed a dragon",
+    "criteria": "You have slayed at least one dragon",
     "type": "skill",
     "version": 1,
-    "questions": [
-      {
-        "title": "Have you bashed all your enemies in the last month?"
-      }
-    ]
+    "questions": [],
+    "status": {
+      "previous": null,
+      "current": null
+    }
+  },
+  {
+    "id": 7,
+    "name": "Knows the 8 principles of slaying a dragon",
+    "criteria": "",
+    "type": "skill",
+    "version": 1,
+    "questions": [],
+    "status": {
+      "previous": null,
+      "current": null
+    }
+  },
+  {
+    "id": 8,
+    "name": "In depth understanding of the theory behind slaying a dragon",
+    "criteria": "",
+    "type": "skill",
+    "version": 1,
+    "questions": [],
+    "status": {
+      "previous": null,
+      "current": null
+    }
+  },
+  {
+    "id": 9,
+    "name": "Can groom their dragon to reduce drag",
+    "criteria": "",
+    "type": "skill",
+    "version": 1,
+    "questions": [],
+    "status": {
+      "previous": null,
+      "current": null
+    }
+  },
+  {
+    "id": 10,
+    "name": "Can fly their dragon in good conditions",
+    "criteria": "",
+    "type": "skill",
+    "version": 1,
+    "questions": [],
+    "status": {
+      "previous": null,
+      "current": null
+    }
+  },
+  {
+    "id": 11,
+    "name": "Good grasp of the key concepts behind the Dark Arts",
+    "criteria": "",
+    "type": "skill",
+    "version": 1,
+    "questions": [],
+    "status": {
+      "previous": null,
+      "current": null
+    }
+  },
+  {
+    "id": 12,
+    "name": "In depth understanding of the Dark Arts",
+    "criteria": "",
+    "type": "skill",
+    "version": 1,
+    "questions": [],
+    "status": {
+      "previous": null,
+      "current": null
+    }
   }
 ]

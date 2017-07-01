@@ -2,7 +2,7 @@ const request = require('supertest');
 const { expect } = require('chai');
 
 const app = require('../backend');
-const { prepopulateUsers, users, evaluations, insertTemplate, clearDb, insertSkill, insertEvaluation, assignMentor, getEvaluations } = require('./helpers');
+const { prepopulateUsers, users, evaluations, insertTemplate, clearDb, insertSkill, insertEvaluation, assignMentor, getEvaluations, skillStatus } = require('./helpers');
 const { sign, cookieName } = require('../backend/models/auth');
 const templateData = require('./fixtures/templates');
 const skills = require('./fixtures/skills');
@@ -62,7 +62,7 @@ describe('userEvaluations', () => {
             .then(([firstEvaluation, secondEvaluation]) => {
               // see ./unit/evaluation-test.js for test to ensure evaluation is correctly generated
               expect(secondEvaluation).to.be.not.null;
-              expect(secondEvaluation.skills[1].status).to.deep.equal({
+              expect(skillStatus(secondEvaluation.skills, 2)).to.deep.equal({
                 previous: 'FEEDBACK',
                 current: null
               });

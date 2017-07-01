@@ -2,7 +2,7 @@ const request = require('supertest');
 const { expect } = require('chai');
 
 const app = require('../backend');
-const { prepopulateUsers, users, assignMentor, evaluations, insertTemplate, clearDb, insertSkill, insertEvaluation, getEvaluation, getAllActions } = require('./helpers');
+const { prepopulateUsers, users, assignMentor, evaluations, insertTemplate, clearDb, insertSkill, insertEvaluation, getEvaluation, getAllActions, skillStatus } = require('./helpers');
 const { sign, cookieName } = require('../backend/models/auth');
 const { STATUS } = require('../backend/models/evaluations/evaluation');
 const { NEW, SELF_EVALUATION_COMPLETE, MENTOR_REVIEW_COMPLETE } = STATUS;
@@ -165,7 +165,7 @@ describe('evaluations', () => {
             .send({
               action: 'subjectUpdateSkillStatus',
               skillGroupId: 0,
-              skillId: 1,
+              skillId: 5,
               status: 'ATTAINED'
             })
             .set('Cookie', `${cookieName}=${normalUserOneToken}`)
@@ -173,7 +173,7 @@ describe('evaluations', () => {
         )
         .then(() => getEvaluation(evaluationId))
         .then(({ skills }) => {
-          expect(skills[0].status).to.deep.equal({ previous: null, current: 'ATTAINED' });
+          expect(skillStatus(skills, 5)).to.deep.equal({ previous: null, current: 'ATTAINED' });
         }));
 
     it('adds action when a skill is set to FEEDBACK', () =>
@@ -355,7 +355,7 @@ describe('evaluations', () => {
             .send({
               action: 'mentorUpdateSkillStatus',
               skillGroupId: 0,
-              skillId: 1,
+              skillId: 5,
               status: 'ATTAINED'
             })
             .set('Cookie', `${cookieName}=${normalUserTwoToken}`)
@@ -363,7 +363,7 @@ describe('evaluations', () => {
         )
         .then(() => getEvaluation(evaluationId))
         .then(({ skills }) => {
-          expect(skills[0].status).to.deep.equal({ previous: null, current: 'ATTAINED' });
+          expect(skillStatus(skills, 5)).to.deep.equal({ previous: null, current: 'ATTAINED' });
         })
     );
 
@@ -492,7 +492,7 @@ describe('evaluations', () => {
             .send({
               action: 'adminUpdateSkillStatus',
               skillGroupId: 0,
-              skillId: 1,
+              skillId: 5,
               status: 'ATTAINED'
             })
             .set('Cookie', `${cookieName}=${adminToken}`)
@@ -500,7 +500,7 @@ describe('evaluations', () => {
         )
         .then(() => getEvaluation(evaluationId))
         .then(({ skills }) => {
-          expect(skills[0].status).to.deep.equal({ previous: null, current: 'ATTAINED' });
+          expect(skillStatus(skills, 5)).to.deep.equal({ previous: null, current: 'ATTAINED' });
         })
     );
 
