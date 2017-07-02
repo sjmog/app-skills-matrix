@@ -1,7 +1,7 @@
 import R from 'ramda';
 
-import { actions } from './modules/user/evaluation';
-import { constants } from './modules/user/evaluations';
+import { actions } from './../evaluation';
+import { constants } from './../evaluations';
 
 const getSkillsFromAppState = (appState, evaluationId) =>
   R.path(['entities', 'evaluations', 'entities', evaluationId, 'skills'], appState);
