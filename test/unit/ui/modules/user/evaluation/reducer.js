@@ -1,7 +1,7 @@
 import { expect } from 'chai';
-import evaluation from '../../backend/models/evaluations/evaluation';
-import evaluations from '../fixtures/evaluations';
-import reducer, { actionTypes, initialValues } from '../../frontend/modules/user/evaluation';
+import evaluation from '../../../../../../backend/models/evaluations/evaluation';
+import evaluations from '../../../../../fixtures/evaluations';
+import reducer, { actionTypes, initialValues } from '../../../../../../frontend/modules/user/evaluation';
 
 const fixtureEvaluation = Object.assign({}, evaluations[0], { _id: 'some_evaluation_id' });
 
