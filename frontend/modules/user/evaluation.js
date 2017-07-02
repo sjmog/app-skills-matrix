@@ -87,7 +87,7 @@ export const actionCreators = {
 export const initialValues = {
   evaluationId: '',
   paginatedView: [],
-  currentSkill: {},
+  currentSkill: null,
 };
 
 export default handleActions({
@@ -180,6 +180,9 @@ export const getCurrentEvaluation = (evaluation) =>
 
 export const getCurrentSkill = (evaluation) =>
   R.path(['currentSkill'], evaluation);
+
+export const getCurrentSkillId = (evaluation) =>
+  R.path(['currentSkill', 'skillId'], evaluation);
 
 export const getFirstCategory = (evaluation) =>
   R.path(['firstCategory'], evaluation);

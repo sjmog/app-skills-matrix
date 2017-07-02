@@ -156,9 +156,6 @@ export default handleActions({
   },
 }, initialSate);
 
-export const getCurrentSkillStatus = (state, skillId, evalId) =>
-  R.path([evalId, 'skills', skillId, 'status', 'current'], state.entities);
-
 export const getSkillStatus = (state, skillId, evalId) =>
   R.path([evalId, 'skills', skillId, 'status'], state.entities);
 

@@ -76,6 +76,7 @@ class Evaluation extends React.Component {
       status,
       initialisedEvaluation,
       currentSkill,
+      currentSkillId,
       currentSkillStatus,
       lastSkill,
       firstSkill,
@@ -85,7 +86,6 @@ class Evaluation extends React.Component {
       erringSkills
     } = this.props;
 
-    const currentSkillId = R.path(['skillId'], currentSkill);
 
     if (!initialisedEvaluation) {
       return false;
@@ -149,10 +149,10 @@ class Evaluation extends React.Component {
 }
 
 const skillShape = PropTypes.shape({
-  skillId: PropTypes.number,
-  skillGroupId: PropTypes.number,
-  level: PropTypes.string,
-  category: PropTypes.string,
+  skillId: PropTypes.number.isRequired,
+  skillGroupId: PropTypes.number.isRequired,
+  level: PropTypes.string.isRequried,
+  category: PropTypes.string.isRequired ,
 });
 
 Evaluation.propTypes = {
@@ -166,6 +166,7 @@ Evaluation.propTypes = {
   subjectName: PropTypes.string,
   evaluationName: PropTypes.string,
   currentSkill: skillShape,
+  currentSkillId: PropTypes.number,
   currentSkillStatus: PropTypes.shape({
     current: PropTypes.string,
     previous: PropTypes.string,
@@ -183,13 +184,15 @@ export default connect(
   function mapStateToProps(state, props) {
     const { evaluationId } = props;
     const currentSkill = selectors.getCurrentSkill(state);
+    const currentSkillId =  selectors.getCurrentSkillId(state);
 
     return ({
       initialisedEvaluation: selectors.getCurrentEvaluation(state),
       subjectName: selectors.getSubjectName(state, evaluationId),
       evaluationName: selectors.getEvaluationName(state, evaluationId),
       currentSkill,
-      currentSkillStatus: selectors.getSkillStatus(state, currentSkill.skillId, evaluationId),
+      currentSkillId,
+      currentSkillStatus: selectors.getSkillStatus(state, currentSkillId, evaluationId),
       firstCategory: selectors.getFirstCategory(state),
       lastCategory: selectors.getLastCategory(state),
       firstSkill: selectors.getFirstSkill(state),
