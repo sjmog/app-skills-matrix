@@ -17,7 +17,11 @@ const context = window.$CONTEXT;
 const reducers = context === 'admin' ? adminReducers : userReducers;
 const routes = context === 'admin' ? adminRoutes : userRoutes;
 
-const store = createStore(reducers, state, composeWithDevTools(applyMiddleware(thunk)));
+const store = createStore(
+  reducers,
+  state,
+  composeWithDevTools(applyMiddleware(thunk))
+);
 
 render(
   <Provider store={store}>

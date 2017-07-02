@@ -113,13 +113,13 @@ export default handleActions({
     return Object.assign({}, state, initialisedEvaluation);
   },
   [actions.nextSkill]: (state) => {
-    const { paginatedView, currentSkill: { skillId }, lastSkill } = state;
+    const { paginatedView, currentSkill, lastSkill } = state;
 
-    if (skillId === lastSkill.skillId) {
+    if (currentSkill.skillId === lastSkill.skillId) {
       return state;
     }
 
-    const indexOfCurrentSkill =  R.findIndex(R.propEq('skillId', skillId), paginatedView);
+    const indexOfCurrentSkill =  R.findIndex(R.propEq('skillId', currentSkill.skillId), paginatedView);
     const nextSkill = paginatedView[indexOfCurrentSkill + 1];
 
     return Object.assign({}, state, { currentSkill: nextSkill })
@@ -137,19 +137,19 @@ export default handleActions({
     return Object.assign({}, state, { currentSkill: prevSkill })
   },
   [actions.nextUnevaluatedSkill]: (state, action) => {
-    const { paginatedView, currentSkill: { skillId }, lastSkill } = state;
-
-    if (skillId === lastSkill.skillId) {
-      return state;
-    }
+    const { paginatedView, currentSkill: { skillId } } = state;
 
     const skills = action.payload;
     const currentSkill = getNextUnevaluatedSkill(paginatedView, skills, skillId) || R.last(paginatedView);
-
     return Object.assign({}, state, { currentSkill })
   },
   [actions.nextCategory]: (state, action) => {
-    const { paginatedView, currentSkill: { category } } = state;
+    const { paginatedView, currentSkill: { category }, lastCategory } = state;
+
+    if (category === lastCategory) {
+      return state;
+    }
+
     const skills = action.payload;
     const indexOfFirstElementInNextCategory = R.findLastIndex(R.propEq('category', category), paginatedView) + 1;
     const nextCategory = R.path(['category'], paginatedView[indexOfFirstElementInNextCategory]);
@@ -159,7 +159,12 @@ export default handleActions({
     return Object.assign({}, state, { currentSkill })
   },
   [actions.previousCategory]: (state, action) => {
-    const { paginatedView, currentSkill: { category } } = state;
+    const { paginatedView, currentSkill: { category }, firstCategory } = state;
+
+    if (category === firstCategory) {
+      return state;
+    }
+
     const skills = action.payload;
     const indexOfLastElementInPrevCategory = R.findIndex(R.propEq('category', category), paginatedView) - 1;
     const prevCategory = R.path(['category'], paginatedView[indexOfLastElementInPrevCategory]);
