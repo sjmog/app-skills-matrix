@@ -46,7 +46,14 @@ class EvaluationPageComponent extends React.Component {
 
     if (view === SUBJECT && status === NEW) {
       return (
-        <Evaluation evaluationId={evaluationId}/>
+        <Evaluation
+          evaluationId={evaluationId}
+          view={view}
+          levels={levels}
+          skills={skills}
+          skillGroups={skillGroups}
+          status={status}
+        />
       );
     }
 

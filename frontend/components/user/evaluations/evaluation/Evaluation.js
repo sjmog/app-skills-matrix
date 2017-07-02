@@ -16,7 +16,7 @@ import EvaluationHeader from './EvaluationHeader';
 import Matrix from '../../../common/matrix/Matrix';
 import Skill from './Skill';
 
-class EvaluationPageComponent extends React.Component {
+class Evaluation extends React.Component {
   constructor(props) {
     super(props);
 
@@ -29,9 +29,9 @@ class EvaluationPageComponent extends React.Component {
   }
 
   componentDidMount() {
-    const { evaluationId, fetchStatus, uiActions, initialisedEvaluation } = this.props;
+    const { evaluationId, uiActions, initialisedEvaluation } = this.props;
 
-    if ((!initialisedEvaluation || initialisedEvaluation !== evaluationId) && fetchStatus === 'LOADED') {
+    if (!initialisedEvaluation || initialisedEvaluation !== evaluationId) {
       uiActions.initEvaluation(evaluationId);
     }
   }
@@ -69,18 +69,19 @@ class EvaluationPageComponent extends React.Component {
 
   render() {
     const {
+      skills,
+      levels,
+      skillGroups,
+      view,
+      status,
       initialisedEvaluation,
       currentSkill,
-      skillStatus,
+      currentSkillStatus,
       lastSkill,
       firstSkill,
       evaluationId,
       lastCategory,
       firstCategory,
-      skills,
-      levels,
-      skillGroups,
-      view,
       erringSkills
     } = this.props;
 
@@ -119,7 +120,7 @@ class EvaluationPageComponent extends React.Component {
             <Skill
               level={currentSkill.level}
               skill={currentSkill}
-              skillStatus={skillStatus}
+              skillStatus={currentSkillStatus}
               updateSkillStatus={this.updateSkillStatus}
               nextSkill={this.nextSkill}
               prevSkill={this.prevSkill}
@@ -147,40 +148,52 @@ class EvaluationPageComponent extends React.Component {
   }
 }
 
-EvaluationPageComponent.propTypes = {
-  params: PropTypes.shape({
-    evaluationId: PropTypes.string.isRequired
+const skillShape = PropTypes.shape({
+  skillId: PropTypes.number,
+  skillGroupId: PropTypes.number,
+  level: PropTypes.string,
+  category: PropTypes.string,
+});
+
+Evaluation.propTypes = {
+  evaluationId: PropTypes.string.isRequired,
+  view: PropTypes.string.isRequired,
+  levels: PropTypes.array.isRequired,
+  skills: PropTypes.object.isRequired,
+  skillGroups: PropTypes.object.isRequired,
+  status: PropTypes.string.isRequired,
+  initialisedEvaluation: PropTypes.string,
+  subjectName: PropTypes.string,
+  evaluationName: PropTypes.string,
+  currentSkill: skillShape,
+  currentSkillStatus: PropTypes.shape({
+    current: PropTypes.string,
+    previous: PropTypes.string,
   }),
-  template: PropTypes.shape({
-    levels: PropTypes.array
-  }),
-  skills: PropTypes.object,
-  skillGroups: PropTypes.object,
-  skillsInCategory: PropTypes.array,
+  firstCategory: PropTypes.string,
+  lastCategory: PropTypes.string,
+  firstSkill: skillShape,
+  lastSkill: skillShape,
+  erringSkills: PropTypes.arrayOf(PropTypes.shape({
+    name: PropTypes.string.isRequired,
+  })),
 };
 
 export default connect(
   function mapStateToProps(state, props) {
     const { evaluationId } = props;
     const currentSkill = selectors.getCurrentSkill(state);
-    // TODO: May want to move this to EvaluationPage.
+
     return ({
-      evaluationId,
       initialisedEvaluation: selectors.getCurrentEvaluation(state),
       subjectName: selectors.getSubjectName(state, evaluationId),
       evaluationName: selectors.getEvaluationName(state, evaluationId),
-      fetchStatus: selectors.getEvaluationFetchStatus(state, evaluationId), // TODO: Consider getting rid of this
       currentSkill,
-      currentSkillStatus: selectors.getCurrentSkillStatus(state, currentSkill.skillId, evaluationId),
-      skillStatus: selectors.getSkillStatus(state, currentSkill.skillId, evaluationId),
+      currentSkillStatus: selectors.getSkillStatus(state, currentSkill.skillId, evaluationId),
       firstCategory: selectors.getFirstCategory(state),
       lastCategory: selectors.getLastCategory(state),
       firstSkill: selectors.getFirstSkill(state),
       lastSkill: selectors.getLastSkill(state),
-      view: selectors.getView(state, evaluationId),
-      levels: selectors.getLevels(state, evaluationId),
-      skillGroups: selectors.getSkillGroups(state, evaluationId),
-      skills: selectors.getSkills(state, evaluationId),
       erringSkills: selectors.getErringSkills(state, evaluationId),
     })
   },
@@ -190,4 +203,4 @@ export default connect(
       entityActions: bindActionCreators(entityActions, dispatch)
     };
   }
-)(EvaluationPageComponent);
+)(Evaluation);
