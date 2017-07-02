@@ -12,7 +12,7 @@ const getFirstUnevaluatedSkill = (elements, skills) =>
 
 const getNextUnevaluatedSkill = (paginatedView, skills, currentSkillId) => {
   const indexOfCurrentSkill = R.findIndex(R.propEq('skillId', currentSkillId))(paginatedView);
-  const remainingPaginatedView = R.slice(indexOfCurrentSkill, Infinity, paginatedView);
+  const remainingPaginatedView = R.slice(indexOfCurrentSkill + 1, Infinity, paginatedView);
 
   return getFirstUnevaluatedSkill(remainingPaginatedView, skills);
 };
@@ -26,7 +26,7 @@ export const actionTypes = keymirror({
   PREVIOUS_CATEGORY: null,
 });
 
-const actions = {
+export const actions = {
   setAsCurrentEvaluation: createAction(actionTypes.SET_AS_CURRENT_EVALUATION, evaluation => evaluation),
   nextUnevaluatedSkill: createAction(actionTypes.NEXT_UNEVALUATED_SKILL, skills => skills),
   nextSkill: createAction(actionTypes.NEXT_SKILL),

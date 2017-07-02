@@ -245,7 +245,7 @@ describe('Evaluation reducer', () => {
           1: {
             id: 1,
             status: {
-              current: 'ATTAINED',
+              current: null,
               previous: null,
             }
           },

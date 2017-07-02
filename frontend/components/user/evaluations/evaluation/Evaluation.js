@@ -27,6 +27,7 @@ class EvaluationPageComponent extends React.Component {
     this.previousCategory = this.previousCategory.bind(this);
     this.evaluationComplete = this.evaluationComplete.bind(this);
   }
+
   componentDidMount() {
     const { evaluationId, fetchStatus, uiActions, initialisedEvaluation } = this.props;
 
@@ -36,10 +37,9 @@ class EvaluationPageComponent extends React.Component {
   }
 
   updateSkillStatus(newSkillStatus) {
-    const { entityActions, uiActions, currentSkill: { skillId, skillGroupId }, view, evaluationId } = this.props;
+    const { entityActions, currentSkill: { skillId, skillGroupId }, view, evaluationId } = this.props;
 
-    entityActions.updateSkillStatus(view, evaluationId, skillId, skillGroupId, newSkillStatus)
-      .then(() => uiActions.nextUnevaluatedSkill(evaluationId));
+    entityActions.updateSkillStatus(view, evaluationId, skillId, skillGroupId, newSkillStatus);
   }
 
   nextSkill() {

@@ -11,6 +11,7 @@ import 'bootstrap/dist/css/bootstrap-theme.css';
 import { adminRoutes, userRoutes } from './routes';
 import adminReducers from './modules/admin';
 import userReducers from './modules/user';
+import evaluation from './evaluation-middleware';
 
 const state = window.$REDUX_STATE;
 const context = window.$CONTEXT;
@@ -20,7 +21,7 @@ const routes = context === 'admin' ? adminRoutes : userRoutes;
 const store = createStore(
   reducers,
   state,
-  composeWithDevTools(applyMiddleware(thunk))
+  composeWithDevTools(applyMiddleware(evaluation, thunk))
 );
 
 render(
