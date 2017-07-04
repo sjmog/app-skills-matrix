@@ -54,9 +54,6 @@ export const getEvaluationFetchStatus = ({ entities: { evaluations } }, category
 export const getView = ({ entities: { evaluations } }, evalId) =>
   fromEvaluations.getView(evaluations, evalId);
 
-export const getTemplateName = ({ entities: { evaluations } }, evalId) =>
-  fromEvaluations.getTemplateName(evaluations, evalId);
-
 export const getEvaluationStatus = ({ entities: { evaluations } }, evalId) =>
   fromEvaluations.getEvaluationStatus(evaluations, evalId);
 

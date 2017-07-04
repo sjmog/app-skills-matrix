@@ -157,40 +157,37 @@ export default handleActions({
 }, initialSate);
 
 export const getSkillStatus = (state, skillId, evalId) =>
-  R.path([evalId, 'skills', skillId, 'status'], state.entities);
+  R.path(['entities', evalId, 'skills', skillId, 'status'], state);
 
 export const getSubjectName = (state, evalId) =>
-  R.path([evalId, 'subject', 'name'], state.entities);
+  R.path(['entities', evalId, 'subject', 'name'], state);
 
 export const getEvaluationName = (state, evalId) =>
-  R.path([evalId, 'template', 'name'], state.entities);
+  R.path(['entities', evalId, 'template', 'name'], state);
 
 export const getEvaluationFetchStatus = (state, evalId) =>
-  R.path([evalId], state.fetchStatus);
+  R.path(['fetchStatus', evalId], state);
 
 export const getView = (state, evalId) =>
   R.path(['entities', evalId, 'view'], state);
-
-export const getTemplateName = (state, evalId) =>
-  R.path([evalId, 'template', 'name'], state.entities);
 
 export const getEvaluationStatus = (state, evalId) =>
   R.path(['entities', evalId, 'status'], state);
 
 export const getSkillGroups = (state, evalId) =>
-  R.path([evalId, 'skillGroups'], state.entities);
+  R.path(['entities', evalId, 'skillGroups'], state);
 
 export const getSkills = (state, evalId) =>
-  R.path([evalId, 'skills'], state.entities);
+  R.path(['entities', evalId, 'skills'], state);
 
 export const getLevels = (state, evalId) =>
-  R.path([evalId, 'template', 'levels'], state.entities);
+  R.path(['entities', evalId, 'template', 'levels'], state);
 
 export const getCategories = (state, evalId) =>
-  R.path([evalId, 'template', 'categories'], state.entities);
+  R.path(['entities', evalId, 'template', 'categories'], state);
 
 export const getError = (state, evalId) =>
-  R.path([evalId], state.errors);
+  R.path(['errors', evalId], state);
 
 export const getErringSkills = (state, evalId) => {
   const skills = getSkills(state, evalId);

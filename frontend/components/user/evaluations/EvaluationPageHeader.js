@@ -45,7 +45,7 @@ class EvaluationPageHeader extends React.Component {
   }
 
   render() {
-    const { view, templateName, subjectName, status } = this.props;
+    const { view, evaluationName, subjectName, status } = this.props;
 
     if (view === MENTOR) {
       return (
@@ -67,7 +67,7 @@ class EvaluationPageHeader extends React.Component {
           <PageHeader
             alertText={alertText(view, status)}
             title='Evaluation'
-            subTitle={templateName}
+            subTitle={evaluationName}
           />
         </Row>
       )
@@ -88,7 +88,7 @@ class EvaluationPageHeader extends React.Component {
 
 EvaluationPageHeader.propTypes = {
   view: PropTypes.string.isRequired,
-  templateName:  PropTypes.string.isRequired,
+  evaluationName:  PropTypes.string.isRequired,
   subjectName:  PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,
   evaluationId: PropTypes.string.isRequired,
@@ -100,7 +100,7 @@ export default connect(
 
     return ({
       view: selectors.getView(state, evalId),
-      templateName: selectors.getTemplateName(state, evalId),
+      evaluationName: selectors.getEvaluationName(state, evalId),
       subjectName: selectors.getSubjectName(state, evalId),
       status:  selectors.getEvaluationStatus(state, evalId),
     })
