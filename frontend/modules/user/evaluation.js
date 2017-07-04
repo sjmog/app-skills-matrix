@@ -4,7 +4,7 @@ import R from 'ramda';
 
 import constructPaginatedView from './constructPaginatedView';
 
-const getSkillsFromAppState = (appState, evaluationId) =>
+const getSkillsFromState = (appState, evaluationId) =>
   R.path(['entities', 'evaluations', 'entities', evaluationId, 'skills'], appState);
 
 const getFirstUnevaluatedSkill = (elements, skills) =>
@@ -44,7 +44,7 @@ function initEvaluation(evaluationId) {
 
 function nextUnevaluatedSkill(evaluationId) {
   return function(dispatch, getState) {
-    const skills = getSkillsFromAppState(getState(), evaluationId);
+    const skills = getSkillsFromState(getState(), evaluationId);
     return dispatch(actions.nextUnevaluatedSkill(skills));
   }
 }
@@ -63,14 +63,14 @@ function prevSkill() {
 
 function nextCategory(evaluationId) {
   return function(dispatch, getState) {
-    const skills = getSkillsFromAppState(getState(), evaluationId);
+    const skills = getSkillsFromState(getState(), evaluationId);
     return dispatch(actions.nextCategory(skills));
   }
 }
 
 function previousCategory(evaluationId) {
   return function(dispatch, getState) {
-    const skills = getSkillsFromAppState(getState(), evaluationId);
+    const skills = getSkillsFromState(getState(), evaluationId);
     return dispatch(actions.previousCategory(skills));
   }
 }
