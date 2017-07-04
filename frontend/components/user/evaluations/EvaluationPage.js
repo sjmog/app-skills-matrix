@@ -72,8 +72,9 @@ class EvaluationPageComponent extends React.Component {
                 skillGroups={skillGroups}
                 updateSkillStatus={this.updateSkillStatus}
                 canUpdateSkillStatus={
-                view === SUBJECT && status === NEW
-                || view === MENTOR && status === SELF_EVALUATION_COMPLETE
+                  view === ADMIN
+                  || view === SUBJECT && status === NEW
+                  || view === MENTOR && status === SELF_EVALUATION_COMPLETE
                 }
                 skills={skills}
               />
