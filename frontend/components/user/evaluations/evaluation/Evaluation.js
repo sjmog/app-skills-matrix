@@ -132,7 +132,7 @@ class Evaluation extends React.Component {
             <Matrix
               skillBeingEvaluated={currentSkillId}
               categories={[].concat(currentSkill.category)}
-              levels={R.reverse(R.slice(0, levels.indexOf(currentSkill.level) + 1, levels))}
+              levels={R.slice(levels.indexOf(currentSkill.level), Infinity, levels)}
               skillGroups={skillGroups}
               updateSkillStatus={this.updateSkillStatus}
               canUpdateSkillStatus={

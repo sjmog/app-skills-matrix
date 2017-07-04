@@ -9,10 +9,10 @@
       "Dragon Slaying"
     ],
     "levels": [
-      "Novice",
-      "Experienced Beginner",
+      "Expert",
       "Knowledgeable",
-      "Expert"
+      "Experienced Beginner",
+      "Novice"
     ],
     "skillGroups": [
       {

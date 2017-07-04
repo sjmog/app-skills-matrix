@@ -17,10 +17,10 @@
         "Dragon Slaying"
       ],
       "levels": [
-        "Novice",
-        "Experienced Beginner",
+        "Expert",
         "Knowledgeable",
-        "Expert"
+        "Experienced Beginner",
+        "Novice"
       ]
     },
     "skills": [
@@ -436,10 +436,10 @@
         "Dragon Slaying"
       ],
       "levels": [
-        "Novice",
-        "Experienced Beginner",
+        "Expert",
         "Knowledgeable",
-        "Expert"
+        "Experienced Beginner",
+        "Novice"
       ]
     },
     "skills": [

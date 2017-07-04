@@ -3,7 +3,6 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Grid, Row, Alert, Col, Jumbotron, Button } from 'react-bootstrap';
 import { Link } from 'react-router';
-import R from 'ramda';
 
 import * as selectors from '../../../modules/user';
 import { actions, SKILL_STATUS, EVALUATION_VIEW, EVALUATION_STATUS, EVALUATION_FETCH_STATUS } from '../../../modules/user/evaluations';
@@ -69,7 +68,7 @@ class EvaluationPageComponent extends React.Component {
             <Col md={20}>
               <Matrix
                 categories={categories}
-                levels={R.reverse(levels)}
+                levels={levels}
                 skillGroups={skillGroups}
                 updateSkillStatus={this.updateSkillStatus}
                 canUpdateSkillStatus={
