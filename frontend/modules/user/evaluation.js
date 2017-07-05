@@ -50,15 +50,11 @@ function nextUnevaluatedSkill(evaluationId) {
 }
 
 function nextSkill() {
-  return function(dispatch) {
-    return dispatch(actions.nextSkill());
-  }
+  return actions.nextSkill();
 }
 
 function prevSkill() {
-  return function(dispatch) {
-    return dispatch(actions.previousSkill());
-  }
+  return actions.previousSkill();
 }
 
 function nextCategory(evaluationId) {
@@ -119,7 +115,7 @@ export default handleActions({
       return state;
     }
 
-    const indexOfCurrentSkill =  R.findIndex(R.propEq('skillId', currentSkill.skillId), paginatedView);
+    const indexOfCurrentSkill = R.findIndex(R.propEq('skillId', currentSkill.skillId), paginatedView);
     const nextSkill = paginatedView[indexOfCurrentSkill + 1];
 
     return Object.assign({}, state, { currentSkill: nextSkill })
@@ -131,7 +127,7 @@ export default handleActions({
       return state;
     }
 
-    const indexOfCurrentSkill =  R.findIndex(R.propEq('skillId', skillId), paginatedView);
+    const indexOfCurrentSkill = R.findIndex(R.propEq('skillId', skillId), paginatedView);
     const prevSkill = paginatedView[indexOfCurrentSkill - 1];
 
     return Object.assign({}, state, { currentSkill: prevSkill })
