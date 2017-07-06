@@ -4,17 +4,17 @@ import R from 'ramda';
 
 import constructPaginatedView from './constructPaginatedView';
 
-const getSkillsFromState = (appState, evaluationId) =>
-  R.path(['entities', 'evaluations', 'entities', evaluationId, 'skills'], appState);
+const getSkillsFromState = (state, evaluationId) =>
+  R.path(['entities', 'evaluations', 'entities', evaluationId, 'skills'], state);
 
 const getFirstUnevaluatedSkill = (elements, skills) =>
   R.find(({ skillId }) => !skills[skillId].status.current)(elements);
 
 const getNextUnevaluatedSkill = (paginatedView, skills, currentSkillId) => {
   const indexOfCurrentSkill = R.findIndex(R.propEq('skillId', currentSkillId))(paginatedView);
-  const remainingPaginatedView = R.slice(indexOfCurrentSkill + 1, Infinity, paginatedView);
+  const remainingSkillsInPaginatedView = R.slice(indexOfCurrentSkill + 1, Infinity, paginatedView);
 
-  return getFirstUnevaluatedSkill(remainingPaginatedView, skills);
+  return getFirstUnevaluatedSkill(remainingSkillsInPaginatedView, skills);
 };
 
 export const actionTypes = keymirror({
@@ -84,6 +84,10 @@ export const initialValues = {
   evaluationId: '',
   paginatedView: [],
   currentSkill: null,
+  firstSkill: null,
+  lastSkill: null,
+  firstCategory: '',
+  lastCategory: '',
 };
 
 export default handleActions({

@@ -75,8 +75,10 @@ function retrieveEvaluation(evaluationId) {
   }
 }
 
-function updateSkillStatus(evaluationView, evaluationId, skillId, skillGroupId, status) {
-  return function(dispatch) {
+function updateSkillStatus(evaluationView, evaluationId, skillId, status) {
+  return function(dispatch, getState) {
+    const skillGroups = R.path(['entities', 'evaluations', 'entities', evaluationId, 'skillGroups'],  getState());
+    const skillGroupId = R.keys(R.filter((group, key) => R.contains(skillId, group.skills), skillGroups))[0];
 
     let updateSkillFn;
     if (evaluationView === EVALUATION_VIEW.MENTOR) {

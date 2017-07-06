@@ -7,7 +7,7 @@ import SkillActions from '../../../common/SkillActions';
 import SkillBody from './SkillBody';
 import '../evaluation.scss'
 
-const Skill = ({ level, skill, skillStatus, updateSkillStatus, prevSkill, nextSkill, isFirstSkill, isLastSkill }) => {
+const Skill = ({ level, skill, skillStatus, updateSkillStatus, postUpdateNavigation, prevSkill, nextSkill, isFirstSkill, isLastSkill }) => {
   const { name, skillId, criteria, questions } = skill;
 
   return (
@@ -23,10 +23,10 @@ const Skill = ({ level, skill, skillStatus, updateSkillStatus, prevSkill, nextSk
         <SkillBody criteria={criteria} questions={questions} />
         <SkillActions
           skillStatus={skillStatus}
-          onAttained={() => updateSkillStatus(SKILL_STATUS.ATTAINED)}
-          onNotAttained={() => updateSkillStatus(SKILL_STATUS.NOT_ATTAINED)}
-          onFeedbackRequest={() => updateSkillStatus(SKILL_STATUS.FEEDBACK)}
-          onSetObjective={() => updateSkillStatus(SKILL_STATUS.OBJECTIVE)}
+          onAttained={() => updateSkillStatus(skillId, SKILL_STATUS.ATTAINED).then(() => postUpdateNavigation())}
+          onNotAttained={() => updateSkillStatus(skillId, SKILL_STATUS.NOT_ATTAINED).then(() => postUpdateNavigation())}
+          onFeedbackRequest={() => updateSkillStatus(skillId, SKILL_STATUS.FEEDBACK).then(() => postUpdateNavigation())}
+          onSetObjective={() => updateSkillStatus(skillId, SKILL_STATUS.OBJECTIVE).then(() => postUpdateNavigation())}
         />
       </Panel>
       <ButtonGroup className='pull-right'>
@@ -55,6 +55,7 @@ Skill.propTypes = {
     skillId: PropTypes.number.isRequired,
   }),
   updateSkillStatus: PropTypes.func.isRequired,
+  postUpdateNavigation: PropTypes.func.isRequired,
   nextSkill: PropTypes.func.isRequired,
   prevSkill: PropTypes.func.isRequired,
 };

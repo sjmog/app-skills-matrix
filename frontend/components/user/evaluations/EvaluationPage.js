@@ -30,14 +30,14 @@ class EvaluationPageComponent extends React.Component {
     }
   }
 
-  updateSkillStatus(evaluationView) {
-    return (skillId, newStatus) =>
-      this.props.actions.updateSkillStatus(evaluationView, this.props.evaluationId, skillId, newStatus);
+  updateSkillStatus(skillId, newSkillStatus) {
+    const { actions, view, params: { evaluationId } } = this.props;
+
+    return actions.updateSkillStatus(view, evaluationId, skillId, newSkillStatus);
   }
 
   render() {
-    const { levels, categories, status, skillGroups, skills, view, params, fetchStatus } = this.props;
-    const { evaluationId } = params;
+    const { levels, categories, status, skillGroups, skills, view, params: { evaluationId }, fetchStatus } = this.props;
 
     if (fetchStatus !== EVALUATION_FETCH_STATUS.LOADED) {
       return false;
@@ -52,6 +52,7 @@ class EvaluationPageComponent extends React.Component {
           skills={skills}
           skillGroups={skillGroups}
           status={status}
+          updateSkillStatus={this.updateSkillStatus}
         />
       );
     }
@@ -71,12 +72,12 @@ class EvaluationPageComponent extends React.Component {
                 levels={levels}
                 skillGroups={skillGroups}
                 updateSkillStatus={this.updateSkillStatus}
+                skills={skills}
                 canUpdateSkillStatus={
                   view === ADMIN
                   || view === SUBJECT && status === NEW
                   || view === MENTOR && status === SELF_EVALUATION_COMPLETE
                 }
-                skills={skills}
               />
             </Col>
           </Row>

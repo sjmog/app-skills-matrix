@@ -7,7 +7,7 @@ import { Link } from 'react-router';
 
 import * as selectors from '../../../../modules/user'
 import { actions, SKILL_STATUS, EVALUATION_VIEW, EVALUATION_STATUS } from '../../../../modules/user/evaluations';
-const { SUBJECT, MENTOR } = EVALUATION_VIEW;
+const { SUBJECT, MENTOR, ADMIN } = EVALUATION_VIEW;
 const { NEW, SELF_EVALUATION_COMPLETE } = EVALUATION_STATUS;
 import { actionCreators as uiActionCreators } from '../../../../modules/user/evaluation';
 import { actions as entityActions } from '../../../../modules/user/evaluations';
@@ -20,12 +20,12 @@ class Evaluation extends React.Component {
   constructor(props) {
     super(props);
 
-    this.updateSkillStatus = this.updateSkillStatus.bind(this);
     this.nextSkill = this.nextSkill.bind(this);
     this.prevSkill = this.prevSkill.bind(this);
     this.nextCategory = this.nextCategory.bind(this);
     this.previousCategory = this.previousCategory.bind(this);
     this.evaluationComplete = this.evaluationComplete.bind(this);
+    this.postUpdateNavigation = this.postUpdateNavigation.bind(this);
   }
 
   componentDidMount() {
@@ -34,12 +34,6 @@ class Evaluation extends React.Component {
     if (!initialisedEvaluation || initialisedEvaluation !== evaluationId) {
       uiActions.initEvaluation(evaluationId);
     }
-  }
-
-  updateSkillStatus(newSkillStatus) {
-    const { entityActions, currentSkill: { skillId, skillGroupId }, view, evaluationId } = this.props;
-
-    entityActions.updateSkillStatus(view, evaluationId, skillId, skillGroupId, newSkillStatus);
   }
 
   nextSkill() {
@@ -67,6 +61,11 @@ class Evaluation extends React.Component {
     entityActions.evaluationComplete(evaluationId);
   }
 
+  postUpdateNavigation() {
+    const { uiActions, evaluationId } = this.props;
+    uiActions.nextUnevaluatedSkill(evaluationId);
+  }
+
   render() {
     const {
       skills,
@@ -75,6 +74,7 @@ class Evaluation extends React.Component {
       view,
       status,
       initialisedEvaluation,
+      updateSkillStatus,
       currentSkill,
       currentSkillId,
       currentSkillStatus,
@@ -83,11 +83,11 @@ class Evaluation extends React.Component {
       evaluationId,
       lastCategory,
       firstCategory,
-      erringSkills
+      erringSkills,
     } = this.props;
 
 
-    if (!initialisedEvaluation) {
+    if (!initialisedEvaluation || initialisedEvaluation !== evaluationId) {
       return false;
     }
 
@@ -121,11 +121,12 @@ class Evaluation extends React.Component {
               level={currentSkill.level}
               skill={currentSkill}
               skillStatus={currentSkillStatus}
-              updateSkillStatus={this.updateSkillStatus}
+              updateSkillStatus={updateSkillStatus}
               nextSkill={this.nextSkill}
               prevSkill={this.prevSkill}
               isFirstSkill={currentSkillId === firstSkill.skillId}
               isLastSkill={currentSkillId === lastSkill.skillId}
+              postUpdateNavigation={this.postUpdateNavigation}
             />
           </Col>
           <Col md={5} className='evaluation-panel evaluation-panel--right'>
@@ -134,9 +135,10 @@ class Evaluation extends React.Component {
               categories={[].concat(currentSkill.category)}
               levels={R.slice(levels.indexOf(currentSkill.level), Infinity, levels)}
               skillGroups={skillGroups}
-              updateSkillStatus={this.updateSkillStatus}
+              updateSkillStatus={updateSkillStatus}
               canUpdateSkillStatus={
-                view === SUBJECT && status === NEW
+                view === ADMIN
+                || view === SUBJECT && status === NEW
                 || view === MENTOR && status === SELF_EVALUATION_COMPLETE
               }
               skills={skills}
@@ -162,9 +164,8 @@ Evaluation.propTypes = {
   skills: PropTypes.object.isRequired,
   skillGroups: PropTypes.object.isRequired,
   status: PropTypes.string.isRequired,
+  updateSkillStatus: PropTypes.func.isRequired,
   initialisedEvaluation: PropTypes.string,
-  subjectName: PropTypes.string,
-  evaluationName: PropTypes.string,
   currentSkill: skillShape,
   currentSkillId: PropTypes.number,
   currentSkillStatus: PropTypes.shape({
@@ -188,8 +189,6 @@ export default connect(
 
     return ({
       initialisedEvaluation: selectors.getCurrentEvaluation(state),
-      subjectName: selectors.getSubjectName(state, evaluationId),
-      evaluationName: selectors.getEvaluationName(state, evaluationId),
       currentSkill,
       currentSkillId,
       currentSkillStatus: selectors.getSkillStatus(state, currentSkillId, evaluationId),
