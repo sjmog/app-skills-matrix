@@ -161,7 +161,7 @@ Evaluation.propTypes = {
   view: PropTypes.string.isRequired,
   levels: PropTypes.array.isRequired,
   skills: PropTypes.object.isRequired,
-  skillGroups: PropTypes.object.isRequired,
+  skillGroups: PropTypes.object,
   status: PropTypes.string.isRequired,
   updateSkillStatus: PropTypes.func.isRequired,
   initialisedEvaluation: PropTypes.string,
@@ -196,6 +196,7 @@ export default connect(
       firstSkill: selectors.getFirstSkill(state),
       lastSkill: selectors.getLastSkill(state),
       erringSkills: selectors.getErringSkills(state, evaluationId),
+      skillGroups: selectors.getSkillGroupsWithReversedSkills(state, evaluationId),
     })
   },
   function mapDispatchToProps(dispatch) {

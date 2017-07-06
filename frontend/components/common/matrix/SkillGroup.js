@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import { Table } from 'react-bootstrap';
-import R from 'ramda';
 
 import Skill from './Skill';
 
@@ -9,7 +8,7 @@ const SkillGroup = ({ skillGroup, skills, viewSkillDetails, skillBeingEvaluated 
     <Table bordered>
       <tbody>
       {
-        R.reverse(skillGroup.skills).map(
+        skillGroup.skills.map(
           (skillId) => {
             const skill = skills[skillId];
 

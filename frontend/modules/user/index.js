@@ -75,6 +75,10 @@ export const getError = ({ entities: { evaluations } }, evalId) =>
 export const getErringSkills = ({ entities: { evaluations } }, evalId) =>
   fromEvaluations.getErringSkills(evaluations, evalId);
 
+export const getSkillGroupsWithReversedSkills = ({ entities: { evaluations } }, evalId) =>
+  fromEvaluations.getSkillGroupsWithReversedSkills(evaluations, evalId);
+
+
 /* ACTIONS SELECTORS */
 
 export const getFeedbackForEvaluation = ({ actions }, evaluationId) =>

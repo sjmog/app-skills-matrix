@@ -60,7 +60,6 @@ class EvaluationPageComponent extends React.Component {
           view={view}
           levels={levels}
           skills={skills}
-          skillGroups={skillGroups}
           status={status}
           updateSkillStatus={this.updateSkillStatus}
         />

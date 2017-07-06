@@ -197,3 +197,12 @@ export const getErringSkills = (state, evalId) => {
   const skills = getSkills(state, evalId);
   return R.filter((skill) => skill.error)(R.values(skills));
 };
+
+export const getSkillGroupsWithReversedSkills = (state, evalId) => {
+  const reverseSkills = (skillGroup) => ({
+    ...skillGroup,
+    skills: R.reverse(skillGroup.skills)
+  });
+
+  return R.map(reverseSkills)(getSkillGroups(state, evalId));
+};
