@@ -86,7 +86,6 @@ class Evaluation extends React.Component {
       erringSkills,
     } = this.props;
 
-
     if (!initialisedEvaluation || initialisedEvaluation !== evaluationId) {
       return false;
     }
