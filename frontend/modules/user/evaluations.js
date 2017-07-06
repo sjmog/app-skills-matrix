@@ -64,7 +64,7 @@ const evaluationCompleteSuccess = createAction(
 
 const evaluationCompleteFailure = createAction(
   constants.EVALUATION_COMPLETE_FAILURE,
-  error => error
+  (evaluationId, error) => ({ [evaluationId]: error })
 );
 
 function retrieveEvaluation(evaluationId) {
@@ -101,7 +101,7 @@ function evaluationComplete(evaluationId) {
   return function (dispatch) {
     return api.evaluationComplete(evaluationId)
       .then(({ status }) => dispatch(evaluationCompleteSuccess(evaluationId, status)))
-      .catch((error) => dispatch(evaluationCompleteFailure(error)))
+      .catch((error) => dispatch(evaluationCompleteFailure(evaluationId, error)))
   }
 }
 export const actions = {
@@ -154,7 +154,9 @@ export default handleActions({
     return R.set(evaluationStatusLens, status, state);
   },
   [evaluationCompleteFailure]: (state, action) => {
-    return R.merge(state, { error: action.payload });
+    const errors = R.merge(state.errors, action.payload);
+
+    return R.merge(state, { errors });
   },
 }, initialSate);
 

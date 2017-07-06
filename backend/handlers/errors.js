@@ -9,6 +9,7 @@ module.exports = Object.freeze({
   SKILL_NOT_FOUND: () => ({ message: 'Skill not found' }),
   MUST_BE_SUBJECT_OF_EVALUATION_OR_MENTOR: () => ({ message: 'Only the person being evaluated and their mentor can view an evaluation' }),
   MUST_BE_LOGGED_IN: () => ({ message: 'You must be logged in to view this page' }),
+  MUST_BE_LOGGED_IN_FOR_REQUEST: () => ({ message: 'You must be logged in for this request to be fulfilled' }),
   SUBJECT_CAN_ONLY_UPDATE_NEW_EVALUATION: () => ({ message: "You can't make any changes to this evaluation." }),
   MENTOR_REVIEW_COMPLETE: () => ({ message: 'This evaluation has been reviewed and is now complete.'}),
   MENTOR_CAN_ONLY_UPDATE_AFTER_SELF_EVALUATION: () => ({ message: "You can't update this evaluation until your mentee has completed their self-evaluation."}),

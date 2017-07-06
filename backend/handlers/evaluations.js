@@ -14,7 +14,7 @@ const {
   EVALUATION_NOT_FOUND,
   SKILL_NOT_FOUND,
   MUST_BE_SUBJECT_OF_EVALUATION_OR_MENTOR,
-  MUST_BE_LOGGED_IN,
+  MUST_BE_LOGGED_IN_FOR_REQUEST,
   SUBJECT_CAN_ONLY_UPDATE_NEW_EVALUATION,
   MENTOR_REVIEW_COMPLETE,
   MENTOR_CAN_ONLY_UPDATE_AFTER_SELF_EVALUATION,
@@ -81,7 +81,7 @@ const handlerFunctions = Object.freeze({
           }
 
           if (!user) {
-            return res.status(401).json(MUST_BE_LOGGED_IN());
+            return res.status(401).json(MUST_BE_LOGGED_IN_FOR_REQUEST());
           }
 
           if (user.id === evaluation.user.id) {
@@ -115,7 +115,7 @@ const handlerFunctions = Object.freeze({
           }
 
           if (!user) {
-            return res.status(401).json(MUST_BE_LOGGED_IN());
+            return res.status(401).json(MUST_BE_LOGGED_IN_FOR_REQUEST());
           }
 
           if (user.id !== evaluation.user.id) {
@@ -147,7 +147,7 @@ const handlerFunctions = Object.freeze({
           }
 
           if (!user) {
-            return res.status(401).json(MUST_BE_LOGGED_IN());
+            return res.status(401).json(MUST_BE_LOGGED_IN_FOR_REQUEST());
           }
 
           const skill = evaluation.findSkill(skillId);
@@ -182,7 +182,7 @@ const handlerFunctions = Object.freeze({
           }
 
           if (!user) {
-            return res.status(401).json(MUST_BE_LOGGED_IN());
+            return res.status(401).json(MUST_BE_LOGGED_IN_FOR_REQUEST());
           }
 
           const skill = evaluation.findSkill(skillId);
@@ -211,7 +211,7 @@ const handlerFunctions = Object.freeze({
           }
 
           if (!user) {
-            return res.status(401).json(MUST_BE_LOGGED_IN());
+            return res.status(401).json(MUST_BE_LOGGED_IN_FOR_REQUEST());
           }
 
           if (evaluation.mentorReviewCompleted()) {

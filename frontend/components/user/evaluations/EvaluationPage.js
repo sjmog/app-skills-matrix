@@ -37,7 +37,17 @@ class EvaluationPageComponent extends React.Component {
   }
 
   render() {
-    const { levels, categories, status, skillGroups, skills, view, params: { evaluationId }, fetchStatus } = this.props;
+    const { error, levels, categories, status, skillGroups, skills, view, params: { evaluationId }, fetchStatus } = this.props;
+
+    if (error) {
+      return (
+        <Grid>
+          <Row>
+            <Alert bsStyle='danger'>Something went wrong: {error.message}</Alert>
+          </Row>
+        </Grid>
+      );
+    }
 
     if (fetchStatus !== EVALUATION_FETCH_STATUS.LOADED) {
       return false;
