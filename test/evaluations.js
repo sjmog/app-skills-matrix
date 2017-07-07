@@ -34,9 +34,9 @@ describe('evaluations', () => {
             normalUserOneToken = sign({ username: normalUserOne.username, id: normalUserOne._id });
             normalUserTwoToken = sign({ username: normalUserTwo.username, id: normalUserTwo._id });
             adminToken = sign({ username: adminUser.username, id: adminUser._id });
-            normalUserOneId = normalUserOne._id;
-            normalUserTwoId = normalUserTwo._id;
-            adminUserId = adminUser._id;
+            normalUserOneId = String(normalUserOne._id);
+            normalUserTwoId = String(normalUserTwo._id);
+            adminUserId = String(adminUser._id);
           })));
 
   describe('GET /evaluation/:evaluationId', () => {
@@ -367,7 +367,7 @@ describe('evaluations', () => {
         })
     );
 
-    it('adds action when a skill is set to FEEDBACK', () =>
+    it('adds action when status of a skill is updated to an action (FEEDBACK/OBJECTIVE)', () =>
       insertEvaluation(Object.assign({}, evaluation, { status: SELF_EVALUATION_COMPLETE }), normalUserOneId)
         .then(({ insertedId }) => {
           evaluationId = insertedId.toString();
@@ -391,6 +391,9 @@ describe('evaluations', () => {
           expect(action.type).to.equal('FEEDBACK');
           expect(action.evaluation.id).to.equal(evaluationId);
           expect(action.skill.id).to.equal(1);
+          expect(action.user.id).to.equal(normalUserOneId);
+          expect(action.user.name).to.equal('User Magic');
+          expect(action.user.mentorId).to.equal(normalUserTwoId);
         }));
 
 
@@ -503,6 +506,36 @@ describe('evaluations', () => {
           expect(skills[0].status).to.deep.equal({ previous: null, current: 'ATTAINED' });
         })
     );
+
+    it('adds action when a status of a skill is updated to an action (FEEDBACK/OBJECTIVE)', () =>
+      insertEvaluation(Object.assign({}, evaluation, { status: NEW }), normalUserOneId)
+        .then(({ insertedId }) => {
+          evaluationId = insertedId.toString();
+        })
+        .then(() => assignMentor(normalUserOneId, normalUserTwoId))
+        .then(() =>
+          request(app)
+            .post(`${prefix}/evaluations/${evaluationId}`)
+            .send({
+              action: 'adminUpdateSkillStatus',
+              skillGroupId: 0,
+              skillId: 1,
+              status: 'FEEDBACK'
+            })
+            .set('Cookie', `${cookieName}=${adminToken}`)
+            .expect(204)
+        )
+        .then(() => getAllActions())
+        .then(([action]) => {
+          expect(action).to.not.be.undefined;
+          expect(action.type).to.equal('FEEDBACK');
+          expect(action.evaluation.id).to.equal(evaluationId);
+          expect(action.skill.id).to.equal(1);
+          expect(action.user.id).to.equal(normalUserOneId);
+          expect(action.user.name).to.equal('User Magic');
+          expect(action.user.mentorId).to.equal(normalUserTwoId);
+        }));
+
 
     it('prevents users from updating the status of a skill via the admin handler if they are not an admin user', () =>
       insertEvaluation(Object.assign({}, evaluation, { status: NEW }), normalUserOneId)
