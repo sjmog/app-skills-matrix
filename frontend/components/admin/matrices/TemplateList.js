@@ -9,7 +9,7 @@ const templateDetailsRow = (template) => {
       <td>{name}</td>
       <td>
         <Link to={{
-          pathname: `/matrices/templates/${id}`,
+          pathname: `/admin/matrices/templates/${id}`,
           state: { template }
         }}>
           Modify

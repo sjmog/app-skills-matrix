@@ -2,212 +2,196 @@ import { handleActions, createAction } from 'redux-actions';
 import keymirror from 'keymirror';
 import R from 'ramda';
 
-import api from '../../api';
+import constructPaginatedView from './constructPaginatedView';
 
-export const EVALUATION_VIEW = keymirror({
-  MENTOR: null,
-  SUBJECT: null,
-  ADMIN: null,
-});
+const getSkillsFromState = (state, evaluationId) =>
+  R.path(['entities', 'evaluations', 'entities', evaluationId, 'skills'], state);
 
-export const SKILL_STATUS = keymirror({
-  ATTAINED: null,
-  NOT_ATTAINED: null,
-  FEEDBACK: null,
-  OBJECTIVE: null
-});
+const getFirstUnevaluatedSkill = (elements, skills) =>
+  R.find(({ skillId }) => !skills[skillId].status.current)(elements);
 
-export const EVALUATION_STATUS = keymirror({
-  MENTOR_REVIEW_COMPLETE: null,
-  SELF_EVALUATION_COMPLETE: null,
-  NEW: null,
-});
+const getNextUnevaluatedSkill = (paginatedView, skills, currentSkillId) => {
+  const indexOfCurrentSkill = R.findIndex(R.propEq('skillId', currentSkillId))(paginatedView);
+  const remainingSkillsInPaginatedView = R.slice(indexOfCurrentSkill + 1, Infinity, paginatedView);
 
-export const constants = keymirror({
-  RETRIEVE_EVALUATION_SUCCESS: null,
-  RETRIEVE_EVALUATION_FAILURE: null,
-  SKILL_STATUS_UPDATE_SUCCESS: null,
-  SKILL_STATUS_UPDATE_FAILURE: null,
-  EVALUATION_COMPLETE_SUCCESS: null,
-  EVALUATION_COMPLETE_FAILURE: null,
-});
-
-const retrieveEvaluationSuccess = createAction(
-  constants.RETRIEVE_EVALUATION_SUCCESS,
-  normalizedEvaluation => normalizedEvaluation
-);
-
-const retrieveEvaluationFailure = createAction(
-  constants.RETRIEVE_EVALUATION_FAILURE,
-  error => error
-);
-
-const updateSkillStatusSuccess = createAction(
-  constants.SKILL_STATUS_UPDATE_SUCCESS,
-  (skillId, status) => ({ skillId, status })
-);
-
-const updateSkillStatusFailure = createAction(
-  constants.SKILL_STATUS_UPDATE_FAILURE,
-  (skillId, error) => ({ skillId, error })
-);
-
-const evaluationCompleteSuccess = createAction(
-  constants.EVALUATION_COMPLETE_SUCCESS,
-  status => status
-);
-
-const evaluationCompleteFailure = createAction(
-  constants.EVALUATION_COMPLETE_FAILURE,
-  error => error
-);
-
-function retrieveEvaluation(evaluationId) {
-  return function (dispatch) {
-    return api.retrieveEvaluation(evaluationId)
-      .then((evaluation) => dispatch(retrieveEvaluationSuccess(evaluation)))
-      .catch((error) => dispatch(retrieveEvaluationFailure(error)))
-  }
-}
-
-function updateSkillStatus(evaluationView, evaluationId, skillId, status) {
-  return function(dispatch, getState) {
-    const { skillGroups } = getState().evaluation;
-    const skillGroupId = R.keys(R.filter((group, key) => R.contains(skillId, group.skills), skillGroups))[0];
-
-    let updateSkillFn;
-    if (evaluationView === EVALUATION_VIEW.MENTOR) {
-      updateSkillFn = api.mentorUpdateSkillStatus;
-    } else if (evaluationView === EVALUATION_VIEW.SUBJECT) {
-      updateSkillFn = api.subjectUpdateSkillStatus;
-    } else if (evaluationView === EVALUATION_VIEW.ADMIN) {
-      updateSkillFn = api.adminUpdateSkillStatus;
-    } else {
-      updateSkillFn = () => Promise.reject(new Error('Unknown user role'));
-    }
-
-    return updateSkillFn(evaluationId, skillGroupId, skillId, status)
-      .then((update) => dispatch(updateSkillStatusSuccess(skillId, status)))
-      .catch((error) => dispatch(updateSkillStatusFailure(skillId, error)))
-  }
-}
-
-function evaluationComplete(evaluationId) {
-  return function (dispatch) {
-    return api.evaluationComplete(evaluationId)
-      .then((status) => dispatch(evaluationCompleteSuccess(status)))
-      .catch((error) => dispatch(evaluationCompleteFailure(error)))
-  }
-}
-export const actions = {
-  retrieveEvaluation,
-  updateSkillStatus,
-  evaluationComplete,
+  return getFirstUnevaluatedSkill(remainingSkillsInPaginatedView, skills);
 };
 
-const initialSate = {
-  error: null,
-  status: null,
-  template: {},
-  skills: {},
-  skillGroups: {}
+export const actionTypes = keymirror({
+  SET_AS_CURRENT_EVALUATION: null,
+  NEXT_UNEVALUATED_SKILL: null,
+  NEXT_SKILL: null,
+  PREVIOUS_SKILL: null,
+  NEXT_CATEGORY: null,
+  PREVIOUS_CATEGORY: null,
+});
+
+export const actions = {
+  setAsCurrentEvaluation: createAction(actionTypes.SET_AS_CURRENT_EVALUATION, evaluation => evaluation),
+  nextUnevaluatedSkill: createAction(actionTypes.NEXT_UNEVALUATED_SKILL, skills => skills),
+  nextSkill: createAction(actionTypes.NEXT_SKILL),
+  previousSkill: createAction(actionTypes.PREVIOUS_SKILL),
+  nextCategory: createAction(actionTypes.NEXT_CATEGORY, skills => skills),
+  previousCategory: createAction(actionTypes.PREVIOUS_CATEGORY, skills => skills),
+};
+
+function initEvaluation(evaluationId) {
+  return function(dispatch, getState) {
+    const evaluation = R.path(['entities', 'evaluations', 'entities', evaluationId], getState());
+    return dispatch(actions.setAsCurrentEvaluation(evaluation));
+  }
+}
+
+function nextUnevaluatedSkill(evaluationId) {
+  return function(dispatch, getState) {
+    const skills = getSkillsFromState(getState(), evaluationId);
+    return dispatch(actions.nextUnevaluatedSkill(skills));
+  }
+}
+
+function nextSkill() {
+  return actions.nextSkill();
+}
+
+function prevSkill() {
+  return actions.previousSkill();
+}
+
+function nextCategory(evaluationId) {
+  return function(dispatch, getState) {
+    const skills = getSkillsFromState(getState(), evaluationId);
+    return dispatch(actions.nextCategory(skills));
+  }
+}
+
+function previousCategory(evaluationId) {
+  return function(dispatch, getState) {
+    const skills = getSkillsFromState(getState(), evaluationId);
+    return dispatch(actions.previousCategory(skills));
+  }
+}
+
+export const actionCreators = {
+  initEvaluation,
+  nextSkill,
+  prevSkill,
+  nextUnevaluatedSkill,
+  nextCategory,
+  previousCategory,
+};
+
+export const initialValues = {
+  evaluationId: '',
+  paginatedView: [],
+  currentSkill: null,
+  firstSkill: null,
+  lastSkill: null,
+  firstCategory: '',
+  lastCategory: '',
 };
 
 export default handleActions({
-  [retrieveEvaluationSuccess]: (state, action) => {
-    return R.merge(state, action.payload);
+  [actions.setAsCurrentEvaluation]: (state, action) => {
+    const evaluation = action.payload;
+    const paginatedView = constructPaginatedView(evaluation);
+    const currentSkill = getFirstUnevaluatedSkill(paginatedView, evaluation.skills);
+    const firstSkill = R.head(paginatedView);
+    const firstCategory = firstSkill.category;
+    const lastSkill = R.last(paginatedView);
+    const lastCategory = lastSkill.category;
+
+    const initialisedEvaluation = {
+      evaluationId: evaluation.id,
+      paginatedView,
+      currentSkill,
+      firstSkill,
+      firstCategory,
+      lastSkill,
+      lastCategory
+    };
+
+    return Object.assign({}, state, initialisedEvaluation);
   },
-  [retrieveEvaluationFailure]: (state, action) => {
-    return R.merge(state, { error: action.payload });
+  [actions.nextSkill]: (state) => {
+    const { paginatedView, currentSkill, lastSkill } = state;
+
+    if (currentSkill.skillId === lastSkill.skillId) {
+      return state;
+    }
+
+    const indexOfCurrentSkill = R.findIndex(R.propEq('skillId', currentSkill.skillId), paginatedView);
+    const nextSkill = paginatedView[indexOfCurrentSkill + 1];
+
+    return Object.assign({}, state, { currentSkill: nextSkill })
   },
-  [updateSkillStatusSuccess]: (state, action) => {
-    const { skillId, status } = action.payload;
-    const skills = Object.assign({}, state.skills);
-    skills[skillId].status.current = status;
-    skills[skillId].error = null;
-    return R.merge(state, { skills });
+  [actions.previousSkill]: (state) => {
+    const { paginatedView, currentSkill: { skillId }, firstSkill } = state;
+
+    if (skillId === firstSkill.skillId) {
+      return state;
+    }
+
+    const indexOfCurrentSkill = R.findIndex(R.propEq('skillId', skillId), paginatedView);
+    const prevSkill = paginatedView[indexOfCurrentSkill - 1];
+
+    return Object.assign({}, state, { currentSkill: prevSkill })
   },
-  [updateSkillStatusFailure]: (state, action) => {
-    const { skillId, error } = action.payload;
-    const skills = Object.assign({}, state.skills);
-    skills[skillId].error = error;
-    return R.merge(state, { skills });
+  [actions.nextUnevaluatedSkill]: (state, action) => {
+    const { paginatedView, currentSkill: { skillId } } = state;
+
+    const skills = action.payload;
+    const currentSkill = getNextUnevaluatedSkill(paginatedView, skills, skillId) || R.last(paginatedView);
+    return Object.assign({}, state, { currentSkill })
   },
-  [evaluationCompleteSuccess]: (state, action) => {
-    return R.merge(state, { status: action.payload.status });
+  [actions.nextCategory]: (state, action) => {
+    const { paginatedView, currentSkill: { category }, lastCategory } = state;
+
+    if (category === lastCategory) {
+      return state;
+    }
+
+    const skills = action.payload;
+    const indexOfFirstElementInNextCategory = R.findLastIndex(R.propEq('category', category), paginatedView) + 1;
+    const nextCategory = R.path(['category'], paginatedView[indexOfFirstElementInNextCategory]);
+    const elements = R.filter(R.propEq('category', nextCategory), paginatedView);
+    const currentSkill = getFirstUnevaluatedSkill(elements, skills) || R.last(elements);
+
+    return Object.assign({}, state, { currentSkill })
   },
-  [evaluationCompleteFailure]: (state, action) => {
-    return R.merge(state, { error: action.payload });
-  },
-}, initialSate);
+  [actions.previousCategory]: (state, action) => {
+    const { paginatedView, currentSkill: { category }, firstCategory } = state;
 
-export const getIdOfEvaluationInState = (state) =>
-  R.prop('id', state);
+    if (category === firstCategory) {
+      return state;
+    }
 
-const getSkillGroup = (level, category, skillGroups) =>
-  R.find(group => (group.level === level && group.category === category), R.values(skillGroups));
+    const skills = action.payload;
+    const indexOfLastElementInPrevCategory = R.findIndex(R.propEq('category', category), paginatedView) - 1;
+    const prevCategory = R.path(['category'], paginatedView[indexOfLastElementInPrevCategory]);
+    const elements = R.filter(R.propEq('category', prevCategory), paginatedView);
+    const currentSkill = getFirstUnevaluatedSkill(elements, skills) || R.last(elements);
 
-export const getAllSkillsInCategory = (state, category) =>
-  R.flatten(
-    R.reverse(state.template.levels).map((level) => {
-      const { id: skillGroupId, skills } = getSkillGroup(level, category, state.skillGroups);
-      return R.reverse(skills.map((id) => Object.assign({}, { id, skillGroupId })));
-    }));
+    return Object.assign({}, state, { currentSkill })
+  }
+}, initialValues);
 
-export const getView = (state) =>
-  R.path(['view'], state);
+export const getCurrentEvaluation = (evaluation) =>
+  R.path(['evaluationId'], evaluation);
 
-export const getTemplateName = (state) =>
-  R.path(['template', 'name'], state);
+export const getCurrentSkill = (evaluation) =>
+  R.path(['currentSkill'], evaluation);
 
-export const getSubjectName = (state) =>
-  R.path(['subject', 'name'], state);
+export const getCurrentSkillId = (evaluation) =>
+  R.path(['currentSkill', 'skillId'], evaluation);
 
-export const getEvaluationStatus = (state) =>
-  R.path(['status'], state);
+export const getFirstCategory = (evaluation) =>
+  R.path(['firstCategory'], evaluation);
 
-export const getSkillGroups = (state) =>
-  R.path(['skillGroups'], state);
+export const getLastCategory = (evaluation) =>
+  R.path(['lastCategory'], evaluation);
 
-export const getSkills = (state) =>
-  R.path(['skills'], state);
+export const getFirstSkill = (evaluation) =>
+  R.path(['firstSkill'], evaluation);
 
-export const getLevels = (state) => {
-  return R.path(['template', 'levels'], state);
-};
-
-export const getCategories = (state) =>
-  R.path(['template', 'categories'], state);
-
-export const getError = (state) =>
-  R.path(['error'], state);
-
-export const getLowestUnevaluatedSkill = (state, category) => {
-  const skillsInCategory = getAllSkillsInCategory(state, category);
-  const hasUnevaluatedSkills = ({ id }) => state.skills[id].status.current === null;
-
-  const unevaluatedSkill = R.find(hasUnevaluatedSkills)(skillsInCategory);
-  return unevaluatedSkill || R.last(skillsInCategory);
-};
-
-export const getErringSkills = (state) => {
-  const skills = getSkills(state);
-  return R.filter((skill) => skill.error)(R.values(skills));
-};
-
-const unevaluated = (skill) =>
- R.path(['status', 'current'], skill) === null;
-
-export const getNextCategory = (state, category) => {
-  const indexOfCurrentCategory = state.template.categories.indexOf(category) || 0;
-  const remainingCategories = R.slice(indexOfCurrentCategory + 1, Infinity, state.template.categories);
-
-  const hasUnevaluatedSkills = (category) => {
-    const skillsInCategory = getAllSkillsInCategory(state, category).map(({ id }) => state.skills[id]);
-    const unevaluatedSkills = R.filter(unevaluated)(R.values(skillsInCategory));
-
-    return unevaluatedSkills.length > 0;
-  };
-
-  return R.find(hasUnevaluatedSkills)(remainingCategories);
-};
+export const getLastSkill = (evaluation) =>
+  R.path(['lastSkill'], evaluation);

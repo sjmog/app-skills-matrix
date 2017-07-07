@@ -28,5 +28,6 @@ module.exports = {
   getEvaluations: () => evaluations.find({}).then((e) => e.toArray()).then(R.map(decrypt)),
   getAllActions: () => actions.find({}).then((e) => e.toArray()),
   insertAction: (userId) => (action) => actions.insertOne(Object.assign({}, action, { user: { id: String(userId) } })),
-  clearDb: () => Promise.all([users.remove({}), templates.remove({}), skills.remove({}), evaluations.remove({}), actions.remove({})])
+  clearDb: () => Promise.all([users.remove({}), templates.remove({}), skills.remove({}), evaluations.remove({}), actions.remove({})]),
+  skillStatus: (skills, skillId) => R.prop('status' , R.find((skill) => skill.id === skillId)(skills))
 };

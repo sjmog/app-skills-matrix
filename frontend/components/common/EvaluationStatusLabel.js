@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Label } from 'react-bootstrap';
 
-import { EVALUATION_STATUS } from '../../modules/user/evaluation'
+import { EVALUATION_STATUS } from '../../modules/user/evaluations'
 const { NEW, SELF_EVALUATION_COMPLETE, MENTOR_REVIEW_COMPLETE } = EVALUATION_STATUS;
 
 const EvaluationStatusLabel = ({ status }) => {

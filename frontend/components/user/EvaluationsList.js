@@ -4,7 +4,7 @@ import { Link } from 'react-router';
 import moment from 'moment';
 
 import EvalutionStatusLabel from '../common/EvaluationStatusLabel';
-import { EVALUATION_VIEW, EVALUATION_STATUS } from '../../modules/user/evaluation'
+import { EVALUATION_VIEW, EVALUATION_STATUS } from '../../modules/user/evaluations'
 const { MENTOR, SUBJECT } = EVALUATION_VIEW;
 const { NEW, SELF_EVALUATION_COMPLETE } = EVALUATION_STATUS;
 

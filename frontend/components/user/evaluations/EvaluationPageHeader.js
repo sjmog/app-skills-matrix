@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Row, Button, Label, Alert } from 'react-bootstrap';
 import { Link } from 'react-router';
 
-import { actions, EVALUATION_STATUS, EVALUATION_VIEW } from '../../../modules/user/evaluation';
+import { actions, EVALUATION_STATUS, EVALUATION_VIEW } from '../../../modules/user/evaluations';
 import * as selectors from '../../../modules/user';
 import Matrix from '../../common/matrix/Matrix';
 import PageHeader from './../../common/PageHeader';
@@ -45,7 +45,7 @@ class EvaluationPageHeader extends React.Component {
   }
 
   render() {
-    const { view, templateName, subjectName, status } = this.props;
+    const { view, evaluationName, subjectName, status } = this.props;
 
     if (view === MENTOR) {
       return (
@@ -67,7 +67,7 @@ class EvaluationPageHeader extends React.Component {
           <PageHeader
             alertText={alertText(view, status)}
             title='Evaluation'
-            subTitle={templateName}
+            subTitle={evaluationName}
           />
         </Row>
       )
@@ -88,21 +88,21 @@ class EvaluationPageHeader extends React.Component {
 
 EvaluationPageHeader.propTypes = {
   view: PropTypes.string.isRequired,
-  templateName:  PropTypes.string.isRequired,
-  category:  PropTypes.string.isRequired,
+  evaluationName:  PropTypes.string.isRequired,
   subjectName:  PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,
   evaluationId: PropTypes.string.isRequired,
 };
 
 export default connect(
-  function mapStateToProps(state) {
+  function mapStateToProps(state, props) {
+    const evalId = props.evaluationId;
+
     return ({
-      view: selectors.getView(state),
-      templateName: selectors.getTemplateName(state),
-      category: selectors.getNextCategory(state),
-      subjectName: selectors.getSubjectName(state),
-      status: selectors.getEvaluationStatus(state),
+      view: selectors.getView(state, evalId),
+      evaluationName: selectors.getEvaluationName(state, evalId),
+      subjectName: selectors.getSubjectName(state, evalId),
+      status:  selectors.getEvaluationStatus(state, evalId),
     })
   },
   function mapDispatchToProps(dispatch) {
