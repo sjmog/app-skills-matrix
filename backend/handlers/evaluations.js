@@ -192,7 +192,8 @@ const handlerFunctions = Object.freeze({
 
           if (user.isAdmin) {
             return updateEvaluation(evaluation.updateSkill(skillId, status))
-              .then(() => addActions(user, skill, evaluation, status))
+              .then(() => getUserById(evaluation.user.id))
+              .then((evalUser) => addActions(evalUser, skill, evaluation, status))
               .then(() => res.sendStatus(204))
           }
 
