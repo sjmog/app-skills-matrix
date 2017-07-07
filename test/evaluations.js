@@ -1,14 +1,30 @@
 const request = require('supertest');
 const { expect } = require('chai');
+const R = require('ramda');
 
 const app = require('../backend');
-const { prepopulateUsers, users, assignMentor, evaluations, insertTemplate, clearDb, insertSkill, insertEvaluation, getEvaluation, getAllActions, skillStatus } = require('./helpers');
+
+const {
+  prepopulateUsers,
+  users,
+  assignMentor,
+  evaluations,
+  insertTemplate,
+  clearDb,
+  insertSkill,
+  insertEvaluation,
+  getEvaluation,
+  getAllActions,
+  skillStatus,
+  insertAction
+  } = require('./helpers');
 const { sign, cookieName } = require('../backend/models/auth');
 const { STATUS } = require('../backend/models/evaluations/evaluation');
 const { NEW, SELF_EVALUATION_COMPLETE, MENTOR_REVIEW_COMPLETE } = STATUS;
 const templateData = require('./fixtures/templates');
 const skills = require('./fixtures/skills');
 const [evaluation] = require('./fixtures/evaluations');
+const [action] = require('./fixtures/actions');
 
 const prefix = '/skillz';
 
@@ -26,10 +42,10 @@ describe('evaluations', () => {
       .then(() => skills.map(insertSkill))
       .then(() =>
         Promise.all([
-          users.findOne({ email: 'dmorgantini@gmail.com' }),
-          users.findOne({ email: 'user@magic.com' }),
-          users.findOne({ email: 'user@dragon-riders.com' })
-        ])
+            users.findOne({ email: 'dmorgantini@gmail.com' }),
+            users.findOne({ email: 'user@magic.com' }),
+            users.findOne({ email: 'user@dragon-riders.com' })
+          ])
           .then(([adminUser, normalUserOne, normalUserTwo]) => {
             normalUserOneToken = sign({ username: normalUserOne.username, id: normalUserOne._id });
             normalUserTwoToken = sign({ username: normalUserTwo.username, id: normalUserTwo._id });
@@ -536,6 +552,45 @@ describe('evaluations', () => {
           expect(action.user.mentorId).to.equal(normalUserTwoId);
         }));
 
+    it('replaces existing action when status of a skill is updated from one action type to another', () => {
+      const originalSkillStatus = 'FEEDBACK';
+      const postUpdateSkillStatus = 'OBJECTIVE';
+      const skillId = R.path(['skills', 0, 'id'])(evaluation);
+      const skillLens = R.lensPath(['skills', 0, 'status', 'current']);
+      const originalEval = R.set(skillLens, originalSkillStatus)(evaluation);
+
+      return insertEvaluation(Object.assign({}, originalEval, { status: NEW }), normalUserOneId)
+        .then(({ insertedId }) => {
+          evaluationId = insertedId.toString();
+        })
+        .then(() => {
+          const originalAction = Object.assign({}, action,
+            { type: originalSkillStatus, evaluation: { id: evaluationId }, skill: { id: skillId } });
+
+          return insertAction(normalUserOneId)(originalAction);
+        })
+        .then(() =>
+          request(app)
+            .post(`${prefix}/evaluations/${evaluationId}`)
+            .send({
+              action: 'adminUpdateSkillStatus',
+              skillGroupId: 0,
+              skillId,
+              status: postUpdateSkillStatus
+            })
+            .set('Cookie', `${cookieName}=${adminToken}`)
+            .expect(204)
+        )
+        .then(() => getAllActions())
+        .then((actions) => {
+          expect(actions.length).to.equal(1);
+          const [action] = actions;
+          expect(action.type).to.equal(postUpdateSkillStatus);
+          expect(action.evaluation.id).to.equal(evaluationId);
+          expect(action.skill.id).to.equal(skillId);
+          expect(action.user.id).to.equal(normalUserOneId);
+        })
+    });
 
     it('prevents users from updating the status of a skill via the admin handler if they are not an admin user', () =>
       insertEvaluation(Object.assign({}, evaluation, { status: NEW }), normalUserOneId)
