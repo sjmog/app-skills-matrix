@@ -6,14 +6,39 @@ import { Row, Grid, Alert, ListGroup, ListGroupItem } from 'react-bootstrap';
 import { actions, ACTION_TYPES } from '../../../modules/user/actions';
 import PageHeader from './../../common/PageHeader';
 import ActionsList from './ActionsList';
+import SkillDetailsModal from '../../common/matrix/SkillDetailsModal';
 
 class FeedbackPageComponent extends React.Component {
   componentDidMount() {
     this.props.actions.retrieveActions(this.props.userId, ACTION_TYPES.FEEDBACK);
   }
+  constructor(props) {
+    super(props);
+    this.state = {
+      showModal: false,
+    };
+
+    this.viewSkillDetails = this.viewSkillDetails.bind(this);
+    this.hideSkillDetails = this.hideSkillDetails.bind(this);
+  }
+
+  viewSkillDetails(skill) {
+    console.log('view skill details: ', skill);
+    this.setState({
+      showModal: true,
+      currentSkill: skill,
+    });
+  }
+
+  hideSkillDetails() {
+    this.setState({
+      currentSkill: null,
+      showModal: false,
+    })
+  }
 
   render() {
-    const { error, actions } = this.props.feedback;
+    const { error, actions, skillBeingEvaluated, updateSkillStatus, canUpdateSkillStatus } = this.props.feedback;
 
     if (error) {
       return (
@@ -26,10 +51,23 @@ class FeedbackPageComponent extends React.Component {
     }
 
     return (
-      <Grid>
-        <PageHeader title='Feedback' />
-        { actions ? <ActionsList actions={actions} />  : false}
-      </Grid>
+      <div>
+        <Grid>
+          <PageHeader title='Feedback' />
+          { actions ? <ActionsList
+            actions={actions}
+            viewSkillDetails={this.viewSkillDetails}
+            skillBeingEvaluated={skillBeingEvaluated}
+          />  : false}
+        </Grid>
+        <SkillDetailsModal
+          showModal={this.state.showModal}
+          onClose={this.hideSkillDetails}
+          skill={this.state.currentSkill}
+          updateSkillStatus={updateSkillStatus}
+          canUpdateSkillStatus={canUpdateSkillStatus}
+        />
+      </div>
     )
   }
 }
@@ -37,6 +75,8 @@ class FeedbackPageComponent extends React.Component {
 FeedbackPageComponent.propTypes = {
   userId: PropTypes.string.isRequired,
   feedback: PropTypes.object,
+  skillBeingEvaluated: PropTypes.number,
+  canUpdateSkillStatus: PropTypes.bool,
 };
 
 export const FeedbackPage = connect(

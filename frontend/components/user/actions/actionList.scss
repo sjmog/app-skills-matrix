@@ -1,7 +1,7 @@
 .btn-copy {
   position: absolute;
-  right: 2px;
-  top: 2px;
+  right: 4px;
+  top: 3px;
   font-size: 12px;
 }
 
@@ -11,10 +11,25 @@
   margin-right: 2px;
 }
 
-.btn-copy:focus {
+.btn-copy:active,
+.btn-copy:active:hover {
   background-color: mediumspringgreen;
 }
 
-.btn-copy:focus::before {
+.btn-copy:active::before {
   content: '\e013';
+}
+
+.btn-modal {
+  position: absolute;
+  top: 3px;
+  right: 49px;
+  padding: 4px 10px 5px;
+}
+
+.btn-modal::before {
+  content: '\e237';
+  font-family: 'Glyphicons Halflings';
+  margin-right: 5px;
+
 }

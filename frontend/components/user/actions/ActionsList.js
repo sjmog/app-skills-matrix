@@ -4,7 +4,7 @@ import moment from 'moment';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import './actionList.scss';
 
-const ActionsList = ({ actions }) =>
+const ActionsList = ({ actions, viewSkillDetails }) =>
   (
     <div>
       {
@@ -17,11 +17,9 @@ const ActionsList = ({ actions }) =>
                   actions.map(({skill}) =>
                     <ListGroupItem key={skill.name}>
                       {skill.name}
+                      <button className={`btn btn-default btn-modal`} onClick={() => { return viewSkillDetails(skill)} }>Details</button>
                       <CopyToClipboard text={skill.name}>
-                        <button
-                          className={`btn btn-default btn-copy`}>
-                          Copy to clipboard
-                        </button>
+                        <button className={`btn btn-default btn-copy`} />
                       </CopyToClipboard>
                     </ListGroupItem>
                   )

@@ -21,7 +21,7 @@ module.exports = ({ id, name, criteria, type, questions, status }) => ({
     return status.current === SKILL_STATUS.ATTAINED ? SKILL_STATUS.ATTAINED : null
   },
   get feedbackData() {
-    return ({ id, name, criteria });
+    return ({ id, name, criteria, type, questions });
   },
   addAction(newStatus) {
     return (STATUS_WITH_ACTION[newStatus] && status.current !== newStatus) && STATUS_WITH_ACTION[newStatus];
