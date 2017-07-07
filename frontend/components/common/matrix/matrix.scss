@@ -40,6 +40,13 @@ dd {
   margin-bottom: 0;
 }
 
+.skill--legend {
+  border: solid 1px #ddd;
+  padding: 10px;
+  margin-left: 1px;
+  display: inline-block;
+}
+
 .skill--attained {
   background-color: $attained;
 }

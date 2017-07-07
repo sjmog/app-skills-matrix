@@ -12,7 +12,7 @@ const { NEW, SELF_EVALUATION_COMPLETE } = EVALUATION_STATUS;
 import EvaluationPageHeader from './EvaluationPageHeader';
 import Matrix from '../../common/matrix/Matrix';
 
-import './evaluation.scss'
+import './evaluation.scss';
 
 class EvaluationPageComponent extends React.Component {
   constructor(props) {
@@ -70,6 +70,14 @@ class EvaluationPageComponent extends React.Component {
           />
         </div>
         <div className='evaluation-grid__item'>
+          <Row>
+            <h4>Legend</h4>
+            <p className='skill--legend skill--attained'>Attained</p>
+            <p className='skill--legend skill--newly-attained'>Newly attained</p>
+            <p className='skill--legend skill--objective'>Objective</p>
+            <p className='skill--legend skill--feedback'>Feedback</p>
+            <p className='skill--legend skill--not-attained'>Not attained</p>
+          </Row>
           <Row>
             <Col md={20}>
               <Matrix
