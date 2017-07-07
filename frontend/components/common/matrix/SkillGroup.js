@@ -3,30 +3,29 @@ import { Table } from 'react-bootstrap';
 
 import Skill from './Skill';
 
-const SkillGroup = ({ skillGroup, skills, viewSkillDetails, skillBeingEvaluated }) =>
-  (
-    <td>
-      <Table bordered>
-        <tbody>
-        {
-          skillGroup.skills.map(
-            (skillId) => {
-              const skill =  skills[skillId];
+const SkillGroup = ({ skillGroup, skills, viewSkillDetails, skillBeingEvaluated }) => (
+  <td>
+    <Table bordered>
+      <tbody>
+      {
+        skillGroup.skills.map(
+          (skillId) => {
+            const skill = skills[skillId];
 
-              return (
-                <Skill
-                  key={skillId}
-                  skill={skill}
-                  viewSkillDetails={viewSkillDetails}
-                  isBeingEvaluated={skillBeingEvaluated === skillId}
-                />
-              )
-            })
-        }
-        </tbody>
-      </Table>
-    </td>
-  );
+            return (
+              <Skill
+                key={skillId}
+                skill={skill}
+                viewSkillDetails={viewSkillDetails}
+                isBeingEvaluated={skillBeingEvaluated === skillId}
+              />
+            )
+          })
+      }
+      </tbody>
+    </Table>
+  </td>
+);
 
 SkillGroup.propTypes = {
   skillGroup: PropTypes.object.isRequired,

@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { ButtonGroup, Button, Glyphicon} from 'react-bootstrap';
 
-import { SKILL_STATUS } from '../../modules/user/evaluation';
+import { SKILL_STATUS } from '../../modules/user/evaluations';
 
 import './skill-actions.scss';
 

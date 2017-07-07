@@ -38,7 +38,7 @@ describe('matrices', () => {
             .expect(200)
             .then(({ body }) => {
               expect(body.name).to.equal('Node JS Dev');
-              expect(body.skillGroups[0].category).to.equal('Dragon Flight');
+              expect(body.skillGroups[0].category).to.equal('Dragon Slaying');
             }));
     });
 
@@ -76,7 +76,7 @@ describe('matrices', () => {
         .then((res) => templates.findOne({ id: 'eng-nodejs' }))
         .then(newTemplate => {
           expect(newTemplate.name).to.equal('Node JS Dev');
-          expect(newTemplate.skillGroups[0].category).to.equal('Dragon Flight');
+          expect(newTemplate.skillGroups[0].category).to.equal('Dragon Slaying');
         }));
 
     it('updates an existing template with the same id', () =>
@@ -133,7 +133,7 @@ describe('matrices', () => {
               // dear future me, I'm sorry.
               expect(res.body[1].name).to.equal(allSkills[0].name);
               expect(res.body[2].name).to.equal(allSkills[1].name);
-              expect(res.body[6].name).to.equal(allSkills[5].name);
+              expect(res.body[12].name).to.equal(allSkills[11].name);
             })));
   });
 

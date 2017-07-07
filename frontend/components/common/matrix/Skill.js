@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 
-import { SKILL_STATUS } from '../../../modules/user/evaluation';
+import { SKILL_STATUS } from '../../../modules/user/evaluations';
 
 const skillColour = (currentStatus, previousStatus) => {
   if (currentStatus === SKILL_STATUS.ATTAINED && previousStatus !== SKILL_STATUS.ATTAINED) {
