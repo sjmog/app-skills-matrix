@@ -11,8 +11,8 @@ const allSkills = require('./fixtures/skills');
 
 const prefix = '/skillz/matrices';
 
-let adminToken, normalUserToken;
-let adminUserId, normalUserId;
+let adminToken;
+let normalUserToken;
 
 describe('matrices', () => {
   beforeEach(() =>
@@ -23,24 +23,20 @@ describe('matrices', () => {
           .then(([adminUser, normalUser]) => {
             adminToken = sign({ username: adminUser.username, id: adminUser._id });
             normalUserToken = sign({ username: normalUser.username, id: normalUser._id });
-            normalUserId = normalUser._id;
-            adminUserId = adminUser._id;
-          }))
+          })),
   );
 
   describe('GET /matrices/template', () => {
-    it('gets the template by id', () => {
-      return insertTemplate(Object.assign({}, sampleTemplate))
-        .then(() =>
-          request(app)
-            .get(`${prefix}/templates/${sampleTemplate.id}`)
-            .set('Cookie', `${cookieName}=${adminToken}`)
-            .expect(200)
-            .then(({ body }) => {
-              expect(body.name).to.equal('Node JS Dev');
-              expect(body.skillGroups[0].category).to.equal('Dragon Slaying');
-            }));
-    });
+    it('gets the template by id', () => insertTemplate(Object.assign({}, sampleTemplate))
+      .then(() =>
+        request(app)
+          .get(`${prefix}/templates/${sampleTemplate.id}`)
+          .set('Cookie', `${cookieName}=${adminToken}`)
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.name).to.equal('Node JS Dev');
+            expect(body.skillGroups[0].category).to.equal('Dragon Slaying');
+          })));
 
     const errorCases =
       [
@@ -58,7 +54,7 @@ describe('matrices', () => {
         }),
       ];
 
-    errorCases.forEach((test) =>
+    errorCases.forEach(test =>
       it(`should handle error cases '${test().desc}'`, () =>
         request(app)
           .get(`${prefix}/templates/${test().id}`)
@@ -73,8 +69,8 @@ describe('matrices', () => {
         .send({ action: 'save', template: JSON.stringify(sampleTemplate) })
         .set('Cookie', `${cookieName}=${adminToken}`)
         .expect(201)
-        .then((res) => templates.findOne({ id: 'eng-nodejs' }))
-        .then(newTemplate => {
+        .then(() => templates.findOne({ id: 'eng-nodejs' }))
+        .then((newTemplate) => {
           expect(newTemplate.name).to.equal('Node JS Dev');
           expect(newTemplate.skillGroups[0].category).to.equal('Dragon Slaying');
         }));
@@ -86,12 +82,12 @@ describe('matrices', () => {
             .post(`${prefix}/templates`)
             .send({
               action: 'save',
-              template: JSON.stringify(Object.assign({}, sampleTemplate, { name: 'new name', skillGroups: [] }))
+              template: JSON.stringify(Object.assign({}, sampleTemplate, { name: 'new name', skillGroups: [] })),
             })
             .set('Cookie', `${cookieName}=${adminToken}`)
             .expect(201))
-        .then(res => templates.findOne({ id: 'eng-nodejs' }))
-        .then(updatedTemplate => {
+        .then(() => templates.findOne({ id: 'eng-nodejs' }))
+        .then((updatedTemplate) => {
           expect(updatedTemplate.name).to.deep.equal('new name');
           expect(updatedTemplate.skillGroups.length).to.equal(0);
         }));
@@ -112,7 +108,7 @@ describe('matrices', () => {
         }),
       ];
 
-    errorCases.forEach((test) =>
+    errorCases.forEach(test =>
       it(`should handle error cases '${test().desc}'`, () =>
         request(app)
           .post(`${prefix}/templates`)
@@ -143,15 +139,15 @@ describe('matrices', () => {
         .post(`${prefix}/skills`)
         .send({
           action: 'save',
-          skill: JSON.stringify(sampleSkill)
+          skill: JSON.stringify(sampleSkill),
         })
         .set('Cookie', `${cookieName}=${adminToken}`)
         .expect(201)
-        .then(res => skills.findOne({ id: 1 }))
-        .then(newSkill => {
+        .then(() => skills.findOne({ id: 1 }))
+        .then((newSkill) => {
           expect(newSkill.id).to.equal(1);
           expect(newSkill.name).to.equal('Dragon Feeding');
-        })
+        }),
     );
 
     it('permits saving of a list of new skills by admin users', () =>
@@ -159,15 +155,15 @@ describe('matrices', () => {
         .post(`${prefix}/skills`)
         .send({
           action: 'save',
-          skill: JSON.stringify(allSkills)
+          skill: JSON.stringify(allSkills),
         })
         .set('Cookie', `${cookieName}=${adminToken}`)
         .expect(201)
-        .then(res => skills.find({}))
+        .then(() => skills.find({}))
         .then(savedSkills => savedSkills.toArray())
         .then((savedSkills) => {
           expect(savedSkills.length).to.equal(allSkills.length);
-        })
+        }),
     );
 
     it('updates an existing skill with the same id', () =>
@@ -177,12 +173,12 @@ describe('matrices', () => {
             .post(`${prefix}/skills`)
             .send({
               action: 'save',
-              skill: JSON.stringify(Object.assign({}, sampleSkill, { name: 'new name', questions: [] }))
+              skill: JSON.stringify(Object.assign({}, sampleSkill, { name: 'new name', questions: [] })),
             })
             .set('Cookie', `${cookieName}=${adminToken}`)
             .expect(201))
-        .then(res => skills.findOne({ id: 1 }))
-        .then(updatedSkill => {
+        .then(() => skills.findOne({ id: 1 }))
+        .then((updatedSkill) => {
           expect(updatedSkill.id).to.equal(1);
           expect(updatedSkill.name).to.deep.equal('new name');
           expect(updatedSkill.questions.length).to.equal(0);
@@ -204,7 +200,7 @@ describe('matrices', () => {
         }),
       ];
 
-    errorCases.forEach((test) =>
+    errorCases.forEach(test =>
       it(`should handle error cases '${test().desc}'`, () =>
         request(app)
           .post(`${prefix}/skills`)

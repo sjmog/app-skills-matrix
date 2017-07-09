@@ -9,19 +9,20 @@ const actions = require('./fixtures/actions');
 
 const prefix = '/skillz';
 
-let normalUserOneToken, normalUserTwoToken;
-let normalUserOneId, normalUserTwoId;
+let normalUserOneToken;
+let normalUserTwoToken;
+let normalUserOneId;
+let normalUserTwoId;
 
 describe('actions', () => {
-
   beforeEach(() =>
     clearDb()
       .then(() => prepopulateUsers())
       .then(() =>
         Promise.all([
-            users.findOne({ email: 'user@magic.com' }),
-            users.findOne({ email: 'user@dragon-riders.com' })
-          ])
+          users.findOne({ email: 'user@magic.com' }),
+          users.findOne({ email: 'user@dragon-riders.com' }),
+        ])
           .then(([normalUserOne, normalUserTwo]) => {
             normalUserOneToken = sign({ username: normalUserOne.username, id: normalUserOne._id });
             normalUserTwoToken = sign({ username: normalUserTwo.username, id: normalUserTwo._id });
@@ -36,7 +37,7 @@ describe('actions', () => {
           request(app)
             .get(`${prefix}/users/${normalUserOneId}/actions`)
             .set('Cookie', `${cookieName}=${normalUserOneToken}`)
-            .expect(200)
+            .expect(200),
         )
         .then(({ body }) => {
           // @charlie - once you know what the viewmodel should look like, update this test
@@ -50,7 +51,7 @@ describe('actions', () => {
           request(app)
             .get(`${prefix}/users/${normalUserOneId}/actions`)
             .set('Cookie', `${cookieName}=${normalUserTwoToken}`)
-            .expect(200)
+            .expect(200),
         )
         .then(({ body }) => {
           expect(body.length).to.equal(actions.length);
@@ -62,7 +63,7 @@ describe('actions', () => {
           request(app)
             .get(`${prefix}/users/${normalUserOneId}/actions`)
             .set('Cookie', `${cookieName}=${normalUserTwoToken}`)
-            .expect(403)
+            .expect(403),
         ));
 
     it('should filter based on evaluation Id', () =>
@@ -71,7 +72,7 @@ describe('actions', () => {
           request(app)
             .get(`${prefix}/users/${normalUserOneId}/actions?evaluationId=eval_1`)
             .set('Cookie', `${cookieName}=${normalUserOneToken}`)
-            .expect(200)
+            .expect(200),
         )
         .then(({ body }) => {
           expect(body.length).to.equal(1);
@@ -83,7 +84,7 @@ describe('actions', () => {
           request(app)
             .get(`${prefix}/users/${normalUserOneId}/actions?type=OBJECTIVE`)
             .set('Cookie', `${cookieName}=${normalUserOneToken}`)
-            .expect(200)
+            .expect(200),
         )
         .then(({ body }) => {
           expect(body.length).to.equal(1);
