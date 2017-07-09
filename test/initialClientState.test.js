@@ -67,8 +67,7 @@ describe('initial client state', () => {
           };
 
           expect(getInitialState(res.text)).to.deep.equal(expectedState);
-        }),
-    );
+        }));
 
     it('returns initial state with evaluations from newest to oldest', () => {
       let oldEvaluationId;
@@ -100,8 +99,7 @@ describe('initial client state', () => {
               expect(firstEvaluation.view).to.equal('SUBJECT');
 
               expect(secondEvaluation.id).to.equal(String(oldEvaluationId));
-            }),
-        );
+            }));
     });
 
     it('returns initial state with mentee evaluations from newest to oldest', () => {
@@ -137,8 +135,7 @@ describe('initial client state', () => {
             expect(firstEvaluation.view).to.equal('MENTOR');
 
             expect(secondEvaluation.id).to.equal(String(oldMenteeEvaluationId));
-          }),
-        );
+          }));
     });
 
     it('returns initial state with mentor', () =>
@@ -157,9 +154,7 @@ describe('initial client state', () => {
               };
 
               expect(getInitialState(res.text).user.mentorDetails).to.deep.equal(expectedMentor);
-            }),
-        ),
-    );
+            })));
 
     it('returns initial state with template', () =>
       assignTemplate(normalUserOneId, template.id)
@@ -175,9 +170,7 @@ describe('initial client state', () => {
               };
 
               expect(getInitialState(res.text).user.template).to.deep.equal(expectedTemplate);
-            }),
-        ),
-    );
+            })));
 
     it('returns initial state with user', () =>
       assignMentor(normalUserOneId, adminUserId)
@@ -197,9 +190,7 @@ describe('initial client state', () => {
               };
 
               expect(getInitialState(res.text).user.userDetails).to.deep.equal(expectedUser);
-            }),
-        ),
-    );
+            })));
   });
 
   describe('admin user', () => {
@@ -211,8 +202,7 @@ describe('initial client state', () => {
         .then((res) => {
           expect(getInitialState(res.text)).to.have.property('matrices');
           expect(getInitialState(res.text)).to.have.property('users');
-        }),
-    );
+        }));
 
     it('returns initial state with all templates', () =>
       request(app)
@@ -228,8 +218,7 @@ describe('initial client state', () => {
           ];
 
           expect(getInitialState(res.text).matrices.templates).to.deep.equal(expectedTemplates);
-        }),
-    );
+        }));
 
     it('returns initial state with all users', () =>
       request(app)
@@ -263,8 +252,7 @@ describe('initial client state', () => {
           ];
 
           expect(getInitialState(res.text).users.users).to.deep.equal(expectedUsers);
-        }),
-    );
+        }));
 
     it('returns initial state with all users and their evaluations (newest to oldest)', () => {
       let oldEvaluationId;

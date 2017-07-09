@@ -17,7 +17,7 @@ const {
   getAllActions,
   skillStatus,
   insertAction,
-  } = require('./helpers');
+} = require('./helpers');
 const { sign, cookieName } = require('../backend/models/auth');
 const { STATUS } = require('../backend/models/evaluations/evaluation');
 
@@ -69,8 +69,7 @@ describe('evaluations', () => {
           request(app)
             .get(`${prefix}/evaluations/${evaluationId}`)
             .set('Cookie', `${cookieName}=${normalUserOneToken}`)
-            .expect(200),
-        )
+            .expect(200))
         .then(({ body }) => {
           expect(body.subject.id).to.equal(String(normalUserOneId));
           expect(body.template.name).to.equal('Node JS Dev');
@@ -189,10 +188,9 @@ describe('evaluations', () => {
               status: 'ATTAINED',
             })
             .set('Cookie', `${cookieName}=${normalUserOneToken}`)
-            .expect(204),
-        )
+            .expect(204))
         .then(() => getEvaluation(evaluationId))
-        .then(({ evalSkills }) => {
+        .then(({ skills: evalSkills }) => {
           expect(skillStatus(evalSkills, 5)).to.deep.equal({ previous: null, current: 'ATTAINED' });
         }));
 
@@ -211,8 +209,7 @@ describe('evaluations', () => {
               status: 'FEEDBACK',
             })
             .set('Cookie', `${cookieName}=${normalUserOneToken}`)
-            .expect(204),
-        )
+            .expect(204))
         .then(() => getAllActions())
         .then(([firstAction]) => {
           expect(firstAction).to.not.be.undefined;
@@ -236,8 +233,7 @@ describe('evaluations', () => {
               status: 'OBJECTIVE',
             })
             .set('Cookie', `${cookieName}=${normalUserOneToken}`)
-            .expect(204),
-        )
+            .expect(204))
         .then(() => getAllActions())
         .then(([firstAction]) => {
           expect(firstAction).to.not.be.undefined;
@@ -261,8 +257,7 @@ describe('evaluations', () => {
               status: 'FEEDBACK',
             })
             .set('Cookie', `${cookieName}=${normalUserOneToken}`)
-            .expect(204),
-        )
+            .expect(204))
         .then(() =>
           request(app)
             .post(`${prefix}/evaluations/${evaluationId}`)
@@ -273,8 +268,7 @@ describe('evaluations', () => {
               status: 'ATTAINED',
             })
             .set('Cookie', `${cookieName}=${normalUserOneToken}`)
-            .expect(204),
-        )
+            .expect(204))
         .then(() => getAllActions())
         .then(([firstAction]) => {
           expect(firstAction).to.be.undefined;
@@ -378,13 +372,11 @@ describe('evaluations', () => {
               status: 'ATTAINED',
             })
             .set('Cookie', `${cookieName}=${normalUserTwoToken}`)
-            .expect(204),
-        )
+            .expect(204))
         .then(() => getEvaluation(evaluationId))
-        .then(({ evalSkills }) => {
+        .then(({ skills: evalSkills }) => {
           expect(skillStatus(evalSkills, 5)).to.deep.equal({ previous: null, current: 'ATTAINED' });
-        }),
-    );
+        }));
 
     it('adds action when status of a skill is updated to an action (FEEDBACK/OBJECTIVE)', () =>
       insertEvaluation(Object.assign({}, evaluation, { status: SELF_EVALUATION_COMPLETE }), normalUserOneId)
@@ -402,8 +394,7 @@ describe('evaluations', () => {
               status: 'FEEDBACK',
             })
             .set('Cookie', `${cookieName}=${normalUserTwoToken}`)
-            .expect(204),
-        )
+            .expect(204))
         .then(() => getAllActions())
         .then(([firstAction]) => {
           expect(firstAction).to.not.be.undefined;
@@ -517,13 +508,11 @@ describe('evaluations', () => {
               status: 'ATTAINED',
             })
             .set('Cookie', `${cookieName}=${adminToken}`)
-            .expect(204),
-        )
+            .expect(204))
         .then(() => getEvaluation(evaluationId))
-        .then(({ evalSkills }) => {
+        .then(({ skills: evalSkills }) => {
           expect(skillStatus(evalSkills, 5)).to.deep.equal({ previous: null, current: 'ATTAINED' });
-        }),
-    );
+        }));
 
     it('adds action when a status of a skill is updated to an action (FEEDBACK/OBJECTIVE)', () =>
       insertEvaluation(Object.assign({}, evaluation, { status: NEW }), normalUserOneId)
@@ -541,8 +530,7 @@ describe('evaluations', () => {
               status: 'FEEDBACK',
             })
             .set('Cookie', `${cookieName}=${adminToken}`)
-            .expect(204),
-        )
+            .expect(204))
         .then(() => getAllActions())
         .then(([firstAction]) => {
           expect(firstAction).to.not.be.undefined;
@@ -581,8 +569,7 @@ describe('evaluations', () => {
               status: postUpdateSkillStatus,
             })
             .set('Cookie', `${cookieName}=${adminToken}`)
-            .expect(204),
-        )
+            .expect(204))
         .then(() => getAllActions())
         .then((actions) => {
           expect(actions.length).to.equal(1);
@@ -609,9 +596,7 @@ describe('evaluations', () => {
               status: 'ATTAINED',
             })
             .set('Cookie', `${cookieName}=${normalUserOneToken}`)
-            .expect(403),
-        ),
-    );
+            .expect(403)));
 
     it('returns not found if an attempt is made to update an evaluation that does not exist', () =>
       request(app)
@@ -656,9 +641,7 @@ describe('evaluations', () => {
               status: 'ATTAINED',
             })
             .set('Cookie', `${cookieName}=${adminToken}`)
-            .expect(400),
-        ),
-    );
+            .expect(400)));
   });
 
   describe('POST /evaluations/:evaluationId { action: complete }', () => {
@@ -680,8 +663,7 @@ describe('evaluations', () => {
             .then(() => evaluations.findOne({ _id: evaluationId }))
             .then((completedApplication) => {
               expect(completedApplication.status).to.equal(SELF_EVALUATION_COMPLETE);
-            }),
-        ));
+            })));
 
     it('allows a mentor to complete a review of an evaluation for their mentee', () =>
       insertEvaluation(Object.assign({}, evaluation, { status: SELF_EVALUATION_COMPLETE }), normalUserOneId)

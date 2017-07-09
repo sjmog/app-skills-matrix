@@ -23,8 +23,7 @@ describe('matrices', () => {
           .then(([adminUser, normalUser]) => {
             adminToken = sign({ username: adminUser.username, id: adminUser._id });
             normalUserToken = sign({ username: normalUser.username, id: normalUser._id });
-          })),
-  );
+          })));
 
   describe('GET /matrices/template', () => {
     it('gets the template by id', () => insertTemplate(Object.assign({}, sampleTemplate))
@@ -147,8 +146,7 @@ describe('matrices', () => {
         .then((newSkill) => {
           expect(newSkill.id).to.equal(1);
           expect(newSkill.name).to.equal('Dragon Feeding');
-        }),
-    );
+        }));
 
     it('permits saving of a list of new skills by admin users', () =>
       request(app)
@@ -163,8 +161,7 @@ describe('matrices', () => {
         .then(savedSkills => savedSkills.toArray())
         .then((savedSkills) => {
           expect(savedSkills.length).to.equal(allSkills.length);
-        }),
-    );
+        }));
 
     it('updates an existing skill with the same id', () =>
       insertSkill(Object.assign({}, sampleSkill))

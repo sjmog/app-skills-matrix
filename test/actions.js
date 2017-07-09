@@ -37,8 +37,7 @@ describe('actions', () => {
           request(app)
             .get(`${prefix}/users/${normalUserOneId}/actions`)
             .set('Cookie', `${cookieName}=${normalUserOneToken}`)
-            .expect(200),
-        )
+            .expect(200))
         .then(({ body }) => {
           // @charlie - once you know what the viewmodel should look like, update this test
           expect(body.length).to.equal(actions.length);
@@ -51,8 +50,7 @@ describe('actions', () => {
           request(app)
             .get(`${prefix}/users/${normalUserOneId}/actions`)
             .set('Cookie', `${cookieName}=${normalUserTwoToken}`)
-            .expect(200),
-        )
+            .expect(200))
         .then(({ body }) => {
           expect(body.length).to.equal(actions.length);
         }));
@@ -63,8 +61,7 @@ describe('actions', () => {
           request(app)
             .get(`${prefix}/users/${normalUserOneId}/actions`)
             .set('Cookie', `${cookieName}=${normalUserTwoToken}`)
-            .expect(403),
-        ));
+            .expect(403)));
 
     it('should filter based on evaluation Id', () =>
       Promise.map(actions, insertAction(normalUserOneId))
@@ -72,8 +69,7 @@ describe('actions', () => {
           request(app)
             .get(`${prefix}/users/${normalUserOneId}/actions?evaluationId=eval_1`)
             .set('Cookie', `${cookieName}=${normalUserOneToken}`)
-            .expect(200),
-        )
+            .expect(200))
         .then(({ body }) => {
           expect(body.length).to.equal(1);
         }));
@@ -84,8 +80,7 @@ describe('actions', () => {
           request(app)
             .get(`${prefix}/users/${normalUserOneId}/actions?type=OBJECTIVE`)
             .set('Cookie', `${cookieName}=${normalUserOneToken}`)
-            .expect(200),
-        )
+            .expect(200))
         .then(({ body }) => {
           expect(body.length).to.equal(1);
         }));
