@@ -7,7 +7,7 @@ authom.createServer({
   service: 'github',
   id: process.env.GITHUB_ID,
   secret: process.env.GITHUB_SECRET,
-  scope: ['user:email']
+  scope: ['user:email'],
 });
 
 authom.on('auth', (req, res, { data }) =>
@@ -15,10 +15,10 @@ authom.on('auth', (req, res, { data }) =>
     .then((user) => {
       const githubData = { email: data.email, name: data.name, avatarUrl: data.avatar_url, username: data.login };
       const userFn = !user ? users.addUser(githubData) : Promise.resolve(user);
-      userFn.then((user) => auth.sign(user.signingData))
+      userFn.then(u => auth.sign(u.signingData))
         .then((token) => {
           res.cookie(auth.cookieName, token);
-          res.redirect('/')
+          res.redirect('/');
         })
         .catch(({ message, stack }) =>
           res.status(500).json({ message, stack }));

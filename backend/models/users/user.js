@@ -1,7 +1,6 @@
-const R = require('ramda');
 const auth = require('../auth');
 
-const user = ({ _id, name, email, username, createdDate, modifiedDate, templateId, mentorId, avatarUrl }) => Object.freeze({
+const user = ({ _id, name, email, username, templateId, mentorId, avatarUrl }) => Object.freeze({
   id: _id.toString(),
   name,
   username,
@@ -37,12 +36,12 @@ const user = ({ _id, name, email, username, createdDate, modifiedDate, templateI
 
     return { mentorId: newMentorId, modifiedDate: new Date() };
   },
-  setTemplate(templateId) {
-    return { templateId, modifiedDate: new Date() };
+  setTemplate(newTemplateId) {
+    return { newTemplateId, modifiedDate: new Date() };
   },
   toString() {
     return JSON.stringify(this);
-  }
+  },
 });
 
 module.exports = user;

@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 const template = ({ id, name, version, categories, levels, skillGroups }) => Object.freeze({
   id,
   skillGroups,
@@ -17,15 +18,15 @@ const template = ({ id, name, version, categories, levels, skillGroups }) => Obj
     return { id, name, version, categories, levels, skillGroups: indexedSkillGroups };
   },
   get evaluationData() {
-    return { id, name, version, categories, levels }
+    return { id, name, version, categories, levels };
   },
   get userDetailsViewModel() {
     return { name };
   },
-  createSkillGroups: function (allSkills) {
+  createSkillGroups(allSkills) {
     let skills = [];
     const newSkillGroups = skillGroups.map((skillGroup, index) => {
-      skills = skills.concat(skillGroup.skills.map((skillId) =>
+      skills = skills.concat(skillGroup.skills.map(skillId =>
         Object.assign({}, allSkills[skillId].evaluationData, { status: { previous: null, current: null } })));
       return ({
         id: index,
@@ -34,7 +35,7 @@ const template = ({ id, name, version, categories, levels, skillGroups }) => Obj
         skills: skillGroup.skills,
       });
     });
-    return { skills, skillGroups: newSkillGroups }
+    return { skills, skillGroups: newSkillGroups };
   },
 });
 
@@ -46,5 +47,5 @@ module.exports.newTemplate = (id, name, skillGroups, levels, categories) =>
     skillGroups,
     levels,
     categories,
-    createdDate: new Date()
+    createdDate: new Date(),
   });

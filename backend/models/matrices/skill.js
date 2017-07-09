@@ -1,5 +1,3 @@
-const keymirror = require('keymirror');
-
 const skill = ({ id, name, version, criteria, type, questions }) => Object.freeze({
   id,
   get viewModel() {
@@ -7,7 +5,7 @@ const skill = ({ id, name, version, criteria, type, questions }) => Object.freez
   },
   get evaluationData() {
     return { id, name, version, criteria, type, questions };
-  }
+  },
 });
 
 module.exports = skill;
@@ -19,5 +17,5 @@ module.exports.newSkill = (id, name, type, version = 1, criteria, questions) =>
     version,
     criteria,
     questions,
-    createdDate: new Date()
+    createdDate: new Date(),
   });

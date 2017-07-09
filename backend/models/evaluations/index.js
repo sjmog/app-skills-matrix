@@ -1,4 +1,5 @@
 const database = require('../../database');
+
 const evaluationsCollection = database.collection('evaluations');
 const { ObjectId } = require('mongodb');
 
@@ -8,35 +9,34 @@ const { encrypt, decrypt } = require('./encryption');
 evaluationsCollection.ensureIndex({ 'user.id': 1 }, { background: true });
 
 module.exports = {
-  addEvaluation: function (newEvaluation) {
+  addEvaluation(newEvaluation) {
     return evaluationsCollection.insertOne(encrypt(newEvaluation.dataModel))
       .then(({ insertedId }) => evaluationsCollection.findOne({ _id: new ObjectId(insertedId) }))
-      .then((res) => res ? evaluation(decrypt(res)) : null);
+      .then(res => (res ? evaluation(decrypt(res)) : null));
   },
-  importEvaluation: function (rawEvaluation) {
+  importEvaluation(rawEvaluation) {
     return evaluationsCollection.insertOne(encrypt(rawEvaluation))
       .then(({ insertedId }) => evaluationsCollection.findOne({ _id: new ObjectId(insertedId) }))
-      .then((res) => res ? evaluation(decrypt(res)) : null);
+      .then(res => (res ? evaluation(decrypt(res)) : null));
   },
-  getEvaluationById: function (id) {
+  getEvaluationById(id) {
     return evaluationsCollection.findOne({ _id: ObjectId(id) })
-      .then(res => res ? evaluation(decrypt(res)) : null);
+      .then(res => (res ? evaluation(decrypt(res)) : null));
   },
-  getByUserId: function (userId) {
+  getByUserId(userId) {
     return evaluationsCollection.find({ 'user.id': userId })
       .then(res => res.toArray())
-      .then(res => res.map((e) => evaluation(decrypt(e))))
+      .then(res => res.map(e => evaluation(decrypt(e))));
   },
-  getLatestByUserId: function (userId) {
-    return evaluationsCollection.findOne({ 'user.id': userId }, { sort: {'createdDate': -1}, limit: 1 })
-      .then(res => res ? evaluation(decrypt(res)) : null);
+  getLatestByUserId(userId) {
+    return evaluationsCollection.findOne({ 'user.id': userId }, { sort: { createdDate: -1 }, limit: 1 })
+      .then(res => (res ? evaluation(decrypt(res)) : null));
   },
-  updateEvaluation: function (updatedEvaluation) {
+  updateEvaluation(updatedEvaluation) {
     return evaluationsCollection.updateOne(
       { _id: ObjectId(updatedEvaluation.id) },
-      { $set: encrypt(updatedEvaluation) }
-    )
+      { $set: encrypt(updatedEvaluation) })
       .then(() => evaluationsCollection.findOne({ _id: ObjectId(updatedEvaluation.id) }))
-      .then((res) => res ? evaluation(decrypt(res)) : null)
-  }
+      .then(res => (res ? evaluation(decrypt(res)) : null));
+  },
 };

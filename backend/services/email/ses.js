@@ -28,5 +28,5 @@ module.exports.sendMail = ({ recipients, subject, body }) => {
     },
   };
 
-  return new Promise((resolve, reject) => getSES().sendEmail(data, (err) => err ? reject(err) : resolve()));
+  return new Promise((resolve, reject) => getSES().sendEmail(data, err => (err ? reject(err) : resolve())));
 };

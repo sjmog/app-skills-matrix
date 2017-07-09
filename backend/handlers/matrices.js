@@ -8,33 +8,32 @@ const handlerFunctions = Object.freeze({
   templates: {
     save: (req, res, next) => {
       Promise.try(() => JSON.parse(req.body.template))
-        .then((template) =>
+        .then(template =>
           templates.getById(template.id)
             .then(retrievedTemplate =>
               (retrievedTemplate
                 ? templates.updateTemplate(retrievedTemplate, template)
                 : templates.addTemplate(template)))
-            .then(template => res.status(201).json(template.viewModel)))
+            .then(t => res.status(201).json(t.viewModel)))
         .catch(next);
-
     },
     retrieve: (req, res, next) => {
       Promise.try(() => templates.getById(req.params.templateId))
         .then((template) => {
           if (!template) {
-            return res.status(404).json(TEMPLATE_NOT_FOUND())
+            return res.status(404).json(TEMPLATE_NOT_FOUND());
           }
-          return res.status(200).json(template.normalizedViewModel)
+          return res.status(200).json(template.normalizedViewModel);
         })
         .catch(next);
-    }
+    },
   },
   skills: {
     save: (req, res, next) => {
       Promise.try(() => JSON.parse(req.body.skill))
-        .then((newSkills) =>
+        .then(newSkills =>
           Promise.map([].concat(newSkills),
-            (skill) => skills.getById(skill.id)
+            skill => skills.getById(skill.id)
               .then(retrievedSkill =>
                 (retrievedSkill
                   ? skills.updateSkill(retrievedSkill, skill)
@@ -44,9 +43,9 @@ const handlerFunctions = Object.freeze({
     },
     getAll: (req, res, next) =>
       Promise.try(() => skills.getAll())
-        .then((allSkills) => res.status(200).json(allSkills.viewModel))
+        .then(allSkills => res.status(200).json(allSkills.viewModel))
         .catch(next),
-  }
+  },
 });
 
 module.exports = createHandler(handlerFunctions);

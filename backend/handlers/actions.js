@@ -15,7 +15,7 @@ const handlerFunctions = Object.freeze({
 
       if (user.id === userId) {
         return Promise.try(() => actions.find(userId, evaluationId, type))
-          .then((actions) => res.status(200).json(actions.map((action) => action.viewModel)))
+          .then(a => res.status(200).json(a.map(action => action.viewModel)))
           .catch(next);
       }
 
@@ -23,11 +23,11 @@ const handlerFunctions = Object.freeze({
         .then(({ mentorId }) =>
           (user.id === mentorId
             ? Promise.try(() => actions.find(userId, evaluationId, type))
-                .then((actions) => res.status(200).json(actions.map((action) => action.viewModel)))
+                .then(a => res.status(200).json(a.map(action => action.viewModel)))
                 .catch(next)
             : res.status(403).json(ONLY_USER_AND_MENTOR_CAN_SEE_ACTIONS())));
     },
-  }
+  },
 });
 
 module.exports = createHandler(handlerFunctions);

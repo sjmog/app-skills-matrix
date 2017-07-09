@@ -13,5 +13,5 @@ module.exports = (app) => {
 
   app.use('/matrices', router);
 
-  return app
+  return app;
 };
