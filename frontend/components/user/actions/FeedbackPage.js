@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Row, Grid, Alert, ListGroup, ListGroupItem } from 'react-bootstrap';
+import { Row, Grid, Alert } from 'react-bootstrap';
 
 import { actions, ACTION_TYPES } from '../../../modules/user/actions';
 import PageHeader from './../../common/PageHeader';
@@ -9,9 +9,6 @@ import ActionsList from './ActionsList';
 import SkillDetailsModal from '../../common/matrix/SkillDetailsModal';
 
 class FeedbackPageComponent extends React.Component {
-  componentDidMount() {
-    this.props.actions.retrieveActions(this.props.userId, ACTION_TYPES.FEEDBACK);
-  }
   constructor(props) {
     super(props);
     this.state = {
@@ -22,8 +19,11 @@ class FeedbackPageComponent extends React.Component {
     this.hideSkillDetails = this.hideSkillDetails.bind(this);
   }
 
+  componentDidMount() {
+    this.props.actions.retrieveActions(this.props.userId, ACTION_TYPES.FEEDBACK);
+  }
+
   viewSkillDetails(skill) {
-    console.log('view skill details: ', skill);
     this.setState({
       showModal: true,
       currentSkill: skill,
@@ -34,7 +34,7 @@ class FeedbackPageComponent extends React.Component {
     this.setState({
       currentSkill: null,
       showModal: false,
-    })
+    });
   }
 
   render() {
@@ -44,7 +44,7 @@ class FeedbackPageComponent extends React.Component {
       return (
         <Grid>
           <Row>
-            <Alert bsStyle='danger'>Something went wrong: {error.message}</Alert>
+            <Alert bsStyle="danger">Something went wrong: {error.message}</Alert>
           </Row>
         </Grid>
       );
@@ -53,12 +53,12 @@ class FeedbackPageComponent extends React.Component {
     return (
       <div>
         <Grid>
-          <PageHeader title='Feedback' />
+          <PageHeader title="Feedback" />
           { actions ? <ActionsList
             actions={actions}
             viewSkillDetails={this.viewSkillDetails}
             skillBeingEvaluated={skillBeingEvaluated}
-          />  : false}
+          /> : false}
         </Grid>
         <SkillDetailsModal
           showModal={this.state.showModal}
@@ -68,7 +68,7 @@ class FeedbackPageComponent extends React.Component {
           canUpdateSkillStatus={canUpdateSkillStatus}
         />
       </div>
-    )
+    );
   }
 }
 
@@ -80,15 +80,11 @@ FeedbackPageComponent.propTypes = {
 };
 
 export const FeedbackPage = connect(
-  function mapStateToProps(state) {
-    return ({
-      userId: state.user.userDetails.id,
-      feedback: state.actions.feedback
-    });
-  },
-  function mapDispatchToProps(dispatch) {
-    return {
-      actions: bindActionCreators(actions, dispatch)
-    };
-  }
+  state => ({
+    userId: state.user.userDetails.id,
+    feedback: state.actions.feedback,
+  }),
+  dispatch => ({
+    actions: bindActionCreators(actions, dispatch),
+  }),
 )(FeedbackPageComponent);

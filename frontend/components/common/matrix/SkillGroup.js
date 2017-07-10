@@ -7,7 +7,7 @@ const SkillGroup = ({ skillGroup, skills, viewSkillDetails, skillBeingEvaluated 
   <td>
     <Table bordered>
       <tbody>
-      {
+        {
         skillGroup.skills.map(
           (skillId) => {
             const skill = skills[skillId];
@@ -19,7 +19,7 @@ const SkillGroup = ({ skillGroup, skills, viewSkillDetails, skillBeingEvaluated 
                 viewSkillDetails={viewSkillDetails}
                 isBeingEvaluated={skillBeingEvaluated === skillId}
               />
-            )
+            );
           })
       }
       </tbody>

@@ -9,7 +9,7 @@ const Level = ({ categories, levelName, skillGroups, skills, viewSkillDetails, s
       <td>{<strong>{levelName}</strong>}</td>
       {
         categories.map(
-          (categoryName) => (
+          categoryName => (
             <SkillGroup
               key={categoryName}
               skillGroup={getSkillGroup(levelName, categoryName, skillGroups)}
@@ -17,7 +17,7 @@ const Level = ({ categories, levelName, skillGroups, skills, viewSkillDetails, s
               viewSkillDetails={viewSkillDetails}
               skillBeingEvaluated={skillBeingEvaluated}
             />
-          )
+          ),
         )
       }
     </tr>

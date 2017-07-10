@@ -14,7 +14,7 @@ export const SKILL_STATUS = keymirror({
   ATTAINED: null,
   NOT_ATTAINED: null,
   FEEDBACK: null,
-  OBJECTIVE: null
+  OBJECTIVE: null,
 });
 
 export const EVALUATION_STATUS = keymirror({
@@ -39,46 +39,44 @@ export const constants = keymirror({
 
 const retrieveEvaluationSuccess = createAction(
   constants.RETRIEVE_EVALUATION_SUCCESS,
-  normalizedEvaluation => normalizedEvaluation
+  normalizedEvaluation => normalizedEvaluation,
 );
 
 const retrieveEvaluationFailure = createAction(
   constants.RETRIEVE_EVALUATION_FAILURE,
-  (error, evaluationId) => ({ error, evaluationId })
+  (error, evaluationId) => ({ error, evaluationId }),
 );
 
 const updateSkillStatusSuccess = createAction(
   constants.SKILL_STATUS_UPDATE_SUCCESS,
-  (evaluationId, skillId, status) => ({ evaluationId, skillId, status })
+  (evaluationId, skillId, status) => ({ evaluationId, skillId, status }),
 );
 
 const updateSkillStatusFailure = createAction(
   constants.SKILL_STATUS_UPDATE_FAILURE,
-  (evaluationId, skillId, error) => ({ evaluationId, skillId, error })
+  (evaluationId, skillId, error) => ({ evaluationId, skillId, error }),
 );
 
 const evaluationCompleteSuccess = createAction(
   constants.EVALUATION_COMPLETE_SUCCESS,
-  (evaluationId, status) => ({ evaluationId, status })
+  (evaluationId, status) => ({ evaluationId, status }),
 );
 
 const evaluationCompleteFailure = createAction(
   constants.EVALUATION_COMPLETE_FAILURE,
-  (evaluationId, error) => ({ [evaluationId]: error })
+  (evaluationId, error) => ({ [evaluationId]: error }),
 );
 
 function retrieveEvaluation(evaluationId) {
-  return function (dispatch) {
-    return api.retrieveEvaluation(evaluationId)
-      .then((evaluation) => dispatch(retrieveEvaluationSuccess(evaluation)))
-      .catch((error) => dispatch(retrieveEvaluationFailure(error, evaluationId)))
-  }
+  return dispatch => api.retrieveEvaluation(evaluationId)
+      .then(evaluation => dispatch(retrieveEvaluationSuccess(evaluation)))
+      .catch(error => dispatch(retrieveEvaluationFailure(error, evaluationId)));
 }
 
 function updateSkillStatus(evaluationView, evaluationId, skillId, status) {
-  return function(dispatch, getState) {
-    const skillGroups = R.path(['entities', 'evaluations', 'entities', evaluationId, 'skillGroups'],  getState());
-    const skillGroupId = R.keys(R.filter((group, key) => R.contains(skillId, group.skills), skillGroups))[0];
+  return (dispatch, getState) => {
+    const skillGroups = R.path(['entities', 'evaluations', 'entities', evaluationId, 'skillGroups'], getState());
+    const skillGroupId = R.keys(R.filter(group => R.contains(skillId, group.skills), skillGroups))[0];
 
     let updateSkillFn;
     if (evaluationView === EVALUATION_VIEW.MENTOR) {
@@ -92,18 +90,17 @@ function updateSkillStatus(evaluationView, evaluationId, skillId, status) {
     }
 
     return updateSkillFn(evaluationId, skillGroupId, skillId, status)
-      .then((update) => dispatch(updateSkillStatusSuccess(evaluationId, skillId, status)))
-      .catch((error) => dispatch(updateSkillStatusFailure(evaluationId, skillId, error)))
-  }
+      .then(() => dispatch(updateSkillStatusSuccess(evaluationId, skillId, status)))
+      .catch(error => dispatch(updateSkillStatusFailure(evaluationId, skillId, error)));
+  };
 }
 
 function evaluationComplete(evaluationId) {
-  return function (dispatch) {
-    return api.evaluationComplete(evaluationId)
-      .then(({ status }) => dispatch(evaluationCompleteSuccess(evaluationId, status)))
-      .catch((error) => dispatch(evaluationCompleteFailure(evaluationId, error)))
-  }
+  return dispatch => api.evaluationComplete(evaluationId)
+    .then(({ status }) => dispatch(evaluationCompleteSuccess(evaluationId, status)))
+    .catch(error => dispatch(evaluationCompleteFailure(evaluationId, error)));
 }
+
 export const actions = {
   retrieveEvaluation,
   updateSkillStatus,
@@ -136,7 +133,7 @@ export default handleActions({
     const updatedSkill = {
       ...skill,
       status: { ...skill.status, current: status },
-      error: null
+      error: null,
     };
 
     return R.set(skillLens, updatedSkill, state);
@@ -149,7 +146,7 @@ export default handleActions({
   },
   [evaluationCompleteSuccess]: (state, action) => {
     const { evaluationId, status } = action.payload;
-    const evaluationStatusLens =  R.lensPath(['entities',  evaluationId, 'status']);
+    const evaluationStatusLens = R.lensPath(['entities', evaluationId, 'status']);
 
     return R.set(evaluationStatusLens, status, state);
   },
@@ -195,13 +192,13 @@ export const getError = (state, evalId) =>
 
 export const getErringSkills = (state, evalId) => {
   const skills = getSkills(state, evalId);
-  return R.filter((skill) => skill.error)(R.values(skills));
+  return R.filter(skill => skill.error)(R.values(skills));
 };
 
 export const getSkillGroupsWithReversedSkills = (state, evalId) => {
-  const reverseSkills = (skillGroup) => ({
+  const reverseSkills = skillGroup => ({
     ...skillGroup,
-    skills: R.reverse(skillGroup.skills)
+    skills: R.reverse(skillGroup.skills),
   });
 
   return R.map(reverseSkills)(getSkillGroups(state, evalId));

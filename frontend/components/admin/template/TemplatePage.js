@@ -41,7 +41,7 @@ class TemplatePageComponent extends React.Component {
       );
     }
 
-    return (<Row>{error ? <Alert bsStyle='danger'>Something went wrong: {error.message}</Alert> : false}</Row>);
+    return (<Row>{error ? <Alert bsStyle="danger">Something went wrong: {error.message}</Alert> : false}</Row>);
   }
 }
 
@@ -54,12 +54,8 @@ TemplatePageComponent.propTypes = {
 
 export const
   TemplatePage = connect(
-    function mapStateToProps(state) {
-      return state.matrices;
-    },
-    function mapDispatchToProps(dispatch) {
-      return {
-        actions: bindActionCreators(actions, dispatch)
-      };
-    }
+    state => state.matrices,
+    dispatch => ({
+      actions: bindActionCreators(actions, dispatch),
+    }),
   )(TemplatePageComponent);

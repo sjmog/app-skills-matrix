@@ -9,23 +9,23 @@ const ActionsList = ({ actions, viewSkillDetails }) =>
     <div>
       {
         actions.map(
-          ({createdDate, actions}) =>
-            <div key={createdDate}>
+          ({ createdDate, actions }) =>
+            (<div key={createdDate}>
               <h2>{moment(createdDate).format('MMM Do YYYY')}</h2>
               <ListGroup>
                 {
-                  actions.map(({skill}) =>
-                    <ListGroupItem key={skill.name}>
+                  actions.map(({ skill }) =>
+                    (<ListGroupItem key={skill.name}>
                       {skill.name}
-                      <button className={`btn btn-default btn-modal`} onClick={() => { return viewSkillDetails(skill)} }>Details</button>
+                      <button className={'btn btn-default btn-modal'} onClick={() => viewSkillDetails(skill)}>Details</button>
                       <CopyToClipboard text={skill.name}>
-                        <button className={`btn btn-default btn-copy`} />
+                        <button className={'btn btn-default btn-copy'} />
                       </CopyToClipboard>
-                    </ListGroupItem>
+                    </ListGroupItem>),
                   )
                 }
               </ListGroup>
-            </div>
+            </div>),
         )
       }
     </div>
@@ -35,4 +35,4 @@ ActionsList.propTypes = {
   actions: PropTypes.array.isRequired,
 };
 
-export default ActionsList
+export default ActionsList;

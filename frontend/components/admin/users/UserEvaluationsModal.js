@@ -11,7 +11,7 @@ const UserEvaluationsModal = ({ showModal, onClose, user }) => (
       </Modal.Header>
       <Modal.Body>
         { user.evaluations && user.evaluations.length
-          ? <UserEvaluationsList evaluations={user.evaluations}/>
+          ? <UserEvaluationsList evaluations={user.evaluations} />
           : <div>This user has no evaluations</div>
         }
       </Modal.Body>
@@ -32,7 +32,7 @@ UserEvaluationsModal.propTypes = {
       username: PropTypes.string.isRequired,
       evaluations: PropTypes.array.isRequired,
     }),
-  ])
+  ]),
 };
 
 export default UserEvaluationsModal;

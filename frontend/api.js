@@ -1,74 +1,74 @@
 import axios from 'axios';
 
-const handleError = (error) => Promise.reject(error.response ? error.response.data : { message: error.message });
-const getData = (response) => response.data;
+const handleError = error => Promise.reject(error.response ? error.response.data : { message: error.message });
+const getData = response => response.data;
 
 export default ({
-  saveUser: function ({ name, email, username }) {
+  saveUser({ name, email, username }) {
     return axios.post('/skillz/users', { action: 'create', name, email, username })
       .then(getData)
       .catch(handleError);
   },
-  selectMentor: function(mentorId, userId) {
+  selectMentor(mentorId, userId) {
     return axios.post(`/skillz/users/${userId}`, { action: 'selectMentor', mentorId })
       .then(getData)
       .catch(handleError);
   },
-  selectTemplate: function(templateId, userId) {
+  selectTemplate(templateId, userId) {
     return axios.post(`/skillz/users/${userId}`, { action: 'selectTemplate', templateId })
       .then(getData)
       .catch(handleError);
   },
-  startEvaluation: function(userId) {
+  startEvaluation(userId) {
     return axios.post(`/skillz/users/${userId}/evaluations`, { action: 'create' })
       .then(getData)
       .catch(handleError);
   },
-  saveTemplate: function (template) {
+  saveTemplate(template) {
     return axios.post('/skillz/matrices/templates', { action: 'save', template })
       .then(getData)
       .catch(handleError);
   },
-  getTemplate: function (templateId) {
+  getTemplate(templateId) {
     return axios.get(`/skillz/matrices/templates/${templateId}`)
       .then(getData)
       .catch(handleError);
   },
-  saveSkill: function (skill) {
+  saveSkill(skill) {
     return axios.post('/skillz/matrices/skills', { action: 'save', skill })
       .then(getData)
       .catch(handleError);
   },
-  getSkills: function () {
+  getSkills() {
     return axios.get('/skillz/matrices/skills')
       .then(getData)
       .catch(handleError);
   },
-  retrieveEvaluation: function (evaluationId) {
+  retrieveEvaluation(evaluationId) {
     return axios.get(`/skillz/evaluations/${evaluationId}`)
       .then(getData)
       .catch(handleError);
   },
-  subjectUpdateSkillStatus: function (evaluationId, skillGroupId, skillId, status) {
+  subjectUpdateSkillStatus(evaluationId, skillGroupId, skillId, status) {
     return axios.post(`/skillz/evaluations/${evaluationId}`, { action: 'subjectUpdateSkillStatus', skillGroupId, skillId, status })
-      .catch(handleError)
+      .catch(handleError);
   },
-  mentorUpdateSkillStatus: function (evaluationId, skillGroupId, skillId, status) {
+  mentorUpdateSkillStatus(evaluationId, skillGroupId, skillId, status) {
     return axios.post(`/skillz/evaluations/${evaluationId}`, { action: 'mentorUpdateSkillStatus', skillGroupId, skillId, status })
-      .catch(handleError)
+      .catch(handleError);
   },
-  adminUpdateSkillStatus: function (evaluationId, skillGroupId, skillId, status) {
+  adminUpdateSkillStatus(evaluationId, skillGroupId, skillId, status) {
     return axios.post(`/skillz/evaluations/${evaluationId}`, { action: 'adminUpdateSkillStatus', skillGroupId, skillId, status })
-      .catch(handleError)
+      .catch(handleError);
   },
-  evaluationComplete: function (evaluationId) {
+  evaluationComplete(evaluationId) {
     return axios.post(`/skillz/evaluations/${evaluationId}`, { action: 'complete' })
       .then(getData)
-      .catch(handleError)
+      .catch(handleError);
   },
-  retrieveAllActions: function(userId, actionType) {
+  retrieveAllActions(userId, actionType) {
     return axios.get(`/skillz/users/${userId}/actions?type=${actionType}`)
       .then(getData)
-      .catch(handleError)
-  }
+      .catch(handleError);
+  },
 });

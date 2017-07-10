@@ -1,15 +1,13 @@
 import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Row, Button, Label, Alert } from 'react-bootstrap';
-import { Link } from 'react-router';
+import { Row } from 'react-bootstrap';
 
 import { actions, EVALUATION_STATUS, EVALUATION_VIEW } from '../../../modules/user/evaluations';
 import * as selectors from '../../../modules/user';
-import Matrix from '../../common/matrix/Matrix';
 import PageHeader from './../../common/PageHeader';
 
-import './evaluation.scss'
+import './evaluation.scss';
 
 const { MENTOR, SUBJECT, ADMIN } = EVALUATION_VIEW;
 const { NEW, SELF_EVALUATION_COMPLETE, MENTOR_REVIEW_COMPLETE } = EVALUATION_STATUS;
@@ -28,7 +26,7 @@ const alertText = (view, status) => {
   } else if (view === SUBJECT && status === MENTOR_REVIEW_COMPLETE) {
     text = 'Your evaluation is complete.';
   } else {
-    text = false
+    text = false;
   }
 
   return text;
@@ -55,10 +53,10 @@ class EvaluationPageHeader extends React.Component {
             title={subjectName}
             btnOnClick={this.evaluationComplete}
             btnDisabled={status !== SELF_EVALUATION_COMPLETE}
-            btnText='Review complete'
+            btnText="Review complete"
           />
         </Row>
-      )
+      );
     }
 
     if (view === SUBJECT) {
@@ -66,11 +64,11 @@ class EvaluationPageHeader extends React.Component {
         <Row>
           <PageHeader
             alertText={alertText(view, status)}
-            title='Evaluation'
+            title="Evaluation"
             subTitle={evaluationName}
           />
         </Row>
-      )
+      );
     }
 
     if (view === ADMIN) {
@@ -80,7 +78,7 @@ class EvaluationPageHeader extends React.Component {
             title={subjectName}
           />
         </Row>
-      )
+      );
     }
     return false;
   }
@@ -88,26 +86,24 @@ class EvaluationPageHeader extends React.Component {
 
 EvaluationPageHeader.propTypes = {
   view: PropTypes.string.isRequired,
-  evaluationName:  PropTypes.string.isRequired,
-  subjectName:  PropTypes.string.isRequired,
+  evaluationName: PropTypes.string.isRequired,
+  subjectName: PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,
   evaluationId: PropTypes.string.isRequired,
 };
 
 export default connect(
-  function mapStateToProps(state, props) {
+  (state, props) => {
     const evalId = props.evaluationId;
 
     return ({
       view: selectors.getView(state, evalId),
       evaluationName: selectors.getEvaluationName(state, evalId),
       subjectName: selectors.getSubjectName(state, evalId),
-      status:  selectors.getEvaluationStatus(state, evalId),
-    })
+      status: selectors.getEvaluationStatus(state, evalId),
+    });
   },
-  function mapDispatchToProps(dispatch) {
-    return {
-      actions: bindActionCreators(actions, dispatch)
-    };
-  }
+  dispatch => ({
+    actions: bindActionCreators(actions, dispatch),
+  }),
 )(EvaluationPageHeader);

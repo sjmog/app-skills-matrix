@@ -24,35 +24,27 @@ const startEvaluationSuccess = createAction(constants.START_EVALUATION_SUCCESS);
 const startEvaluationFailure = createAction(constants.START_EVALUATION_FAILURE);
 
 function startEvaluation(userId) {
-  return function (dispatch) {
-    return api.startEvaluation(userId)
-      .then((evaluation) => dispatch(startEvaluationSuccess(Object.assign({}, evaluation, { success: true }))))
-      .catch((err) => dispatch(startEvaluationFailure(Object.assign({}, err, { success: false }))));
-  }
+  return dispatch => api.startEvaluation(userId)
+    .then(evaluation => dispatch(startEvaluationSuccess(Object.assign({}, evaluation, { success: true }))))
+    .catch(err => dispatch(startEvaluationFailure(Object.assign({}, err, { success: false }))));
 }
 
 function addUser(user) {
-  return function (dispatch) {
-    return api.saveUser(user)
-      .then((user) => dispatch(addUserSuccess(user)))
-      .catch((err) => dispatch(addUserFailure(err)))
-  }
+  return dispatch => api.saveUser(user)
+    .then(user => dispatch(addUserSuccess(user)))
+    .catch(err => dispatch(addUserFailure(err)));
 }
 
 function selectMentor(mentorId, user) {
-  return function (dispatch) {
-    return api.selectMentor(mentorId, user.id)
-      .then((user) => dispatch(selectMentorSuccess(user)))
-      .catch((err) => dispatch(selectMentorFailure(err)));
-  }
+  return dispatch => api.selectMentor(mentorId, user.id)
+    .then(user => dispatch(selectMentorSuccess(user)))
+    .catch(err => dispatch(selectMentorFailure(err)));
 }
 
 function selectTemplate(templateId, user) {
-  return function (dispatch) {
-    return api.selectTemplate(templateId, user.id)
-      .then((user) => dispatch(selectTemplateSuccess(user)))
-      .catch((err) => dispatch(selectTemplateFailure(err)));
-  }
+  return dispatch => api.selectTemplate(templateId, user.id)
+    .then(user => dispatch(selectTemplateSuccess(user)))
+    .catch(err => dispatch(selectTemplateFailure(err)));
 }
 
 export const actions = {
@@ -66,9 +58,9 @@ const handleUserUpdateSuccess = (state, action) =>
   Object.assign({},
     state,
     {
-      users: R.map((user) => user.id === action.payload.id ? action.payload : user, state.users),
+      users: R.map(user => (user.id === action.payload.id ? action.payload : user), state.users),
       success: true,
-      error: null
+      error: null,
     });
 
 const handleActionFailure = (state, action) => Object.assign({}, state, { error: action.payload, success: false });

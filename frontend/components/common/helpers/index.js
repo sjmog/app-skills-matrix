@@ -5,4 +5,4 @@ const getSkillGroup = (level, category, skillGroups) =>
 
 export {
   getSkillGroup,
-}
+};

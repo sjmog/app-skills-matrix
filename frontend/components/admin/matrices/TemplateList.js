@@ -10,12 +10,13 @@ const templateDetailsRow = (template) => {
       <td>
         <Link to={{
           pathname: `/admin/matrices/templates/${id}`,
-          state: { template }
-        }}>
+          state: { template },
+        }}
+        >
           Modify
         </Link>
       </td>
-    </tr>)
+    </tr>);
 };
 
 const TemplateList = ({ templates }) =>
@@ -23,13 +24,13 @@ const TemplateList = ({ templates }) =>
     <Row>
       <Table responsive bordered>
         <thead>
-        <tr>
-          <th>Name</th>
-          <th>Actions</th>
-        </tr>
+          <tr>
+            <th>Name</th>
+            <th>Actions</th>
+          </tr>
         </thead>
         <tbody>
-        { templates.map(template => templateDetailsRow(template)) }
+          { templates.map(template => templateDetailsRow(template)) }
         </tbody>
       </Table>
     </Row>
@@ -39,4 +40,4 @@ TemplateList.propTypes = {
   templates: PropTypes.array.isRequired,
 };
 
-export default TemplateList
+export default TemplateList;

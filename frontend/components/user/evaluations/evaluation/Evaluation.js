@@ -2,19 +2,18 @@ import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import R from 'ramda';
-import { Grid, Col, Row, Alert, Button } from 'react-bootstrap';
-import { Link } from 'react-router';
+import { Grid, Col, Row, Alert } from 'react-bootstrap';
 
-import * as selectors from '../../../../modules/user'
-import { actions, SKILL_STATUS, EVALUATION_VIEW, EVALUATION_STATUS } from '../../../../modules/user/evaluations';
-const { SUBJECT, MENTOR, ADMIN } = EVALUATION_VIEW;
-const { NEW, SELF_EVALUATION_COMPLETE } = EVALUATION_STATUS;
+import * as selectors from '../../../../modules/user';
+import { actions as entityActions, EVALUATION_VIEW, EVALUATION_STATUS } from '../../../../modules/user/evaluations';
 import { actionCreators as uiActionCreators } from '../../../../modules/user/evaluation';
-import { actions as entityActions } from '../../../../modules/user/evaluations';
 
 import EvaluationHeader from './EvaluationHeader';
 import Matrix from '../../../common/matrix/Matrix';
 import Skill from './Skill';
+
+const { SUBJECT, MENTOR, ADMIN } = EVALUATION_VIEW;
+const { NEW, SELF_EVALUATION_COMPLETE } = EVALUATION_STATUS;
 
 class Evaluation extends React.Component {
   constructor(props) {
@@ -94,13 +93,13 @@ class Evaluation extends React.Component {
       <Grid>
         { erringSkills
           ? <Row>
-              {erringSkills.map(
+            {erringSkills.map(
                 ({ name }) =>
-                  <Alert bsStyle='danger' key={name}>
+                  (<Alert bsStyle="danger" key={name}>
                     {`There was a problem updating a skill: ${name}`}
-                  </Alert>
+                  </Alert>),
               )}
-            </Row>
+          </Row>
           : false
         }
         <Row>
@@ -115,7 +114,7 @@ class Evaluation extends React.Component {
           />
         </Row>
         <Row>
-          <Col md={7} className='evaluation-panel'>
+          <Col md={7} className="evaluation-panel">
             <Skill
               level={currentSkill.level}
               skill={currentSkill}
@@ -128,7 +127,7 @@ class Evaluation extends React.Component {
               postUpdateNavigation={this.postUpdateNavigation}
             />
           </Col>
-          <Col md={5} className='evaluation-panel evaluation-panel--right'>
+          <Col md={5} className="evaluation-panel evaluation-panel--right">
             <Matrix
               skillBeingEvaluated={currentSkillId}
               categories={[].concat(currentSkill.category)}
@@ -137,15 +136,15 @@ class Evaluation extends React.Component {
               updateSkillStatus={updateSkillStatus}
               canUpdateSkillStatus={
                 view === ADMIN
-                || view === SUBJECT && status === NEW
-                || view === MENTOR && status === SELF_EVALUATION_COMPLETE
+                || (view === SUBJECT && status === NEW)
+                || (view === MENTOR && status === SELF_EVALUATION_COMPLETE)
               }
               skills={skills}
             />
           </Col>
         </Row>
       </Grid>
-    )
+    );
   }
 }
 
@@ -153,7 +152,7 @@ const skillShape = PropTypes.shape({
   skillId: PropTypes.number.isRequired,
   skillGroupId: PropTypes.number.isRequired,
   level: PropTypes.string.isRequried,
-  category: PropTypes.string.isRequired ,
+  category: PropTypes.string.isRequired,
 });
 
 Evaluation.propTypes = {
@@ -181,10 +180,10 @@ Evaluation.propTypes = {
 };
 
 export default connect(
-  function mapStateToProps(state, props) {
+  (state, props) => {
     const { evaluationId } = props;
     const currentSkill = selectors.getCurrentSkill(state);
-    const currentSkillId =  selectors.getCurrentSkillId(state);
+    const currentSkillId = selectors.getCurrentSkillId(state);
 
     return ({
       initialisedEvaluation: selectors.getCurrentEvaluation(state),
@@ -197,12 +196,10 @@ export default connect(
       lastSkill: selectors.getLastSkill(state),
       erringSkills: selectors.getErringSkills(state, evaluationId),
       skillGroups: selectors.getSkillGroupsWithReversedSkills(state, evaluationId),
-    })
+    });
   },
-  function mapDispatchToProps(dispatch) {
-    return {
-      uiActions: bindActionCreators(uiActionCreators, dispatch),
-      entityActions: bindActionCreators(entityActions, dispatch)
-    };
-  }
+  dispatch => ({
+    uiActions: bindActionCreators(uiActionCreators, dispatch),
+    entityActions: bindActionCreators(entityActions, dispatch),
+  }),
 )(Evaluation);
