@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+import R from 'ramda';
 import evaluation from '../../../../../../backend/models/evaluations/evaluation';
 import evaluations from '../../../../../fixtures/evaluations';
 import reducer, { actionTypes, initialValues } from '../../../../../../frontend/modules/user/evaluation';
@@ -117,6 +118,25 @@ describe('Evaluation reducer', () => {
       expect(newState.currentSkill.skillGroupId).to.equal(3);
       expect(newState.currentSkill.level).to.equal('Novice');
       expect(newState.currentSkill.category).to.equal('Magicness');
+    });
+
+    it('sets current skill to be the last when all have been evaluated', () => {
+      const state = initialValues;
+
+      const setStatusToAttained = (skill) =>  Object.assign({}, skill, { status: { current: 'ATTAINED' }});
+      const evaluatedSkills = R.map(setStatusToAttained)(fixtureEvaluation.skills);
+
+      const action = {
+        type: actionTypes.SET_AS_CURRENT_EVALUATION,
+        payload: evaluation(Object.assign({}, fixtureEvaluation, { skills: evaluatedSkills })).viewModel,
+      };
+
+      const newState = reducer(state, action);
+
+      expect(newState.currentSkill.skillId).to.equal(6);
+      expect(newState.currentSkill.skillGroupId).to.equal(1);
+      expect(newState.currentSkill.level).to.equal('Expert');
+      expect(newState.currentSkill.category).to.equal('Dragon Slaying');
     });
 
     it('sets first skill', () => {

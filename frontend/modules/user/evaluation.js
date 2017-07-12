@@ -8,7 +8,7 @@ const getSkillsFromState = (state, evaluationId) =>
   R.path(['entities', 'evaluations', 'entities', evaluationId, 'skills'], state);
 
 const getFirstUnevaluatedSkill = (elements, skills) =>
-  R.find(({ skillId }) => !skills[skillId].status.current)(elements);
+  R.find(({ skillId }) => !skills[skillId].status.current)(elements) || R.last(elements);
 
 const getNextUnevaluatedSkill = (paginatedView, skills, currentSkillId) => {
   const indexOfCurrentSkill = R.findIndex(R.propEq('skillId', currentSkillId))(paginatedView);
