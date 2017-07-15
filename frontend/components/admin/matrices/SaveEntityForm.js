@@ -4,7 +4,7 @@ import { Row, Form, FormGroup, ControlLabel, FormControl, Button, Glyphicon, Ale
 const SaveEntityForm = ({ entityName, entity, saveEntity, updateEntityInLocalState, success, error }) =>
   (
     <div>
-      <Row className='show-grid'>
+      <Row className="show-grid">
         <Form onSubmit={saveEntity}>
           <FormGroup>
             <ControlLabel>Paste your JSON here</ControlLabel>
@@ -16,14 +16,14 @@ const SaveEntityForm = ({ entityName, entity, saveEntity, updateEntityInLocalSta
             />
           </FormGroup>
           {' '}
-          <Button bsStyle='primary' type='submit'><Glyphicon glyph='upload'/></Button>
+          <Button bsStyle="primary" type="submit"><Glyphicon glyph="upload" /></Button>
         </Form>
       </Row>
       <Row>
-        { success ? <Alert bsStyle='success'>{`${entityName}(s) successfully saved`}</Alert> : false }
+        { success ? <Alert bsStyle="success">{`${entityName}(s) successfully saved`}</Alert> : false }
       </Row>
       <Row>
-        { error ? <Alert bsStyle='danger'>Something went wrong: {error.message}</Alert> : false }
+        { error ? <Alert bsStyle="danger">Something went wrong: {error.message}</Alert> : false }
       </Row>
     </div>
   );
@@ -37,4 +37,4 @@ SaveEntityForm.propTypes = {
   error: PropTypes.object,
 };
 
-export default SaveEntityForm
+export default SaveEntityForm;

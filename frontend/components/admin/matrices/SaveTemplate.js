@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Row } from 'react-bootstrap';
@@ -20,7 +20,7 @@ class SaveTemplateComponent extends React.Component {
 
   saveTemplate(e) {
     e.preventDefault();
-    this.props.actions.saveTemplate(this.state.template)
+    this.props.actions.saveTemplate(this.state.template);
   }
 
   render() {
@@ -43,12 +43,8 @@ class SaveTemplateComponent extends React.Component {
 }
 
 export const SaveTemplate = connect(
-  function mapStateToProps(state) {
-    return state.matrices.templateResult || {};
-  },
-  function mapDispatchToProps(dispatch) {
-    return {
-      actions: bindActionCreators(actions, dispatch)
-    };
-  }
+  state => state.matrices.templateResult || {},
+  dispatch => ({
+    actions: bindActionCreators(actions, dispatch),
+  }),
 )(SaveTemplateComponent);

@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { actions } from '../../../modules/admin/users';
 import { Row, Button } from 'react-bootstrap';
 import R from 'ramda';
+import { actions } from '../../../modules/admin/users';
 import AddUserForm from './AddUserForm';
 import UserList from './UserList';
 
@@ -31,27 +31,16 @@ class ManageUsersPageComponent extends React.Component {
     }
   }
 
-  updateNewUserState(e) {
-    const field = e.target.name;
-    let newUser = this.state.newUser;
-    newUser[field] = e.target.value;
-    return this.setState({ newUser });
-  }
-
-  clearUserForm() {
-    this.setState({ newUser: {} });
-  }
-
   onAddUser(e) {
     e.preventDefault();
     this.props.actions.addUser(this.state.newUser);
-  };
+  }
 
   onStartEvaluation(e) {
     e.preventDefault();
     this.state.selectedUsers.map(this.props.actions.startEvaluation);
     this.setState({ selectedUsers: [] });
-  };
+  }
 
   onUserSelectionChange(e, user) {
     const checked = e.target.checked;
@@ -59,7 +48,7 @@ class ManageUsersPageComponent extends React.Component {
     if (checked) {
       selectedUsers = this.state.selectedUsers.concat([user.id]);
     } else {
-      selectedUsers = R.filter((id) => id !== user.id, this.state.selectedUsers);
+      selectedUsers = R.filter(id => id !== user.id, this.state.selectedUsers);
     }
 
     return this.setState({ selectedUsers });
@@ -73,6 +62,17 @@ class ManageUsersPageComponent extends React.Component {
   onSelectTemplate(e, user) {
     e.preventDefault();
     this.props.actions.selectTemplate(e.target.value, user);
+  }
+
+  updateNewUserState(e) {
+    const field = e.target.name;
+    const newUser = this.state.newUser;
+    newUser[field] = e.target.value;
+    return this.setState({ newUser });
+  }
+
+  clearUserForm() {
+    this.setState({ newUser: {} });
   }
 
   render() {
@@ -111,7 +111,7 @@ class ManageUsersPageComponent extends React.Component {
         <Row>
           <ul>
             {
-              this.props.users.newEvaluations.map((e) => (
+              this.props.users.newEvaluations.map(e => (
                 <li key={e.id}>
                   {
                     e.success
@@ -134,15 +134,11 @@ ManageUsersPageComponent.propTypes = {
 };
 
 export const ManageUsersPage = connect(
-  function mapStateToProps({ users, matrices }) {
-    return {
-      users,
-      matrices
-    }
-  },
-  function mapDispatchToProps(dispatch) {
-    return {
-      actions: bindActionCreators(actions, dispatch)
-    };
-  }
+  ({ users, matrices }) => ({
+    users,
+    matrices,
+  }),
+  dispatch => ({
+    actions: bindActionCreators(actions, dispatch),
+  }),
 )(ManageUsersPageComponent);

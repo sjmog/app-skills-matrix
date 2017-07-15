@@ -12,25 +12,23 @@ export const constants = keymirror({
 
 export const ACTION_TYPES = keymirror({
   FEEDBACK: null,
-  OBJECTIVE: null
+  OBJECTIVE: null,
 });
 
 const retrieveActionsSuccess = createAction(
   constants.RETRIEVE_ACTION_SUCCESS,
-  (actionType, actions) => ({ actionType, actions })
+  (actionType, actions) => ({ actionType, actions }),
 );
 
 const retrieveActionsFailure = createAction(
   constants.RETRIEVE_ACTION_FAILURE,
-  (actionType, error) => ({ actionType, error })
+  (actionType, error) => ({ actionType, error }),
 );
 
 function retrieveActions(userId, actionType) {
-  return function (dispatch) {
-    return api.retrieveAllActions(userId, actionType)
-      .then((actions) => dispatch(retrieveActionsSuccess(actionType, actions)))
-      .catch((error) => dispatch(retrieveActionsFailure(actionType, error)))
-  }
+  return dispatch => api.retrieveAllActions(userId, actionType)
+      .then(actions => dispatch(retrieveActionsSuccess(actionType, actions)))
+      .catch(error => dispatch(retrieveActionsFailure(actionType, error)));
 }
 
 export const actions = {
@@ -39,10 +37,10 @@ export const actions = {
 
 const initialSate = {
   feedback: {
-    ui: { retrieved: false }
+    ui: { retrieved: false },
   },
   objective: {
-    ui: { retrieved: false }
+    ui: { retrieved: false },
   },
 };
 
@@ -52,42 +50,38 @@ export default handleActions({
     const newestToOldest = (a, b) => moment(a.createdDate).isBefore(b.createdDate);
 
     const uniqueEvals = R.uniq(
-      R.map((action) => ({
+      R.map(action => ({
         createdDate: R.path(['evaluation', 'createdDate'], action),
-        evaluationId: R.path(['evaluation', 'id'], action)
-      }), actions)
+        evaluationId: R.path(['evaluation', 'id'], action),
+      }), actions),
     ).sort(newestToOldest);
 
     const actionsGroupedByEvaluation = R.map(
-      ({ createdDate, evaluationId}) =>
+      ({ createdDate, evaluationId }) =>
         ({ createdDate, evaluationId, actions: R.filter(R.pathEq(['evaluation', 'createdDate'], createdDate), actions) }),
-      uniqueEvals
+      uniqueEvals,
     );
-    return R.merge(state, { [actionType.toLowerCase()]: { actions: actionsGroupedByEvaluation, ui: { retrieved: true } }});
+    return R.merge(state, { [actionType.toLowerCase()]: { actions: actionsGroupedByEvaluation, ui: { retrieved: true } } });
   },
   [retrieveActionsFailure]: (state, action) => {
     const { actionType, error } = action.payload;
-    return R.merge(state, { [actionType.toLowerCase()]: { error, ui: { retrieved: false } }});
+    return R.merge(state, { [actionType.toLowerCase()]: { error, ui: { retrieved: false } } });
   },
 }, initialSate);
 
 
-export const getFeedbackForEvaluation = (state, evaluationId) => {
-  return R.filter(R.pathEq(['evaluationId'], evaluationId))(R.path(['feedback', 'actions'], state));
-};
+export const getFeedbackForEvaluation = (state, evaluationId) => R.filter(R.pathEq(['evaluationId'], evaluationId))(R.path(['feedback', 'actions'], state));
 
-export const getFeedbackRetrievedStatus = (state) =>
+export const getFeedbackRetrievedStatus = state =>
   R.path(['feedback', 'ui', 'retrieved'], state);
 
-export const getFeedbackError = (state) =>
+export const getFeedbackError = state =>
   R.path(['feedback', 'error'], state);
 
-export const geObjectivesForEvaluation = (state, evaluationId) => {
-  return R.filter(R.pathEq(['evaluationId'], evaluationId))(R.path(['objective', 'actions'], state));
-};
+export const geObjectivesForEvaluation = (state, evaluationId) => R.filter(R.pathEq(['evaluationId'], evaluationId))(R.path(['objective', 'actions'], state));
 
-export const getObjectivesRetrievedStatus = (state) =>
+export const getObjectivesRetrievedStatus = state =>
   R.path(['objective', 'ui', 'retrieved'], state);
 
-export const getObjectivesError = (state) =>
+export const getObjectivesError = state =>
   R.path(['objective', 'error'], state);

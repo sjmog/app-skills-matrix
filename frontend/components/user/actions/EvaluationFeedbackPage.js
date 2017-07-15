@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Row, Grid, Alert, ListGroup, ListGroupItem } from 'react-bootstrap';
+import { Row, Grid, Alert } from 'react-bootstrap';
 
 import * as selectors from '../../../modules/user';
 import { actions, ACTION_TYPES } from '../../../modules/user/actions';
@@ -20,7 +20,7 @@ class EvaluationFeedbackPageComponent extends React.Component {
       return (
         <Grid>
           <Row>
-            <Alert bsStyle='danger'>Something went wrong: {error.message}</Alert>
+            <Alert bsStyle="danger">Something went wrong: {error.message}</Alert>
           </Row>
         </Grid>
       );
@@ -32,10 +32,10 @@ class EvaluationFeedbackPageComponent extends React.Component {
 
     return (
       <Grid>
-        <PageHeader title='Feedback' />
-        { feedback ? <ActionsList actions={feedback} />  : false}
+        <PageHeader title="Feedback" />
+        { feedback ? <ActionsList actions={feedback} /> : false}
       </Grid>
-    )
+    );
   }
 }
 
@@ -44,11 +44,10 @@ EvaluationFeedbackPageComponent.propTypes = {
   error: PropTypes.object,
   retrieved: PropTypes.bool.isRequired,
   feedback: PropTypes.array,
-  evaluationId: PropTypes.string,
 };
 
 export const EvaluationFeedbackPage = connect(
-  function mapStateToProps(state, { params }) {
+  (state, { params }) => {
     const { evaluationId, userId } = params;
     const retrieved = selectors.getFeedbackRetrievedStatus(state);
     const error = selectors.getFeedbackError(state);
@@ -58,19 +57,17 @@ export const EvaluationFeedbackPage = connect(
         userId,
         error,
         retrieved,
-      })
+      });
     }
 
     return ({
       userId,
       retrieved,
       feedback: selectors.getFeedbackForEvaluation(state, evaluationId),
-      evaluationId
+      evaluationId,
     });
   },
-  function mapDispatchToProps(dispatch) {
-    return {
-      actions: bindActionCreators(actions, dispatch)
-    };
-  }
+  dispatch => ({
+    actions: bindActionCreators(actions, dispatch),
+  }),
 )(EvaluationFeedbackPageComponent);

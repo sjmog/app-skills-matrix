@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Row } from 'react-bootstrap';
@@ -20,7 +20,7 @@ class SaveSkillComponent extends React.Component {
 
   saveSkill(e) {
     e.preventDefault();
-    this.props.actions.saveSkill(this.state.skill)
+    this.props.actions.saveSkill(this.state.skill);
   }
 
   render() {
@@ -43,12 +43,8 @@ class SaveSkillComponent extends React.Component {
 }
 
 export const SaveSkill = connect(
-  function mapStateToProps(state) {
-    return state.matrices.skillResult || {};
-  },
-  function mapDispatchToProps(dispatch) {
-    return {
-      actions: bindActionCreators(actions, dispatch)
-    };
-  }
+  state => state.matrices.skillResult || {},
+  dispatch => ({
+    actions: bindActionCreators(actions, dispatch),
+  }),
 )(SaveSkillComponent);

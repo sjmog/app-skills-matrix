@@ -1,19 +1,19 @@
 import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Grid, Row, Alert, Col, Jumbotron, Button } from 'react-bootstrap';
-import { Link } from 'react-router';
+import { Grid, Row, Alert, Col } from 'react-bootstrap';
 
 import * as selectors from '../../../modules/user';
-import { actions, SKILL_STATUS, EVALUATION_VIEW, EVALUATION_STATUS, EVALUATION_FETCH_STATUS } from '../../../modules/user/evaluations';
-const { SUBJECT, MENTOR, ADMIN } = EVALUATION_VIEW;
-const { NEW, SELF_EVALUATION_COMPLETE } = EVALUATION_STATUS;
+import { actions, EVALUATION_VIEW, EVALUATION_STATUS, EVALUATION_FETCH_STATUS } from '../../../modules/user/evaluations';
 
 import Evaluation from './evaluation/Evaluation';
 import EvaluationPageHeader from './EvaluationPageHeader';
 import Matrix from '../../common/matrix/Matrix';
 
 import './evaluation.scss';
+
+const { SUBJECT, MENTOR, ADMIN } = EVALUATION_VIEW;
+const { NEW, SELF_EVALUATION_COMPLETE } = EVALUATION_STATUS;
 
 class EvaluationPageComponent extends React.Component {
   constructor(props) {
@@ -26,7 +26,7 @@ class EvaluationPageComponent extends React.Component {
     const { params: { evaluationId }, fetchStatus, actions } = this.props;
 
     if (!fetchStatus) {
-      actions.retrieveEvaluation(evaluationId)
+      actions.retrieveEvaluation(evaluationId);
     }
   }
 
@@ -43,7 +43,7 @@ class EvaluationPageComponent extends React.Component {
       return (
         <Grid>
           <Row>
-            <Alert bsStyle='danger'>Something went wrong: {error.message}</Alert>
+            <Alert bsStyle="danger">Something went wrong: {error.message}</Alert>
           </Row>
         </Grid>
       );
@@ -67,20 +67,20 @@ class EvaluationPageComponent extends React.Component {
     }
 
     return (
-      <div className='evaluation-grid'>
-        <div className='evaluation-grid__item'>
+      <div className="evaluation-grid">
+        <div className="evaluation-grid__item">
           <EvaluationPageHeader
             evaluationId={evaluationId}
           />
         </div>
-        <div className='evaluation-grid__item'>
+        <div className="evaluation-grid__item">
           <Row>
             <h4>Legend</h4>
-            <p className='skill--legend skill--attained'>Attained</p>
-            <p className='skill--legend skill--newly-attained'>Newly attained</p>
-            <p className='skill--legend skill--objective'>Objective</p>
-            <p className='skill--legend skill--feedback'>Feedback</p>
-            <p className='skill--legend skill--not-attained'>Not attained</p>
+            <p className="skill--legend skill--attained">Attained</p>
+            <p className="skill--legend skill--newly-attained">Newly attained</p>
+            <p className="skill--legend skill--objective">Objective</p>
+            <p className="skill--legend skill--feedback">Feedback</p>
+            <p className="skill--legend skill--not-attained">Not attained</p>
           </Row>
           <Row>
             <Col md={20}>
@@ -92,15 +92,15 @@ class EvaluationPageComponent extends React.Component {
                 skills={skills}
                 canUpdateSkillStatus={
                   view === ADMIN
-                  || view === SUBJECT && status === NEW
-                  || view === MENTOR && status === SELF_EVALUATION_COMPLETE
+                  || (view === SUBJECT && status === NEW)
+                  || (view === MENTOR && status === SELF_EVALUATION_COMPLETE)
                 }
               />
             </Col>
           </Row>
         </div>
       </div>
-    )
+    );
   }
 }
 
@@ -113,12 +113,12 @@ EvaluationPageComponent.propTypes = {
   view: PropTypes.string,
   error: PropTypes.object,
   params: PropTypes.shape({
-    evaluationId: PropTypes.string.isRequired
-  })
+    evaluationId: PropTypes.string.isRequired,
+  }),
 };
 
 export const EvaluationPage = connect(
-  function mapStateToProps(state, props) {
+  (state, props) => {
     const evalId = props.params.evaluationId;
 
     return ({
@@ -132,9 +132,7 @@ export const EvaluationPage = connect(
       view: selectors.getView(state, evalId),
     });
   },
-  function mapDispatchToProps(dispatch) {
-    return {
-      actions: bindActionCreators(actions, dispatch)
-    };
-  }
+  dispatch => ({
+    actions: bindActionCreators(actions, dispatch),
+  }),
 )(EvaluationPageComponent);

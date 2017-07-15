@@ -4,7 +4,7 @@ import { Table } from 'react-bootstrap';
 import Level from './Level';
 import SkillDetailsModal from './SkillDetailsModal';
 
-import '../../common/matrix/matrix.scss'
+import '../../common/matrix/matrix.scss';
 
 class Matrix extends React.Component {
   constructor(props) {
@@ -29,7 +29,7 @@ class Matrix extends React.Component {
     this.setState({
       currentSkill: null,
       showModal: false,
-    })
+    });
   }
 
   render() {
@@ -37,15 +37,15 @@ class Matrix extends React.Component {
     return (
       <div>
         <Table responsive>
-          <thead className='matrix-table__head'>
-          <tr>
-            <th>{' '}</th>
-            { categories.map((categoryName) => (<th key={categoryName}>{categoryName}</th>)) }
-          </tr>
+          <thead className="matrix-table__head">
+            <tr>
+              <th>{' '}</th>
+              { categories.map(categoryName => (<th key={categoryName}>{categoryName}</th>)) }
+            </tr>
           </thead>
-          <tbody className='matrix-table__body'>
-          {
-            levels.map((levelName) => (
+          <tbody className="matrix-table__body">
+            {
+            levels.map(levelName => (
               <Level
                 key={levelName}
                 categories={categories}

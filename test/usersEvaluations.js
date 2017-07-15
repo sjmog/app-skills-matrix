@@ -2,20 +2,21 @@ const request = require('supertest');
 const { expect } = require('chai');
 
 const app = require('../backend');
-const { prepopulateUsers, users, evaluations, insertTemplate, clearDb, insertSkill, insertEvaluation, assignMentor, getEvaluations, skillStatus } = require('./helpers');
+const { prepopulateUsers, users, insertTemplate, clearDb, insertSkill, insertEvaluation, assignMentor, getEvaluations, skillStatus } = require('./helpers');
 const { sign, cookieName } = require('../backend/models/auth');
 const templateData = require('./fixtures/templates');
 const skills = require('./fixtures/skills');
-const [evaluation, completedEvaluation] = require('./fixtures/evaluations');
+const [, completedEvaluation] = require('./fixtures/evaluations');
 
 const prefix = '/skillz';
-const templateId = 'eng-nodejs';
 
-let adminToken, normalUserOneToken, normalUserTwoToken;
-let adminUserId, normalUserOneId, normalUserTwoId;
+let adminToken;
+let normalUserOneToken;
+let adminUserId;
+let normalUserOneId;
+let normalUserTwoId;
 
 describe('userEvaluations', () => {
-
   beforeEach(() =>
     clearDb()
       .then(() => prepopulateUsers())
@@ -25,11 +26,10 @@ describe('userEvaluations', () => {
         Promise.all([
           users.findOne({ email: 'dmorgantini@gmail.com' }),
           users.findOne({ email: 'user@magic.com' }),
-          users.findOne({ email: 'user@dragon-riders.com' })
+          users.findOne({ email: 'user@dragon-riders.com' }),
         ])
           .then(([adminUser, normalUserOne, normalUserTwo]) => {
             normalUserOneToken = sign({ username: normalUserOne.username, id: normalUserOne._id });
-            normalUserTwoToken = sign({ username: normalUserTwo.username, id: normalUserTwo._id });
             adminToken = sign({ username: adminUser.username, id: adminUser._id });
             normalUserOneId = normalUserOne._id;
             normalUserTwoId = normalUserTwo._id;
@@ -59,12 +59,12 @@ describe('userEvaluations', () => {
             .set('Cookie', `${cookieName}=${adminToken}`)
             .expect(201)
             .then(getEvaluations)
-            .then(([firstEvaluation, secondEvaluation]) => {
+            .then(([, secondEvaluation]) => {
               // see ./unit/evaluation-test.js for test to ensure evaluation is correctly generated
               expect(secondEvaluation).to.be.not.null;
               expect(skillStatus(secondEvaluation.skills, 2)).to.deep.equal({
                 previous: 'FEEDBACK',
-                current: null
+                current: null,
               });
             })));
 
@@ -99,13 +99,12 @@ describe('userEvaluations', () => {
       }),
     ];
 
-    errorCases.forEach((test) =>
+    errorCases.forEach(test =>
       it(`handles error case: ${test().desc}`, () =>
         request(app)
           .post(`${prefix}/users/${test().userId}/evaluations`)
           .send(test().body)
           .set('Cookie', `${cookieName}=${test().token}`)
           .expect(test().expect)));
-
   });
 });

@@ -1,16 +1,10 @@
 import React from 'react';
 
-export class Dashboard extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+const Dashboard = ({ children }) => (
+  <div>
+    <h1 className="header">Dashboard</h1>
+    {children}
+  </div>
+);
 
-  render() {
-    return (
-      <div>
-        <h1 className="header">Dashboard</h1>
-        {this.props.children}
-      </div>
-    );
-  }
-}
+export default Dashboard;

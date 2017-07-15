@@ -4,7 +4,7 @@ const SKILL_STATUS = keymirror({
   ATTAINED: null,
   NOT_ATTAINED: null,
   FEEDBACK: null,
-  OBJECTIVE: null
+  OBJECTIVE: null,
 });
 
 const STATUS_WITH_ACTION = keymirror({
@@ -18,7 +18,7 @@ module.exports = ({ id, name, criteria, type, questions, status }) => ({
     return status.current;
   },
   get statusForNextEvaluation() {
-    return status.current === SKILL_STATUS.ATTAINED ? SKILL_STATUS.ATTAINED : null
+    return status.current === SKILL_STATUS.ATTAINED ? SKILL_STATUS.ATTAINED : null;
   },
   get feedbackData() {
     return ({ id, name, criteria, type, questions });
@@ -39,9 +39,9 @@ module.exports = ({ id, name, criteria, type, questions, status }) => ({
       status: {
         previous: status.previous,
         current: newStatus,
-      }
-    }
-  }
+      },
+    };
+  },
 });
 
 module.exports.SKILL_STATUS = SKILL_STATUS;

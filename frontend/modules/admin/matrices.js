@@ -19,33 +19,27 @@ const retrieveTemplateSuccess = createAction(constants.RETRIEVE_TEMPLATE_SUCCESS
 const retrieveTemplateFailure = createAction(constants.RETRIEVE_TEMPLATE_FAILURE);
 
 function saveTemplate(template) {
-  return function (dispatch) {
-    return api.saveTemplate(template)
-      .then((savedTemplate) => dispatch(saveTemplateSuccess(savedTemplate)))
-      .catch((err) => dispatch(saveTemplateFailure(err)))
-  }
+  return dispatch => api.saveTemplate(template)
+    .then(savedTemplate => dispatch(saveTemplateSuccess(savedTemplate)))
+    .catch(err => dispatch(saveTemplateFailure(err)));
 }
 
 function saveSkill(skill) {
-  return function (dispatch) {
-    return api.saveSkill(skill)
-      .then((savedSkill) => dispatch(saveSkillSuccess(savedSkill)))
-      .catch((err) => dispatch(saveSkillFailure(err)))
-  }
+  return dispatch => api.saveSkill(skill)
+      .then(savedSkill => dispatch(saveSkillSuccess(savedSkill)))
+      .catch(err => dispatch(saveSkillFailure(err)));
 }
 
 function retrieveTemplate(templateId) {
-  return function (dispatch) {
-    return Promise.all([api.getTemplate(templateId), api.getSkills()])
+  return dispatch => Promise.all([api.getTemplate(templateId), api.getSkills()])
       .then(([template, skills]) => dispatch(retrieveTemplateSuccess({ template, skills })))
-      .catch((err) => dispatch(retrieveTemplateFailure(err)))
-  }
+      .catch(err => dispatch(retrieveTemplateFailure(err)));
 }
 
 export const actions = {
   saveTemplate,
   saveSkill,
-  retrieveTemplate
+  retrieveTemplate,
 };
 
 const handleSaveTemplateSuccess = (state, action) =>
@@ -66,11 +60,9 @@ const handleRetrieveTemplateSuccess = (state, action) =>
 export const reducers = handleActions({
   [saveTemplateSuccess]: handleSaveTemplateSuccess,
   [saveTemplateFailure]: (state, action) => Object.assign({}, state, { templateResult: { error: action.payload, success: false } }),
-  [saveSkillSuccess]: (state, action) => Object.assign({}, state, { skillResult: { success: true, error: null } }),
+  [saveSkillSuccess]: state => Object.assign({}, state, { skillResult: { success: true, error: null } }),
   [saveSkillFailure]: (state, action) => Object.assign({}, state, { skillResult: { error: action.payload, success: false } }),
   [retrieveTemplateSuccess]: handleRetrieveTemplateSuccess,
   [retrieveTemplateFailure]: (state, action) => Object.assign({}, state, { templateResult: { error: action.payload, success: false } }),
 }, { templateResult: {}, skillResult: {} });
-
-
 

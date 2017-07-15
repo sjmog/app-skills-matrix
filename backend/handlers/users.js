@@ -17,11 +17,10 @@ const handlerFunctions = Object.freeze({
             return res.status(409).json(USER_EXISTS(req.body.username));
           }
           return users.addUser(req.body)
-            .then((user) => res.status(201).send(user.manageUserViewModel))
-
+            .then(u => res.status(201).send(u.manageUserViewModel));
         })
         .catch(next);
-    }
+    },
   },
   user: {
     selectMentor: (req, res, next) => {
@@ -30,16 +29,16 @@ const handlerFunctions = Object.freeze({
         return res.status(403).json(MUST_BE_ADMIN());
       }
       Promise.try(() => users.getUserById(req.params.userId))
-        .then((user) => {
-          if (!user) {
+        .then((userToUpdate) => {
+          if (!userToUpdate) {
             return res.status(404).json(USER_NOT_FOUND());
           }
-          const changes = user.setMentor(req.body.mentorId);
+          const changes = userToUpdate.setMentor(req.body.mentorId);
           if (changes.error) {
             return res.status(400).json(changes);
           }
-          return users.updateUser(user, changes)
-            .then((updatedUser) => res.status(200).json(updatedUser.manageUserViewModel));
+          return users.updateUser(userToUpdate, changes)
+            .then(updatedUser => res.status(200).json(updatedUser.manageUserViewModel));
         })
         .catch(next);
     },
@@ -49,17 +48,17 @@ const handlerFunctions = Object.freeze({
         return res.status(403).json(MUST_BE_ADMIN());
       }
       Promise.all([users.getUserById(req.params.userId), templates.getById(req.body.templateId)])
-        .then(([user, template]) => {
-          if (!user) {
+        .then(([userToUpdate, template]) => {
+          if (!userToUpdate) {
             return res.status(404).json(USER_NOT_FOUND());
           }
           if (!template) {
             return res.status(400).json(TEMPLATE_NOT_FOUND());
           }
 
-          const changes = user.setTemplate(req.body.templateId);
-          return users.updateUser(user, changes)
-            .then((updatedUser) => res.status(200).json(updatedUser.manageUserViewModel));
+          const changes = userToUpdate.setTemplate(req.body.templateId);
+          return users.updateUser(userToUpdate, changes)
+            .then(updatedUser => res.status(200).json(updatedUser.manageUserViewModel));
         })
         .catch(next);
     },
@@ -87,11 +86,10 @@ const handlerFunctions = Object.freeze({
             .then((newEval) => {
               sendMail(newEval.newEvaluationEmail);
               res.status(201).json(newEval.viewModel);
-
             });
         })
         .catch(next);
-    }
+    },
   },
 });
 

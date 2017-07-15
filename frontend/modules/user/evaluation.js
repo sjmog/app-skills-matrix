@@ -36,17 +36,17 @@ export const actions = {
 };
 
 function initEvaluation(evaluationId) {
-  return function(dispatch, getState) {
+  return (dispatch, getState) => {
     const evaluation = R.path(['entities', 'evaluations', 'entities', evaluationId], getState());
     return dispatch(actions.setAsCurrentEvaluation(evaluation));
-  }
+  };
 }
 
 function nextUnevaluatedSkill(evaluationId) {
-  return function(dispatch, getState) {
+  return (dispatch, getState) => {
     const skills = getSkillsFromState(getState(), evaluationId);
     return dispatch(actions.nextUnevaluatedSkill(skills));
-  }
+  };
 }
 
 function nextSkill() {
@@ -58,17 +58,17 @@ function prevSkill() {
 }
 
 function nextCategory(evaluationId) {
-  return function(dispatch, getState) {
+  return (dispatch, getState) => {
     const skills = getSkillsFromState(getState(), evaluationId);
     return dispatch(actions.nextCategory(skills));
-  }
+  };
 }
 
 function previousCategory(evaluationId) {
-  return function(dispatch, getState) {
+  return (dispatch, getState) => {
     const skills = getSkillsFromState(getState(), evaluationId);
     return dispatch(actions.previousCategory(skills));
-  }
+  };
 }
 
 export const actionCreators = {
@@ -107,7 +107,7 @@ export default handleActions({
       firstSkill,
       firstCategory,
       lastSkill,
-      lastCategory
+      lastCategory,
     };
 
     return Object.assign({}, state, initialisedEvaluation);
@@ -122,7 +122,7 @@ export default handleActions({
     const indexOfCurrentSkill = R.findIndex(R.propEq('skillId', currentSkill.skillId), paginatedView);
     const nextSkill = paginatedView[indexOfCurrentSkill + 1];
 
-    return Object.assign({}, state, { currentSkill: nextSkill })
+    return Object.assign({}, state, { currentSkill: nextSkill });
   },
   [actions.previousSkill]: (state) => {
     const { paginatedView, currentSkill: { skillId }, firstSkill } = state;
@@ -134,14 +134,14 @@ export default handleActions({
     const indexOfCurrentSkill = R.findIndex(R.propEq('skillId', skillId), paginatedView);
     const prevSkill = paginatedView[indexOfCurrentSkill - 1];
 
-    return Object.assign({}, state, { currentSkill: prevSkill })
+    return Object.assign({}, state, { currentSkill: prevSkill });
   },
   [actions.nextUnevaluatedSkill]: (state, action) => {
     const { paginatedView, currentSkill: { skillId } } = state;
 
     const skills = action.payload;
     const currentSkill = getNextUnevaluatedSkill(paginatedView, skills, skillId) || R.last(paginatedView);
-    return Object.assign({}, state, { currentSkill })
+    return Object.assign({}, state, { currentSkill });
   },
   [actions.nextCategory]: (state, action) => {
     const { paginatedView, currentSkill: { category }, lastCategory } = state;
@@ -156,7 +156,7 @@ export default handleActions({
     const elements = R.filter(R.propEq('category', nextCategory), paginatedView);
     const currentSkill = getFirstUnevaluatedSkill(elements, skills) || R.last(elements);
 
-    return Object.assign({}, state, { currentSkill })
+    return Object.assign({}, state, { currentSkill });
   },
   [actions.previousCategory]: (state, action) => {
     const { paginatedView, currentSkill: { category }, firstCategory } = state;
@@ -171,27 +171,27 @@ export default handleActions({
     const elements = R.filter(R.propEq('category', prevCategory), paginatedView);
     const currentSkill = getFirstUnevaluatedSkill(elements, skills) || R.last(elements);
 
-    return Object.assign({}, state, { currentSkill })
-  }
+    return Object.assign({}, state, { currentSkill });
+  },
 }, initialValues);
 
-export const getCurrentEvaluation = (evaluation) =>
+export const getCurrentEvaluation = evaluation =>
   R.path(['evaluationId'], evaluation);
 
-export const getCurrentSkill = (evaluation) =>
+export const getCurrentSkill = evaluation =>
   R.path(['currentSkill'], evaluation);
 
-export const getCurrentSkillId = (evaluation) =>
+export const getCurrentSkillId = evaluation =>
   R.path(['currentSkill', 'skillId'], evaluation);
 
-export const getFirstCategory = (evaluation) =>
+export const getFirstCategory = evaluation =>
   R.path(['firstCategory'], evaluation);
 
-export const getLastCategory = (evaluation) =>
+export const getLastCategory = evaluation =>
   R.path(['lastCategory'], evaluation);
 
-export const getFirstSkill = (evaluation) =>
+export const getFirstSkill = evaluation =>
   R.path(['firstSkill'], evaluation);
 
-export const getLastSkill = (evaluation) =>
+export const getLastSkill = evaluation =>
   R.path(['lastSkill'], evaluation);

@@ -17,7 +17,7 @@ import { EvaluationObjectivesPage } from './components/user/actions/EvaluationOb
 export const adminRoutes = (
   <Router history={browserHistory}>
     <Route path="/admin" name="Home" component={AdminApp}>
-      <IndexRoute component={AdminDashboard}/>
+      <IndexRoute component={AdminDashboard} />
       <Route path="/admin/dashboard" name="Dashboard" component={AdminDashboard} />
       <Route path="/admin/users" component={ManageUsersPage} />
       <Route path="/admin/matrices" component={ManageMatricesPage} />
@@ -29,10 +29,10 @@ export const adminRoutes = (
 export const userRoutes = (
   <Router history={browserHistory}>
     <Route path="/" name="Home" component={UserApp}>
-      <IndexRoute component={UserDashboard}/>
-      <Route path="dashboard" name="Dashboard" component={UserDashboard}/>
-      <Route path="feedback" name="Feedback" component={FeedbackPage}/>
-      <Route path="objectives" name="Objectives" component={ObjectivesPage}/>
+      <IndexRoute component={UserDashboard} />
+      <Route path="dashboard" name="Dashboard" component={UserDashboard} />
+      <Route path="feedback" name="Feedback" component={FeedbackPage} />
+      <Route path="objectives" name="Objectives" component={ObjectivesPage} />
       <Route path="evaluations/:evaluationId" component={EvaluationPage} />
       <Route path="user/:userId/evaluations/:evaluationId/feedback" component={EvaluationFeedbackPage} />
       <Route path="user/:userId/evaluations/:evaluationId/objectives" component={EvaluationObjectivesPage} />

@@ -2,6 +2,7 @@ const keymirror = require('keymirror');
 const R = require('ramda');
 
 const skill = require('./skill');
+
 const HOST = process.env.HOST;
 
 const STATUS = keymirror({
@@ -16,7 +17,7 @@ const VIEW = keymirror({
   ADMIN: null,
 });
 
-const arrayToKeyedObject = (skills) => skills.reduce((acc, item) => Object.assign({}, acc, { [item.id]: item }), {});
+const arrayToKeyedObject = skills => skills.reduce((acc, item) => Object.assign({}, acc, { [item.id]: item }), {});
 
 const evaluation = ({ _id, user, createdDate, template, skillGroups, status, skills }) => {
   const metadata = {
@@ -75,7 +76,7 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
         recipients: user.email,
         subject: 'A new evaluation has been triggered',
         body: `Please visit ${`${HOST}/#/evaluations/${_id}`} to complete your evaluation.`,
-      }
+      };
     },
     get feedbackData() {
       return ({ id: _id.toString(), createdDate });
@@ -85,10 +86,10 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
         recipients: mentor.email,
         subject: `${user.name} has completed their self evaluation`,
         body: `Please book a meeting with them and and visit ${`${HOST}/#/evaluations/${_id}`} to review their evaluation.`,
-      }
+      };
     },
     findSkill(skillId) {
-      const val = R.find((skill) => skillId === skill.id, skills);
+      const val = R.find(s => skillId === s.id, skills);
       return val ? skill(val) : null;
     },
     updateSkill(skillId, newSkillStatus) {
@@ -98,12 +99,12 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
         createdDate,
         template,
         skillGroups,
-        skills: skills.map((s) => s.id === skillId ? skill(s).updateStatus(newSkillStatus) : s),
-        status
-      }
+        skills: skills.map(s => (s.id === skillId ? skill(s).updateStatus(newSkillStatus) : s)),
+        status,
+      };
     },
     isNewEvaluation() {
-      return status === STATUS.NEW
+      return status === STATUS.NEW;
     },
     selfEvaluationComplete() {
       return {
@@ -112,11 +113,11 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
         createdDate,
         template,
         skillGroups,
-        status: STATUS.SELF_EVALUATION_COMPLETE
-      }
+        status: STATUS.SELF_EVALUATION_COMPLETE,
+      };
     },
     selfEvaluationCompleted() {
-      return status === STATUS.SELF_EVALUATION_COMPLETE
+      return status === STATUS.SELF_EVALUATION_COMPLETE;
     },
     mentorReviewComplete() {
       return {
@@ -126,18 +127,18 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
         template,
         skillGroups,
         status: STATUS.MENTOR_REVIEW_COMPLETE,
-      }
+      };
     },
     mentorReviewCompleted() {
       return status === STATUS.MENTOR_REVIEW_COMPLETE;
     },
     mergePreviousEvaluation(previousEvaluation) {
-      const updateSkill = (skill) => {
-        const previousSkill = previousEvaluation.findSkill(skill.id);
+      const updateSkill = (skillToUpdate) => {
+        const previousSkill = previousEvaluation.findSkill(skillToUpdate.id);
         if (!previousSkill) {
-          return Object.assign({}, skill, { status: { previous: null, current: null } });
+          return Object.assign({}, skillToUpdate, { status: { previous: null, current: null } });
         }
-        return Object.assign({}, skill, { status: { previous: previousSkill.currentStatus, current: previousSkill.statusForNextEvaluation } });
+        return Object.assign({}, skillToUpdate, { status: { previous: previousSkill.currentStatus, current: previousSkill.statusForNextEvaluation } });
       };
       const updatedSkills = previousEvaluation ? R.map(updateSkill, skills) : skills;
       return evaluation({
@@ -148,7 +149,7 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
         skills: updatedSkills,
         status: STATUS.NEW,
       });
-    }
+    },
   });
 };
 
@@ -165,5 +166,4 @@ module.exports.newEvaluation = (template, user, allSkills, date = new Date()) =>
     skills,
   });
 };
-
 

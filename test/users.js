@@ -3,7 +3,7 @@ const { expect } = require('chai');
 const { ObjectId } = require('mongodb');
 
 const app = require('../backend');
-const { prepopulateUsers, users, templates, insertTemplate, clearDb } = require('./helpers');
+const { prepopulateUsers, users, insertTemplate, clearDb } = require('./helpers');
 const [sampleTemplate] = require('./fixtures/templates.json');
 const { sign, cookieName } = require('../backend/models/auth');
 
@@ -11,8 +11,10 @@ const prefix = '/skillz';
 
 const templateId = 'eng-nodejs';
 
-let adminToken, normalUserToken;
-let adminUserId, normalUserId;
+let adminToken;
+let normalUserToken;
+let adminUserId;
+let normalUserId;
 
 describe('users', () => {
   beforeEach(() =>
@@ -34,7 +36,7 @@ describe('users', () => {
         .send({ username: 'newuser', email: 'newuser@user.com', name: 'new name', action: 'create' })
         .set('Cookie', `${cookieName}=${adminToken}`)
         .expect(201)
-        .then((res) => users.findOne({ email: res.body.email }))
+        .then(res => users.findOne({ email: res.body.email }))
         .then((newUser) => {
           expect(newUser.email).to.equal('newuser@user.com');
           expect(newUser.name).to.equal('new name');
@@ -58,16 +60,14 @@ describe('users', () => {
         token: adminToken,
         body: { username: 'newuser', email: 'user@magic.com', name: 'new name', action: 'foo' },
         expect: 400,
-      })
-    ].forEach((test) =>
+      }),
+    ].forEach(test =>
       it(`should handle error cases '${test().desc}'`, () =>
         request(app)
           .post(`${prefix}/users`)
           .send(test().body)
           .set('Cookie', `${cookieName}=${test().token}`)
           .expect(test().expect)));
-
-
   });
 
   describe('POST /users/:userId { action: selectMentor }', () => {
@@ -77,7 +77,7 @@ describe('users', () => {
         .send({ mentorId: adminUserId, action: 'selectMentor' })
         .set('Cookie', `${cookieName}=${adminToken}`)
         .expect(200)
-        .then((res) => users.findOne({ _id: new ObjectId(normalUserId) }))
+        .then(() => users.findOne({ _id: new ObjectId(normalUserId) }))
         .then((updatedUser) => {
           expect(updatedUser.mentorId).to.equal(adminUserId.toString());
         }));
@@ -111,15 +111,13 @@ describe('users', () => {
         userId: normalUserId,
         expect: 400,
       }),
-    ].forEach((test) =>
+    ].forEach(test =>
       it(`should handle error cases '${test().desc}'`, () =>
         request(app)
           .post(`${prefix}/users/${test().userId}`)
           .send(test().body)
           .set('Cookie', `${cookieName}=${test().token}`)
           .expect(test().expect)));
-
-
   });
 
   describe('POST /users/:userId { action: selectTemplate }', () => {
@@ -131,7 +129,7 @@ describe('users', () => {
             .send({ templateId, action: 'selectTemplate' })
             .set('Cookie', `${cookieName}=${adminToken}`)
             .expect(200))
-        .then((res) => users.findOne({ _id: new ObjectId(normalUserId) }))
+        .then(() => users.findOne({ _id: new ObjectId(normalUserId) }))
         .then((updatedUser) => {
           expect(updatedUser.templateId).to.equal(templateId);
         }));
@@ -158,7 +156,7 @@ describe('users', () => {
         userId: normalUserId,
         expect: 400,
       }),
-    ].forEach((test) =>
+    ].forEach(test =>
       it(`should handle error cases '${test().desc}'`, () =>
         request(app)
           .post(`${prefix}/users/${test().userId}`)

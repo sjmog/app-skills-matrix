@@ -4,11 +4,11 @@ import './userDetails.scss';
 
 const UserDetails = ({ user, mentor, template }) =>
   (
-      <Col xs={12} md={12}>
+    <Col xs={12} md={12}>
       <h2>My Details</h2>
-        <Row>
+      <Row>
         <Col xs={12} md={2}>
-          <Image src={user.avatarUrl} className="avatar" rounded/>
+          <Image src={user.avatarUrl} className="avatar" rounded />
         </Col>
         <Col xs={12} md={9} className="user-details__col">
           <dl>

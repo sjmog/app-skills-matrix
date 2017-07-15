@@ -14,29 +14,19 @@ module.exports = {
     const changes = user.newUser(name, email, avatarUrl, username);
     return collection.updateOne({ username }, { $set: changes }, { upsert: true })
       .then(() => collection.findOne({ username }))
-      .then(retrievedUser => user(retrievedUser))
+      .then(retrievedUser => user(retrievedUser));
   },
-  getUserByUsername: (username) => {
-    return collection.findOne({ username })
-      .then((res) => res ? user(res) : null);
-  },
-  getUserById: (id) => {
-    return collection.findOne({ _id: ObjectId(id) })
-      .then((res) => res ? user(res) : null);
-  },
-  updateUser: (original, updates) => {
-    return collection.updateOne({ _id: ObjectId(original.id) }, { $set: updates })
+  getUserByUsername: username => collection.findOne({ username })
+      .then(res => (res ? user(res) : null)),
+  getUserById: id => collection.findOne({ _id: ObjectId(id) })
+      .then(res => (res ? user(res) : null)),
+  updateUser: (original, updates) => collection.updateOne({ _id: ObjectId(original.id) }, { $set: updates })
       .then(() => collection.findOne({ _id: ObjectId(original.id) }))
-      .then((res) => res ? user(res) : null);
-  },
-  getAll: () => {
-    return collection.find()
-      .then((res) => res.toArray())
-      .then((res) => res.map((doc) => user(doc)));
-  },
-  getByMentorId: (id) => {
-    return collection.find({ mentorId: id })
-      .then((res) => res.toArray())
-      .then((res) => res.map((doc) => user(doc)))
-  },
+      .then(res => (res ? user(res) : null)),
+  getAll: () => collection.find()
+      .then(res => res.toArray())
+      .then(res => res.map(doc => user(doc))),
+  getByMentorId: id => collection.find({ mentorId: id })
+      .then(res => res.toArray())
+      .then(res => res.map(doc => user(doc))),
 };

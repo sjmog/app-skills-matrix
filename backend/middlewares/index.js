@@ -11,16 +11,16 @@ const before = [
   debug.enabled ? morgan('dev') : (req, res, next) => next(),
   bodyParser.json(),
   cookieParser(),
-  populateUser
+  populateUser,
 ];
 
 const after = [
-  (req, res, next) => res.status(404).end()
+  (req, res) => res.status(404).end(),
 ];
 
 const use = app => middleware => app.use(middleware);
 
 module.exports = [
   app => before.forEach(use(app)) || app,
-  app => after.forEach(use(app)) || app
+  app => after.forEach(use(app)) || app,
 ];

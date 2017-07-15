@@ -3,7 +3,7 @@ const { expect } = require('chai');
 const moment = require('moment');
 
 const app = require('../backend');
-const { prepopulateUsers, users, evaluations, insertTemplate, assignTemplate, clearDb, insertSkill, insertEvaluation, assignMentor } = require('./helpers');
+const { prepopulateUsers, users, insertTemplate, assignTemplate, clearDb, insertSkill, insertEvaluation, assignMentor } = require('./helpers');
 const { sign, cookieName } = require('../backend/models/auth');
 const [template] = require('./fixtures/templates');
 const skills = require('./fixtures/skills');
@@ -12,13 +12,15 @@ const [evaluation] = require('./fixtures/evaluations');
 const beforeNow = moment().subtract(1, 'days').toDate();
 const now = moment().toDate();
 
-let adminToken, normalUserOneToken, normalUserTwoToken;
-let adminUserId, normalUserOneId, normalUserTwoId;
+let adminToken;
+let normalUserOneToken;
+let adminUserId;
+let normalUserOneId;
+let normalUserTwoId;
 
-const getInitialState = (str) => JSON.parse(str.match(/REDUX_STATE=(.*)/)[0].substr(12));
+const getInitialState = str => JSON.parse(str.match(/REDUX_STATE=(.*)/)[0].substr(12));
 
 describe('initial client state', () => {
-
   beforeEach(() =>
     clearDb()
       .then(() => prepopulateUsers())
@@ -26,13 +28,12 @@ describe('initial client state', () => {
       .then(() => skills.map(insertSkill))
       .then(() =>
         Promise.all([
-            users.findOne({ email: 'dmorgantini@gmail.com' }),
-            users.findOne({ email: 'user@magic.com' }),
-            users.findOne({ email: 'user@dragon-riders.com' })
-          ])
+          users.findOne({ email: 'dmorgantini@gmail.com' }),
+          users.findOne({ email: 'user@magic.com' }),
+          users.findOne({ email: 'user@dragon-riders.com' }),
+        ])
           .then(([adminUser, normalUserOne, normalUserTwo]) => {
             normalUserOneToken = sign({ username: normalUserOne.username, id: normalUserOne._id });
-            normalUserTwoToken = sign({ username: normalUserTwo.username, id: normalUserTwo._id });
             adminToken = sign({ username: adminUser.username, id: adminUser._id });
             normalUserOneId = String(normalUserOne._id);
             normalUserTwoId = String(normalUserTwo._id);
@@ -60,26 +61,25 @@ describe('initial client state', () => {
                 name: 'User Magic',
                 id: normalUserOneId,
                 templateId: 'eng-nodejs',
-                username: 'magic'
-              }
+                username: 'magic',
+              },
             },
           };
 
           expect(getInitialState(res.text)).to.deep.equal(expectedState);
-        })
-    );
+        }));
 
     it('returns initial state with evaluations from newest to oldest', () => {
-      let evaluationId_OLD;
-      let evaluationId_NEW;
+      let oldEvaluationId;
+      let newEvaluationId;
 
       return insertEvaluation(Object.assign({}, evaluation, { createdDate: beforeNow }), normalUserOneId)
         .then(({ insertedId }) => {
-          evaluationId_OLD = insertedId;
+          oldEvaluationId = insertedId;
         })
         .then(() => insertEvaluation(Object.assign({}, evaluation, { createdDate: now }), normalUserOneId))
-        .then(({ insertedId  }) => {
-          evaluationId_NEW = insertedId;
+        .then(({ insertedId }) => {
+          newEvaluationId = insertedId;
         })
         .then(() =>
           request(app)
@@ -89,32 +89,31 @@ describe('initial client state', () => {
             .then((res) => {
               const [firstEvaluation, secondEvaluation] = getInitialState(res.text).user.evaluations;
 
-              expect(firstEvaluation.id).to.equal(String(evaluationId_NEW));
+              expect(firstEvaluation.id).to.equal(String(newEvaluationId));
               expect(firstEvaluation).to.have.property('createdDate');
               expect(firstEvaluation.status).to.equal('NEW');
               expect(firstEvaluation.templateName).to.equal('Node JS Dev');
-              expect(firstEvaluation.evaluationUrl).to.equal(`/evaluations/${String(evaluationId_NEW)}`);
-              expect(firstEvaluation.feedbackUrl).to.equal(`/user/${String(normalUserOneId)}/evaluations/${String(evaluationId_NEW)}/feedback`);
-              expect(firstEvaluation.objectivesUrl).to.equal(`/user/${String(normalUserOneId)}/evaluations/${String(evaluationId_NEW)}/objectives`);
+              expect(firstEvaluation.evaluationUrl).to.equal(`/evaluations/${String(newEvaluationId)}`);
+              expect(firstEvaluation.feedbackUrl).to.equal(`/user/${String(normalUserOneId)}/evaluations/${String(newEvaluationId)}/feedback`);
+              expect(firstEvaluation.objectivesUrl).to.equal(`/user/${String(normalUserOneId)}/evaluations/${String(newEvaluationId)}/objectives`);
               expect(firstEvaluation.view).to.equal('SUBJECT');
 
-              expect(secondEvaluation.id).to.equal(String(evaluationId_OLD));
-            })
-        )
+              expect(secondEvaluation.id).to.equal(String(oldEvaluationId));
+            }));
     });
 
     it('returns initial state with mentee evaluations from newest to oldest', () => {
-      let menteeEvaluationId_OLD;
-      let menteeEvaluationId_NEW;
+      let oldMenteeEvaluationId;
+      let newMenteeEvaluationId;
 
       return assignMentor(normalUserTwoId, normalUserOneId)
         .then(() => insertEvaluation(Object.assign({}, evaluation, { createdDate: beforeNow }), normalUserTwoId))
         .then(({ insertedId }) => {
-          menteeEvaluationId_OLD = insertedId;
+          oldMenteeEvaluationId = insertedId;
         })
         .then(() => insertEvaluation(Object.assign({}, evaluation, { createdDate: now }), normalUserTwoId))
-        .then(({ insertedId  }) => {
-          menteeEvaluationId_NEW = insertedId;
+        .then(({ insertedId }) => {
+          newMenteeEvaluationId = insertedId;
         })
         .then(() => request(app)
           .get('/')
@@ -126,23 +125,22 @@ describe('initial client state', () => {
 
             expect(mentee.name).to.equal('User Dragon Rider');
 
-            expect(firstEvaluation.id).to.equal(String(menteeEvaluationId_NEW));
+            expect(firstEvaluation.id).to.equal(String(newMenteeEvaluationId));
             expect(firstEvaluation).to.have.property('createdDate');
             expect(firstEvaluation.status).to.equal('NEW');
             expect(firstEvaluation.templateName).to.equal('Node JS Dev');
-            expect(firstEvaluation.evaluationUrl).to.equal(`/evaluations/${String(menteeEvaluationId_NEW)}`);
-            expect(firstEvaluation.feedbackUrl).to.equal(`/user/${String(normalUserTwoId)}/evaluations/${String(menteeEvaluationId_NEW)}/feedback`);
-            expect(firstEvaluation.objectivesUrl).to.equal(`/user/${String(normalUserTwoId)}/evaluations/${String(menteeEvaluationId_NEW)}/objectives`);
+            expect(firstEvaluation.evaluationUrl).to.equal(`/evaluations/${String(newMenteeEvaluationId)}`);
+            expect(firstEvaluation.feedbackUrl).to.equal(`/user/${String(normalUserTwoId)}/evaluations/${String(newMenteeEvaluationId)}/feedback`);
+            expect(firstEvaluation.objectivesUrl).to.equal(`/user/${String(normalUserTwoId)}/evaluations/${String(newMenteeEvaluationId)}/objectives`);
             expect(firstEvaluation.view).to.equal('MENTOR');
 
-            expect(secondEvaluation.id).to.equal(String(menteeEvaluationId_OLD));
-          })
-        )
+            expect(secondEvaluation.id).to.equal(String(oldMenteeEvaluationId));
+          }));
     });
 
     it('returns initial state with mentor', () =>
       assignMentor(normalUserOneId, adminUserId)
-        .then(({ insertedId: evaluationId }) =>
+        .then(() =>
           request(app)
             .get('/')
             .set('Cookie', `${cookieName}=${normalUserOneToken}`)
@@ -156,9 +154,7 @@ describe('initial client state', () => {
               };
 
               expect(getInitialState(res.text).user.mentorDetails).to.deep.equal(expectedMentor);
-            })
-        )
-    );
+            })));
 
     it('returns initial state with template', () =>
       assignTemplate(normalUserOneId, template.id)
@@ -170,13 +166,11 @@ describe('initial client state', () => {
             .then((res) => {
               const expectedTemplate = {
                 id: 'eng-nodejs',
-                name: 'Node JS Dev'
+                name: 'Node JS Dev',
               };
 
               expect(getInitialState(res.text).user.template).to.deep.equal(expectedTemplate);
-            })
-        )
-    );
+            })));
 
     it('returns initial state with user', () =>
       assignMentor(normalUserOneId, adminUserId)
@@ -192,13 +186,11 @@ describe('initial client state', () => {
                 mentorId: adminUserId,
                 name: 'User Magic',
                 templateId: 'eng-nodejs',
-                username: 'magic'
+                username: 'magic',
               };
 
               expect(getInitialState(res.text).user.userDetails).to.deep.equal(expectedUser);
-            })
-        )
-    );
+            })));
   });
 
   describe('admin user', () => {
@@ -210,8 +202,7 @@ describe('initial client state', () => {
         .then((res) => {
           expect(getInitialState(res.text)).to.have.property('matrices');
           expect(getInitialState(res.text)).to.have.property('users');
-        })
-    );
+        }));
 
     it('returns initial state with all templates', () =>
       request(app)
@@ -223,12 +214,11 @@ describe('initial client state', () => {
             {
               id: 'eng-nodejs',
               name: 'Node JS Dev',
-            }
+            },
           ];
 
           expect(getInitialState(res.text).matrices.templates).to.deep.equal(expectedTemplates);
-        })
-    );
+        }));
 
     it('returns initial state with all users', () =>
       request(app)
@@ -242,7 +232,7 @@ describe('initial client state', () => {
               id: adminUserId,
               name: 'David Morgantini',
               username: 'dmorgantini',
-              evaluations: []
+              evaluations: [],
             },
             {
               email: 'user@magic.com',
@@ -250,32 +240,31 @@ describe('initial client state', () => {
               name: 'User Magic',
               username: 'magic',
               templateId: 'eng-nodejs',
-              evaluations: []
+              evaluations: [],
             },
             {
               email: 'user@dragon-riders.com',
               id: normalUserTwoId,
               name: 'User Dragon Rider',
               username: 'dragon-riders',
-              evaluations: []
-            }
+              evaluations: [],
+            },
           ];
 
           expect(getInitialState(res.text).users.users).to.deep.equal(expectedUsers);
-        })
-    );
+        }));
 
     it('returns initial state with all users and their evaluations (newest to oldest)', () => {
-      let evaluationId_OLD;
-      let evaluationId_NEW;
+      let oldEvaluationId;
+      let newEvaluationId;
 
       return insertEvaluation(Object.assign({}, evaluation, { createdDate: beforeNow }), normalUserOneId)
         .then(({ insertedId }) => {
-          evaluationId_OLD = String(insertedId);
+          oldEvaluationId = String(insertedId);
         })
         .then(() => insertEvaluation(Object.assign({}, evaluation, { createdDate: now }), normalUserOneId))
-        .then(({ insertedId  }) => {
-          evaluationId_NEW = String(insertedId);
+        .then(({ insertedId }) => {
+          newEvaluationId = String(insertedId);
         })
         .then(() =>
           request(app)
@@ -291,23 +280,23 @@ describe('initial client state', () => {
               const [firstEvaluation, secondEvaluation] = userTwo.evaluations;
 
               expect(firstEvaluation.createdDate).to.equal(now.toISOString());
-              expect(firstEvaluation.evaluationUrl).to.equal(`/evaluations/${evaluationId_NEW}`);
-              expect(firstEvaluation.feedbackUrl).to.equal(`/user/${String(normalUserOneId)}/evaluations/${evaluationId_NEW}/feedback`);
-              expect(firstEvaluation.objectivesUrl).to.equal(`/user/${String(normalUserOneId)}/evaluations/${evaluationId_NEW}/objectives`);
-              expect(firstEvaluation.id).to.equal(evaluationId_NEW);
+              expect(firstEvaluation.evaluationUrl).to.equal(`/evaluations/${newEvaluationId}`);
+              expect(firstEvaluation.feedbackUrl).to.equal(`/user/${String(normalUserOneId)}/evaluations/${newEvaluationId}/feedback`);
+              expect(firstEvaluation.objectivesUrl).to.equal(`/user/${String(normalUserOneId)}/evaluations/${newEvaluationId}/objectives`);
+              expect(firstEvaluation.id).to.equal(newEvaluationId);
               expect(firstEvaluation.status).to.equal('NEW');
               expect(firstEvaluation.templateName).to.equal('Node JS Dev');
               expect(firstEvaluation.view).to.equal('ADMIN');
 
               expect(secondEvaluation.createdDate).to.equal(beforeNow.toISOString());
-              expect(secondEvaluation.evaluationUrl).to.equal(`/evaluations/${evaluationId_OLD}`);
-              expect(secondEvaluation.feedbackUrl).to.equal(`/user/${String(normalUserOneId)}/evaluations/${evaluationId_OLD}/feedback`);
-              expect(secondEvaluation.objectivesUrl).to.equal(`/user/${String(normalUserOneId)}/evaluations/${evaluationId_OLD}/objectives`);
-              expect(secondEvaluation.id).to.equal(evaluationId_OLD);
+              expect(secondEvaluation.evaluationUrl).to.equal(`/evaluations/${oldEvaluationId}`);
+              expect(secondEvaluation.feedbackUrl).to.equal(`/user/${String(normalUserOneId)}/evaluations/${oldEvaluationId}/feedback`);
+              expect(secondEvaluation.objectivesUrl).to.equal(`/user/${String(normalUserOneId)}/evaluations/${oldEvaluationId}/objectives`);
+              expect(secondEvaluation.id).to.equal(oldEvaluationId);
               expect(secondEvaluation.status).to.equal('NEW');
               expect(secondEvaluation.templateName).to.equal('Node JS Dev');
               expect(secondEvaluation.view).to.equal('ADMIN');
             }));
-    })
+    });
   });
 });

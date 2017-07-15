@@ -1,11 +1,11 @@
 import React, { PropTypes } from 'react';
-import { Panel, Label, ButtonGroup, Button, Alert, Glyphicon } from 'react-bootstrap';
+import { Panel, Label, ButtonGroup, Button, Glyphicon } from 'react-bootstrap';
 
 import { SKILL_STATUS } from '../../../../modules/user/evaluations';
 
 import SkillActions from '../../../common/SkillActions';
 import SkillBody from './SkillBody';
-import '../evaluation.scss'
+import '../evaluation.scss';
 
 const Skill = ({ level, skill, skillStatus, updateSkillStatus, postUpdateNavigation, prevSkill, nextSkill, isFirstSkill, isLastSkill }) => {
   const { name, skillId, criteria, questions } = skill;
@@ -15,11 +15,12 @@ const Skill = ({ level, skill, skillStatus, updateSkillStatus, postUpdateNavigat
       <Panel
         key={skillId}
         header={
-        <div className='skill-header'>
-          <h4 className='skill-header__title'>{name}</h4>
-          <Label className='skill-header__label' bsStyle='info'>{level}</Label>
-        </div>
-      }>
+          <div className="skill-header">
+            <h4 className="skill-header__title">{name}</h4>
+            <Label className="skill-header__label" bsStyle="info">{level}</Label>
+          </div>
+      }
+      >
         <SkillBody criteria={criteria} questions={questions} />
         <SkillActions
           skillStatus={skillStatus}
@@ -29,18 +30,20 @@ const Skill = ({ level, skill, skillStatus, updateSkillStatus, postUpdateNavigat
           onSetObjective={() => updateSkillStatus(skillId, SKILL_STATUS.OBJECTIVE).then(() => postUpdateNavigation())}
         />
       </Panel>
-      <ButtonGroup className='pull-right'>
+      <ButtonGroup className="pull-right">
         <Button
           disabled={isFirstSkill}
-          onClick={() => prevSkill(skillId) }>
-          <Glyphicon glyph='chevron-left'/>
+          onClick={() => prevSkill(skillId)}
+        >
+          <Glyphicon glyph="chevron-left" />
           Previous skill
         </Button>
         <Button
           disabled={isLastSkill}
-          onClick={() => nextSkill(skillId) }>
+          onClick={() => nextSkill(skillId)}
+        >
           Next skill
-          <Glyphicon glyph='chevron-right'/>
+          <Glyphicon glyph="chevron-right" />
         </Button>
       </ButtonGroup>
     </div>

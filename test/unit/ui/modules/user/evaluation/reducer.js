@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import R from 'ramda';
 import evaluation from '../../../../../../backend/models/evaluations/evaluation';
-import evaluations from '../../../../../fixtures/evaluations';
+import evaluations from '../../../../../fixtures/evaluations.json';
 import reducer, { actionTypes, initialValues } from '../../../../../../frontend/modules/user/evaluation';
 
 const fixtureEvaluation = Object.assign({}, evaluations[0], { _id: 'some_evaluation_id' });
@@ -21,7 +21,7 @@ describe('Evaluation reducer', () => {
       const state = initialValues;
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
-        payload: evaluation(fixtureEvaluation).viewModel
+        payload: evaluation(fixtureEvaluation).viewModel,
       };
 
       const newState = reducer(state, action);
@@ -32,7 +32,7 @@ describe('Evaluation reducer', () => {
       const state = initialValues;
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
-        payload: evaluation(fixtureEvaluation).viewModel
+        payload: evaluation(fixtureEvaluation).viewModel,
       };
 
       const newState = reducer(state, action);
@@ -46,7 +46,7 @@ describe('Evaluation reducer', () => {
       expect(newState.paginatedView[0].name).to.equal('Working knowledge of the Dark Arts');
       expect(newState.paginatedView[0].criteria).to.equal('Can execute the Toenail-growing hex');
       expect(newState.paginatedView[0].questions).to.eql([{
-        "title": "Have you hexed anyone in the last month?"
+        title: 'Have you hexed anyone in the last month?',
       }]);
 
       expect(newState.paginatedView[1].skillId).to.equal(11);
@@ -109,7 +109,7 @@ describe('Evaluation reducer', () => {
       const state = initialValues;
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
-        payload: evaluation(fixtureEvaluation).viewModel
+        payload: evaluation(fixtureEvaluation).viewModel,
       };
 
       const newState = reducer(state, action);
@@ -143,7 +143,7 @@ describe('Evaluation reducer', () => {
       const state = initialValues;
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
-        payload: evaluation(fixtureEvaluation).viewModel
+        payload: evaluation(fixtureEvaluation).viewModel,
       };
 
       const newState = reducer(state, action);
@@ -157,7 +157,7 @@ describe('Evaluation reducer', () => {
       const state = initialValues;
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
-        payload: evaluation(fixtureEvaluation).viewModel
+        payload: evaluation(fixtureEvaluation).viewModel,
       };
 
       const newState = reducer(state, action);
@@ -172,7 +172,7 @@ describe('Evaluation reducer', () => {
       const state = initialValues;
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
-        payload: evaluation(fixtureEvaluation).viewModel
+        payload: evaluation(fixtureEvaluation).viewModel,
       };
 
       const newState = reducer(state, action);
@@ -183,7 +183,7 @@ describe('Evaluation reducer', () => {
       const state = initialValues;
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
-        payload: evaluation(fixtureEvaluation).viewModel
+        payload: evaluation(fixtureEvaluation).viewModel,
       };
 
       const newState = reducer(state, action);
@@ -196,7 +196,7 @@ describe('Evaluation reducer', () => {
       const state = {
         paginatedView: [{ skillId: 1 }, { skillId: 0 }, { skillId: 2 }],
         currentSkill: { skillId: 1 },
-        lastSkill: { skillId: 2 }
+        lastSkill: { skillId: 2 },
       };
       const action = { type: actionTypes.NEXT_SKILL };
 
@@ -208,7 +208,7 @@ describe('Evaluation reducer', () => {
       const state = {
         paginatedView: [{ skillId: 1 }, { skillId: 0 }, { skillId: 2 }],
         currentSkill: { skillId: 2 },
-        lastSkill: { skillId: 2 }
+        lastSkill: { skillId: 2 },
       };
       const action = { type: actionTypes.NEXT_SKILL };
 
@@ -222,7 +222,7 @@ describe('Evaluation reducer', () => {
       const state = {
         paginatedView: [{ skillId: 1 }, { skillId: 0 }, { skillId: 2 }],
         currentSkill: { skillId: 0 },
-        firstSkill: { skillId: 1 }
+        firstSkill: { skillId: 1 },
       };
       const action = { type: actionTypes.PREVIOUS_SKILL };
 
@@ -234,7 +234,7 @@ describe('Evaluation reducer', () => {
       const state = {
         paginatedView: [{ skillId: 1 }, { skillId: 0 }, { skillId: 2 }],
         currentSkill: { skillId: 1 },
-        firstSkill: { skillId: 1 }
+        firstSkill: { skillId: 1 },
       };
 
       const action = { type: actionTypes.PREVIOUS_SKILL };
@@ -249,7 +249,7 @@ describe('Evaluation reducer', () => {
       const state = {
         paginatedView: [{ skillId: 1 }, { skillId: 0 }, { skillId: 2 }],
         currentSkill: { skillId: 1 },
-        lastSkill: { skillId: 2 }
+        lastSkill: { skillId: 2 },
       };
 
       const action = {
@@ -260,23 +260,23 @@ describe('Evaluation reducer', () => {
             status: {
               current: 'ATTAINED',
               previous: null,
-            }
+            },
           },
           1: {
             id: 1,
             status: {
               current: null,
               previous: null,
-            }
+            },
           },
           2: {
             id: 2,
             status: {
               current: null,
               previous: null,
-            }
+            },
           },
-        }
+        },
       };
 
       const newState = reducer(state, action);
@@ -287,7 +287,7 @@ describe('Evaluation reducer', () => {
       const state = {
         paginatedView: [{ skillId: 1 }, { skillId: 0 }, { skillId: 2 }],
         currentSkill: { skillId: 1 },
-        lastSkill: { skillId: 2 }
+        lastSkill: { skillId: 2 },
       };
 
       const action = {
@@ -298,23 +298,23 @@ describe('Evaluation reducer', () => {
             status: {
               current: 'ATTAINED',
               previous: null,
-            }
+            },
           },
           1: {
             id: 1,
             status: {
               current: 'ATTAINED',
               previous: null,
-            }
+            },
           },
           2: {
             id: 2,
             status: {
               current: 'ATTAINED',
               previous: null,
-            }
+            },
           },
-        }
+        },
       };
 
       const newState = reducer(state, action);
@@ -325,7 +325,7 @@ describe('Evaluation reducer', () => {
       const state = {
         paginatedView: [{ skillId: 1 }, { skillId: 0 }, { skillId: 2 }],
         currentSkill: { skillId: 2 },
-        lastSkill: { skillId: 2 }
+        lastSkill: { skillId: 2 },
       };
 
       const action = {
@@ -336,23 +336,23 @@ describe('Evaluation reducer', () => {
             status: {
               current: 'ATTAINED',
               previous: null,
-            }
+            },
           },
           1: {
             id: 1,
             status: {
               current: null,
               previous: null,
-            }
+            },
           },
           2: {
             id: 2,
             status: {
               current: null,
               previous: null,
-            }
+            },
           },
-        }
+        },
       };
 
       const newState = reducer(state, action);
@@ -367,7 +367,7 @@ describe('Evaluation reducer', () => {
           { skillId: 0, category: 'Magicness' },
           { skillId: 1, category: 'Dragon Flight' },
           { skillId: 2, category: 'Dragon Flight' },
-          { skillId: 3, category: 'Dragon Flight' }
+          { skillId: 3, category: 'Dragon Flight' },
         ],
         currentSkill: { skillId: 0, category: 'Magicness' },
         lastCategory: 'Dragon Flight',
@@ -381,30 +381,30 @@ describe('Evaluation reducer', () => {
             status: {
               current: 'ATTAINED',
               previous: null,
-            }
+            },
           },
           1: {
             id: 1,
             status: {
               current: 'ATTAINED',
               previous: null,
-            }
+            },
           },
           2: {
             id: 2,
             status: {
               current: null,
               previous: null,
-            }
+            },
           },
           3: {
             id: 3,
             status: {
               current: 'ATTAINED',
               previous: null,
-            }
+            },
           },
-        }
+        },
       };
 
       const newState = reducer(state, action);
@@ -431,30 +431,30 @@ describe('Evaluation reducer', () => {
             status: {
               current: 'ATTAINED',
               previous: null,
-            }
+            },
           },
           1: {
             id: 1,
             status: {
               current: 'ATTAINED',
               previous: null,
-            }
+            },
           },
           2: {
             id: 2,
             status: {
               current: 'ATTAINED',
               previous: null,
-            }
+            },
           },
           3: {
             id: 3,
             status: {
               current: null,
               previous: null,
-            }
-          }
-        }
+            },
+          },
+        },
       };
 
       const newState = reducer(state, action);
@@ -478,15 +478,15 @@ describe('Evaluation reducer', () => {
             status: {
               current: 'ATTAINED',
               previous: null,
-            }
-          }
-        }
+            },
+          },
+        },
       };
 
       const newState = reducer(state, action);
       expect(newState.currentSkill).to.eql({ skillId: 0, category: 'Magicness' });
-    })
-  })
+    });
+  });
 
   describe('PREVIOUS_CATEGORY', () => {
     it('sets current skill to the first unevaluated skill in the previous category', () => {
@@ -508,23 +508,23 @@ describe('Evaluation reducer', () => {
             status: {
               current: null,
               previous: null,
-            }
+            },
           },
           1: {
             id: 1,
             status: {
               current: 'ATTAINED',
               previous: null,
-            }
+            },
           },
           2: {
             id: 2,
             status: {
               current: null,
               previous: null,
-            }
+            },
           },
-        }
+        },
       };
 
       const newState = reducer(state, action);
@@ -550,23 +550,23 @@ describe('Evaluation reducer', () => {
             status: {
               current: 'ATTAINED',
               previous: null,
-            }
+            },
           },
           1: {
             id: 1,
             status: {
               current: 'ATTAINED',
               previous: null,
-            }
+            },
           },
           2: {
             id: 2,
             status: {
               current: null,
               previous: null,
-            }
+            },
           },
-        }
+        },
       };
 
       const newState = reducer(state, action);
@@ -590,13 +590,13 @@ describe('Evaluation reducer', () => {
             status: {
               current: 'ATTAINED',
               previous: null,
-            }
-          }
-        }
+            },
+          },
+        },
       };
 
       const newState = reducer(state, action);
       expect(newState.currentSkill).to.eql({ skillId: 0, category: 'Magicness' });
-    })
-  })
+    });
+  });
 });

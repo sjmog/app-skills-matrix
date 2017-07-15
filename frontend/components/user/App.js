@@ -1,23 +1,18 @@
-import React, { Component } from 'react';
-import { Grid } from 'react-bootstrap';
+import React from 'react';
 
 import Header from './Header';
 
-class Full extends Component {
-  render() {
-    return (
-      <div className="app">
-        <Header />
-        <div className="app-body">
-          <main className="main">
-            <div className="container-fluid">
-              {this.props.children}
-            </div>
-          </main>
+const Full = ({ children }) => (
+  <div className="app">
+    <Header />
+    <div className="app-body">
+      <main className="main">
+        <div className="container-fluid">
+          {children}
         </div>
-      </div>
-    );
-  }
-}
+      </main>
+    </div>
+  </div>
+);
 
 export default Full;

@@ -1,6 +1,6 @@
 const R = require('ramda');
 
-const hydrateSkillsWithStaticData = (skills) =>
+const hydrateSkillsWithStaticData = skills =>
   ({ id: skillGroupId, level, category, skills: skillsInSkillGroup }) =>
     R.map(
       (skillId) => {
@@ -14,11 +14,11 @@ const hydrateSkillsWithStaticData = (skills) =>
           skillGroupId,
           level,
           category,
-        })
-      }
+        });
+      },
     )(skillsInSkillGroup);
 
-const sortSkillGroupsByInverseLevel = (levels) =>
+const sortSkillGroupsByInverseLevel = levels =>
   (skillGroups) => {
     const indexOfLevel = (a, b) => {
       if (levels.indexOf(a.level) > levels.indexOf(b.level)) return -1;
@@ -29,7 +29,7 @@ const sortSkillGroupsByInverseLevel = (levels) =>
     return R.sort(indexOfLevel)(R.values(skillGroups));
   };
 
-const orderCategories = (categories) =>
+const orderCategories = categories =>
   obj => R.reduce((acc, curr) => [].concat(acc, obj[curr]), [])(categories);
 
 module.exports = (evaluation) => {
@@ -46,6 +46,6 @@ module.exports = (evaluation) => {
     orderCategories(categories),
     R.map(sortSkillGroupsByInverseLevel(levels)),
     R.groupBy(category),
-    R.values
+    R.values,
   )(skillGroups);
 };

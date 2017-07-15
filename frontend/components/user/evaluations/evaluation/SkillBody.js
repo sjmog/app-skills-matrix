@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Button, Panel, Glyphicon } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 
 import './../evaluation.scss';
 
@@ -11,23 +11,24 @@ class SkillBody extends React.Component {
 
   render() {
     return (
-      <div className='skill-body'>
+      <div className="skill-body">
         <p>{`  ${this.props.criteria}`}</p>
         {
           this.props.questions.length
           ? <Button
-              active={this.state.open}
-              onClick={() => this.setState({ open: !this.state.open })}>
-              {"I'm not sure"}
-            </Button>
+            active={this.state.open}
+            onClick={() => this.setState({ open: !this.state.open })}
+          >
+            {"I'm not sure"}
+          </Button>
           : false
         }
         { this.state.open
-          ? <div className='skill-body___info-block'>
-              <ul>
-                { this.props.questions.map(({ title }) => <li key={title}>{title}</li>) }
-              </ul>
-            </div>
+          ? <div className="skill-body___info-block">
+            <ul>
+              { this.props.questions.map(({ title }) => <li key={title}>{title}</li>) }
+            </ul>
+          </div>
           : false
         }
       </div>
@@ -37,7 +38,7 @@ class SkillBody extends React.Component {
 
 SkillBody.propTypes = {
   questions: PropTypes.array,
-  criteria: PropTypes.string.isRequired
+  criteria: PropTypes.string.isRequired,
 };
 
 export default SkillBody;

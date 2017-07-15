@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { PageHeader, ButtonToolbar, ButtonGroup, Button, Glyphicon } from 'react-bootstrap';
 
-import '../evaluation.scss'
+import '../evaluation.scss';
 
 class CategoryPageHeader extends React.Component {
   constructor(props) {
@@ -24,25 +24,25 @@ class CategoryPageHeader extends React.Component {
     return (
       <PageHeader>
         {currentCategory}
-        <ButtonToolbar className='pull-right'>
+        <ButtonToolbar className="pull-right">
           <ButtonGroup>
             <Button
-              className='nav-btn--left'
-              bsSize='large'
+              className="nav-btn--left"
+              bsSize="large"
               onClick={() => previousCategory()}
               disabled={isFirstCategory}
             >
-              <Glyphicon glyph='chevron-left'/>
+              <Glyphicon glyph="chevron-left" />
               Previous category
             </Button>
             <Button
-              className='nav-btn--right'
-              bsSize='large'
+              className="nav-btn--right"
+              bsSize="large"
               disabled={isLastCategory}
               onClick={() => nextCategory()}
             >
               Next category
-              <Glyphicon glyph='chevron-right'/>
+              <Glyphicon glyph="chevron-right" />
             </Button>
           </ButtonGroup>
           <ButtonGroup>

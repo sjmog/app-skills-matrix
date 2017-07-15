@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import { Row } from 'react-bootstrap';
 import { connect } from 'react-redux';
 
@@ -11,14 +11,13 @@ export const ManageMatricesPageComponent = ({ templates }) =>
     <div>
       <Row><h1 className="header">Matrices</h1></Row>
       <TemplateList
-        templates={templates}/>
+        templates={templates}
+      />
       <SaveTemplate />
       <SaveSkill />
     </div>
   );
 
 export const ManageMatricesPage = connect(
-  function mapStateToProps(state) {
-    return state.matrices;
-  }
+  state => state.matrices,
 )(ManageMatricesPageComponent);

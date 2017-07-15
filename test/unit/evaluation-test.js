@@ -17,14 +17,14 @@ const testSkills = skills(fixtureSkills);
 
 describe('new evaluation', () => {
   it('creates a new evaluation for a user', () => {
-    const created = newEvaluation(testTemplate, testUser, testSkills, "new Date()");
+    const created = newEvaluation(testTemplate, testUser, testSkills, 'new Date()');
     expect(created.dataModel).to.deep.equal(expectedInitialEvaluation);
   });
 });
 
 describe('second evaluation', () => {
   it('handles no changes to the template', () => {
-    const newEval = newEvaluation(testTemplate, testUser, testSkills, "new Date()");
+    const newEval = newEvaluation(testTemplate, testUser, testSkills, 'new Date()');
     const mergedEvaluation = newEval.mergePreviousEvaluation(evaluation(completedEvaluation));
     expect(mergedEvaluation.dataModel).to.deep.equal(expectedMergedEvaluation);
   });

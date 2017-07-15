@@ -9,5 +9,5 @@ module.exports = (app) => {
   router.post('/:userId', (req, res, next) => user[req.body.action](req, res, next));
   router.post('/:userId/evaluations', ensureAdmin, (req, res, next) => evaluations[req.body.action](req, res, next));
   app.use('/users', router);
-  return app
+  return app;
 };

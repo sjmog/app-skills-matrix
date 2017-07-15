@@ -1,0 +1,15 @@
+{
+  "rules": {
+    "no-underscore-dangle": "off",
+    "max-len": "off",
+    "consistent-return": "off",
+    "react/jsx-filename-extension": "off",
+    "no-shadow": "off",
+    "import/no-named-as-default": "off",
+    "no-undef": "off",
+    "react/prop-types": "off",
+    "react/forbid-prop-types": "off",
+    "react/require-default-props": "off",
+    "import/prefer-default-export": "off"
+  }
+}

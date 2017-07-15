@@ -8,9 +8,9 @@ const getCollection = memoize(collection => connect().then(db => db.collection(c
 
 module.exports = {
   connect,
-  collection: (collection) => new Proxy({}, {
+  collection: collection => new Proxy({}, {
     get: (object, methodName) => (...args) =>
       getCollection(collection)
-        .then(collection => collection[methodName](...args))
-  })
+        .then(c => c[methodName](...args)),
+  }),
 };

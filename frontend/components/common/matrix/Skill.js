@@ -10,7 +10,7 @@ const skillColour = (currentStatus, previousStatus) => {
   } else if (currentStatus === SKILL_STATUS.FEEDBACK) {
     return 'skill--feedback';
   } else if (currentStatus === SKILL_STATUS.OBJECTIVE) {
-    return 'skill--objective'
+    return 'skill--objective';
   }
 
   return '';
@@ -24,13 +24,12 @@ const Skill = ({ skill, viewSkillDetails, isBeingEvaluated }) => {
     <tr className={`${status} ${beginEvaluated}`} onClick={() => viewSkillDetails(skill)}>
       <td>{skill.name}</td>
     </tr>
-  )
+  );
 };
 
 Skill.propTypes = {
   skill: PropTypes.object.isRequired,
   viewSkillDetails: PropTypes.func.isRequired,
-  isCurrentSkill: PropTypes.bool,
 };
 
 export default Skill;
