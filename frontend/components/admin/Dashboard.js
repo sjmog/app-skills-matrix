@@ -1,9 +1,9 @@
 import React from 'react';
 
-const Dashboard = () => (
+const Dashboard = ({ children }) => (
   <div>
     <h1 className="header">Dashboard</h1>
-    {this.props.children}
+    {children}
   </div>
 );
 

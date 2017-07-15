@@ -2,13 +2,13 @@ import React from 'react';
 
 import Header from './Header';
 
-const Full = () => (
+const Full = ({ children }) => (
   <div className="app">
     <Header />
     <div className="app-body">
       <main className="main">
         <div className="container-fluid">
-          {this.props.children}
+          {children}
         </div>
       </main>
     </div>
