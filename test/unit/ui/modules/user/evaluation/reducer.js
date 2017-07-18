@@ -45,9 +45,11 @@ describe('Evaluation reducer', () => {
       expect(newState.paginatedView[0].category).to.equal('Magicness');
       expect(newState.paginatedView[0].name).to.equal('Working knowledge of the Dark Arts');
       expect(newState.paginatedView[0].criteria).to.equal('Can execute the Toenail-growing hex');
-      expect(newState.paginatedView[0].questions).to.eql([{
-        title: 'Have you hexed anyone in the last month?',
-      }]);
+      expect(newState.paginatedView[0].questions).to.eql([
+        {
+          title: 'Have you hexed anyone in the last month?',
+        },
+      ]);
 
       expect(newState.paginatedView[1].skillId).to.equal(11);
       expect(newState.paginatedView[1].skillGroupId).to.equal(10);
@@ -123,7 +125,7 @@ describe('Evaluation reducer', () => {
     it('sets current skill to be the last when all have been evaluated', () => {
       const state = initialValues;
 
-      const setStatusToAttained = (skill) =>  Object.assign({}, skill, { status: { current: 'ATTAINED' }});
+      const setStatusToAttained = skill => Object.assign({}, skill, { status: { current: 'ATTAINED' } });
       const evaluatedSkills = R.map(setStatusToAttained)(fixtureEvaluation.skills);
 
       const action = {

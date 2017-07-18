@@ -37,7 +37,7 @@ const user = ({ _id, name, email, username, templateId, mentorId, avatarUrl }) =
     return { mentorId: newMentorId, modifiedDate: new Date() };
   },
   setTemplate(newTemplateId) {
-    return { newTemplateId, modifiedDate: new Date() };
+    return { templateId: newTemplateId, modifiedDate: new Date() };
   },
   toString() {
     return JSON.stringify(this);
