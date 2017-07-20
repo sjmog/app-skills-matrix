@@ -1,7 +1,9 @@
-const { Router } = require('express');
+import { Router } from 'express';
 
-const { ensureAdmin } = require('../middlewares/auth');
-const { templates, skills } = require('../handlers/matrices');
+import { ensureAdmin } from '../middlewares/auth';
+import matricesHandler from '../handlers/matrices';
+
+const { templates, skills } = matricesHandler;
 
 module.exports = (app) => {
   const router = Router();

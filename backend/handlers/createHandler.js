@@ -1,5 +1,5 @@
 /* eslint-disable no-prototype-builtins */
-const R = require('ramda');
+import R from 'ramda';
 
 const defaultHandler = {
   get(target, name) {
@@ -9,4 +9,4 @@ const defaultHandler = {
   },
 };
 
-module.exports = handlerFunctions => R.map(handler => new Proxy(handler, defaultHandler), handlerFunctions);
+export default handlerFunctions => R.map(handler => new Proxy(handler, defaultHandler), handlerFunctions);

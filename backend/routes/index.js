@@ -1,11 +1,11 @@
-const express = require('express');
+import express from 'express';
 
-const users = require('./users');
-const matrices = require('./matrices');
-const evaluations = require('./evaluations');
-const actions = require('./actions');
-const clientApp = require('./clientApp');
-const auth = require('./auth');
+import users from './users';
+import matrices from './matrices';
+import evaluations from './evaluations';
+import actions from './actions';
+import clientApp from './clientApp';
+import auth from './auth';
 
 const apiRoutes = [
   users,

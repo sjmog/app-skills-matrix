@@ -1,12 +1,12 @@
-const Promise = require('bluebird');
+import Promise from 'bluebird';
 
-const users = require('../models/users');
-const { templates, skills } = require('../models/matrices');
-const { newEvaluation } = require('../models/evaluations/evaluation');
-const evaluations = require('../models/evaluations');
-const createHandler = require('./createHandler');
-const { sendMail } = require('../services/email');
-const { USER_EXISTS, MUST_BE_ADMIN, USER_NOT_FOUND, TEMPLATE_NOT_FOUND, USER_HAS_NO_TEMPLATE, USER_HAS_NO_MENTOR } = require('./errors');
+import users from '../models/users';
+import { templates, skills } from '../models/matrices';
+import { newEvaluation } from '../models/evaluations/evaluation';
+import evaluations from '../models/evaluations';
+import createHandler from './createHandler';
+import { sendMail } from '../services/email';
+import { USER_EXISTS, MUST_BE_ADMIN, USER_NOT_FOUND, TEMPLATE_NOT_FOUND, USER_HAS_NO_TEMPLATE, USER_HAS_NO_MENTOR } from './errors';
 
 const handlerFunctions = Object.freeze({
   users: {
@@ -17,7 +17,7 @@ const handlerFunctions = Object.freeze({
             return res.status(409).json(USER_EXISTS(req.body.username));
           }
           return users.addUser(req.body)
-            .then(u => res.status(201).send(u.manageUserViewModel));
+            .then(u => res.status(201).send(u.manageUserViewModel()));
         })
         .catch(next);
     },
@@ -25,7 +25,7 @@ const handlerFunctions = Object.freeze({
   user: {
     selectMentor: (req, res, next) => {
       const { user } = res.locals;
-      if (!user || !user.isAdmin) {
+      if (!user || !user.isAdmin()) {
         return res.status(403).json(MUST_BE_ADMIN());
       }
       Promise.try(() => users.getUserById(req.params.userId))
@@ -38,13 +38,13 @@ const handlerFunctions = Object.freeze({
             return res.status(400).json(changes);
           }
           return users.updateUser(userToUpdate, changes)
-            .then(updatedUser => res.status(200).json(updatedUser.manageUserViewModel));
+            .then(updatedUser => res.status(200).json(updatedUser.manageUserViewModel()));
         })
         .catch(next);
     },
     selectTemplate: (req, res, next) => {
       const { user } = res.locals;
-      if (!user || !user.isAdmin) {
+      if (!user || !user.isAdmin()) {
         return res.status(403).json(MUST_BE_ADMIN());
       }
       Promise.all([users.getUserById(req.params.userId), templates.getById(req.body.templateId)])
@@ -58,7 +58,7 @@ const handlerFunctions = Object.freeze({
 
           const changes = userToUpdate.setTemplate(req.body.templateId);
           return users.updateUser(userToUpdate, changes)
-            .then(updatedUser => res.status(200).json(updatedUser.manageUserViewModel));
+            .then(updatedUser => res.status(200).json(updatedUser.manageUserViewModel()));
         })
         .catch(next);
     },
@@ -71,10 +71,10 @@ const handlerFunctions = Object.freeze({
             return res.status(404).json(USER_NOT_FOUND());
           }
           if (!user.hasTemplate) {
-            return res.status(400).json(USER_HAS_NO_TEMPLATE(user.manageUserViewModel.name));
+            return res.status(400).json(USER_HAS_NO_TEMPLATE(user.manageUserViewModel().name));
           }
           if (!user.hasMentor) {
-            return res.status(400).json(USER_HAS_NO_MENTOR(user.manageUserViewModel.name));
+            return res.status(400).json(USER_HAS_NO_MENTOR(user.manageUserViewModel().name));
           }
 
           return Promise.all([templates.getById(user.templateId), skills.getAll(), evaluations.getLatestByUserId(user.id)])
@@ -93,4 +93,4 @@ const handlerFunctions = Object.freeze({
   },
 });
 
-module.exports = createHandler(handlerFunctions);
+export default createHandler(handlerFunctions);

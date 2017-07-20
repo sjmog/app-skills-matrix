@@ -1,10 +1,12 @@
-const R = require('ramda');
-const Promise = require('bluebird');
-const moment = require('moment');
+// @flow
+import R from 'ramda';
+import Promise from 'bluebird';
+import moment from 'moment';
 
-const userCollection = require('./users');
-const { templates } = require('./matrices');
-const evaluationCollection = require('./evaluations');
+import userCollection from './users';
+import type { User } from './users/user';
+import { templates } from './matrices';
+import evaluationCollection from './evaluations';
 
 const sortNewestToOldest = evaluations => evaluations.sort((a, b) => moment(a.createdDate).isBefore(b.createdDate));
 
@@ -30,9 +32,9 @@ const augmentWithEvaluations = users =>
     user =>
       getEvaluations(user.id)
         .then(evaluations => evaluations.map(evaluation => evaluation.adminMetadataViewModel))
-        .then(evaluations => Object.assign({}, user.manageUserViewModel, { evaluations })));
+        .then(evaluations => Object.assign({}, user.manageUserViewModel(), { evaluations })));
 
-const adminClientState = () => Promise.all([userCollection.getAll(), templates.getAll()])
+export const adminClientState = () => Promise.all([userCollection.getAll(), templates.getAll()])
   .then(([allUsers = [], allTemplates = []]) =>
     augmentWithEvaluations(allUsers)
       .then(users => (
@@ -46,26 +48,20 @@ const adminClientState = () => Promise.all([userCollection.getAll(), templates.g
           },
         })));
 
-const clientState = user =>
+export const clientState = (user: User) =>
   (user ? Promise.all([
     userCollection.getUserById(user.mentorId),
     templates.getById(user.templateId),
     getSubjectEvaluations(user.id),
     getMenteeEvaluations(user.id),
-  ])
-    .then(([mentor, template, evaluations, menteeEvaluations]) =>
-      ({
-        user: {
-          userDetails: user ? user.userDetailsViewModel : null,
-          mentorDetails: mentor ? mentor.userDetailsViewModel : null,
-          template: template ? template.viewModel : null,
-          evaluations,
-          menteeEvaluations,
-        },
-      }))
+  ]).then(([mentor, template, evaluations, menteeEvaluations]) =>
+    ({
+      user: {
+        userDetails: user ? user.userDetailsViewModel() : null,
+        mentorDetails: mentor ? mentor.userDetailsViewModel() : null,
+        template: template ? template.viewModel : null,
+        evaluations,
+        menteeEvaluations,
+      },
+    }))
     : Promise.resolve({ user: {} }));
-
-module.exports = {
-  adminClientState,
-  clientState,
-};

@@ -1,7 +1,10 @@
-const authom = require('authom');
+// @flow
+import authom from 'authom';
+import type { $Application } from 'express';
 
-const auth = require('../models/auth');
-const users = require('../models/users');
+import auth from '../models/auth';
+import users from '../models/users';
+import type { User } from '../models/users/user';
 
 authom.createServer({
   service: 'github',
@@ -12,10 +15,10 @@ authom.createServer({
 
 authom.on('auth', (req, res, { data }) =>
   users.getUserByUsername(data.login)
-    .then((user) => {
+    .then((user: User) => {
       const githubData = { email: data.email, name: data.name, avatarUrl: data.avatar_url, username: data.login };
-      const userFn = !user ? users.addUser(githubData) : Promise.resolve(user);
-      userFn.then(u => auth.sign(u.signingData))
+      const userFn: Promise<User> = !user ? users.addUser(githubData) : Promise.resolve(user);
+      userFn.then(u => auth.sign(u.signingData()))
         .then((token) => {
           res.cookie(auth.cookieName, token);
           res.redirect('/');
@@ -26,4 +29,4 @@ authom.on('auth', (req, res, { data }) =>
 
 authom.on('error', (req, res, data) => res.status(500).json(data));
 
-module.exports = app => app.get('/auth/:service', authom.app) && app;
+export default (app: $Application) => app.get('/auth/:service', authom.app) && app;

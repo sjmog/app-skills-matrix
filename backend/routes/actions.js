@@ -1,7 +1,9 @@
-const { Router } = require('express');
+import { Router } from 'express';
 
-const { actions } = require('../handlers/actions');
-const { ensureLoggedIn } = require('../middlewares/auth');
+import actionHandler from '../handlers/actions';
+import { ensureLoggedIn } from '../middlewares/auth';
+
+const { actions } = actionHandler;
 
 module.exports = (app) => {
   const router = Router();

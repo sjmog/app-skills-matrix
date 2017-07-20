@@ -1,17 +1,21 @@
-const Promise = require('bluebird');
+// @flow
+import type { $Response, $Request, NextFunction } from 'express';
+import Promise from 'bluebird';
 
-const createHandler = require('./createHandler');
+import type { User } from '../models/users/user';
 
-const actions = require('../models/actions');
-const { getUserById } = require('../models/users');
-const { ONLY_USER_AND_MENTOR_CAN_SEE_ACTIONS } = require('./errors');
+import createHandler from './createHandler';
+
+import actions from '../models/actions';
+import { getUserById } from '../models/users';
+import { ONLY_USER_AND_MENTOR_CAN_SEE_ACTIONS } from './errors';
 
 const handlerFunctions = Object.freeze({
   actions: {
-    find: (req, res, next) => {
+    find: (req: $Request, res: $Response, next: NextFunction): Promise<null> => {
       const { evaluationId, type } = req.query;
       const { userId } = req.params;
-      const { user } = res.locals;
+      const { user }: { user: User } = (res.locals: any);
 
       if (user.id === userId) {
         return Promise.try(() => actions.find(userId, evaluationId, type))
@@ -23,11 +27,11 @@ const handlerFunctions = Object.freeze({
         .then(({ mentorId }) =>
           (user.id === mentorId
             ? Promise.try(() => actions.find(userId, evaluationId, type))
-                .then(a => res.status(200).json(a.map(action => action.viewModel)))
-                .catch(next)
+              .then(a => res.status(200).json(a.map(action => action.viewModel)))
+              .catch(next)
             : res.status(403).json(ONLY_USER_AND_MENTOR_CAN_SEE_ACTIONS())));
     },
   },
 });
 
-module.exports = createHandler(handlerFunctions);
+export default createHandler(handlerFunctions);

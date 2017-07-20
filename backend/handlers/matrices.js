@@ -1,8 +1,8 @@
-const Promise = require('bluebird');
+import Promise from 'bluebird';
 
-const { templates, skills } = require('../models/matrices');
-const createHandler = require('./createHandler');
-const { TEMPLATE_NOT_FOUND } = require('./errors');
+import { templates, skills } from '../models/matrices';
+import createHandler from './createHandler';
+import { TEMPLATE_NOT_FOUND } from './errors';
 
 const handlerFunctions = Object.freeze({
   templates: {
@@ -48,4 +48,4 @@ const handlerFunctions = Object.freeze({
   },
 });
 
-module.exports = createHandler(handlerFunctions);
+export default createHandler(handlerFunctions);

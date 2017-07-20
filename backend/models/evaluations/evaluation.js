@@ -138,7 +138,7 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
         if (!previousSkill) {
           return Object.assign({}, skillToUpdate, { status: { previous: null, current: null } });
         }
-        return Object.assign({}, skillToUpdate, { status: { previous: previousSkill.currentStatus, current: previousSkill.statusForNextEvaluation } });
+        return Object.assign({}, skillToUpdate, { status: { previous: previousSkill.currentStatus(), current: previousSkill.statusForNextEvaluation() } });
       };
       const updatedSkills = previousEvaluation ? R.map(updateSkill, skills) : skills;
       return evaluation({
@@ -158,7 +158,7 @@ module.exports.STATUS = STATUS;
 module.exports.newEvaluation = (template, user, allSkills, date = new Date()) => {
   const { skillGroups, skills } = template.createSkillGroups(allSkills);
   return evaluation({
-    user: user.evaluationData,
+    user: user.evaluationData(),
     createdDate: date,
     status: STATUS.NEW,
     template: template.evaluationData,

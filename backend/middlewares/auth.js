@@ -17,6 +17,6 @@ module.exports = {
     if (!res.locals.user) {
       return res.status(401).json(MUST_BE_LOGGED_IN());
     }
-    return res.locals.user && res.locals.user.isAdmin ? next() : res.status(403).json(MUST_BE_ADMIN());
+    return res.locals.user && res.locals.user.isAdmin() ? next() : res.status(403).json(MUST_BE_ADMIN());
   },
 };

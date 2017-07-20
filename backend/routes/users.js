@@ -1,7 +1,9 @@
-const { Router } = require('express');
+import { Router } from 'express';
 
-const { ensureAdmin } = require('../middlewares/auth');
-const { users, user, evaluations } = require('../handlers/users');
+import { ensureAdmin } from '../middlewares/auth';
+import userHandler from '../handlers/users';
+
+const { users, user, evaluations } = userHandler;
 
 module.exports = (app) => {
   const router = Router();

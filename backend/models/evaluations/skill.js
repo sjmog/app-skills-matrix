@@ -1,4 +1,5 @@
-const keymirror = require('keymirror');
+// @flow
+import keymirror from 'keymirror';
 
 const SKILL_STATUS = keymirror({
   ATTAINED: null,
@@ -12,24 +13,33 @@ const STATUS_WITH_ACTION = keymirror({
   OBJECTIVE: null,
 });
 
-module.exports = ({ id, name, criteria, type, questions, status }) => ({
+type UnhydratedSkill = {
+  id: string,
+  name: string,
+  type: string,
+  criteria: string,
+  questions: Array<{ name: string }>,
+  status: { current: string, previous: string },
+}
+
+module.exports = ({ id, name, criteria, type, questions, status }: UnhydratedSkill) => Object.freeze({
   id,
-  get currentStatus() {
+  currentStatus() {
     return status.current;
   },
-  get statusForNextEvaluation() {
+  statusForNextEvaluation() {
     return status.current === SKILL_STATUS.ATTAINED ? SKILL_STATUS.ATTAINED : null;
   },
-  get feedbackData() {
+  feedbackData() {
     return ({ id, name, criteria, type, questions });
   },
-  addAction(newStatus) {
+  addAction(newStatus: string) {
     return (STATUS_WITH_ACTION[newStatus] && status.current !== newStatus) && STATUS_WITH_ACTION[newStatus];
   },
-  removeAction(newStatus) {
+  removeAction(newStatus: string) {
     return (STATUS_WITH_ACTION[status.current] && status.current !== newStatus) && STATUS_WITH_ACTION[status.current];
   },
-  updateStatus(newStatus) {
+  updateStatus(newStatus: string) {
     return {
       id,
       name,

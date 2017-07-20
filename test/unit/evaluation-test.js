@@ -1,13 +1,12 @@
-const { expect } = require('chai');
+import { expect } from 'chai';
 
-const { newEvaluation } = require('../../backend/models/evaluations/evaluation');
-const evaluation = require('../../backend/models/evaluations/evaluation');
-const user = require('../../backend/models/users/user');
-const template = require('../../backend/models/matrices/template');
-const skills = require('../../backend/models/matrices/skills');
-const fixtureEvaluations = require('../fixtures/evaluations');
-const fixtureSkills = require('../fixtures/skills');
-const fixtureTemplates = require('../fixtures/templates');
+import evaluation, { newEvaluation } from '../../backend/models/evaluations/evaluation';
+import user from '../../backend/models/users/user';
+import template from '../../backend/models/matrices/template';
+import skills from '../../backend/models/matrices/skills';
+import fixtureEvaluations from '../fixtures/evaluations.json';
+import fixtureSkills from '../fixtures/skills.json';
+import fixtureTemplates from '../fixtures/templates.json';
 
 const [expectedInitialEvaluation, completedEvaluation, expectedMergedEvaluation] = fixtureEvaluations;
 

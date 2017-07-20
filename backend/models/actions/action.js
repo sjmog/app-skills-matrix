@@ -7,8 +7,8 @@ module.exports = ({ type, user, skill, evaluation }) => Object.freeze({
 
 module.exports.newAction = (type, user, skill, evaluation) => ({
   type,
-  user: user.feedbackData,
-  skill: skill.feedbackData,
+  user: user.feedbackData(),
+  skill: skill.feedbackData(),
   evaluation: evaluation.feedbackData,
   createdDate: new Date(),
 });

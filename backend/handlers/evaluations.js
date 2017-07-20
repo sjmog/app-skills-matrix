@@ -1,14 +1,16 @@
-const Promise = require('bluebird');
-const R = require('ramda');
+// @flow
+import Promise from 'bluebird';
+import R from 'ramda';
 
-const createHandler = require('./createHandler');
+import createHandler from './createHandler';
 
-const { getEvaluationById, updateEvaluation, importEvaluation } = require('../models/evaluations');
-const { templates } = require('../models/matrices');
-const { getUserById, getUserByUsername } = require('../models/users');
-const actions = require('../models/actions');
+import { getEvaluationById, updateEvaluation, importEvaluation } from '../models/evaluations';
+import { templates } from '../models/matrices';
+import { getUserById, getUserByUsername } from '../models/users';
+import type { User } from '../models/users/user';
+import actions from '../models/actions';
 
-const { sendMail } = require('../services/email');
+import { sendMail } from '../services/email';
 
 const {
   EVALUATION_NOT_FOUND,
@@ -24,7 +26,7 @@ const {
 } = require('./errors');
 
 
-const addActions = (user, skill, evaluation, newStatus) => {
+const addActions = (user: User, skill, evaluation, newStatus: string) => {
   const actionToAdd = skill.addAction(newStatus);
   const actionToRemove = skill.removeAction(newStatus);
   const fns = [];
@@ -38,7 +40,7 @@ const addActions = (user, skill, evaluation, newStatus) => {
 };
 
 const handlerFunctions = Object.freeze({
-  evaluations: {
+  evaluations: { // TODO delete this code path here - it's no longer needed
     import: (req, res, next) => {
       const { evaluation, username, template: templateId } = req.body;
       Promise.all([getUserByUsername(username), templates.getById(templateId)])
@@ -50,7 +52,7 @@ const handlerFunctions = Object.freeze({
             return res.status(404).json(TEMPLATE_NOT_FOUND());
           }
 
-          evaluation.user = user.evaluationData;
+          evaluation.user = user.evaluationData();
           evaluation.template = template.evaluationData;
 
           if (template === 'eng-nodejs') {
@@ -92,7 +94,7 @@ const handlerFunctions = Object.freeze({
                 return res.status(200).json(evaluation.mentorEvaluationViewModel);
               }
 
-              if (user.isAdmin) {
+              if (user.isAdmin()) {
                 return res.status(200).json(evaluation.adminEvaluationViewModel);
               }
 
@@ -106,7 +108,7 @@ const handlerFunctions = Object.freeze({
       const { skillId, status } = req.body;
       const { user } = res.locals;
 
-      getEvaluationById(evaluationId)
+      Promise.try(() => getEvaluationById(evaluationId))
         .then((evaluation) => {
           if (!evaluation) {
             return res.status(404).json(EVALUATION_NOT_FOUND());
@@ -188,7 +190,7 @@ const handlerFunctions = Object.freeze({
             return res.status(400).json(SKILL_NOT_FOUND());
           }
 
-          if (user.isAdmin) {
+          if (user.isAdmin()) {
             return updateEvaluation(evaluation.updateSkill(skillId, status))
               .then(() => getUserById(evaluation.user.id))
               .then(evalUser => addActions(evalUser, skill, evaluation, status))
