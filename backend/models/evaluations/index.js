@@ -14,11 +14,6 @@ export default {
       .then(({ insertedId }) => evaluationsCollection.findOne({ _id: new ObjectId(insertedId) }))
       .then(res => (res ? evaluation(decrypt(res)) : null));
   },
-  importEvaluation(rawEvaluation) {
-    return evaluationsCollection.insertOne(encrypt(rawEvaluation))
-      .then(({ insertedId }) => evaluationsCollection.findOne({ _id: new ObjectId(insertedId) }))
-      .then(res => (res ? evaluation(decrypt(res)) : null));
-  },
   getEvaluationById(id) {
     return evaluationsCollection.findOne({ _id: ObjectId(id) })
       .then(res => (res ? evaluation(decrypt(res)) : null));

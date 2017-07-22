@@ -1,11 +1,9 @@
 // @flow
 import Promise from 'bluebird';
-import R from 'ramda';
 
 import createHandler from './createHandler';
 
 import evaluations from '../models/evaluations';
-import { templates } from '../models/matrices';
 import users from '../models/users';
 import type { User } from '../models/users/user';
 import actions from '../models/actions';
@@ -20,8 +18,6 @@ const {
   SUBJECT_CAN_ONLY_UPDATE_NEW_EVALUATION,
   MENTOR_REVIEW_COMPLETE,
   MENTOR_CAN_ONLY_UPDATE_AFTER_SELF_EVALUATION,
-  USER_NOT_FOUND,
-  TEMPLATE_NOT_FOUND,
   USER_NOT_ADMIN,
 } = require('./errors');
 
@@ -40,35 +36,6 @@ const addActions = (user: User, skill, evaluation, newStatus: string) => {
 };
 
 const handlerFunctions = Object.freeze({
-  evaluations: { // TODO delete this code path here - it's no longer needed
-    import: (req, res, next) => {
-      const { evaluation, username, template: templateId } = req.body;
-      Promise.all([users.getUserByUsername(username), templates.getById(templateId)])
-        .then(([user, template]) => {
-          if (!user) {
-            return res.status(404).json(USER_NOT_FOUND());
-          }
-          if (!template) {
-            return res.status(404).json(TEMPLATE_NOT_FOUND());
-          }
-
-          evaluation.user = user.evaluationData();
-          evaluation.template = template.evaluationData;
-
-          if (template === 'eng-nodejs') {
-            // have to map drupal skills to node skills :-(
-            const badSkill = R.find(skill => skill.id === 32, evaluation.skills);
-            badSkill.id = 249;
-            const badSkillGroup = R.find(skillGroup => skillGroup.category === 'Technical Skill' && skillGroup.level === 'Experienced Beginner');
-            badSkillGroup.skills = [259].concat(R.filter(skillId => skillId !== 32, badSkillGroup.skills));
-          }
-
-          return evaluations.importEvaluation(evaluation)
-            .then(() => res.status(204).send());
-        })
-        .catch(next);
-    },
-  },
   evaluation: {
     retrieve: (req, res, next) => {
       const { evaluationId } = req.params;
