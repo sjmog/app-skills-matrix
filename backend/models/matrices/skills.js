@@ -1,9 +1,9 @@
 /* eslint-disable no-prototype-builtins */
-const R = require('ramda');
+import R from 'ramda';
 
-const skill = require('./skill');
+import skill from './skill';
 
-const skills = (skillsArray) => {
+export default (skillsArray) => {
   const skillsMap = skillsArray.reduce((acc, aSkill) => Object.assign({}, acc, { [aSkill.id]: skill(aSkill) }), {});
   const skillsToMap = {
     get: (target, name) => (target.hasOwnProperty(name) ? target[name] : skillsMap[name]),
@@ -17,5 +17,3 @@ const skills = (skillsArray) => {
 
   return new Proxy(skillsFunctions, skillsToMap);
 };
-
-module.exports = skills;

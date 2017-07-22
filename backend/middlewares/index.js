@@ -1,14 +1,17 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
-const morgan = require('morgan');
-const debug = require('debug')('skillz:http');
+import express from 'express';
+import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
+import morgan from 'morgan';
 
-const { populateUser } = require('./auth');
+import debug from 'debug';
+
+import { populateUser } from './auth';
+
+const debugConfig = debug('skillz:http');
 
 const before = [
   express.static('frontend/dist'),
-  debug.enabled ? morgan('dev') : (req, res, next) => next(),
+  debugConfig.enabled ? morgan('dev') : (req, res, next) => next(),
   bodyParser.json(),
   cookieParser(),
   populateUser,
@@ -20,7 +23,7 @@ const after = [
 
 const use = app => middleware => app.use(middleware);
 
-module.exports = [
+export default [
   app => before.forEach(use(app)) || app,
   app => after.forEach(use(app)) || app,
 ];

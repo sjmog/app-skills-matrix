@@ -1,9 +1,17 @@
-const request = require('supertest');
-const { expect } = require('chai');
-const R = require('ramda');
+import request from 'supertest';
+import { expect } from 'chai';
+import R from 'ramda';
 
-const app = require('../backend');
+import app from '../backend';
+import templateData from './fixtures/templates.json';
+import skillsFixture from './fixtures/skills.json';
+import evaluationsFixture from './fixtures/evaluations.json';
+import actionsFixture from './fixtures/actions.json';
+import { STATUS } from '../backend/models/evaluations/evaluation';
+import { sign, cookieName } from '../backend/models/auth';
 
+const [evaluation] = evaluationsFixture;
+const [action] = actionsFixture;
 const {
   prepopulateUsers,
   users,
@@ -18,14 +26,8 @@ const {
   skillStatus,
   insertAction,
 } = require('./helpers');
-const { sign, cookieName } = require('../backend/models/auth');
-const { STATUS } = require('../backend/models/evaluations/evaluation');
 
 const { NEW, SELF_EVALUATION_COMPLETE, MENTOR_REVIEW_COMPLETE } = STATUS;
-const templateData = require('./fixtures/templates');
-const skills = require('./fixtures/skills');
-const [evaluation] = require('./fixtures/evaluations');
-const [action] = require('./fixtures/actions');
 
 const prefix = '/skillz';
 
@@ -43,7 +45,7 @@ describe('evaluations', () => {
     clearDb()
       .then(() => prepopulateUsers())
       .then(() => insertTemplate(templateData[0]))
-      .then(() => skills.map(insertSkill))
+      .then(() => skillsFixture.map(insertSkill))
       .then(() =>
         Promise.all([
           users.findOne({ email: 'dmorgantini@gmail.com' }),

@@ -5,10 +5,11 @@ import moment from 'moment';
 
 import userCollection from './users';
 import type { User } from './users/user';
-import { templates } from './matrices';
+import matrices from './matrices';
 import evaluationCollection from './evaluations';
 
 const sortNewestToOldest = evaluations => evaluations.sort((a, b) => moment(a.createdDate).isBefore(b.createdDate));
+const { templates } = matrices;
 
 const getEvaluations = id =>
   evaluationCollection.getByUserId(id)

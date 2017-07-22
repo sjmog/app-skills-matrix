@@ -1,7 +1,7 @@
 // @flow
 import keymirror from 'keymirror';
 
-const SKILL_STATUS = keymirror({
+export const SKILL_STATUS = keymirror({
   ATTAINED: null,
   NOT_ATTAINED: null,
   FEEDBACK: null,
@@ -22,7 +22,7 @@ type UnhydratedSkill = {
   status: { current: string, previous: string },
 }
 
-module.exports = ({ id, name, criteria, type, questions, status }: UnhydratedSkill) => Object.freeze({
+export default ({ id, name, criteria, type, questions, status }: UnhydratedSkill) => Object.freeze({
   id,
   currentStatus() {
     return status.current;
@@ -53,5 +53,3 @@ module.exports = ({ id, name, criteria, type, questions, status }: UnhydratedSki
     };
   },
 });
-
-module.exports.SKILL_STATUS = SKILL_STATUS;

@@ -1,14 +1,14 @@
-const database = require('../../database');
+import { ObjectId } from 'mongodb';
+
+import database from '../../database';
+import evaluation from './evaluation';
+import { encrypt, decrypt } from './encryption';
 
 const evaluationsCollection = database.collection('evaluations');
-const { ObjectId } = require('mongodb');
-
-const evaluation = require('./evaluation');
-const { encrypt, decrypt } = require('./encryption');
 
 evaluationsCollection.ensureIndex({ 'user.id': 1 }, { background: true });
 
-module.exports = {
+export default {
   addEvaluation(newEvaluation) {
     return evaluationsCollection.insertOne(encrypt(newEvaluation.dataModel))
       .then(({ insertedId }) => evaluationsCollection.findOne({ _id: new ObjectId(insertedId) }))

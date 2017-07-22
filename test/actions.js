@@ -1,11 +1,11 @@
-const request = require('supertest');
-const Promise = require('bluebird');
-const { expect } = require('chai');
+import request from 'supertest';
+import Promise from 'bluebird';
+import { expect } from 'chai';
 
-const app = require('../backend');
-const { prepopulateUsers, users, clearDb, insertAction, assignMentor } = require('./helpers');
-const { sign, cookieName } = require('../backend/models/auth');
-const actions = require('./fixtures/actions');
+import app from '../backend';
+import { prepopulateUsers, users, clearDb, insertAction, assignMentor } from './helpers';
+import { sign, cookieName } from '../backend/models/auth';
+import actions from './fixtures/actions.json';
 
 const prefix = '/skillz';
 

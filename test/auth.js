@@ -1,6 +1,6 @@
-const request = require('supertest');
+import request from 'supertest';
 
-const app = require('../backend');
+import app from '../backend';
 
 it('should redirect to github', () =>
   request(app)

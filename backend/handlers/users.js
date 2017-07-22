@@ -1,12 +1,14 @@
 import Promise from 'bluebird';
 
 import users from '../models/users';
-import { templates, skills } from '../models/matrices';
+import matrices from '../models/matrices';
 import { newEvaluation } from '../models/evaluations/evaluation';
 import evaluations from '../models/evaluations';
 import createHandler from './createHandler';
-import { sendMail } from '../services/email';
+import sendMail from '../services/email';
 import { USER_EXISTS, MUST_BE_ADMIN, USER_NOT_FOUND, TEMPLATE_NOT_FOUND, USER_HAS_NO_TEMPLATE, USER_HAS_NO_MENTOR } from './errors';
+
+const { templates, skills } = matrices;
 
 const handlerFunctions = Object.freeze({
   users: {

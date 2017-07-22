@@ -1,4 +1,4 @@
-const skill = ({ id, name, version, criteria, type, questions }) => Object.freeze({
+export default ({ id, name, version, criteria, type, questions }) => Object.freeze({
   id,
   get viewModel() {
     return { id, name };
@@ -8,8 +8,7 @@ const skill = ({ id, name, version, criteria, type, questions }) => Object.freez
   },
 });
 
-module.exports = skill;
-module.exports.newSkill = (id, name, type, version = 1, criteria, questions) =>
+export const newSkill = (id, name, type, version = 1, criteria, questions) =>
   ({
     id,
     name,

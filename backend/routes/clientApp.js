@@ -1,9 +1,9 @@
-const Promise = require('bluebird');
-const serialize = require('serialize-javascript');
-const { adminClientState, clientState } = require('../models/initialClientState');
-const { ensureAdmin } = require('../middlewares/auth');
+import Promise from 'bluebird';
+import serialize from 'serialize-javascript';
+import { adminClientState, clientState } from '../models/initialClientState';
+import { ensureAdmin } from '../middlewares/auth';
 
-module.exports = (app) => {
+export default (app) => {
   app.get('/admin*', ensureAdmin, (req, res, next) => {
     Promise.try(() => adminClientState())
       .then(fetchedClientState => res.render('index', {

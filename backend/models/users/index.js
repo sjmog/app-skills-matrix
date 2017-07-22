@@ -18,7 +18,7 @@ type AddUser = {
   username: string,
 }
 
-module.exports = {
+export default {
   addUser: ({ email, name, avatarUrl, username }: AddUser): Promise<User> => {
     const changes = newUser(name, email, avatarUrl, username);
     return collection.updateOne({ username }, { $set: changes }, { upsert: true })

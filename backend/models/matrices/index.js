@@ -1,21 +1,21 @@
-const R = require('ramda');
+import R from 'ramda';
 
-const database = require('../../database');
+import database from '../../database';
+import template, { newTemplate } from './template';
+import skills from './skills';
+import skill, { newSkill } from './skill';
 
 const templatesCollection = database.collection('templates');
 const skillsCollection = database.collection('skills');
-const template = require('./template');
-const skills = require('./skills');
-const skill = require('./skill');
 
 skillsCollection.ensureIndex({ id: 1 }, { unique: true, background: true });
 templatesCollection.ensureIndex({ id: 1 }, { unique: true, background: true });
 
-module.exports = {
+export default {
   templates: {
     addTemplate({ id, name, skillGroups, categories, levels }) {
-      const newTemplate = template.newTemplate(id, name, skillGroups, levels, categories);
-      return templatesCollection.updateOne({ id }, { $set: newTemplate }, { upsert: true })
+      const aTemplate = newTemplate(id, name, skillGroups, levels, categories);
+      return templatesCollection.updateOne({ id }, { $set: aTemplate }, { upsert: true })
         .then(() => templatesCollection.findOne({ id }))
         .then(retrievedTemplate => template(retrievedTemplate));
     },
@@ -36,8 +36,8 @@ module.exports = {
   },
   skills: {
     addSkill({ id, name, type, version, criteria, questions }) {
-      const newSkill = skill.newSkill(id, name, type, version, criteria, questions);
-      return skillsCollection.updateOne({ id }, { $set: newSkill }, { upsert: true })
+      const aSkill = newSkill(id, name, type, version, criteria, questions);
+      return skillsCollection.updateOne({ id }, { $set: aSkill }, { upsert: true })
         .then(() => skillsCollection.findOne({ id }))
         .then(retrievedSkill => skill(retrievedSkill));
     },

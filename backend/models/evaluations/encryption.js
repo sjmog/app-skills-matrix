@@ -1,8 +1,8 @@
-const crypto = require('crypto');
+import crypto from 'crypto';
 
 const encryptionpassword = process.env.ENCRYPTION_PASSWORD;
 
-module.exports.encrypt = (changes) => {
+export const encrypt = (changes) => {
   if (!changes.skills) {
     return changes;
   }
@@ -13,7 +13,7 @@ module.exports.encrypt = (changes) => {
   return Object.assign({}, changes, { skills: null, encryptedSkills });
 };
 
-module.exports.decrypt = (fromDb) => {
+export const decrypt = (fromDb) => {
   const decipher = crypto.createDecipher('aes192', encryptionpassword);
   let decrypted = decipher.update(fromDb.encryptedSkills, 'hex', 'utf8');
   decrypted += decipher.final('utf8');

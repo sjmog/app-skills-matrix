@@ -5,7 +5,7 @@ import matricesHandler from '../handlers/matrices';
 
 const { templates, skills } = matricesHandler;
 
-module.exports = (app) => {
+export default (app) => {
   const router = Router();
 
   router.post('/templates', ensureAdmin, (req, res, next) => templates[req.body.action](req, res, next));

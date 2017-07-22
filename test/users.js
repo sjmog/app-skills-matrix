@@ -1,11 +1,13 @@
-const request = require('supertest');
-const { expect } = require('chai');
-const { ObjectId } = require('mongodb');
+import request from 'supertest';
+import { expect } from 'chai';
+import { ObjectId } from 'mongodb';
 
-const app = require('../backend');
-const { prepopulateUsers, users, insertTemplate, clearDb } = require('./helpers');
-const [sampleTemplate] = require('./fixtures/templates.json');
-const { sign, cookieName } = require('../backend/models/auth');
+import app from '../backend';
+import { prepopulateUsers, users, insertTemplate, clearDb } from './helpers';
+import templateFixture from './fixtures/templates.json';
+import { sign, cookieName } from '../backend/models/auth';
+
+const [sampleTemplate] = templateFixture;
 
 const prefix = '/skillz';
 

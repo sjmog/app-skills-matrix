@@ -1,13 +1,16 @@
-const request = require('supertest');
-const { expect } = require('chai');
-const moment = require('moment');
+import request from 'supertest';
+import { expect } from 'chai';
+import moment from 'moment';
 
-const app = require('../backend');
-const { prepopulateUsers, users, insertTemplate, assignTemplate, clearDb, insertSkill, insertEvaluation, assignMentor } = require('./helpers');
-const { sign, cookieName } = require('../backend/models/auth');
-const [template] = require('./fixtures/templates');
-const skills = require('./fixtures/skills');
-const [evaluation] = require('./fixtures/evaluations');
+import app from '../backend';
+import { prepopulateUsers, users, insertTemplate, assignTemplate, clearDb, insertSkill, insertEvaluation, assignMentor } from './helpers';
+import { sign, cookieName } from '../backend/models/auth';
+import templatesFixture from './fixtures/templates.json';
+import skillsFixture from './fixtures/skills.json';
+import evaluationsFixture from './fixtures/evaluations.json';
+
+const [template] = templatesFixture;
+const [evaluation] = evaluationsFixture;
 
 const beforeNow = moment().subtract(1, 'days').toDate();
 const now = moment().toDate();
@@ -25,7 +28,7 @@ describe('initial client state', () => {
     clearDb()
       .then(() => prepopulateUsers())
       .then(() => insertTemplate(template))
-      .then(() => skills.map(insertSkill))
+      .then(() => skillsFixture.map(insertSkill))
       .then(() =>
         Promise.all([
           users.findOne({ email: 'dmorgantini@gmail.com' }),

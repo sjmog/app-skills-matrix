@@ -7,7 +7,7 @@ import type { User } from '../models/users/user';
 import createHandler from './createHandler';
 
 import actions from '../models/actions';
-import { getUserById } from '../models/users';
+import users from '../models/users';
 import { ONLY_USER_AND_MENTOR_CAN_SEE_ACTIONS } from './errors';
 
 const handlerFunctions = Object.freeze({
@@ -23,7 +23,7 @@ const handlerFunctions = Object.freeze({
           .catch(next);
       }
 
-      return getUserById(userId)
+      return Promise.try(() => users.getUserById(userId))
         .then(({ mentorId }) =>
           (user.id === mentorId
             ? Promise.try(() => actions.find(userId, evaluationId, type))

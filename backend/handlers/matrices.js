@@ -1,8 +1,10 @@
 import Promise from 'bluebird';
 
-import { templates, skills } from '../models/matrices';
+import matrices from '../models/matrices';
 import createHandler from './createHandler';
 import { TEMPLATE_NOT_FOUND } from './errors';
+
+const { templates, skills } = matrices;
 
 const handlerFunctions = Object.freeze({
   templates: {

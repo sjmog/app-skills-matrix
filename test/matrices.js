@@ -1,13 +1,15 @@
-const request = require('supertest');
-const { expect } = require('chai');
-const Promise = require('bluebird');
+import request from 'supertest';
+import { expect } from 'chai';
+import Promise from 'bluebird';
 
-const app = require('../backend');
-const { sign, cookieName } = require('../backend/models/auth');
-const { users, templates, skills, prepopulateUsers, insertTemplate, insertSkill, clearDb } = require('./helpers');
-const [sampleTemplate] = require('./fixtures/templates');
-const [sampleSkill] = require('./fixtures/skills');
-const allSkills = require('./fixtures/skills');
+import app from '../backend';
+import { sign, cookieName } from '../backend/models/auth';
+import { users, templates, skills, prepopulateUsers, insertTemplate, insertSkill, clearDb } from './helpers';
+import templateFixture from './fixtures/templates.json';
+import skillsFixture from './fixtures/skills.json';
+
+const [sampleTemplate] = templateFixture;
+const [sampleSkill] = skillsFixture;
 
 const prefix = '/skillz/matrices';
 
@@ -118,7 +120,7 @@ describe('matrices', () => {
 
   describe('GET matrices/skills', () => {
     it('gets all the skills', () =>
-      Promise.map(allSkills, insertSkill)
+      Promise.map(skillsFixture, insertSkill)
         .then(() =>
           request(app)
             .get(`${prefix}/skills`)
@@ -126,9 +128,9 @@ describe('matrices', () => {
             .expect(200)
             .then((res) => {
               // dear future me, I'm sorry.
-              expect(res.body[1].name).to.equal(allSkills[0].name);
-              expect(res.body[2].name).to.equal(allSkills[1].name);
-              expect(res.body[12].name).to.equal(allSkills[11].name);
+              expect(res.body[1].name).to.equal(skillsFixture[0].name);
+              expect(res.body[2].name).to.equal(skillsFixture[1].name);
+              expect(res.body[12].name).to.equal(skillsFixture[11].name);
             })));
   });
 
@@ -153,14 +155,14 @@ describe('matrices', () => {
         .post(`${prefix}/skills`)
         .send({
           action: 'save',
-          skill: JSON.stringify(allSkills),
+          skill: JSON.stringify(skillsFixture),
         })
         .set('Cookie', `${cookieName}=${adminToken}`)
         .expect(201)
         .then(() => skills.find({}))
         .then(savedSkills => savedSkills.toArray())
         .then((savedSkills) => {
-          expect(savedSkills.length).to.equal(allSkills.length);
+          expect(savedSkills.length).to.equal(skillsFixture.length);
         }));
 
     it('updates an existing skill with the same id', () =>

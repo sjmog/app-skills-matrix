@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-const template = ({ id, name, version, categories, levels, skillGroups }) => Object.freeze({
+export default ({ id, name, version, categories, levels, skillGroups }) => Object.freeze({
   id,
   skillGroups,
   get viewModel() {
@@ -39,8 +39,7 @@ const template = ({ id, name, version, categories, levels, skillGroups }) => Obj
   },
 });
 
-module.exports = template;
-module.exports.newTemplate = (id, name, skillGroups, levels, categories) =>
+export const newTemplate = (id, name, skillGroups, levels, categories) =>
   ({
     id,
     name,

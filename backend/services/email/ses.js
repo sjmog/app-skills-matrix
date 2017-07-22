@@ -1,5 +1,5 @@
-const AWS = require('aws-sdk');
-const Promise = require('bluebird');
+import AWS from 'aws-sdk';
+import Promise from 'bluebird';
 
 const sesRegion = process.env.SES_REGION;
 
@@ -10,7 +10,7 @@ const getSES = function getSES() {
   return new AWS.SES();
 };
 
-module.exports.sendMail = ({ recipients, subject, body }) => {
+export default ({ recipients, subject, body }) => {
   const data = {
     Source: 'Skills Matrix <skills.matrix@tes.com>',
     Destination: {

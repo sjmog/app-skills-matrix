@@ -1,5 +1,5 @@
-const mailgun = require('./mailgun');
-const ses = require('./ses');
+import mailgun from './mailgun';
+import ses from './ses';
 
 const MAIL_PROVIDER = process.env.MAIL_PROVIDER;
 
@@ -8,7 +8,7 @@ const providers = {
   ses: ses.sendMail,
 };
 
-module.exports.sendMail = ({ recipients, subject, body }) => {
+export default ({ recipients, subject, body }) => {
   const emailProviderSendMailFn = providers[MAIL_PROVIDER];
   if (!emailProviderSendMailFn) {
     return Promise.resolve({});

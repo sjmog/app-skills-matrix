@@ -1,12 +1,14 @@
-const request = require('supertest');
-const { expect } = require('chai');
+import request from 'supertest';
+import { expect } from 'chai';
 
-const app = require('../backend');
-const { prepopulateUsers, users, insertTemplate, clearDb, insertSkill, insertEvaluation, assignMentor, getEvaluations, skillStatus } = require('./helpers');
-const { sign, cookieName } = require('../backend/models/auth');
-const templateData = require('./fixtures/templates');
-const skills = require('./fixtures/skills');
-const [, completedEvaluation] = require('./fixtures/evaluations');
+import app from '../backend';
+import { prepopulateUsers, users, insertTemplate, clearDb, insertSkill, insertEvaluation, assignMentor, getEvaluations, skillStatus } from './helpers';
+import { sign, cookieName } from '../backend/models/auth';
+import templateFixture from './fixtures/templates.json';
+import skillsFixture from './fixtures/skills.json';
+import evaluationFixture from './fixtures/evaluations.json';
+
+const [, completedEvaluation] = evaluationFixture;
 
 const prefix = '/skillz';
 
@@ -20,8 +22,8 @@ describe('userEvaluations', () => {
   beforeEach(() =>
     clearDb()
       .then(() => prepopulateUsers())
-      .then(() => insertTemplate(templateData[0]))
-      .then(() => skills.map(insertSkill))
+      .then(() => insertTemplate(templateFixture[0]))
+      .then(() => skillsFixture.map(insertSkill))
       .then(() =>
         Promise.all([
           users.findOne({ email: 'dmorgantini@gmail.com' }),

@@ -5,7 +5,7 @@ import { ensureLoggedIn } from '../middlewares/auth';
 
 const { actions } = actionHandler;
 
-module.exports = (app) => {
+export default (app) => {
   const router = Router();
   router.get('/:userId/actions', ensureLoggedIn, (req, res, next) => actions.find(req, res, next));
   app.use('/users', router);

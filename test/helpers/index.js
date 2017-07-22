@@ -1,9 +1,9 @@
-const { ObjectId } = require('mongodb');
-const R = require('ramda');
+import { ObjectId } from 'mongodb';
+import R from 'ramda';
 
-const usersData = require('../fixtures/users');
-const database = require('../../backend/database');
-const { encrypt, decrypt } = require('../../backend/models/evaluations/encryption');
+import usersData from '../fixtures/users.json';
+import database from '../../backend/database';
+import { encrypt, decrypt } from '../../backend/models/evaluations/encryption';
 
 const users = database.collection('users');
 const templates = database.collection('templates');

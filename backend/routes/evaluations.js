@@ -1,8 +1,9 @@
-const { Router } = require('express');
+import { Router } from 'express';
+import evaluationsHandler from '../handlers/evaluations';
 
-const { evaluation, evaluations } = require('../handlers/evaluations');
+const { evaluation, evaluations } = evaluationsHandler;
 
-module.exports = (app) => {
+export default (app) => {
   const router = Router();
 
   router.post('/:evaluationId', (req, res, next) => evaluation[req.body.action](req, res, next));

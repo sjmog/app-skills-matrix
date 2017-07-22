@@ -1,11 +1,11 @@
-const keymirror = require('keymirror');
-const R = require('ramda');
+import keymirror from 'keymirror';
+import R from 'ramda';
 
-const skill = require('./skill');
+import skill from './skill';
 
 const HOST = process.env.HOST;
 
-const STATUS = keymirror({
+export const STATUS = keymirror({
   NEW: null,
   SELF_EVALUATION_COMPLETE: null,
   MENTOR_REVIEW_COMPLETE: null,
@@ -153,9 +153,8 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
   });
 };
 
-module.exports = evaluation;
-module.exports.STATUS = STATUS;
-module.exports.newEvaluation = (template, user, allSkills, date = new Date()) => {
+export default evaluation;
+export const newEvaluation = (template, user, allSkills, date = new Date()) => {
   const { skillGroups, skills } = template.createSkillGroups(allSkills);
   return evaluation({
     user: user.evaluationData(),

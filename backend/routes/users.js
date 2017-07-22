@@ -5,7 +5,7 @@ import userHandler from '../handlers/users';
 
 const { users, user, evaluations } = userHandler;
 
-module.exports = (app) => {
+export default (app) => {
   const router = Router();
   router.post('/', ensureAdmin, (req, res, next) => users[req.body.action](req, res, next));
   router.post('/:userId', (req, res, next) => user[req.body.action](req, res, next));

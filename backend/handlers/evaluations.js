@@ -4,13 +4,13 @@ import R from 'ramda';
 
 import createHandler from './createHandler';
 
-import { getEvaluationById, updateEvaluation, importEvaluation } from '../models/evaluations';
+import evaluations from '../models/evaluations';
 import { templates } from '../models/matrices';
-import { getUserById, getUserByUsername } from '../models/users';
+import users from '../models/users';
 import type { User } from '../models/users/user';
 import actions from '../models/actions';
 
-import { sendMail } from '../services/email';
+import sendMail from '../services/email';
 
 const {
   EVALUATION_NOT_FOUND,
@@ -43,7 +43,7 @@ const handlerFunctions = Object.freeze({
   evaluations: { // TODO delete this code path here - it's no longer needed
     import: (req, res, next) => {
       const { evaluation, username, template: templateId } = req.body;
-      Promise.all([getUserByUsername(username), templates.getById(templateId)])
+      Promise.all([users.getUserByUsername(username), templates.getById(templateId)])
         .then(([user, template]) => {
           if (!user) {
             return res.status(404).json(USER_NOT_FOUND());
@@ -63,7 +63,7 @@ const handlerFunctions = Object.freeze({
             badSkillGroup.skills = [259].concat(R.filter(skillId => skillId !== 32, badSkillGroup.skills));
           }
 
-          return importEvaluation(evaluation)
+          return evaluations.importEvaluation(evaluation)
             .then(() => res.status(204).send());
         })
         .catch(next);
@@ -74,7 +74,7 @@ const handlerFunctions = Object.freeze({
       const { evaluationId } = req.params;
       const { user } = res.locals;
 
-      Promise.try(() => getEvaluationById(evaluationId))
+      Promise.try(() => evaluations.getEvaluationById(evaluationId))
         .then((evaluation) => {
           if (!evaluation) {
             return res.status(404).json(EVALUATION_NOT_FOUND());
@@ -88,7 +88,7 @@ const handlerFunctions = Object.freeze({
             return res.status(200).json(evaluation.subjectEvaluationViewModel);
           }
 
-          return getUserById(evaluation.user.id)
+          return users.getUserById(evaluation.user.id)
             .then(({ mentorId }) => {
               if (user.id === mentorId) {
                 return res.status(200).json(evaluation.mentorEvaluationViewModel);
@@ -108,7 +108,7 @@ const handlerFunctions = Object.freeze({
       const { skillId, status } = req.body;
       const { user } = res.locals;
 
-      Promise.try(() => getEvaluationById(evaluationId))
+      Promise.try(() => evaluations.getEvaluationById(evaluationId))
         .then((evaluation) => {
           if (!evaluation) {
             return res.status(404).json(EVALUATION_NOT_FOUND());
@@ -128,7 +128,7 @@ const handlerFunctions = Object.freeze({
           }
 
           return evaluation.isNewEvaluation()
-            ? updateEvaluation(evaluation.updateSkill(skillId, status))
+            ? evaluations.updateEvaluation(evaluation.updateSkill(skillId, status))
               .then(() => addActions(user, skill, evaluation, status))
               .then(() => res.sendStatus(204))
             : res.status(403).json(SUBJECT_CAN_ONLY_UPDATE_NEW_EVALUATION());
@@ -140,7 +140,7 @@ const handlerFunctions = Object.freeze({
       const { skillId, status } = req.body;
       const { user } = res.locals;
 
-      Promise.try(() => getEvaluationById(evaluationId))
+      Promise.try(() => evaluations.getEvaluationById(evaluationId))
         .then((evaluation) => {
           if (!evaluation) {
             return res.status(404).json(EVALUATION_NOT_FOUND());
@@ -155,14 +155,14 @@ const handlerFunctions = Object.freeze({
             return res.status(400).json(SKILL_NOT_FOUND());
           }
 
-          return getUserById(evaluation.user.id)
+          return users.getUserById(evaluation.user.id)
             .then((evalUser) => {
               if (user.id !== evalUser.mentorId) {
                 return res.status(403).json(MUST_BE_SUBJECT_OF_EVALUATION_OR_MENTOR());
               }
 
               return evaluation.selfEvaluationCompleted()
-                ? updateEvaluation(evaluation.updateSkill(skillId, status))
+                ? evaluations.updateEvaluation(evaluation.updateSkill(skillId, status))
                   .then(addActions(evalUser, skill, evaluation, status))
                   .then(() => res.sendStatus(204))
                 : res.status(403).json(MENTOR_CAN_ONLY_UPDATE_AFTER_SELF_EVALUATION());
@@ -175,7 +175,7 @@ const handlerFunctions = Object.freeze({
       const { skillId, status } = req.body;
       const { user } = res.locals;
 
-      Promise.try(() => getEvaluationById(evaluationId))
+      Promise.try(() => evaluations.getEvaluationById(evaluationId))
         .then((evaluation) => {
           if (!evaluation) {
             return res.status(404).json(EVALUATION_NOT_FOUND());
@@ -191,8 +191,8 @@ const handlerFunctions = Object.freeze({
           }
 
           if (user.isAdmin()) {
-            return updateEvaluation(evaluation.updateSkill(skillId, status))
-              .then(() => getUserById(evaluation.user.id))
+            return evaluations.updateEvaluation(evaluation.updateSkill(skillId, status))
+              .then(() => users.getUserById(evaluation.user.id))
               .then(evalUser => addActions(evalUser, skill, evaluation, status))
               .then(() => res.sendStatus(204));
           }
@@ -205,7 +205,7 @@ const handlerFunctions = Object.freeze({
       const { evaluationId } = req.params;
       const { user } = res.locals;
 
-      Promise.try(() => getEvaluationById(evaluationId))
+      Promise.try(() => evaluations.getEvaluationById(evaluationId))
         .then((evaluation) => {
           if (!evaluation) {
             return res.status(404).json(EVALUATION_NOT_FOUND());
@@ -219,12 +219,12 @@ const handlerFunctions = Object.freeze({
             return res.status(403).json(MENTOR_REVIEW_COMPLETE());
           }
 
-          return getUserById(evaluation.user.id)
+          return users.getUserById(evaluation.user.id)
             .then(({ mentorId }) => {
               if (user.id === evaluation.user.id) {
                 const completedApplication = evaluation.selfEvaluationComplete();
                 return evaluation.isNewEvaluation()
-                  ? Promise.all([updateEvaluation(completedApplication), getUserById(mentorId)])
+                  ? Promise.all([evaluations.updateEvaluation(completedApplication), users.getUserById(mentorId)])
                     .then(([updatedEvaluation, mentor]) => {
                       sendMail(updatedEvaluation.getSelfEvaluationCompleteEmail(mentor));
                       res.status(200).json({ status: updatedEvaluation.status });
@@ -237,7 +237,7 @@ const handlerFunctions = Object.freeze({
               }
 
               return evaluation.selfEvaluationCompleted()
-                ? updateEvaluation(evaluation.mentorReviewComplete())
+                ? evaluations.updateEvaluation(evaluation.mentorReviewComplete())
                   .then(updatedEvaluation => res.status(200).json({ status: updatedEvaluation.status }))
                 : res.status(403).json(MENTOR_CAN_ONLY_UPDATE_AFTER_SELF_EVALUATION());
             });
@@ -247,4 +247,4 @@ const handlerFunctions = Object.freeze({
   },
 });
 
-module.exports = createHandler(handlerFunctions);
+export default createHandler(handlerFunctions);

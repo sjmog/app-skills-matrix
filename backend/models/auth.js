@@ -1,7 +1,9 @@
-const jwt = require('jsonwebtoken');
-const adminUsers = require('../config.json').adminUsers;
-const R = require('ramda');
-const Promise = require('bluebird');
+import jwt from 'jsonwebtoken';
+import R from 'ramda';
+import Promise from 'bluebird';
+import config from '../config.json';
+
+const adminUsers = config.adminUsers;
 
 const isAdmin = email => R.contains(email, adminUsers);
 const secret = process.env.JWT_SECRET;

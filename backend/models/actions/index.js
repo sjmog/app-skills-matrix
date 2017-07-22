@@ -1,7 +1,7 @@
-const { ObjectId } = require('mongodb');
+import { ObjectId } from 'mongodb';
 
-const database = require('../../database');
-const action = require('./action');
+import database from '../../database';
+import action, { newAction } from './action';
 
 const collection = database.collection('actions');
 
@@ -11,9 +11,9 @@ collection.ensureIndex({ 'user.id': 1 }, { background: true });
 collection.ensureIndex({ type: 1 }, { background: true });
 collection.ensureIndex({ 'skill.id': 1, 'evaluation.id': 1, 'user.id': 1, type: 1 }, { background: true, unique: true });
 
-module.exports = {
+export default {
   addAction: (type, user, skill, evaluation) => {
-    const changes = action.newAction(type, user, skill, evaluation);
+    const changes = newAction(type, user, skill, evaluation);
     return collection.insertOne(changes)
       .then(({ insertedId }) => collection.findOne({ _id: new ObjectId(insertedId) }))
       .then(retrievedAction => action(retrievedAction));
