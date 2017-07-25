@@ -1,5 +1,6 @@
 // @flow
 import { expect } from 'chai';
+import R from 'ramda';
 
 import evaluation, { newEvaluation } from '../../backend/models/evaluations/evaluation';
 import user from '../../backend/models/users/user';
@@ -18,7 +19,7 @@ const testSkills = skills(fixtureSkills);
 describe('new evaluation', () => {
   it('creates a new evaluation for a user', () => {
     const created = newEvaluation(testTemplate, testUser, testSkills, new Date(Date.parse('5 jan 2013')));
-    expect(created.dataModel()).to.deep.equal(expectedInitialEvaluation);
+    expect(R.omit(['createdDate'], created.dataModel())).to.deep.equal(R.omit(['createdDate'], expectedInitialEvaluation));
   });
 });
 
@@ -26,6 +27,6 @@ describe('second evaluation', () => {
   it('handles no changes to the template', () => {
     const newEval = newEvaluation(testTemplate, testUser, testSkills, new Date(Date.parse('5 jan 2013')));
     const mergedEvaluation = newEval.mergePreviousEvaluation(evaluation(completedEvaluation));
-    expect(mergedEvaluation.dataModel()).to.deep.equal(expectedMergedEvaluation);
+    expect(R.omit(['createdDate'], mergedEvaluation.dataModel())).to.deep.equal(R.omit(['createdDate'], expectedMergedEvaluation));
   });
 });

@@ -96,7 +96,7 @@ export type Evaluation = {
   mergePreviousEvaluation: (Evaluation) => Evaluation,
 }
 
-const arrayToKeyedObject = <T: { id: string }>(skills: Array<T>): { [string]: T } => skills.reduce((acc, item) => Object.assign({}, acc, { [item.id]: item }), {});
+const arrayToKeyedObject = <T: { id: any }>(skills: Array<T>): { [any]: T } => skills.reduce((acc, item) => Object.assign({}, acc, { [item.id]: item }), {});
 
 const evaluation = ({ _id, user, createdDate, template, skillGroups, status, skills }: DatabaseObject & UnhydratedEvaluation): Evaluation => {
   const metadata = {

@@ -3,7 +3,7 @@
 import type { Skill } from './skill';
 import type { UnhydratedSkill as EvaluationSkill } from '../evaluations/skill';
 
-export type SkillGroup = { id: string, category: string, level: string, skills: Array<number> }
+export type SkillGroup = { id: number, category: string, level: string, skills: Array<number> }
 
 type UnhydratedTemplate = {
   id: string,
@@ -63,7 +63,7 @@ export default ({ id, name, version, categories, levels, skillGroups }: Unhydrat
       skills = skills.concat(skillGroup.skills.map(skillId =>
         Object.assign({}, allSkills[skillId].evaluationData(), { status: { previous: null, current: null } })));
       return ({
-        id: index.toString(),
+        id: index,
         category: skillGroup.category,
         level: skillGroup.level,
         skills: skillGroup.skills,
