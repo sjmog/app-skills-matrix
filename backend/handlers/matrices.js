@@ -1,4 +1,6 @@
+// @flow
 import Promise from 'bluebird';
+import R from 'ramda';
 
 import matrices from '../models/matrices';
 import createHandler from './createHandler';
@@ -16,7 +18,7 @@ const handlerFunctions = Object.freeze({
               (retrievedTemplate
                 ? templates.updateTemplate(retrievedTemplate, template)
                 : templates.addTemplate(template)))
-            .then(t => res.status(201).json(t.viewModel)))
+            .then(t => res.status(201).json(t.viewModel())))
         .catch(next);
     },
     retrieve: (req, res, next) => {
@@ -25,7 +27,7 @@ const handlerFunctions = Object.freeze({
           if (!template) {
             return res.status(404).json(TEMPLATE_NOT_FOUND());
           }
-          return res.status(200).json(template.normalizedViewModel);
+          return res.status(200).json(template.normalizedViewModel());
         })
         .catch(next);
     },
@@ -40,12 +42,12 @@ const handlerFunctions = Object.freeze({
                 (retrievedSkill
                   ? skills.updateSkill(retrievedSkill, skill)
                   : skills.addSkill(skill))))
-            .then(skill => res.status(201).json(skill.viewModel)))
+            .then(changedSkills => res.status(201).json(R.map(s => s.viewModel(), changedSkills))))
         .catch(next);
     },
     getAll: (req, res, next) =>
       Promise.try(() => skills.getAll())
-        .then(allSkills => res.status(200).json(allSkills.viewModel))
+        .then(allSkills => res.status(200).json(allSkills.viewModel()))
         .catch(next),
   },
 });

@@ -17,14 +17,14 @@ const getEvaluations = id =>
 
 const getSubjectEvaluations = id =>
   getEvaluations(id)
-    .then(evaluations => evaluations.map(evaluation => evaluation.subjectMetadataViewModel));
+    .then(evaluations => evaluations.map(evaluation => evaluation.subjectMetadataViewModel()));
 
 const getMenteeEvaluations = mentorId =>
   Promise.map(
     userCollection.getByMentorId(mentorId),
     ({ id, name, username }) =>
       getEvaluations(id)
-        .then(evaluations => evaluations.map(evaluation => evaluation.mentorMetadataViewModel))
+        .then(evaluations => evaluations.map(evaluation => evaluation.mentorMetadataViewModel()))
         .then(evaluations => ({ name: name || username, evaluations })));
 
 const augmentWithEvaluations = users =>
@@ -32,7 +32,7 @@ const augmentWithEvaluations = users =>
     users,
     user =>
       getEvaluations(user.id)
-        .then(evaluations => evaluations.map(evaluation => evaluation.adminMetadataViewModel))
+        .then(evaluations => evaluations.map(evaluation => evaluation.adminMetadataViewModel()))
         .then(evaluations => Object.assign({}, user.manageUserViewModel(), { evaluations })));
 
 export const adminClientState = () => Promise.all([userCollection.getAll(), templates.getAll()])
@@ -45,7 +45,7 @@ export const adminClientState = () => Promise.all([userCollection.getAll(), temp
             newEvaluations: [],
           },
           matrices: {
-            templates: R.map(domainTemplate => domainTemplate.viewModel, allTemplates),
+            templates: R.map(domainTemplate => domainTemplate.viewModel(), allTemplates),
           },
         })));
 
@@ -60,7 +60,7 @@ export const clientState = (user: User) =>
       user: {
         userDetails: user ? user.userDetailsViewModel() : null,
         mentorDetails: mentor ? mentor.userDetailsViewModel() : null,
-        template: template ? template.viewModel : null,
+        template: template ? template.viewModel() : null,
         evaluations,
         menteeEvaluations,
       },

@@ -21,7 +21,7 @@ describe('Evaluation reducer', () => {
       const state = initialValues;
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
-        payload: evaluation(fixtureEvaluation).viewModel,
+        payload: evaluation(fixtureEvaluation).viewModel(),
       };
 
       const newState = reducer(state, action);
@@ -32,7 +32,7 @@ describe('Evaluation reducer', () => {
       const state = initialValues;
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
-        payload: evaluation(fixtureEvaluation).viewModel,
+        payload: evaluation(fixtureEvaluation).viewModel(),
       };
 
       const newState = reducer(state, action);
@@ -111,7 +111,7 @@ describe('Evaluation reducer', () => {
       const state = initialValues;
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
-        payload: evaluation(fixtureEvaluation).viewModel,
+        payload: evaluation(fixtureEvaluation).viewModel(),
       };
 
       const newState = reducer(state, action);
@@ -130,7 +130,7 @@ describe('Evaluation reducer', () => {
 
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
-        payload: evaluation(Object.assign({}, fixtureEvaluation, { skills: evaluatedSkills })).viewModel,
+        payload: evaluation(Object.assign({}, fixtureEvaluation, { skills: evaluatedSkills })).viewModel(),
       };
 
       const newState = reducer(state, action);
@@ -145,7 +145,7 @@ describe('Evaluation reducer', () => {
       const state = initialValues;
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
-        payload: evaluation(fixtureEvaluation).viewModel,
+        payload: evaluation(fixtureEvaluation).viewModel(),
       };
 
       const newState = reducer(state, action);
@@ -159,7 +159,7 @@ describe('Evaluation reducer', () => {
       const state = initialValues;
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
-        payload: evaluation(fixtureEvaluation).viewModel,
+        payload: evaluation(fixtureEvaluation).viewModel(),
       };
 
       const newState = reducer(state, action);
@@ -174,7 +174,7 @@ describe('Evaluation reducer', () => {
       const state = initialValues;
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
-        payload: evaluation(fixtureEvaluation).viewModel,
+        payload: evaluation(fixtureEvaluation).viewModel(),
       };
 
       const newState = reducer(state, action);
@@ -185,7 +185,7 @@ describe('Evaluation reducer', () => {
       const state = initialValues;
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
-        payload: evaluation(fixtureEvaluation).viewModel,
+        payload: evaluation(fixtureEvaluation).viewModel(),
       };
 
       const newState = reducer(state, action);

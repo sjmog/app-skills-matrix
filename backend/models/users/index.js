@@ -5,7 +5,7 @@ import database from '../../database';
 import user, { newUser } from './user';
 import type { User } from './user';
 
-const collection = database.collection('users');
+const collection: any = database.collection('users');
 
 collection.ensureIndex({ email: 1 }, { background: true });
 collection.ensureIndex({ username: 1 }, { unique: true, background: true });

@@ -1,8 +1,10 @@
+// @flow
 import Promise from 'bluebird';
 
 import users from '../models/users';
 import matrices from '../models/matrices';
 import { newEvaluation } from '../models/evaluations/evaluation';
+import type { Evaluation } from '../models/evaluations/evaluation';
 import evaluations from '../models/evaluations';
 import createHandler from './createHandler';
 import sendMail from '../services/email';
@@ -85,9 +87,9 @@ const handlerFunctions = Object.freeze({
               const mergedEvaluation = userEvaluation.mergePreviousEvaluation(latestEvaluation);
               return evaluations.addEvaluation(mergedEvaluation);
             })
-            .then((newEval) => {
-              sendMail(newEval.newEvaluationEmail);
-              res.status(201).json(newEval.viewModel);
+            .then((newEval: Evaluation) => {
+              sendMail(newEval.newEvaluationEmail());
+              res.status(201).json(newEval.adminEvaluationViewModel());
             });
         })
         .catch(next);

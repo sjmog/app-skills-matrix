@@ -10,8 +10,8 @@ export default (skillsArray) => {
   };
 
   const skillsFunctions = {
-    get viewModel() {
-      return R.map(s => s.evaluationData, skillsMap);
+    viewModel() {
+      return R.map(s => s.evaluationData(), skillsMap);
     },
   };
 

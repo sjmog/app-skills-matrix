@@ -21,8 +21,7 @@ const {
   USER_NOT_ADMIN,
 } = require('./errors');
 
-
-const addActions = (user: User, skill, evaluation, newStatus: string) => {
+const addActions = (user: User, skill, evaluation, newStatus: string): Promise<> => {
   const actionToAdd = skill.addAction(newStatus);
   const actionToRemove = skill.removeAction(newStatus);
   const fns = [];
@@ -52,17 +51,17 @@ const handlerFunctions = Object.freeze({
           }
 
           if (user.id === evaluation.user.id) {
-            return res.status(200).json(evaluation.subjectEvaluationViewModel);
+            return res.status(200).json(evaluation.subjectEvaluationViewModel());
           }
 
           return users.getUserById(evaluation.user.id)
             .then(({ mentorId }) => {
               if (user.id === mentorId) {
-                return res.status(200).json(evaluation.mentorEvaluationViewModel);
+                return res.status(200).json(evaluation.mentorEvaluationViewModel());
               }
 
               if (user.isAdmin()) {
-                return res.status(200).json(evaluation.adminEvaluationViewModel);
+                return res.status(200).json(evaluation.adminEvaluationViewModel());
               }
 
               return res.status(403).json(MUST_BE_SUBJECT_OF_EVALUATION_OR_MENTOR());
@@ -130,7 +129,7 @@ const handlerFunctions = Object.freeze({
 
               return evaluation.selfEvaluationCompleted()
                 ? evaluations.updateEvaluation(evaluation.updateSkill(skillId, status))
-                  .then(addActions(evalUser, skill, evaluation, status))
+                  .then(() => addActions(evalUser, skill, evaluation, status))
                   .then(() => res.sendStatus(204))
                 : res.status(403).json(MENTOR_CAN_ONLY_UPDATE_AFTER_SELF_EVALUATION());
             });
@@ -190,6 +189,8 @@ const handlerFunctions = Object.freeze({
             .then(({ mentorId }) => {
               if (user.id === evaluation.user.id) {
                 const completedApplication = evaluation.selfEvaluationComplete();
+                // TODO: @charlie - the isNewEvaluation logic should not be leaking out of evaluation.
+                // If you can't update the evaluation then don't let selfEvaluationComplete return successfully.
                 return evaluation.isNewEvaluation()
                   ? Promise.all([evaluations.updateEvaluation(completedApplication), users.getUserById(mentorId)])
                     .then(([updatedEvaluation, mentor]) => {

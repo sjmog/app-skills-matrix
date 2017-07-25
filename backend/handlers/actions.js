@@ -12,22 +12,22 @@ import { ONLY_USER_AND_MENTOR_CAN_SEE_ACTIONS } from './errors';
 
 const handlerFunctions = Object.freeze({
   actions: {
-    find: (req: $Request, res: $Response, next: NextFunction): Promise<null> => {
+    find: (req: $Request, res: $Response, next: NextFunction): mixed => {
       const { evaluationId, type } = req.query;
       const { userId } = req.params;
       const { user }: { user: User } = (res.locals: any);
 
       if (user.id === userId) {
         return Promise.try(() => actions.find(userId, evaluationId, type))
-          .then(a => res.status(200).json(a.map(action => action.viewModel)))
+          .then(a => res.status(200).json(a.map(action => action.viewModel())))
           .catch(next);
       }
 
-      return Promise.try(() => users.getUserById(userId))
+      Promise.try(() => users.getUserById(userId))
         .then(({ mentorId }) =>
           (user.id === mentorId
             ? Promise.try(() => actions.find(userId, evaluationId, type))
-              .then(a => res.status(200).json(a.map(action => action.viewModel)))
+              .then(a => res.status(200).json(a.map(action => action.viewModel())))
               .catch(next)
             : res.status(403).json(ONLY_USER_AND_MENTOR_CAN_SEE_ACTIONS())));
     },

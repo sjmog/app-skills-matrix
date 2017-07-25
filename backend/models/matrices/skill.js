@@ -1,14 +1,35 @@
-export default ({ id, name, version, criteria, type, questions }) => Object.freeze({
+// @flow
+
+type Question = {
+  name: string
+}
+
+type UnhydratedSkill = {
+  id: string,
+  name: string,
+  version: number,
+  criteria: string,
+  type: string,
+  questions: Array<Question>,
+}
+
+export type Skill = {
+  id: string,
+  viewModel: () => { id: string, name: string },
+  evaluationData: () => UnhydratedSkill,
+}
+
+export default ({ id, name, version, criteria, type, questions }: UnhydratedSkill): Skill => Object.freeze({
   id,
-  get viewModel() {
+  viewModel() {
     return { id, name };
   },
-  get evaluationData() {
+  evaluationData() {
     return { id, name, version, criteria, type, questions };
   },
 });
 
-export const newSkill = (id, name, type, version = 1, criteria, questions) =>
+export const newSkill = (id: string, name: string, type: string, version: number = 1, criteria: string, questions: Array<Question>) =>
   ({
     id,
     name,
