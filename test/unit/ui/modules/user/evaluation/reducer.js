@@ -1,3 +1,4 @@
+// @flow
 import { expect } from 'chai';
 import R from 'ramda';
 import evaluation from '../../../../../../backend/models/evaluations/evaluation';
@@ -21,7 +22,7 @@ describe('Evaluation reducer', () => {
       const state = initialValues;
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
-        payload: evaluation(fixtureEvaluation).viewModel(),
+        payload: evaluation(fixtureEvaluation).adminEvaluationViewModel(),
       };
 
       const newState = reducer(state, action);
@@ -32,7 +33,7 @@ describe('Evaluation reducer', () => {
       const state = initialValues;
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
-        payload: evaluation(fixtureEvaluation).viewModel(),
+        payload: evaluation(fixtureEvaluation).adminEvaluationViewModel(),
       };
 
       const newState = reducer(state, action);
@@ -111,7 +112,7 @@ describe('Evaluation reducer', () => {
       const state = initialValues;
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
-        payload: evaluation(fixtureEvaluation).viewModel(),
+        payload: evaluation(fixtureEvaluation).adminEvaluationViewModel(),
       };
 
       const newState = reducer(state, action);
@@ -130,7 +131,7 @@ describe('Evaluation reducer', () => {
 
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
-        payload: evaluation(Object.assign({}, fixtureEvaluation, { skills: evaluatedSkills })).viewModel(),
+        payload: evaluation(Object.assign({}, fixtureEvaluation, { skills: evaluatedSkills })).adminEvaluationViewModel(),
       };
 
       const newState = reducer(state, action);
@@ -145,7 +146,7 @@ describe('Evaluation reducer', () => {
       const state = initialValues;
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
-        payload: evaluation(fixtureEvaluation).viewModel(),
+        payload: evaluation(fixtureEvaluation).adminEvaluationViewModel(),
       };
 
       const newState = reducer(state, action);
@@ -159,7 +160,7 @@ describe('Evaluation reducer', () => {
       const state = initialValues;
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
-        payload: evaluation(fixtureEvaluation).viewModel(),
+        payload: evaluation(fixtureEvaluation).adminEvaluationViewModel(),
       };
 
       const newState = reducer(state, action);
@@ -174,7 +175,7 @@ describe('Evaluation reducer', () => {
       const state = initialValues;
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
-        payload: evaluation(fixtureEvaluation).viewModel(),
+        payload: evaluation(fixtureEvaluation).adminEvaluationViewModel(),
       };
 
       const newState = reducer(state, action);
@@ -185,7 +186,7 @@ describe('Evaluation reducer', () => {
       const state = initialValues;
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
-        payload: evaluation(fixtureEvaluation).viewModel(),
+        payload: evaluation(fixtureEvaluation).adminEvaluationViewModel(),
       };
 
       const newState = reducer(state, action);
@@ -257,21 +258,21 @@ describe('Evaluation reducer', () => {
       const action = {
         type: actionTypes.NEXT_UNEVALUATED_SKILL,
         payload: {
-          0: {
+          '0': {
             id: 0,
             status: {
               current: 'ATTAINED',
               previous: null,
             },
           },
-          1: {
+          '1': {
             id: 1,
             status: {
               current: null,
               previous: null,
             },
           },
-          2: {
+          '2': {
             id: 2,
             status: {
               current: null,
@@ -295,21 +296,21 @@ describe('Evaluation reducer', () => {
       const action = {
         type: actionTypes.NEXT_UNEVALUATED_SKILL,
         payload: {
-          0: {
+          '0': {
             id: 0,
             status: {
               current: 'ATTAINED',
               previous: null,
             },
           },
-          1: {
+          '1': {
             id: 1,
             status: {
               current: 'ATTAINED',
               previous: null,
             },
           },
-          2: {
+          '2': {
             id: 2,
             status: {
               current: 'ATTAINED',
@@ -333,21 +334,21 @@ describe('Evaluation reducer', () => {
       const action = {
         type: actionTypes.NEXT_UNEVALUATED_SKILL,
         payload: {
-          0: {
+          '0': {
             id: 0,
             status: {
               current: 'ATTAINED',
               previous: null,
             },
           },
-          1: {
+          '1': {
             id: 1,
             status: {
               current: null,
               previous: null,
             },
           },
-          2: {
+          '2': {
             id: 2,
             status: {
               current: null,
@@ -378,28 +379,28 @@ describe('Evaluation reducer', () => {
       const action = {
         type: actionTypes.NEXT_CATEGORY,
         payload: {
-          0: {
+          '0': {
             id: 0,
             status: {
               current: 'ATTAINED',
               previous: null,
             },
           },
-          1: {
+          '1': {
             id: 1,
             status: {
               current: 'ATTAINED',
               previous: null,
             },
           },
-          2: {
+          '2': {
             id: 2,
             status: {
               current: null,
               previous: null,
             },
           },
-          3: {
+          '3': {
             id: 3,
             status: {
               current: 'ATTAINED',
@@ -428,28 +429,28 @@ describe('Evaluation reducer', () => {
       const action = {
         type: actionTypes.NEXT_CATEGORY,
         payload: {
-          0: {
+          '0': {
             id: 0,
             status: {
               current: 'ATTAINED',
               previous: null,
             },
           },
-          1: {
+          '1': {
             id: 1,
             status: {
               current: 'ATTAINED',
               previous: null,
             },
           },
-          2: {
+          '2': {
             id: 2,
             status: {
               current: 'ATTAINED',
               previous: null,
             },
           },
-          3: {
+          '3': {
             id: 3,
             status: {
               current: null,
@@ -475,7 +476,7 @@ describe('Evaluation reducer', () => {
       const action = {
         type: actionTypes.NEXT_CATEGORY,
         payload: {
-          0: {
+          '0': {
             id: 0,
             status: {
               current: 'ATTAINED',
@@ -505,21 +506,21 @@ describe('Evaluation reducer', () => {
       const action = {
         type: actionTypes.PREVIOUS_CATEGORY,
         payload: {
-          0: {
+          '0': {
             id: 0,
             status: {
               current: null,
               previous: null,
             },
           },
-          1: {
+          '1': {
             id: 1,
             status: {
               current: 'ATTAINED',
               previous: null,
             },
           },
-          2: {
+          '2': {
             id: 2,
             status: {
               current: null,
@@ -547,21 +548,21 @@ describe('Evaluation reducer', () => {
       const action = {
         type: actionTypes.PREVIOUS_CATEGORY,
         payload: {
-          0: {
+          '0': {
             id: 0,
             status: {
               current: 'ATTAINED',
               previous: null,
             },
           },
-          1: {
+          '1': {
             id: 1,
             status: {
               current: 'ATTAINED',
               previous: null,
             },
           },
-          2: {
+          '2': {
             id: 2,
             status: {
               current: null,
@@ -587,7 +588,7 @@ describe('Evaluation reducer', () => {
       const action = {
         type: actionTypes.PREVIOUS_CATEGORY,
         payload: {
-          0: {
+          '0': {
             id: 0,
             status: {
               current: 'ATTAINED',

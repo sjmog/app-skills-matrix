@@ -424,7 +424,7 @@
       "name": "Jake",
       "email": "jake@hello.com"
     },
-    "createdDate": "new Date()",
+    "createdDate": "5 jan 2013",
     "status": "NEW",
     "template": {
       "id": "eng-nodejs",
