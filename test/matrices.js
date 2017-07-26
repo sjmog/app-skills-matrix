@@ -2,7 +2,7 @@ import request from 'supertest';
 import { expect } from 'chai';
 import Promise from 'bluebird';
 
-import app from '../backend';
+import app from '../backend/app';
 import { sign, cookieName } from '../backend/models/auth';
 import { users, templates, skills, prepopulateUsers, insertTemplate, insertSkill, clearDb } from './helpers';
 import templateFixture from './fixtures/templates.json';

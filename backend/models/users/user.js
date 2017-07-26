@@ -15,6 +15,11 @@ type UnhyrdatedUser = {
   mentorId: string,
   avatarUrl: string,
 }
+
+export type UserFeedback = {
+  id: string, name: string, mentorId: string
+}
+
 export type User = {
   id: string,
   name: string,
@@ -23,7 +28,7 @@ export type User = {
   email: string,
   isAdmin: () => boolean,
   manageUserViewModel: () => { id: string, username: string, name: string, email: string, mentorId: string, templateId: string },
-  feedbackData: () => { id: string, name: string, mentorId: string },
+  feedbackData: () => UserFeedback,
   signingData: () => { id: string, username: string },
   evaluationData: () => { id: string, name: string, email: string },
   userDetailsViewModel: () => { id: string, name: string, username: string, avatarUrl: string, email: string, mentorId: string, templateId: string },

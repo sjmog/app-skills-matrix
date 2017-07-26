@@ -2,7 +2,7 @@ import request from 'supertest';
 import { expect } from 'chai';
 import { ObjectId } from 'mongodb';
 
-import app from '../backend';
+import app from '../backend/app';
 import { prepopulateUsers, users, insertTemplate, clearDb } from './helpers';
 import templateFixture from './fixtures/templates.json';
 import { sign, cookieName } from '../backend/models/auth';

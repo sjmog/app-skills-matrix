@@ -69,6 +69,10 @@ export type EvaluationUpdate = {
   status: string,
 }
 
+export type EvaluationFeedback = {
+  id: string, createdDate: Date
+}
+
 export type Evaluation = {
   id: string | null,
   user: {},
@@ -84,7 +88,7 @@ export type Evaluation = {
   mentorEvaluationViewModel: () => EvaluationViewModel,
   adminEvaluationViewModel: () => EvaluationViewModel,
   newEvaluationEmail: () => Email,
-  feedbackData: () => { id: string, createdDate: Date },
+  feedbackData: () => EvaluationFeedback,
   getSelfEvaluationCompleteEmail: (User) => Email,
   findSkill: (string) => Skill | null,
   updateSkill: (string, string) => EvaluationUpdate,

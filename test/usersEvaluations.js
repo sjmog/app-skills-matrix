@@ -1,7 +1,7 @@
 import request from 'supertest';
 import { expect } from 'chai';
 
-import app from '../backend';
+import app from '../backend/app';
 import { prepopulateUsers, users, insertTemplate, clearDb, insertSkill, insertEvaluation, assignMentor, getEvaluations, skillStatus } from './helpers';
 import { sign, cookieName } from '../backend/models/auth';
 import templateFixture from './fixtures/templates.json';

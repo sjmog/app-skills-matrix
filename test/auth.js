@@ -1,6 +1,6 @@
 import request from 'supertest';
 
-import app from '../backend';
+import app from '../backend/app';
 
 it('should redirect to github', () =>
   request(app)

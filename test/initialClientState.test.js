@@ -2,7 +2,7 @@ import request from 'supertest';
 import { expect } from 'chai';
 import moment from 'moment';
 
-import app from '../backend';
+import app from '../backend/app';
 import { prepopulateUsers, users, insertTemplate, assignTemplate, clearDb, insertSkill, insertEvaluation, assignMentor } from './helpers';
 import { sign, cookieName } from '../backend/models/auth';
 import templatesFixture from './fixtures/templates.json';

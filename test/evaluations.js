@@ -2,7 +2,7 @@ import request from 'supertest';
 import { expect } from 'chai';
 import R from 'ramda';
 
-import app from '../backend';
+import app from '../backend/app';
 import templateData from './fixtures/templates.json';
 import skillsFixture from './fixtures/skills.json';
 import evaluationsFixture from './fixtures/evaluations.json';
