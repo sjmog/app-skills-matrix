@@ -13,3 +13,9 @@ export default handleActions({
     return R.merge(state, { entities });
   },
 }, initialState);
+
+export const getSkillStatus = (state, skillId) =>
+  R.path(['entities', skillId, 'status'], state);
+
+export const getSkillName = (state, skillId) =>
+  R.path(['entities', skillId, 'name'], state);

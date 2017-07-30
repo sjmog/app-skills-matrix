@@ -188,7 +188,7 @@ export default connect(
       initialisedEvaluation: selectors.getCurrentEvaluation(state),
       currentSkill,
       currentSkillId,
-      currentSkillStatus: selectors.getSkillStatus(state, currentSkillId, evaluationId),
+      currentSkillStatus: selectors.getSkillStatus(state, currentSkillId),
       firstCategory: selectors.getFirstCategory(state),
       lastCategory: selectors.getLastCategory(state),
       firstSkill: selectors.getFirstSkill(state),

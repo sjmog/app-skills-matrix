@@ -2,7 +2,7 @@ import { combineReducers } from 'redux';
 import user, * as fromUser from './user';
 import evaluation, * as fromEvaluation from './evaluation';
 import evaluations, * as fromEvaluations from './evaluations';
-import skills from './skills';
+import skills, * as fromSkills from './skills';
 import actions, * as fromActions from './actions';
 
 const entities = combineReducers({ evaluations, skills });
@@ -38,10 +38,16 @@ export const getLastSkill = ({ evaluation }) =>
   fromEvaluation.getLastSkill(evaluation);
 
 
-/* EVALUATIONS SELECTORS */
+/* SKILLS SELECTORS */
 
-export const getSkillStatus = ({ entities: { evaluations } }, skillId, evalId) =>
-  fromEvaluations.getSkillStatus(evaluations, skillId, evalId);
+export const getSkillStatus = ({ entities: { skills } }, skillId) =>
+  fromSkills.getSkillStatus(skills, skillId);
+
+export const getSkillName = ({ entities: { skills } }, skillId) =>
+  fromSkills.getSkillName(skills, skillId);
+
+
+/* EVALUATIONS SELECTORS */
 
 export const getSubjectName = ({ entities: { evaluations } }, evalId) =>
   fromEvaluations.getSubjectName(evaluations, evalId);
