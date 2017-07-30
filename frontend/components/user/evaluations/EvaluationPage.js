@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Grid, Row, Alert, Col } from 'react-bootstrap';
 
 import * as selectors from '../../../modules/user';
-import { actions, EVALUATION_VIEW, EVALUATION_STATUS, EVALUATION_FETCH_STATUS } from '../../../modules/user/evaluations';
+import { actionCreators, EVALUATION_VIEW, EVALUATION_STATUS, EVALUATION_FETCH_STATUS } from '../../../modules/user/evaluations';
 
 import Evaluation from './evaluation/Evaluation';
 import EvaluationPageHeader from './EvaluationPageHeader';
@@ -133,6 +133,6 @@ export const EvaluationPage = connect(
     });
   },
   dispatch => ({
-    actions: bindActionCreators(actions, dispatch),
+    actions: bindActionCreators(actionCreators, dispatch),
   }),
 )(EvaluationPageComponent);

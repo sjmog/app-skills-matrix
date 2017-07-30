@@ -5,7 +5,7 @@ import R from 'ramda';
 import { Grid, Col, Row, Alert } from 'react-bootstrap';
 
 import * as selectors from '../../../../modules/user';
-import { actions as entityActions, EVALUATION_VIEW, EVALUATION_STATUS } from '../../../../modules/user/evaluations';
+import { actionCreators as entityActions, EVALUATION_VIEW, EVALUATION_STATUS } from '../../../../modules/user/evaluations';
 import { actionCreators as uiActionCreators } from '../../../../modules/user/evaluation';
 
 import EvaluationHeader from './EvaluationHeader';

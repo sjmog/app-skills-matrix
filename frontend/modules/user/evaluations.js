@@ -39,7 +39,7 @@ export const constants = keymirror({
 
 const retrieveEvaluationSuccess = createAction(
   constants.RETRIEVE_EVALUATION_SUCCESS,
-  normalizedEvaluation => normalizedEvaluation,
+  evaluation => evaluation,
 );
 
 const retrieveEvaluationFailure = createAction(
@@ -66,6 +66,15 @@ const evaluationCompleteFailure = createAction(
   constants.EVALUATION_COMPLETE_FAILURE,
   (evaluationId, error) => ({ [evaluationId]: error }),
 );
+
+export const actions = {
+  retrieveEvaluationSuccess,
+  retrieveEvaluationFailure,
+  updateSkillStatusSuccess,
+  updateSkillStatusFailure,
+  evaluationCompleteSuccess,
+  evaluationCompleteFailure,
+};
 
 function retrieveEvaluation(evaluationId) {
   return dispatch => api.retrieveEvaluation(evaluationId)
@@ -101,13 +110,13 @@ function evaluationComplete(evaluationId) {
     .catch(error => dispatch(evaluationCompleteFailure(evaluationId, error)));
 }
 
-export const actions = {
+export const actionCreators = {
   retrieveEvaluation,
   updateSkillStatus,
   evaluationComplete,
 };
 
-const initialSate = {
+const initialState = {
   entities: {},
   errors: {},
   fetchStatus: {},
@@ -115,6 +124,7 @@ const initialSate = {
 
 export default handleActions({
   [retrieveEvaluationSuccess]: (state, action) => {
+    // TODO: Stop loading skills here
     const entities = R.merge(state.entities, { [action.payload.id]: action.payload });
     const fetchStatus = R.merge(state.fetchStatus, { [action.payload.id]: EVALUATION_FETCH_STATUS.LOADED });
     return R.merge(state, { entities, fetchStatus });
@@ -155,7 +165,7 @@ export default handleActions({
 
     return R.merge(state, { errors });
   },
-}, initialSate);
+}, initialState);
 
 export const getSkillStatus = (state, skillId, evalId) =>
   R.path(['entities', evalId, 'skills', skillId, 'status'], state);

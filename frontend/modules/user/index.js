@@ -2,9 +2,10 @@ import { combineReducers } from 'redux';
 import user, * as fromUser from './user';
 import evaluation, * as fromEvaluation from './evaluation';
 import evaluations, * as fromEvaluations from './evaluations';
+import skills from './skills';
 import actions, * as fromActions from './actions';
 
-const entities = combineReducers({ evaluations });
+const entities = combineReducers({ evaluations, skills });
 
 export default combineReducers({ user, entities, actions, evaluation });
 
