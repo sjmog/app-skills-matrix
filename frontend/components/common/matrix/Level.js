@@ -28,7 +28,7 @@ Level.propTypes = {
   levelName: PropTypes.string.isRequired,
   skillGroups: PropTypes.object.isRequired,
   skills: PropTypes.object.isRequired,
-  skillBeingEvaluated: PropTypes.number,
+  skillBeingEvaluated: PropTypes.string,
 };
 
 export default Level;

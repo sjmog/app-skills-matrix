@@ -17,7 +17,22 @@ const VIEW = keymirror({
   ADMIN: null,
 });
 
-const arrayToKeyedObject = skills => skills.reduce((acc, item) => Object.assign({}, acc, { [item.id]: item }), {});
+const arrayToKeyedObject = (evaluationId, arr) =>
+  arr.reduce((acc, item) => Object.assign({}, acc, { [item.id]: item }), {});
+
+const uniqueId = (evaluationId, id) => evaluationId + id;
+
+const makeSkillsUnique = (evaluationId, skillGroups) =>
+  R.map(skillGroup => Object.assign({},
+    skillGroup,
+    { skills: R.map(skillId => uniqueId(evaluationId, skillId))(skillGroup.skills) }))(skillGroups);
+
+const arrayToUniquelyKeyedObject = (evaluationId, arr) =>
+  R.reduce(
+    (acc, item) => {
+      const uid = uniqueId(evaluationId, item.id);
+      return Object.assign({}, acc, { [uid]: item });
+    }, {}, arr);
 
 const evaluation = ({ _id, user, createdDate, template, skillGroups, status, skills }) => {
   const metadata = {
@@ -36,8 +51,8 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
     subject: user,
     status,
     template,
-    skillGroups: arrayToKeyedObject(skillGroups),
-    skills: arrayToKeyedObject(skills),
+    skills: arrayToUniquelyKeyedObject(_id, skills),
+    skillGroups: arrayToKeyedObject(_id, makeSkillsUnique(_id, skillGroups)),
   };
 
   return Object.freeze({
@@ -138,7 +153,12 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
         if (!previousSkill) {
           return Object.assign({}, skillToUpdate, { status: { previous: null, current: null } });
         }
-        return Object.assign({}, skillToUpdate, { status: { previous: previousSkill.currentStatus, current: previousSkill.statusForNextEvaluation } });
+        return Object.assign({}, skillToUpdate, {
+          status: {
+            previous: previousSkill.currentStatus,
+            current: previousSkill.statusForNextEvaluation,
+          },
+        });
       };
       const updatedSkills = previousEvaluation ? R.map(updateSkill, skills) : skills;
       return evaluation({

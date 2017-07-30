@@ -55,7 +55,7 @@ Skill.propTypes = {
   isFirstSkill: PropTypes.bool.isRequired,
   level: PropTypes.string.isRequired,
   skill: PropTypes.shape({
-    skillId: PropTypes.number.isRequired,
+    skillId: PropTypes.string.isRequired,
   }),
   updateSkillStatus: PropTypes.func.isRequired,
   postUpdateNavigation: PropTypes.func.isRequired,

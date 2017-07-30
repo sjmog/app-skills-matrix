@@ -26,7 +26,7 @@ const SkillGroup = ({ skillGroup, skills, viewSkillDetails, skillBeingEvaluated 
 SkillGroup.propTypes = {
   skillGroup: PropTypes.object.isRequired,
   skills: PropTypes.object.isRequired,
-  skillBeingEvaluated: PropTypes.number,
+  skillBeingEvaluated: PropTypes.string,
 };
 
 export default SkillGroup;

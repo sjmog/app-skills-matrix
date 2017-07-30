@@ -4,10 +4,11 @@ const hydrateSkillsWithStaticData = skills =>
   ({ id: skillGroupId, level, category, skills: skillsInSkillGroup }) =>
     R.map(
       (skillId) => {
-        const { name, criteria, questions } = skills[skillId];
+        const { id: updateId, name, criteria, questions } = skills[skillId];
 
         return ({
           skillId,
+          updateId,
           name,
           criteria,
           questions,

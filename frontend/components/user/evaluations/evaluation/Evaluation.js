@@ -149,7 +149,7 @@ class Evaluation extends React.Component {
 }
 
 const skillShape = PropTypes.shape({
-  skillId: PropTypes.number.isRequired,
+  skillId: PropTypes.string.isRequired,
   skillGroupId: PropTypes.number.isRequired,
   level: PropTypes.string.isRequried,
   category: PropTypes.string.isRequired,
@@ -165,7 +165,7 @@ Evaluation.propTypes = {
   updateSkillStatus: PropTypes.func.isRequired,
   initialisedEvaluation: PropTypes.string,
   currentSkill: skillShape,
-  currentSkillId: PropTypes.number,
+  currentSkillId: PropTypes.string,
   currentSkillStatus: PropTypes.shape({
     current: PropTypes.string,
     previous: PropTypes.string,

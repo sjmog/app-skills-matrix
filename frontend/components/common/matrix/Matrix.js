@@ -76,7 +76,7 @@ Matrix.propTypes = {
   levels: PropTypes.array.isRequired,
   skillGroups: PropTypes.object.isRequired,
   skills: PropTypes.object.isRequired,
-  skillBeingEvaluated: PropTypes.number,
+  skillBeingEvaluated: PropTypes.string,
   canUpdateSkillStatus: PropTypes.bool,
 };
 

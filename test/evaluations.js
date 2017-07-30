@@ -74,7 +74,7 @@ describe('evaluations', () => {
           expect(body.subject.id).to.equal(String(normalUserOneId));
           expect(body.template.name).to.equal('Node JS Dev');
           expect(body.skillGroups[1]).to.not.be.undefined;
-          expect(body.skills[1]).to.not.be.undefined;
+          expect(body.skills[evaluationId + 1]).to.not.be.undefined;
           expect(body.view).to.equal('SUBJECT');
         }));
 
@@ -93,7 +93,7 @@ describe('evaluations', () => {
               expect(body.subject.id).to.equal(String(normalUserOneId));
               expect(body.template.name).to.equal('Node JS Dev');
               expect(body.skillGroups[1]).to.not.be.undefined;
-              expect(body.skills[1]).to.not.be.undefined;
+              expect(body.skills[evaluationId + 1]).to.not.be.undefined;
               expect(body.view).to.equal('MENTOR');
             })));
 
@@ -111,7 +111,7 @@ describe('evaluations', () => {
               expect(body.subject.id).to.equal(String(normalUserOneId));
               expect(body.template.name).to.equal('Node JS Dev');
               expect(body.skillGroups[1]).to.not.be.undefined;
-              expect(body.skills[1]).to.not.be.undefined;
+              expect(body.skills[evaluationId + 1]).to.not.be.undefined;
               expect(body.view).to.equal('ADMIN');
             })));
 
