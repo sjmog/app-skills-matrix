@@ -1,10 +1,12 @@
 import React, { PropTypes } from 'react';
 import { Modal, Button, Alert } from 'react-bootstrap';
+import { connect } from 'react-redux';
 
 import { SKILL_STATUS } from '../../../modules/user/evaluations';
+import * as selectors from '../../../modules/user';
 import SkillActions from '../SkillActions';
 
-const SkillDetailsModal = ({ skillId, showModal, onClose, skill, updateSkillStatus, canUpdateSkillStatus }) => (
+const SkillDetailsModal = ({ skillId, skill, showModal, onClose, updateSkillStatus, canUpdateSkillStatus }) => (
   <div>
     <Modal show={showModal} onHide={onClose}>
       <Modal.Header closeButton>
@@ -58,8 +60,17 @@ SkillDetailsModal.propTypes = {
   showModal: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   updateSkillStatus: PropTypes.func,
-  skill: PropTypes.object,
+  skill: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
+    criteria: PropTypes.string,
+    type: PropTypes.string,
+    version: PropTypes.number,
+    questions: PropTypes.array,
+  }),
   canUpdateSkillStatus: PropTypes.bool,
 };
 
-export default SkillDetailsModal;
+export default connect((state, { skillId }) => ({
+  skill: selectors.getSkill(state, skillId),
+}))(SkillDetailsModal);

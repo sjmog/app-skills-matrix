@@ -62,7 +62,6 @@ class Matrix extends React.Component {
           skillId={this.state.currentSkill}
           showModal={this.state.showModal}
           onClose={this.hideSkillDetails}
-          skill={this.state.currentSkill && skills[this.state.currentSkill]}
           updateSkillStatus={updateSkillStatus}
           canUpdateSkillStatus={canUpdateSkillStatus}
         />

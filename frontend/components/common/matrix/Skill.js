@@ -36,8 +36,8 @@ const skillState = (status) => {
   }
 };
 
-const Skill = ({ skillId, status, name, viewSkillDetails, isBeingEvaluated }) => {
-  const statusClass = status ? skillColour(status.current, status.previous) : '';
+const Skill = ({ skillId, skill, viewSkillDetails, isBeingEvaluated }) => {
+  const statusClass = skill.status ? skillColour(skill.status.current, skill.status.previous) : '';
   const beginEvaluated = isBeingEvaluated ? 'skill--current' : false;
 
   const currentStateStatus = skillState(skill.status.current);
@@ -45,7 +45,7 @@ const Skill = ({ skillId, status, name, viewSkillDetails, isBeingEvaluated }) =>
 
   return (
     <div aria-hidden role="button" className={`skill--card ${statusClass} ${beginEvaluated} previous--${skill.status.previous}`} onClick={() => viewSkillDetails(skillId)}>
-      {name}
+      {skill.name}
       <div className={'skill-card--state'}>
         <span data-tip data-for={`skill-${skillId}-previous`} className={`state--icon--${skill.status.previous}`} />
         <ReactTooltip place="top" id={`skill-${skillId}-previous`} type="dark" effect="solid">{`The previous state of this skill was: ${skill.status.previous ? skill.status.previous : 'not attained'}`}</ReactTooltip>
@@ -59,15 +59,16 @@ const Skill = ({ skillId, status, name, viewSkillDetails, isBeingEvaluated }) =>
 
 Skill.propTypes = {
   skillId: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-  status: PropTypes.shape({
-    previous: PropTypes.string,
-    current: PropTypes.string,
-  }),
+  skill: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    status: PropTypes.shape({
+      previous: PropTypes.string,
+      current: PropTypes.string,
+    }).isRequired,
+  }).isRequired,
   viewSkillDetails: PropTypes.func.isRequired,
 };
 
 export default connect((state, { skillId }) => ({
-  name: selectors.getSkillName(state, skillId),
-  status: selectors.getSkillStatus(state, skillId),
+  skill: selectors.getSkill(state, skillId),
 }))(Skill);
