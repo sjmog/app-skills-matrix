@@ -37,7 +37,7 @@ class EvaluationPageComponent extends React.Component {
   }
 
   render() {
-    const { error, levels, categories, status, skillGroups, skills, view, params: { evaluationId }, fetchStatus } = this.props;
+    const { error, levels, categories, status, skillGroups, view, params: { evaluationId }, fetchStatus } = this.props;
 
     if (error) {
       return (
@@ -59,7 +59,6 @@ class EvaluationPageComponent extends React.Component {
           evaluationId={evaluationId}
           view={view}
           levels={levels}
-          skills={skills}
           status={status}
           updateSkillStatus={this.updateSkillStatus}
         />
@@ -89,7 +88,6 @@ class EvaluationPageComponent extends React.Component {
                 levels={levels}
                 skillGroups={skillGroups}
                 updateSkillStatus={this.updateSkillStatus}
-                skills={skills}
                 canUpdateSkillStatus={
                   view === ADMIN
                   || (view === SUBJECT && status === NEW)
@@ -109,7 +107,6 @@ EvaluationPageComponent.propTypes = {
   levels: PropTypes.array,
   categories: PropTypes.array,
   skillGroups: PropTypes.object,
-  skills: PropTypes.object,
   view: PropTypes.string,
   error: PropTypes.object,
   params: PropTypes.shape({
@@ -128,7 +125,6 @@ export const EvaluationPage = connect(
       levels: selectors.getLevels(state, evalId),
       categories: selectors.getCategories(state, evalId),
       skillGroups: selectors.getSkillGroups(state, evalId),
-      skills: selectors.getSkills(state, evalId),
       view: selectors.getView(state, evalId),
     });
   },

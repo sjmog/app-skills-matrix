@@ -33,15 +33,10 @@ const sortSkillGroupsByInverseLevel = levels =>
 const orderCategories = categories =>
   obj => R.reduce((acc, curr) => [].concat(acc, obj[curr]), [])(categories);
 
-module.exports = (evaluation) => {
-  const skillGroups = R.path(['skillGroups'], evaluation);
-  const skills = R.path(['skills'], evaluation);
-  const levels = R.path(['template', 'levels'], evaluation);
-  const categories = R.path(['template', 'categories'], evaluation);
+const category = skillGroup => skillGroup.category;
 
-  const category = skillGroup => skillGroup.category;
-
-  return R.compose(
+module.exports = (skills, skillGroups, levels, categories) =>
+  R.compose(
     R.flatten,
     R.map(hydrateSkillsWithStaticData(skills)),
     orderCategories(categories),
@@ -49,4 +44,3 @@ module.exports = (evaluation) => {
     R.groupBy(category),
     R.values,
   )(skillGroups);
-};

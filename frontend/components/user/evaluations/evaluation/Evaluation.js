@@ -67,7 +67,6 @@ class Evaluation extends React.Component {
 
   render() {
     const {
-      skills,
       levels,
       skillGroups,
       view,
@@ -138,7 +137,6 @@ class Evaluation extends React.Component {
                 || (view === SUBJECT && status === NEW)
                 || (view === MENTOR && status === SELF_EVALUATION_COMPLETE)
               }
-              skills={skills}
             />
           </Col>
         </Row>
@@ -158,7 +156,6 @@ Evaluation.propTypes = {
   evaluationId: PropTypes.string.isRequired,
   view: PropTypes.string.isRequired,
   levels: PropTypes.array.isRequired,
-  skills: PropTypes.object.isRequired,
   skillGroups: PropTypes.object,
   status: PropTypes.string.isRequired,
   updateSkillStatus: PropTypes.func.isRequired,

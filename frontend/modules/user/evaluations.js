@@ -125,8 +125,8 @@ const initialState = {
 export default handleActions({
   [retrieveEvaluationSuccess]: (state, action) => {
     // TODO: Stop loading skills here in a less hackey way.
-    const evalWithoutSkills = R.omit(['skills'], action.payload);
-    const entities = R.merge(state.entities, { [action.payload.id]: evalWithoutSkills });
+    const evalWithSkillsAsArray = R.merge(action.payload, { skills: R.keys(action.payload.skills) });
+    const entities = R.merge(state.entities, { [action.payload.id]: evalWithSkillsAsArray });
     const fetchStatus = R.merge(state.fetchStatus, { [action.payload.id]: EVALUATION_FETCH_STATUS.LOADED });
     return R.merge(state, { entities, fetchStatus });
   },

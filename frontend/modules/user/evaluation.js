@@ -27,7 +27,7 @@ export const actionTypes = keymirror({
 });
 
 export const actions = {
-  setAsCurrentEvaluation: createAction(actionTypes.SET_AS_CURRENT_EVALUATION, evaluation => evaluation),
+  setAsCurrentEvaluation: createAction(actionTypes.SET_AS_CURRENT_EVALUATION, (evaluation, skills) => ({ evaluation, skills })),
   nextUnevaluatedSkill: createAction(actionTypes.NEXT_UNEVALUATED_SKILL, skills => skills),
   nextSkill: createAction(actionTypes.NEXT_SKILL),
   previousSkill: createAction(actionTypes.PREVIOUS_SKILL),
@@ -38,7 +38,9 @@ export const actions = {
 function initEvaluation(evaluationId) {
   return (dispatch, getState) => {
     const evaluation = R.path(['entities', 'evaluations', 'entities', evaluationId], getState());
-    return dispatch(actions.setAsCurrentEvaluation(evaluation));
+    const allSkills = R.path(['entities', 'skills', 'entities'], getState());
+    const skills = R.pickAll(evaluation.skills, allSkills);
+    return dispatch(actions.setAsCurrentEvaluation(evaluation, skills));
   };
 }
 
@@ -92,9 +94,13 @@ export const initialValues = {
 
 export default handleActions({
   [actions.setAsCurrentEvaluation]: (state, action) => {
-    const evaluation = action.payload;
-    const paginatedView = constructPaginatedView(evaluation);
-    const currentSkill = getFirstUnevaluatedSkill(paginatedView, evaluation.skills);
+    const { evaluation, skills } = action.payload;
+    const skillGroups = R.path(['skillGroups'], evaluation);
+    const levels = R.path(['template', 'levels'], evaluation);
+    const categories = R.path(['template', 'categories'], evaluation);
+
+    const paginatedView = constructPaginatedView(skills, skillGroups, levels, categories);
+    const currentSkill = getFirstUnevaluatedSkill(paginatedView, skills);
     const firstSkill = R.head(paginatedView);
     const firstCategory = firstSkill.category;
     const lastSkill = R.last(paginatedView);
