@@ -12,6 +12,7 @@ const SkillGroup = ({ skillGroup, skills, viewSkillDetails, skillBeingEvaluated 
             return (
               <Skill
                 key={skillId}
+                skillId={skillId}
                 skill={skill}
                 viewSkillDetails={viewSkillDetails}
                 isBeingEvaluated={skillBeingEvaluated === skillId}

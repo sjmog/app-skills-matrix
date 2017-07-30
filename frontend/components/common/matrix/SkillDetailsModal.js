@@ -4,7 +4,7 @@ import { Modal, Button, Alert } from 'react-bootstrap';
 import { SKILL_STATUS } from '../../../modules/user/evaluations';
 import SkillActions from '../SkillActions';
 
-const SkillDetailsModal = ({ showModal, onClose, skill, updateSkillStatus, canUpdateSkillStatus }) => (
+const SkillDetailsModal = ({ skillId, showModal, onClose, skill, updateSkillStatus, canUpdateSkillStatus }) => (
   <div>
     <Modal show={showModal} onHide={onClose}>
       <Modal.Header closeButton>
@@ -33,10 +33,10 @@ const SkillDetailsModal = ({ showModal, onClose, skill, updateSkillStatus, canUp
               canUpdateSkillStatus
                 ? <SkillActions
                   skillStatus={skill.status}
-                  onAttained={() => updateSkillStatus(skill.id, SKILL_STATUS.ATTAINED)}
-                  onNotAttained={() => updateSkillStatus(skill.id, SKILL_STATUS.NOT_ATTAINED)}
-                  onFeedbackRequest={() => updateSkillStatus(skill.id, SKILL_STATUS.FEEDBACK)}
-                  onSetObjective={() => updateSkillStatus(skill.id, SKILL_STATUS.OBJECTIVE)}
+                  onAttained={() => updateSkillStatus(skill.id, SKILL_STATUS.ATTAINED, skillId)}
+                  onNotAttained={() => updateSkillStatus(skill.id, SKILL_STATUS.NOT_ATTAINED, skillId)}
+                  onFeedbackRequest={() => updateSkillStatus(skill.id, SKILL_STATUS.FEEDBACK, skillId)}
+                  onSetObjective={() => updateSkillStatus(skill.id, SKILL_STATUS.OBJECTIVE, skillId)}
                 />
                 : false
             }
@@ -54,6 +54,7 @@ const SkillDetailsModal = ({ showModal, onClose, skill, updateSkillStatus, canUp
 
 
 SkillDetailsModal.propTypes = {
+  skillId: PropTypes.string,
   showModal: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   updateSkillStatus: PropTypes.func,

@@ -73,10 +73,10 @@ function retrieveEvaluation(evaluationId) {
     .catch(error => dispatch(retrieveEvaluationFailure(error, evaluationId)));
 }
 
-function updateSkillStatus(evaluationView, evaluationId, skillId, status) {
+function updateSkillStatus(evaluationView, evaluationId, updateId, status, skillId) { // WE HAVE THE UPDATE ID BUT NOT THE SKILL ID>
   return (dispatch, getState) => {
     const skillGroups = R.path(['entities', 'evaluations', 'entities', evaluationId, 'skillGroups'], getState());
-    const skillGroupId = R.keys(R.filter(group => R.contains(skillId, group.skills), skillGroups))[0];
+    const skillGroupId = R.keys(R.filter(group => R.contains(updateId, group.skills), skillGroups))[0];
 
     let updateSkillFn;
     if (evaluationView === EVALUATION_VIEW.MENTOR) {
@@ -89,7 +89,7 @@ function updateSkillStatus(evaluationView, evaluationId, skillId, status) {
       updateSkillFn = () => Promise.reject(new Error('Unknown user role'));
     }
 
-    return updateSkillFn(evaluationId, skillGroupId, skillId, status)
+    return updateSkillFn(evaluationId, skillGroupId, updateId, status)
       .then(() => dispatch(updateSkillStatusSuccess(evaluationId, skillId, status)))
       .catch(error => dispatch(updateSkillStatusFailure(evaluationId, skillId, error)));
   };

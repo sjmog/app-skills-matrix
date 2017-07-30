@@ -18,10 +18,10 @@ class Matrix extends React.Component {
     this.hideSkillDetails = this.hideSkillDetails.bind(this);
   }
 
-  viewSkillDetails(skill) {
+  viewSkillDetails(skillId) {
     this.setState({
       showModal: true,
-      currentSkill: skill,
+      currentSkill: skillId,
     });
   }
 
@@ -60,9 +60,10 @@ class Matrix extends React.Component {
           </tbody>
         </Table>
         <SkillDetailsModal
+          skillId={this.state.currentSkill}
           showModal={this.state.showModal}
           onClose={this.hideSkillDetails}
-          skill={this.state.currentSkill && skills[this.state.currentSkill.id]}
+          skill={this.state.currentSkill && skills[this.state.currentSkill]}
           updateSkillStatus={updateSkillStatus}
           canUpdateSkillStatus={canUpdateSkillStatus}
         />

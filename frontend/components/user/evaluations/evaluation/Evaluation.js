@@ -88,7 +88,6 @@ class Evaluation extends React.Component {
     if (!initialisedEvaluation || initialisedEvaluation !== evaluationId) {
       return false;
     }
-
     return (
       <Grid>
         { erringSkills
