@@ -47,16 +47,6 @@ const retrieveEvaluationFailure = createAction(
   (error, evaluationId) => ({ error, evaluationId }),
 );
 
-const updateSkillStatusSuccess = createAction(
-  constants.SKILL_STATUS_UPDATE_SUCCESS,
-  (evaluationId, skillId, status) => ({ evaluationId, skillId, status }),
-);
-
-const updateSkillStatusFailure = createAction(
-  constants.SKILL_STATUS_UPDATE_FAILURE,
-  (evaluationId, skillId, error) => ({ evaluationId, skillId, error }),
-);
-
 const evaluationCompleteSuccess = createAction(
   constants.EVALUATION_COMPLETE_SUCCESS,
   (evaluationId, status) => ({ evaluationId, status }),
@@ -70,8 +60,6 @@ const evaluationCompleteFailure = createAction(
 export const actions = {
   retrieveEvaluationSuccess,
   retrieveEvaluationFailure,
-  updateSkillStatusSuccess,
-  updateSkillStatusFailure,
   evaluationCompleteSuccess,
   evaluationCompleteFailure,
 };
@@ -82,28 +70,6 @@ function retrieveEvaluation(evaluationId) {
     .catch(error => dispatch(retrieveEvaluationFailure(error, evaluationId)));
 }
 
-function updateSkillStatus(evaluationView, evaluationId, updateId, status, skillId) { // WE HAVE THE UPDATE ID BUT NOT THE SKILL ID>
-  return (dispatch, getState) => {
-    const skillGroups = R.path(['entities', 'evaluations', 'entities', evaluationId, 'skillGroups'], getState());
-    const skillGroupId = R.keys(R.filter(group => R.contains(updateId, group.skills), skillGroups))[0];
-
-    let updateSkillFn;
-    if (evaluationView === EVALUATION_VIEW.MENTOR) {
-      updateSkillFn = api.mentorUpdateSkillStatus;
-    } else if (evaluationView === EVALUATION_VIEW.SUBJECT) {
-      updateSkillFn = api.subjectUpdateSkillStatus;
-    } else if (evaluationView === EVALUATION_VIEW.ADMIN) {
-      updateSkillFn = api.adminUpdateSkillStatus;
-    } else {
-      updateSkillFn = () => Promise.reject(new Error('Unknown user role'));
-    }
-
-    return updateSkillFn(evaluationId, skillGroupId, updateId, status)
-      .then(() => dispatch(updateSkillStatusSuccess(evaluationId, skillId, status)))
-      .catch(error => dispatch(updateSkillStatusFailure(evaluationId, skillId, error)));
-  };
-}
-
 function evaluationComplete(evaluationId) {
   return dispatch => api.evaluationComplete(evaluationId)
     .then(({ status }) => dispatch(evaluationCompleteSuccess(evaluationId, status)))
@@ -112,7 +78,6 @@ function evaluationComplete(evaluationId) {
 
 export const actionCreators = {
   retrieveEvaluation,
-  updateSkillStatus,
   evaluationComplete,
 };
 
@@ -136,25 +101,6 @@ export default handleActions({
     const fetchStatus = R.merge(state.fetchStatus, { [evaluationId]: EVALUATION_FETCH_STATUS.FAILED });
     return R.merge(state, { errors, fetchStatus });
   },
-  [updateSkillStatusSuccess]: (state, action) => {
-    const { evaluationId, skillId, status } = action.payload;
-    const skillLens = R.lensPath(['entities', evaluationId, 'skills', skillId]);
-    const skill = R.view(skillLens, state);
-
-    const updatedSkill = {
-      ...skill,
-      status: { ...skill.status, current: status },
-      error: null,
-    };
-
-    return R.set(skillLens, updatedSkill, state);
-  },
-  [updateSkillStatusFailure]: (state, action) => {
-    const { evaluationId, skillId, error } = action.payload;
-    const skillErrorLens = R.lensPath(['entities', evaluationId, 'skills', skillId, 'error']);
-
-    return R.set(skillErrorLens, error, state);
-  },
   [evaluationCompleteSuccess]: (state, action) => {
     const { evaluationId, status } = action.payload;
     const evaluationStatusLens = R.lensPath(['entities', evaluationId, 'status']);
@@ -167,9 +113,6 @@ export default handleActions({
     return R.merge(state, { errors });
   },
 }, initialState);
-
-export const getSkillStatus = (state, skillId, evalId) =>
-  R.path(['entities', evalId, 'skills', skillId, 'status'], state);
 
 export const getSubjectName = (state, evalId) =>
   R.path(['entities', evalId, 'subject', 'name'], state);

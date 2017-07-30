@@ -5,7 +5,7 @@ import R from 'ramda';
 import { Grid, Col, Row, Alert } from 'react-bootstrap';
 
 import * as selectors from '../../../../modules/user';
-import { actionCreators as entityActions, EVALUATION_VIEW, EVALUATION_STATUS } from '../../../../modules/user/evaluations';
+import { actionCreators as evaluationActionCreators, EVALUATION_VIEW, EVALUATION_STATUS } from '../../../../modules/user/evaluations';
 import { actionCreators as uiActionCreators } from '../../../../modules/user/evaluation';
 
 import EvaluationHeader from './EvaluationHeader';
@@ -56,8 +56,8 @@ class Evaluation extends React.Component {
   }
 
   evaluationComplete() {
-    const { entityActions, evaluationId } = this.props;
-    entityActions.evaluationComplete(evaluationId);
+    const { evalActions, evaluationId } = this.props;
+    evalActions.evaluationComplete(evaluationId);
   }
 
   postUpdateNavigation() {
@@ -196,6 +196,6 @@ export default connect(
   },
   dispatch => ({
     uiActions: bindActionCreators(uiActionCreators, dispatch),
-    entityActions: bindActionCreators(entityActions, dispatch),
+    evalActions: bindActionCreators(evaluationActionCreators, dispatch),
   }),
 )(Evaluation);

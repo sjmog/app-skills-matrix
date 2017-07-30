@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import { Grid, Row, Alert, Col } from 'react-bootstrap';
 
 import * as selectors from '../../../modules/user';
-import { actionCreators, EVALUATION_VIEW, EVALUATION_STATUS, EVALUATION_FETCH_STATUS } from '../../../modules/user/evaluations';
+import { actionCreators as evaluationsActionCreators, EVALUATION_VIEW, EVALUATION_STATUS, EVALUATION_FETCH_STATUS } from '../../../modules/user/evaluations';
+import { actionCreators as skillsActionCreators } from '../../../modules/user/skills';
 
 import Evaluation from './evaluation/Evaluation';
 import EvaluationPageHeader from './EvaluationPageHeader';
@@ -23,17 +24,17 @@ class EvaluationPageComponent extends React.Component {
   }
 
   componentDidMount() {
-    const { params: { evaluationId }, fetchStatus, actions } = this.props;
+    const { params: { evaluationId }, fetchStatus, evalActions } = this.props;
 
     if (!fetchStatus) {
-      actions.retrieveEvaluation(evaluationId);
+      evalActions.retrieveEvaluation(evaluationId);
     }
   }
 
   updateSkillStatus(updateId, newSkillStatus, skillId) {
-    const { actions, view, params: { evaluationId } } = this.props;
+    const { skillActions, view, params: { evaluationId } } = this.props;
 
-    return actions.updateSkillStatus(view, evaluationId, updateId, newSkillStatus, skillId);
+    return skillActions.updateSkillStatus(view, evaluationId, updateId, newSkillStatus, skillId);
   }
 
   render() {
@@ -129,6 +130,7 @@ export const EvaluationPage = connect(
     });
   },
   dispatch => ({
-    actions: bindActionCreators(actionCreators, dispatch),
+    evalActions: bindActionCreators(evaluationsActionCreators, dispatch),
+    skillActions: bindActionCreators(skillsActionCreators, dispatch),
   }),
 )(EvaluationPageComponent);
