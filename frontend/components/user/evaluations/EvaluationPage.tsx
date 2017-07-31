@@ -1,0 +1,141 @@
+import * as React from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { Grid, Row, Alert, Col } from 'react-bootstrap';
+
+import * as selectors from '../../../modules/user';
+import { actions, EVALUATION_VIEW, EVALUATION_STATUS, EVALUATION_FETCH_STATUS } from '../../../modules/user/evaluations';
+
+import Evaluation from './evaluation/Evaluation';
+import EvaluationPageHeader from './EvaluationPageHeader';
+import Matrix from '../../common/matrix/Matrix';
+
+import './evaluation.scss';
+
+const { SUBJECT, MENTOR, ADMIN } = EVALUATION_VIEW;
+const { NEW, SELF_EVALUATION_COMPLETE } = EVALUATION_STATUS;
+
+// todo fix types
+type EvaluationPageComponentProps = {
+  status?: string,
+  levels?: string[],
+  categories?: string[],
+  skillGroups: any,
+  skills: any,
+  view: string,
+  error: any,
+  params: {
+    evaluationId: string,
+  },
+  fetchStatus: boolean,
+  actions: any,
+};
+
+class EvaluationPageComponent extends React.Component<EvaluationPageComponentProps, any> {
+  constructor(props) {
+    super(props);
+
+    this.updateSkillStatus = this.updateSkillStatus.bind(this);
+  }
+
+  componentDidMount() {
+    const { params: { evaluationId }, fetchStatus, actions } = this.props;
+
+    if (!fetchStatus) {
+      actions.retrieveEvaluation(evaluationId);
+    }
+  }
+
+  updateSkillStatus(skillId, newSkillStatus) {
+    const { actions, view, params: { evaluationId } } = this.props;
+
+    return actions.updateSkillStatus(view, evaluationId, skillId, newSkillStatus);
+  }
+
+  render() {
+    const { error, levels, categories, status, skillGroups, skills, view, params: { evaluationId }, fetchStatus } = this.props;
+
+    if (error) {
+      return (
+        <Grid>
+          <Row>
+            <Alert bsStyle="danger">Something went wrong: {error.message}</Alert>
+          </Row>
+        </Grid>
+      );
+    }
+
+    if (fetchStatus !== EVALUATION_FETCH_STATUS.LOADED) {
+      return false;
+    }
+
+    if (view === SUBJECT && status === NEW) {
+      return (
+        <Evaluation
+          evaluationId={evaluationId}
+          view={view}
+          levels={levels}
+          skills={skills}
+          status={status}
+          updateSkillStatus={this.updateSkillStatus}
+        />
+      );
+    }
+
+    return (
+      <div className="evaluation-grid">
+        <div className="evaluation-grid__item">
+          <EvaluationPageHeader
+            evaluationId={evaluationId}
+          />
+        </div>
+        <div className="evaluation-grid__item">
+          <Row>
+            <h4>Legend</h4>
+            <p className="skill--legend skill--attained">Attained</p>
+            <p className="skill--legend skill--newly-attained">Newly attained</p>
+            <p className="skill--legend skill--objective">Objective</p>
+            <p className="skill--legend skill--feedback">Feedback</p>
+            <p className="skill--legend skill--not-attained">Not attained</p>
+          </Row>
+          <Row>
+            <Col md={20}>
+              <Matrix
+                categories={categories}
+                levels={levels}
+                skillGroups={skillGroups}
+                updateSkillStatus={this.updateSkillStatus}
+                skills={skills}
+                canUpdateSkillStatus={
+                  view === ADMIN
+                  || (view === SUBJECT && status === NEW)
+                  || (view === MENTOR && status === SELF_EVALUATION_COMPLETE)
+                }
+              />
+            </Col>
+          </Row>
+        </div>
+      </div>
+    );
+  }
+}
+
+export const EvaluationPage = connect(
+  (state, props) => {
+    const evalId = props.params.evaluationId;
+
+    return ({
+      error: selectors.getError(state, evalId),
+      fetchStatus: selectors.getEvaluationFetchStatus(state, evalId),
+      status: selectors.getEvaluationStatus(state, evalId),
+      levels: selectors.getLevels(state, evalId),
+      categories: selectors.getCategories(state, evalId),
+      skillGroups: selectors.getSkillGroups(state, evalId),
+      skills: selectors.getSkills(state, evalId),
+      view: selectors.getView(state, evalId),
+    });
+  },
+  dispatch => ({
+    actions: bindActionCreators(actions, dispatch),
+  }),
+)(EvaluationPageComponent);
