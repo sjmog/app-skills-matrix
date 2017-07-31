@@ -12,12 +12,8 @@ export const EVALUATION_VIEW = keymirror({
 });
 
 export const actionTypes = keymirror({
-  RETRIEVE_EVALUATION_SUCCESS: null,
-  RETRIEVE_EVALUATION_FAILURE: null,
   SKILL_STATUS_UPDATE_SUCCESS: null,
   SKILL_STATUS_UPDATE_FAILURE: null,
-  EVALUATION_COMPLETE_SUCCESS: null,
-  EVALUATION_COMPLETE_FAILURE: null,
 });
 
 const updateSkillStatusSuccess = createAction(
@@ -58,9 +54,11 @@ export const actionCreators = {
 
 const initialState = {
   entities: {},
+  errors: {},
 };
 
-// TODO: Could have separate errs array now.
+const errorsLens = R.lensPath(['errors']);
+
 export default handleActions({
   [evaluationsActions.retrieveEvaluationSuccess]: (state, action) => {
     const skills = R.path(['payload', 'skills'], action);
@@ -69,27 +67,39 @@ export default handleActions({
   },
   [updateSkillStatusSuccess]: (state, action) => {
     const { skillId, status } = action.payload;
-    const skillLens = R.lensPath(['entities', skillId]);
-    const skill = R.view(skillLens, state);
+    const currentSkillStatusLens = R.lensPath(['entities', skillId, 'status', 'current']);
 
-    const updatedSkill = {
-      ...skill,
-      status: { ...skill.status, current: status },
-      error: null,
-    };
-
-    return R.set(skillLens, updatedSkill, state);
+    return R.compose(
+      R.set(errorsLens, R.omit([skillId], state.errors)),
+      R.set(currentSkillStatusLens, status),
+    )(state);
   },
   [updateSkillStatusFailure]: (state, action) => {
     const { skillId, error } = action.payload;
-    const skillErrorLens = R.lensPath(['entities', skillId, 'error']);
+    const errorMsg = R.prop('message', error) || 'unknown';
+    const errorLens = R.lensPath(['errors', skillId]);
 
-    return R.set(skillErrorLens, error, state);
+    return R.set(errorLens, errorMsg, state);
   },
 }, initialState);
 
 export const getSkill = (state, skillId) =>
   R.path(['entities', skillId], state);
 
+export const getSkillError = (state, skillId) =>
+  R.path(['errors', skillId], state);
+
 export const getSkillStatus = (state, skillId) =>
   R.path(['entities', skillId, 'status'], state);
+
+export const getErringSkills = (state, skillIds) => {
+  const skillOfInterest = skillId => R.contains(skillId, skillIds);
+  const name = skillId => R.prop('name', getSkill(state, skillId));
+
+  return R.compose(
+    R.map(name),
+    R.filter(skillOfInterest),
+    R.keys,
+    R.prop('errors'),
+  )(state);
+};

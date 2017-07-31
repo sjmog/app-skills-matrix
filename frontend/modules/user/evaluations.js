@@ -31,8 +31,6 @@ export const EVALUATION_FETCH_STATUS = keymirror({
 export const constants = keymirror({
   RETRIEVE_EVALUATION_SUCCESS: null,
   RETRIEVE_EVALUATION_FAILURE: null,
-  SKILL_STATUS_UPDATE_SUCCESS: null,
-  SKILL_STATUS_UPDATE_FAILURE: null,
   EVALUATION_COMPLETE_SUCCESS: null,
   EVALUATION_COMPLETE_FAILURE: null,
 });
@@ -132,7 +130,7 @@ export const getEvaluationStatus = (state, evalId) =>
 export const getSkillGroups = (state, evalId) =>
   R.path(['entities', evalId, 'skillGroups'], state);
 
-export const getSkills = (state, evalId) =>
+export const getSkillIds = (state, evalId) =>
   R.path(['entities', evalId, 'skills'], state);
 
 export const getLevels = (state, evalId) =>
@@ -144,16 +142,9 @@ export const getCategories = (state, evalId) =>
 export const getError = (state, evalId) =>
   R.path(['errors', evalId], state);
 
-export const getErringSkills = (state, evalId) => {
-  const skills = getSkills(state, evalId);
-  return R.filter(skill => skill.error)(R.values(skills));
-};
-
 export const getSkillGroupsWithReversedSkills = (state, evalId) => {
-  const reverseSkills = skillGroup => ({
-    ...skillGroup,
-    skills: R.reverse(skillGroup.skills),
-  });
+  const reverseSkills = skillGroup =>
+    Object.assign({}, skillGroup, { skills: R.reverse(skillGroup.skills) });
 
   return R.map(reverseSkills)(getSkillGroups(state, evalId));
 };

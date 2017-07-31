@@ -91,12 +91,10 @@ class Evaluation extends React.Component {
       <Grid>
         { erringSkills
           ? <Row>
-            {erringSkills.map(
-              ({ name }) =>
-                (<Alert bsStyle="danger" key={name}>
-                  {`There was a problem updating a skill: ${name}`}
-                </Alert>),
-            )}
+            {
+              erringSkills.map(name =>
+                (<Alert bsStyle="danger" key={name}>{`There was a problem updating a skill: ${name}`}</Alert>))
+            }
           </Row>
           : false
         }
@@ -170,9 +168,7 @@ Evaluation.propTypes = {
   lastCategory: PropTypes.string,
   firstSkill: skillShape,
   lastSkill: skillShape,
-  erringSkills: PropTypes.arrayOf(PropTypes.shape({
-    name: PropTypes.string.isRequired,
-  })),
+  erringSkills: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default connect(
@@ -180,6 +176,7 @@ export default connect(
     const { evaluationId } = props;
     const currentSkill = selectors.getCurrentSkill(state);
     const currentSkillId = selectors.getCurrentSkillId(state);
+    const skillIdsForEvaluation = selectors.getSkillIds(state, evaluationId);
 
     return ({
       initialisedEvaluation: selectors.getCurrentEvaluation(state),
@@ -190,7 +187,7 @@ export default connect(
       lastCategory: selectors.getLastCategory(state),
       firstSkill: selectors.getFirstSkill(state),
       lastSkill: selectors.getLastSkill(state),
-      erringSkills: selectors.getErringSkills(state, evaluationId),
+      erringSkills: selectors.getErringSkills(state, skillIdsForEvaluation),
       skillGroups: selectors.getSkillGroupsWithReversedSkills(state, evaluationId),
     });
   },

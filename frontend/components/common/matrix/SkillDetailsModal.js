@@ -6,7 +6,7 @@ import { SKILL_STATUS } from '../../../modules/user/evaluations';
 import * as selectors from '../../../modules/user';
 import SkillActions from '../SkillActions';
 
-const SkillDetailsModal = ({ skillId, skill, showModal, onClose, updateSkillStatus, canUpdateSkillStatus }) => (
+const SkillDetailsModal = ({ skillId, skill, error, showModal, onClose, updateSkillStatus, canUpdateSkillStatus }) => (
   <div>
     <Modal show={showModal} onHide={onClose}>
       <Modal.Header closeButton>
@@ -42,7 +42,7 @@ const SkillDetailsModal = ({ skillId, skill, showModal, onClose, updateSkillStat
                 />
                 : false
             }
-            { skill.error ? <Alert bsStyle="danger">Something went wrong: {skill.error.message}</Alert> : false }
+            { error ? <Alert bsStyle="danger">Something went wrong: {error}</Alert> : false }
           </div>
           : null
         }
@@ -68,9 +68,11 @@ SkillDetailsModal.propTypes = {
     version: PropTypes.number,
     questions: PropTypes.array,
   }),
+  error: PropTypes.string,
   canUpdateSkillStatus: PropTypes.bool,
 };
 
 export default connect((state, { skillId }) => ({
   skill: selectors.getSkill(state, skillId),
+  error: selectors.getSkillError(state, skillId),
 }))(SkillDetailsModal);
