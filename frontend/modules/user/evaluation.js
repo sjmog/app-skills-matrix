@@ -6,7 +6,7 @@ import constructPaginatedView from './constructPaginatedView';
 
 const getEvalById = (state, evalId) => R.path(['entities', 'evaluations', 'entities', evalId], state);
 
-const getSkillsById = (state, skillIds) => {
+const getSkillDetails = (state, skillIds) => {
   const allSkills = R.path(['entities', 'skills', 'entities'], state);
   return R.pickAll(skillIds, allSkills);
 };
@@ -41,16 +41,18 @@ export const actions = {
 
 function initEvaluation(evaluationId) {
   return (dispatch, getState) => {
-    const evaluation = getEvalById(getState(), evaluationId);
-    const skills = getSkillsById(getState(), evaluation.skills);
+    const state = getState();
+    const evaluation = getEvalById(state, evaluationId);
+    const skills = getSkillDetails(state, evaluation.skills);
     return dispatch(actions.setAsCurrentEvaluation(evaluation, skills));
   };
 }
 
 function nextUnevaluatedSkill(evaluationId) {
   return (dispatch, getState) => {
-    const evaluation = getEvalById(getState(), evaluationId);
-    const skills = getSkillsById(getState(), evaluation.skills);
+    const state = getState();
+    const evaluation = getEvalById(state, evaluationId);
+    const skills = getSkillDetails(state, evaluation.skills);
     return dispatch(actions.nextUnevaluatedSkill(skills));
   };
 }
@@ -65,16 +67,18 @@ function prevSkill() {
 
 function nextCategory(evaluationId) {
   return (dispatch, getState) => {
-    const evaluation = getEvalById(getState(), evaluationId);
-    const skills = getSkillsById(getState(), evaluation.skills);
+    const state = getState();
+    const evaluation = getEvalById(state, evaluationId);
+    const skills = getSkillDetails(state, evaluation.skills);
     return dispatch(actions.nextCategory(skills));
   };
 }
 
 function previousCategory(evaluationId) {
   return (dispatch, getState) => {
-    const evaluation = getEvalById(getState(), evaluationId);
-    const skills = getSkillsById(getState(), evaluation.skills);
+    const state = getState();
+    const evaluation = getEvalById(state, evaluationId);
+    const skills = getSkillDetails(state, evaluation.skills);
     return dispatch(actions.previousCategory(skills));
   };
 }

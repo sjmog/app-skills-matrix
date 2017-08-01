@@ -1,12 +1,15 @@
 import { expect } from 'chai';
 import R from 'ramda';
-import evaluation from '../../../../../../backend/models/evaluations/evaluation';
+import evaluationModel from '../../../../../../backend/models/evaluations/evaluation';
 import evaluations from '../../../../../fixtures/evaluations.json';
 import reducer, { actionTypes, initialValues } from '../../../../../../frontend/modules/user/evaluation';
 
-// TODO: Logic in the evaluation view model should not leak into these tests (e.g. unique skill ID)
 const evalId = 'some_evaluation_id';
 const fixtureEvaluation = Object.assign({}, evaluations[0], { _id: evalId });
+
+const evaluationViewModel = evaluationModel(fixtureEvaluation).viewModel;
+const evaluation = evaluationViewModel;
+const skills = R.prop('skills', evaluationViewModel);
 
 describe('Evaluation reducer', () => {
   describe('INIT', () => {
@@ -23,7 +26,7 @@ describe('Evaluation reducer', () => {
       const state = initialValues;
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
-        payload: evaluation(fixtureEvaluation).viewModel,
+        payload: { evaluation, skills },
       };
 
       const newState = reducer(state, action);
@@ -34,7 +37,7 @@ describe('Evaluation reducer', () => {
       const state = initialValues;
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
-        payload: evaluation(fixtureEvaluation).viewModel,
+        payload: { evaluation, skills },
       };
 
       const newState = reducer(state, action);
@@ -113,7 +116,7 @@ describe('Evaluation reducer', () => {
       const state = initialValues;
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
-        payload: evaluation(fixtureEvaluation).viewModel,
+        payload: { evaluation, skills },
       };
 
       const newState = reducer(state, action);
@@ -128,11 +131,11 @@ describe('Evaluation reducer', () => {
       const state = initialValues;
 
       const setStatusToAttained = skill => Object.assign({}, skill, { status: { current: 'ATTAINED' } });
-      const evaluatedSkills = R.map(setStatusToAttained)(fixtureEvaluation.skills);
+      const evaluatedSkills = R.map(setStatusToAttained)(skills);
 
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
-        payload: evaluation(Object.assign({}, fixtureEvaluation, { skills: evaluatedSkills })).viewModel,
+        payload: { evaluation, skills: evaluatedSkills },
       };
 
       const newState = reducer(state, action);
@@ -147,7 +150,7 @@ describe('Evaluation reducer', () => {
       const state = initialValues;
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
-        payload: evaluation(fixtureEvaluation).viewModel,
+        payload: { evaluation, skills },
       };
 
       const newState = reducer(state, action);
@@ -161,7 +164,7 @@ describe('Evaluation reducer', () => {
       const state = initialValues;
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
-        payload: evaluation(fixtureEvaluation).viewModel,
+        payload: { evaluation, skills },
       };
 
       const newState = reducer(state, action);
@@ -176,7 +179,7 @@ describe('Evaluation reducer', () => {
       const state = initialValues;
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
-        payload: evaluation(fixtureEvaluation).viewModel,
+        payload: { evaluation, skills },
       };
 
       const newState = reducer(state, action);
@@ -187,7 +190,7 @@ describe('Evaluation reducer', () => {
       const state = initialValues;
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
-        payload: evaluation(fixtureEvaluation).viewModel,
+        payload: { evaluation, skills },
       };
 
       const newState = reducer(state, action);

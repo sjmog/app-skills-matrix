@@ -38,13 +38,13 @@ const skillState = (status) => {
 
 const Skill = ({ skillId, skill, viewSkillDetails, isBeingEvaluated }) => {
   const statusClass = skill.status ? skillColour(skill.status.current, skill.status.previous) : '';
-  const beginEvaluated = isBeingEvaluated ? 'skill--current' : false;
+  const beingEvaluatedClass = isBeingEvaluated ? 'skill--current' : false;
 
   const currentStateStatus = skillState(skill.status.current);
   const currentStateLabel = `The current state of this skill is: ${currentStateStatus}`;
 
   return (
-    <div aria-hidden role="button" className={`skill--card ${statusClass} ${beginEvaluated} previous--${skill.status.previous}`} onClick={() => viewSkillDetails(skillId)}>
+    <div aria-hidden role="button" className={`skill--card ${statusClass} ${beingEvaluatedClass} previous--${skill.status.previous}`} onClick={() => viewSkillDetails(skillId)}>
       {skill.name}
       <div className={'skill-card--state'}>
         <span data-tip data-for={`skill-${skillId}-previous`} className={`state--icon--${skill.status.previous}`} />
