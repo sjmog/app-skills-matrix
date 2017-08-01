@@ -1,5 +1,5 @@
 import { handleActions, createAction } from 'redux-actions';
-import keymirror from 'keymirror';
+import * as keymirror from 'keymirror';
 import * as R from 'ramda';
 import api from '../../api';
 

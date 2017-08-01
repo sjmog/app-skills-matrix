@@ -1,23 +1,27 @@
 module.exports = {
-  entry: './frontend/index.js',
+  entry: './frontend/index.tsx',
   devtool: 'source-map',
   output: {
     path: `${__dirname}/frontend/dist`,
     filename: 'bundle.js',
   },
+  resolve: {
+    // Add '.ts' and '.tsx' as resolvable extensions.
+    extensions: [".ts", ".tsx", ".js", ".json"]
+  },
   module: {
     loaders: [
       {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        loader: 'babel-loader',
-        query: { presets: ['es2015', 'react', 'stage-2', 'flow'] },
+        test: /\.tsx?$/,
+        loader: "awesome-typescript-loader"
       },
-      { test: /\.scss/,
+      {
+        test: /\.scss/,
         exclude: /node_modules/,
         loaders: ['style-loader', 'css-loader', 'sass-loader'],
       },
-      { test: /\.css/,
+      {
+        test: /\.css/,
         loaders: ['style-loader', 'css-loader'],
       },
       {
@@ -36,6 +40,11 @@ module.exports = {
         test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
         loader: 'url-loader?limit=10000&mimetype=image/svg+xml',
       },
+      {
+        enforce: "pre",
+        test: /\.js$/,
+        loader: "source-map-loader"
+      }
     ],
-  },
+  }
 };

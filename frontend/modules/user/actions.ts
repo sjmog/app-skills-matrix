@@ -1,5 +1,5 @@
 import { handleActions, createAction } from 'redux-actions';
-import keymirror from 'keymirror';
+import * as keymirror from 'keymirror';
 import * as R from 'ramda';
 import * as moment from 'moment';
 
@@ -47,7 +47,7 @@ const initialSate = {
 export default handleActions({
   [retrieveActionsSuccess]: (state, action) => {
     const { actionType, actions } = action.payload;
-    const newestToOldest = (a, b) => moment(a.createdDate).isBefore(b.createdDate);
+    const newestToOldest = (a, b) => moment(a.createdDate).isBefore(b.createdDate) ? -1 : 1;
 
     const uniqueEvals = R.uniq(
       R.map(action => ({

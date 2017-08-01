@@ -30,7 +30,7 @@ type EvaluationProps = {
   skills: any,
   skillGroups?: any,
   status: string,
-  updateSkillStatus: () => void,
+  updateSkillStatus: (skillId: number) => Promise<void>,
   initialisedEvaluation?: string,
   currentSkill: Skill,
   currentSkillId?: number,

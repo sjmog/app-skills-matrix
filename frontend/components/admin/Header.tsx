@@ -19,7 +19,9 @@ const Header = () => (
           <NavItem eventKey={1}>Matrices</NavItem>
         </LinkContainer>
       </Nav>
-      <Navbar.Link pullRight href="/auth/github">Log in</Navbar.Link>
+      <Nav pullRight>
+        <Navbar.Link href="/auth/github">Log in</Navbar.Link>
+      </Nav>
     </Navbar.Collapse>
   </Navbar>
 );

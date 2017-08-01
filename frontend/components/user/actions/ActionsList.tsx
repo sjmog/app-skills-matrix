@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ListGroup, ListGroupItem } from 'react-bootstrap';
 import * as moment from 'moment';
-import CopyToClipboard from 'react-copy-to-clipboard';
+import * as CopyToClipboard from 'react-copy-to-clipboard';
 import './actionList.scss';
 
 type ActionsListProps = {

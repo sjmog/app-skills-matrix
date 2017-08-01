@@ -31,11 +31,13 @@ const HeaderComponent = ({ username }: HeaderComponentProps) => (
           <NavItem eventKey={2}>Objectives</NavItem>
         </LinkContainer>
       </Nav>
-      {
-        username
-          ? <Navbar.Text pullRight>{username}</Navbar.Text>
-          : <Navbar.Link href="/auth/github">Log In</Navbar.Link>
-      }
+      <Nav pullRight>
+        {
+          username
+            ? <Navbar.Text pullRight>{username}</Navbar.Text>
+            : <Navbar.Link href="/auth/github">Log In</Navbar.Link>
+        }
+      </Nav>
     </Navbar.Collapse>
   </Navbar>
 );

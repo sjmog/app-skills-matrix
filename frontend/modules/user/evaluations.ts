@@ -1,6 +1,6 @@
 import { handleActions, createAction } from 'redux-actions';
-import keymirror from 'keymirror';
-import R from 'ramda';
+import * as keymirror from 'keymirror';
+import * as R from 'ramda';
 
 import api from '../../api';
 
@@ -73,10 +73,11 @@ function retrieveEvaluation(evaluationId) {
       .catch(error => dispatch(retrieveEvaluationFailure(error, evaluationId)));
 }
 
+// TODO fix types
 function updateSkillStatus(evaluationView, evaluationId, skillId, status) {
   return (dispatch, getState) => {
-    const skillGroups = R.path(['entities', 'evaluations', 'entities', evaluationId, 'skillGroups'], getState());
-    const skillGroupId = R.keys(R.filter(group => R.contains(skillId, group.skills), skillGroups))[0];
+    const skillGroups: any = R.path(['entities', 'evaluations', 'entities', evaluationId, 'skillGroups'], getState());
+    const skillGroupId = R.keys(R.filter((group: any) => R.contains(skillId, group.skills), skillGroups))[0];
 
     let updateSkillFn;
     if (evaluationView === EVALUATION_VIEW.MENTOR) {
@@ -128,7 +129,7 @@ export default handleActions({
   [updateSkillStatusSuccess]: (state, action) => {
     const { evaluationId, skillId, status } = action.payload;
     const skillLens = R.lensPath(['entities', evaluationId, 'skills', skillId]);
-    const skill = R.view(skillLens, state);
+    const skill: any = R.view(skillLens, state);
 
     const updatedSkill = {
       ...skill,
@@ -192,7 +193,7 @@ export const getError = (state, evalId) =>
 
 export const getErringSkills = (state, evalId) => {
   const skills = getSkills(state, evalId);
-  return R.filter(skill => skill.error)(R.values(skills));
+  return R.filter((skill: any) => skill.error)(R.values(skills));
 };
 
 export const getSkillGroupsWithReversedSkills = (state, evalId) => {
@@ -201,5 +202,5 @@ export const getSkillGroupsWithReversedSkills = (state, evalId) => {
     skills: R.reverse(skillGroup.skills),
   });
 
-  return R.map(reverseSkills)(getSkillGroups(state, evalId));
+  return R.map(reverseSkills)(getSkillGroups(state, evalId) as any);
 };
