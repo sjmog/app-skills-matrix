@@ -9,7 +9,7 @@ import { actionCreators as skillsActionCreators } from '../../../modules/user/sk
 
 import Evaluation from './evaluation/Evaluation';
 import EvaluationPageHeader from './EvaluationPageHeader';
-import Matrix from '../../common/matrix/Matrix';
+import Matrix from '../matrix/Matrix';
 
 import './evaluation.scss';
 

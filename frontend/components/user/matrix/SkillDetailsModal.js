@@ -3,8 +3,8 @@ import { Modal, Button, Alert } from 'react-bootstrap';
 import { connect } from 'react-redux';
 
 import { SKILL_STATUS } from '../../../modules/user/evaluations';
-import * as selectors from '../../../modules/user';
-import SkillActions from '../SkillActions';
+import * as selectors from '../../../modules/user/index';
+import SkillActions from '../../common/SkillActions';
 
 const SkillDetailsModal = ({ skillUid, skill, error, showModal, onClose, updateSkillStatus, canUpdateSkillStatus }) => (
   <div>

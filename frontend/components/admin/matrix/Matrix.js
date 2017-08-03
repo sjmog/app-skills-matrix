@@ -4,7 +4,7 @@ import { Table } from 'react-bootstrap';
 import Level from './Level';
 import SkillDetailsModal from './SkillDetailsModal';
 
-import '../../common/matrix/matrix.scss';
+import '../../common/matrix.scss';
 
 class Matrix extends React.Component {
   constructor(props) {
@@ -18,10 +18,10 @@ class Matrix extends React.Component {
     this.hideSkillDetails = this.hideSkillDetails.bind(this);
   }
 
-  viewSkillDetails(skillUid) {
+  viewSkillDetails(skill) {
     this.setState({
       showModal: true,
-      currentSkill: skillUid,
+      currentSkill: skill,
     });
   }
 
@@ -33,7 +33,8 @@ class Matrix extends React.Component {
   }
 
   render() {
-    const { categories, levels, skillGroups, skillBeingEvaluated, updateSkillStatus, canUpdateSkillStatus } = this.props;
+    const { categories, levels, skillGroups, skills, skillBeingEvaluated, updateSkillStatus, canUpdateSkillStatus } = this.props;
+
     return (
       <div>
         <Table responsive>
@@ -45,23 +46,24 @@ class Matrix extends React.Component {
           </thead>
           <tbody className="matrix-table__body">
             {
-              levels.map(levelName => (
-                <Level
-                  key={levelName}
-                  categories={categories}
-                  levelName={levelName}
-                  skillGroups={skillGroups}
-                  viewSkillDetails={this.viewSkillDetails}
-                  skillBeingEvaluated={skillBeingEvaluated}
-                />
-              ))
-            }
+            levels.map(levelName => (
+              <Level
+                key={levelName}
+                categories={categories}
+                levelName={levelName}
+                skillGroups={skillGroups}
+                skills={skills}
+                viewSkillDetails={this.viewSkillDetails}
+                skillBeingEvaluated={skillBeingEvaluated}
+              />
+            ))
+          }
           </tbody>
         </Table>
         <SkillDetailsModal
-          skillUid={this.state.currentSkill}
           showModal={this.state.showModal}
           onClose={this.hideSkillDetails}
+          skill={this.state.currentSkill && skills[this.state.currentSkill.id]}
           updateSkillStatus={updateSkillStatus}
           canUpdateSkillStatus={canUpdateSkillStatus}
         />
@@ -74,7 +76,8 @@ Matrix.propTypes = {
   categories: PropTypes.array.isRequired,
   levels: PropTypes.array.isRequired,
   skillGroups: PropTypes.object.isRequired,
-  skillBeingEvaluated: PropTypes.string,
+  skills: PropTypes.object.isRequired,
+  skillBeingEvaluated: PropTypes.number,
   canUpdateSkillStatus: PropTypes.bool,
 };
 

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import ReactTooltip from 'react-tooltip';
 
 import { SKILL_STATUS } from '../../../modules/user/evaluations';
-import * as selectors from '../../../modules/user';
+import * as selectors from '../../../modules/user/index';
 
 const skillColour = (currentStatus, previousStatus) => {
   if (currentStatus === SKILL_STATUS.ATTAINED && previousStatus !== SKILL_STATUS.ATTAINED) {

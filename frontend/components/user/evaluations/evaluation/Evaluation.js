@@ -9,7 +9,7 @@ import { actionCreators as evaluationActionCreators, EVALUATION_VIEW, EVALUATION
 import { actionCreators as uiActionCreators } from '../../../../modules/user/evaluation';
 
 import EvaluationHeader from './EvaluationHeader';
-import Matrix from '../../../common/matrix/Matrix';
+import Matrix from '../../matrix/Matrix';
 import Skill from './Skill';
 
 const { SUBJECT, MENTOR, ADMIN } = EVALUATION_VIEW;
