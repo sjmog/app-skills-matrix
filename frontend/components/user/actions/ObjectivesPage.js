@@ -6,7 +6,7 @@ import { Row, Grid, Alert } from 'react-bootstrap';
 import { actions, ACTION_TYPES } from '../../../modules/user/actions';
 import PageHeader from './../../common/PageHeader';
 import ActionsList from './ActionsList';
-import SkillDetailsModal from '../../common/matrix/SkillDetailsModal';
+import SkillDetailsModal from '../matrix/SkillDetailsModal';
 
 class ObjectivesPageComponent extends React.Component {
   constructor(props) {

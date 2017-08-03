@@ -5,11 +5,11 @@ import R from 'ramda';
 import { Grid, Col, Row, Alert } from 'react-bootstrap';
 
 import * as selectors from '../../../../modules/user';
-import { actions as entityActions, EVALUATION_VIEW, EVALUATION_STATUS } from '../../../../modules/user/evaluations';
+import { actionCreators as evaluationActionCreators, EVALUATION_VIEW, EVALUATION_STATUS } from '../../../../modules/user/evaluations';
 import { actionCreators as uiActionCreators } from '../../../../modules/user/evaluation';
 
 import EvaluationHeader from './EvaluationHeader';
-import Matrix from '../../../common/matrix/Matrix';
+import Matrix from '../../matrix/Matrix';
 import Skill from './Skill';
 
 const { SUBJECT, MENTOR, ADMIN } = EVALUATION_VIEW;
@@ -56,8 +56,8 @@ class Evaluation extends React.Component {
   }
 
   evaluationComplete() {
-    const { entityActions, evaluationId } = this.props;
-    entityActions.evaluationComplete(evaluationId);
+    const { evalActions, evaluationId } = this.props;
+    evalActions.evaluationComplete(evaluationId);
   }
 
   postUpdateNavigation() {
@@ -67,7 +67,6 @@ class Evaluation extends React.Component {
 
   render() {
     const {
-      skills,
       levels,
       skillGroups,
       view,
@@ -75,7 +74,7 @@ class Evaluation extends React.Component {
       initialisedEvaluation,
       updateSkillStatus,
       currentSkill,
-      currentSkillId,
+      currentSkillUid,
       currentSkillStatus,
       lastSkill,
       firstSkill,
@@ -88,17 +87,14 @@ class Evaluation extends React.Component {
     if (!initialisedEvaluation || initialisedEvaluation !== evaluationId) {
       return false;
     }
-
     return (
       <Grid>
         { erringSkills
           ? <Row>
-            {erringSkills.map(
-              ({ name }) =>
-                (<Alert bsStyle="danger" key={name}>
-                  {`There was a problem updating a skill: ${name}`}
-                </Alert>),
-            )}
+            {
+              erringSkills.map(name =>
+                (<Alert bsStyle="danger" key={name}>{`There was a problem updating a skill: ${name}`}</Alert>))
+            }
           </Row>
           : false
         }
@@ -122,14 +118,14 @@ class Evaluation extends React.Component {
               updateSkillStatus={updateSkillStatus}
               nextSkill={this.nextSkill}
               prevSkill={this.prevSkill}
-              isFirstSkill={currentSkillId === firstSkill.skillId}
-              isLastSkill={currentSkillId === lastSkill.skillId}
+              isFirstSkill={currentSkillUid === firstSkill.skillUid}
+              isLastSkill={currentSkillUid === lastSkill.skillUid}
               postUpdateNavigation={this.postUpdateNavigation}
             />
           </Col>
           <Col md={5} className="evaluation-panel evaluation-panel--right">
             <Matrix
-              skillBeingEvaluated={currentSkillId}
+              skillBeingEvaluated={currentSkillUid}
               categories={[].concat(currentSkill.category)}
               levels={R.slice(levels.indexOf(currentSkill.level), Infinity, levels)}
               skillGroups={skillGroups}
@@ -139,7 +135,6 @@ class Evaluation extends React.Component {
                 || (view === SUBJECT && status === NEW)
                 || (view === MENTOR && status === SELF_EVALUATION_COMPLETE)
               }
-              skills={skills}
             />
           </Col>
         </Row>
@@ -149,9 +144,9 @@ class Evaluation extends React.Component {
 }
 
 const skillShape = PropTypes.shape({
-  skillId: PropTypes.number.isRequired,
+  skillUid: PropTypes.string.isRequired,
   skillGroupId: PropTypes.number.isRequired,
-  level: PropTypes.string.isRequried,
+  level: PropTypes.string.isRequired,
   category: PropTypes.string.isRequired,
 });
 
@@ -159,13 +154,12 @@ Evaluation.propTypes = {
   evaluationId: PropTypes.string.isRequired,
   view: PropTypes.string.isRequired,
   levels: PropTypes.array.isRequired,
-  skills: PropTypes.object.isRequired,
-  skillGroups: PropTypes.object,
+  skillGroups: PropTypes.object.isRequired,
   status: PropTypes.string.isRequired,
   updateSkillStatus: PropTypes.func.isRequired,
   initialisedEvaluation: PropTypes.string,
   currentSkill: skillShape,
-  currentSkillId: PropTypes.number,
+  currentSkillUid: PropTypes.string,
   currentSkillStatus: PropTypes.shape({
     current: PropTypes.string,
     previous: PropTypes.string,
@@ -174,32 +168,31 @@ Evaluation.propTypes = {
   lastCategory: PropTypes.string,
   firstSkill: skillShape,
   lastSkill: skillShape,
-  erringSkills: PropTypes.arrayOf(PropTypes.shape({
-    name: PropTypes.string.isRequired,
-  })),
+  erringSkills: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default connect(
   (state, props) => {
     const { evaluationId } = props;
     const currentSkill = selectors.getCurrentSkill(state);
-    const currentSkillId = selectors.getCurrentSkillId(state);
+    const currentSkillUid = selectors.getCurrentSkillUid(state);
+    const skillUidsForEvaluation = selectors.getSkillUids(state, evaluationId);
 
     return ({
       initialisedEvaluation: selectors.getCurrentEvaluation(state),
       currentSkill,
-      currentSkillId,
-      currentSkillStatus: selectors.getSkillStatus(state, currentSkillId, evaluationId),
+      currentSkillUid,
+      currentSkillStatus: selectors.getSkillStatus(state, currentSkillUid),
       firstCategory: selectors.getFirstCategory(state),
       lastCategory: selectors.getLastCategory(state),
       firstSkill: selectors.getFirstSkill(state),
       lastSkill: selectors.getLastSkill(state),
-      erringSkills: selectors.getErringSkills(state, evaluationId),
+      erringSkills: selectors.getErringSkills(state, skillUidsForEvaluation),
       skillGroups: selectors.getSkillGroupsWithReversedSkills(state, evaluationId),
     });
   },
   dispatch => ({
     uiActions: bindActionCreators(uiActionCreators, dispatch),
-    entityActions: bindActionCreators(entityActions, dispatch),
+    evalActions: bindActionCreators(evaluationActionCreators, dispatch),
   }),
 )(Evaluation);

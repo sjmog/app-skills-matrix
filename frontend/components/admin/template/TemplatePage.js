@@ -6,7 +6,7 @@ import { Row, Alert } from 'react-bootstrap';
 import { actions } from '../../../modules/admin/matrices';
 
 import TemplatePageHeader from './TemplatePageHeader';
-import Matrix from '../../common/matrix/Matrix';
+import Matrix from '../matrix/Matrix';
 
 class TemplatePageComponent extends React.Component {
   componentWillMount() {

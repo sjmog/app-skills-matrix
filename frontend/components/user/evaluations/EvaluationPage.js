@@ -4,11 +4,12 @@ import { connect } from 'react-redux';
 import { Grid, Row, Alert, Col } from 'react-bootstrap';
 
 import * as selectors from '../../../modules/user';
-import { actions, EVALUATION_VIEW, EVALUATION_STATUS, EVALUATION_FETCH_STATUS } from '../../../modules/user/evaluations';
+import { actionCreators as evaluationsActionCreators, EVALUATION_VIEW, EVALUATION_STATUS, EVALUATION_FETCH_STATUS } from '../../../modules/user/evaluations';
+import { actionCreators as skillsActionCreators } from '../../../modules/user/skills';
 
 import Evaluation from './evaluation/Evaluation';
 import EvaluationPageHeader from './EvaluationPageHeader';
-import Matrix from '../../common/matrix/Matrix';
+import Matrix from '../matrix/Matrix';
 
 import './evaluation.scss';
 
@@ -23,21 +24,21 @@ class EvaluationPageComponent extends React.Component {
   }
 
   componentDidMount() {
-    const { params: { evaluationId }, fetchStatus, actions } = this.props;
+    const { params: { evaluationId }, fetchStatus, evalActions } = this.props;
 
     if (!fetchStatus) {
-      actions.retrieveEvaluation(evaluationId);
+      evalActions.retrieveEvaluation(evaluationId);
     }
   }
 
-  updateSkillStatus(skillId, newSkillStatus) {
-    const { actions, view, params: { evaluationId } } = this.props;
+  updateSkillStatus(skillId, newSkillStatus, skillUid) {
+    const { skillActions, view, params: { evaluationId } } = this.props;
 
-    return actions.updateSkillStatus(view, evaluationId, skillId, newSkillStatus);
+    return skillActions.updateSkillStatus(view, evaluationId, skillId, newSkillStatus, skillUid);
   }
 
   render() {
-    const { error, levels, categories, status, skillGroups, skills, view, params: { evaluationId }, fetchStatus } = this.props;
+    const { error, levels, categories, status, skillGroups, view, params: { evaluationId }, fetchStatus } = this.props;
 
     if (error) {
       return (
@@ -59,7 +60,6 @@ class EvaluationPageComponent extends React.Component {
           evaluationId={evaluationId}
           view={view}
           levels={levels}
-          skills={skills}
           status={status}
           updateSkillStatus={this.updateSkillStatus}
         />
@@ -89,7 +89,6 @@ class EvaluationPageComponent extends React.Component {
                 levels={levels}
                 skillGroups={skillGroups}
                 updateSkillStatus={this.updateSkillStatus}
-                skills={skills}
                 canUpdateSkillStatus={
                   view === ADMIN
                   || (view === SUBJECT && status === NEW)
@@ -109,7 +108,6 @@ EvaluationPageComponent.propTypes = {
   levels: PropTypes.array,
   categories: PropTypes.array,
   skillGroups: PropTypes.object,
-  skills: PropTypes.object,
   view: PropTypes.string,
   error: PropTypes.object,
   params: PropTypes.shape({
@@ -128,11 +126,11 @@ export const EvaluationPage = connect(
       levels: selectors.getLevels(state, evalId),
       categories: selectors.getCategories(state, evalId),
       skillGroups: selectors.getSkillGroups(state, evalId),
-      skills: selectors.getSkills(state, evalId),
       view: selectors.getView(state, evalId),
     });
   },
   dispatch => ({
-    actions: bindActionCreators(actions, dispatch),
+    evalActions: bindActionCreators(evaluationsActionCreators, dispatch),
+    skillActions: bindActionCreators(skillsActionCreators, dispatch),
   }),
 )(EvaluationPageComponent);

@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 
-import { getSkillGroup } from '../helpers';
+import { getSkillGroup } from '../../common/helpers';
 import SkillGroup from './SkillGroup';
 
 const Level = ({ categories, levelName, skillGroups, skills, viewSkillDetails, skillBeingEvaluated }) =>

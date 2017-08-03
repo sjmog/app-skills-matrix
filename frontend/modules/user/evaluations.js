@@ -31,30 +31,18 @@ export const EVALUATION_FETCH_STATUS = keymirror({
 export const constants = keymirror({
   RETRIEVE_EVALUATION_SUCCESS: null,
   RETRIEVE_EVALUATION_FAILURE: null,
-  SKILL_STATUS_UPDATE_SUCCESS: null,
-  SKILL_STATUS_UPDATE_FAILURE: null,
   EVALUATION_COMPLETE_SUCCESS: null,
   EVALUATION_COMPLETE_FAILURE: null,
 });
 
 const retrieveEvaluationSuccess = createAction(
   constants.RETRIEVE_EVALUATION_SUCCESS,
-  normalizedEvaluation => normalizedEvaluation,
+  evaluation => evaluation,
 );
 
 const retrieveEvaluationFailure = createAction(
   constants.RETRIEVE_EVALUATION_FAILURE,
   (error, evaluationId) => ({ error, evaluationId }),
-);
-
-const updateSkillStatusSuccess = createAction(
-  constants.SKILL_STATUS_UPDATE_SUCCESS,
-  (evaluationId, skillId, status) => ({ evaluationId, skillId, status }),
-);
-
-const updateSkillStatusFailure = createAction(
-  constants.SKILL_STATUS_UPDATE_FAILURE,
-  (evaluationId, skillId, error) => ({ evaluationId, skillId, error }),
 );
 
 const evaluationCompleteSuccess = createAction(
@@ -67,32 +55,17 @@ const evaluationCompleteFailure = createAction(
   (evaluationId, error) => ({ [evaluationId]: error }),
 );
 
+export const actions = {
+  retrieveEvaluationSuccess,
+  retrieveEvaluationFailure,
+  evaluationCompleteSuccess,
+  evaluationCompleteFailure,
+};
+
 function retrieveEvaluation(evaluationId) {
   return dispatch => api.retrieveEvaluation(evaluationId)
     .then(evaluation => dispatch(retrieveEvaluationSuccess(evaluation)))
     .catch(error => dispatch(retrieveEvaluationFailure(error, evaluationId)));
-}
-
-function updateSkillStatus(evaluationView, evaluationId, skillId, status) {
-  return (dispatch, getState) => {
-    const skillGroups = R.path(['entities', 'evaluations', 'entities', evaluationId, 'skillGroups'], getState());
-    const skillGroupId = R.keys(R.filter(group => R.contains(skillId, group.skills), skillGroups))[0];
-
-    let updateSkillFn;
-    if (evaluationView === EVALUATION_VIEW.MENTOR) {
-      updateSkillFn = api.mentorUpdateSkillStatus;
-    } else if (evaluationView === EVALUATION_VIEW.SUBJECT) {
-      updateSkillFn = api.subjectUpdateSkillStatus;
-    } else if (evaluationView === EVALUATION_VIEW.ADMIN) {
-      updateSkillFn = api.adminUpdateSkillStatus;
-    } else {
-      updateSkillFn = () => Promise.reject(new Error('Unknown user role'));
-    }
-
-    return updateSkillFn(evaluationId, skillGroupId, skillId, status)
-      .then(() => dispatch(updateSkillStatusSuccess(evaluationId, skillId, status)))
-      .catch(error => dispatch(updateSkillStatusFailure(evaluationId, skillId, error)));
-  };
 }
 
 function evaluationComplete(evaluationId) {
@@ -101,13 +74,12 @@ function evaluationComplete(evaluationId) {
     .catch(error => dispatch(evaluationCompleteFailure(evaluationId, error)));
 }
 
-export const actions = {
+export const actionCreators = {
   retrieveEvaluation,
-  updateSkillStatus,
   evaluationComplete,
 };
 
-const initialSate = {
+const initialState = {
   entities: {},
   errors: {},
   fetchStatus: {},
@@ -125,25 +97,6 @@ export default handleActions({
     const fetchStatus = R.merge(state.fetchStatus, { [evaluationId]: EVALUATION_FETCH_STATUS.FAILED });
     return R.merge(state, { errors, fetchStatus });
   },
-  [updateSkillStatusSuccess]: (state, action) => {
-    const { evaluationId, skillId, status } = action.payload;
-    const skillLens = R.lensPath(['entities', evaluationId, 'skills', skillId]);
-    const skill = R.view(skillLens, state);
-
-    const updatedSkill = {
-      ...skill,
-      status: { ...skill.status, current: status },
-      error: null,
-    };
-
-    return R.set(skillLens, updatedSkill, state);
-  },
-  [updateSkillStatusFailure]: (state, action) => {
-    const { evaluationId, skillId, error } = action.payload;
-    const skillErrorLens = R.lensPath(['entities', evaluationId, 'skills', skillId, 'error']);
-
-    return R.set(skillErrorLens, error, state);
-  },
   [evaluationCompleteSuccess]: (state, action) => {
     const { evaluationId, status } = action.payload;
     const evaluationStatusLens = R.lensPath(['entities', evaluationId, 'status']);
@@ -155,10 +108,7 @@ export default handleActions({
 
     return R.merge(state, { errors });
   },
-}, initialSate);
-
-export const getSkillStatus = (state, skillId, evalId) =>
-  R.path(['entities', evalId, 'skills', skillId, 'status'], state);
+}, initialState);
 
 export const getSubjectName = (state, evalId) =>
   R.path(['entities', evalId, 'subject', 'name'], state);
@@ -178,8 +128,8 @@ export const getEvaluationStatus = (state, evalId) =>
 export const getSkillGroups = (state, evalId) =>
   R.path(['entities', evalId, 'skillGroups'], state);
 
-export const getSkills = (state, evalId) =>
-  R.path(['entities', evalId, 'skills'], state);
+export const getSkillUids = (state, evalId) =>
+  R.path(['entities', evalId, 'skillUids'], state);
 
 export const getLevels = (state, evalId) =>
   R.path(['entities', evalId, 'template', 'levels'], state);
@@ -190,16 +140,9 @@ export const getCategories = (state, evalId) =>
 export const getError = (state, evalId) =>
   R.path(['errors', evalId], state);
 
-export const getErringSkills = (state, evalId) => {
-  const skills = getSkills(state, evalId);
-  return R.filter(skill => skill.error)(R.values(skills));
-};
-
 export const getSkillGroupsWithReversedSkills = (state, evalId) => {
-  const reverseSkills = skillGroup => ({
-    ...skillGroup,
-    skills: R.reverse(skillGroup.skills),
-  });
+  const reverseSkills = skillGroup =>
+    Object.assign({}, skillGroup, { skills: R.reverse(skillGroup.skills) });
 
   return R.map(reverseSkills)(getSkillGroups(state, evalId));
 };
