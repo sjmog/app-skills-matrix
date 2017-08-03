@@ -1,17 +1,14 @@
 import React, { PropTypes } from 'react';
-import { Table } from 'react-bootstrap';
 
 import Skill from './Skill';
 
 const SkillGroup = ({ skillGroup, skills, viewSkillDetails, skillBeingEvaluated }) => (
   <td>
-    <Table bordered>
-      <tbody>
-        {
+    <div className="skillGroupContainer">
+      {
         skillGroup.skills.map(
           (skillId) => {
             const skill = skills[skillId];
-
             return (
               <Skill
                 key={skillId}
@@ -22,8 +19,7 @@ const SkillGroup = ({ skillGroup, skills, viewSkillDetails, skillBeingEvaluated 
             );
           })
       }
-      </tbody>
-    </Table>
+    </div>
   </td>
 );
 

@@ -27,8 +27,8 @@ const retrieveActionsFailure = createAction(
 
 function retrieveActions(userId, actionType) {
   return dispatch => api.retrieveAllActions(userId, actionType)
-      .then(actions => dispatch(retrieveActionsSuccess(actionType, actions)))
-      .catch(error => dispatch(retrieveActionsFailure(actionType, error)));
+    .then(actions => dispatch(retrieveActionsSuccess(actionType, actions)))
+    .catch(error => dispatch(retrieveActionsFailure(actionType, error)));
 }
 
 export const actions = {

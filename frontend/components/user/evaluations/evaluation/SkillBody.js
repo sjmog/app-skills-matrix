@@ -15,13 +15,13 @@ class SkillBody extends React.Component {
         <p>{`  ${this.props.criteria}`}</p>
         {
           this.props.questions.length
-          ? <Button
-            active={this.state.open}
-            onClick={() => this.setState({ open: !this.state.open })}
-          >
-            {"I'm not sure"}
-          </Button>
-          : false
+            ? <Button
+              active={this.state.open}
+              onClick={() => this.setState({ open: !this.state.open })}
+            >
+              {"I'm not sure"}
+            </Button>
+            : false
         }
         { this.state.open
           ? <div className="skill-body___info-block">

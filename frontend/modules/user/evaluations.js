@@ -69,8 +69,8 @@ const evaluationCompleteFailure = createAction(
 
 function retrieveEvaluation(evaluationId) {
   return dispatch => api.retrieveEvaluation(evaluationId)
-      .then(evaluation => dispatch(retrieveEvaluationSuccess(evaluation)))
-      .catch(error => dispatch(retrieveEvaluationFailure(error, evaluationId)));
+    .then(evaluation => dispatch(retrieveEvaluationSuccess(evaluation)))
+    .catch(error => dispatch(retrieveEvaluationFailure(error, evaluationId)));
 }
 
 function updateSkillStatus(evaluationView, evaluationId, skillId, status) {

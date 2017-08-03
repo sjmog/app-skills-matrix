@@ -34,33 +34,33 @@ const EvaluationsList = ({ evaluations }) => (
     </thead>
     <tbody>
       {
-      evaluations.map(({ id, createdDate, templateName, status, evaluationUrl, feedbackUrl, objectivesUrl, view }) =>
-        (<tr key={id}>
-          <td>{moment(createdDate).format('D MMM YYYY')}</td>
-          <td>{templateName}</td>
-          <td>
-            <EvalutionStatusLabel status={status} />
-          </td>
-          <td>
-            <div>
-              <Link to={evaluationUrl}>
-                { evaluationBtn(status, view) }
-              </Link>
-              <Link to={feedbackUrl}>
-                <Button className="action-btn">
+        evaluations.map(({ id, createdDate, templateName, status, evaluationUrl, feedbackUrl, objectivesUrl, view }) =>
+          (<tr key={id}>
+            <td>{moment(createdDate).format('D MMM YYYY')}</td>
+            <td>{templateName}</td>
+            <td>
+              <EvalutionStatusLabel status={status} />
+            </td>
+            <td>
+              <div>
+                <Link to={evaluationUrl}>
+                  { evaluationBtn(status, view) }
+                </Link>
+                <Link to={feedbackUrl}>
+                  <Button className="action-btn">
                   Feedback
-                </Button>
-              </Link>
-              <Link to={objectivesUrl}>
-                <Button className="action-btn">
+                  </Button>
+                </Link>
+                <Link to={objectivesUrl}>
+                  <Button className="action-btn">
                   Objectives
-                </Button>
-              </Link>
-            </div>
-          </td>
-        </tr>),
-      )
-    }
+                  </Button>
+                </Link>
+              </div>
+            </td>
+          </tr>),
+        )
+      }
     </tbody>
   </Table>
 );

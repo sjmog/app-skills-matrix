@@ -94,11 +94,11 @@ class Evaluation extends React.Component {
         { erringSkills
           ? <Row>
             {erringSkills.map(
-                ({ name }) =>
-                  (<Alert bsStyle="danger" key={name}>
-                    {`There was a problem updating a skill: ${name}`}
-                  </Alert>),
-              )}
+              ({ name }) =>
+                (<Alert bsStyle="danger" key={name}>
+                  {`There was a problem updating a skill: ${name}`}
+                </Alert>),
+            )}
           </Row>
           : false
         }
