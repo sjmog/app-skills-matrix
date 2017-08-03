@@ -5,8 +5,13 @@ import { Row } from 'react-bootstrap';
 import { actions } from '../../../modules/admin/matrices';
 import SaveEntityForm from './SaveEntityForm';
 
-// TODO: add types
-class SaveSkillComponent extends React.Component<any,any> {
+type SaveSkillComponentProps = {
+  actions: typeof actions,
+  success: boolean,
+  error: ErrorMessage,
+};
+
+class SaveSkillComponent extends React.Component<SaveSkillComponentProps, { skill: string }> {
   constructor(props) {
     super(props);
     this.state = { skill: '' };

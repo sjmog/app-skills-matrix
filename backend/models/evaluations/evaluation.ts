@@ -4,10 +4,9 @@ import * as R from 'ramda';
 import { DatabaseObject } from '../../database';
 import { Email } from '../../services/email';
 import { User } from '../users/user';
-import skill, { Skill, UnhydratedSkill } from './skill';
+import skill, { Skill } from './skill';
 import { Skill as TemplateSkill } from '../matrices/skill';
-import { Template, SkillGroup } from '../matrices/template';
-import { EvaluationMetadataViewModel } from '../../../types/evaluations';
+import { Template } from '../matrices/template';
 
 const HOST = process.env.HOST;
 
@@ -23,25 +22,13 @@ const VIEW = keymirror({
   ADMIN: null,
 });
 
-type EvaluationUser = { name: string, id: string, email: string };
-
 type UnhydratedEvaluation = {
   user: EvaluationUser,
   createdDate: Date,
   template: { name: string },
   skillGroups: SkillGroup[],
-  skills: UnhydratedSkill[],
+  skills: UnhydratedEvaluationSkill[],
   status: string,
-};
-
-type EvaluationViewModel = {
-  id: string,
-  subject: EvaluationUser,
-  status: string,
-  template: {},
-  skillGroups: { [id: string]: SkillGroup },
-  skills: { [id: string]: UnhydratedSkill },
-  view: string,
 };
 
 export type EvaluationUpdate = {
@@ -50,7 +37,7 @@ export type EvaluationUpdate = {
   createdDate: Date,
   template: {},
   skillGroups: SkillGroup[],
-  skills: UnhydratedSkill[],
+  skills: UnhydratedEvaluationSkill[],
   status: string,
 };
 

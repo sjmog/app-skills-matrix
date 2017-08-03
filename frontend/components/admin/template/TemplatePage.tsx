@@ -10,18 +10,18 @@ import Matrix from '../../common/matrix/Matrix';
 
 // todo: fix types
 type TemplatePageComponentProps = {
-  templateResult: any,
-  template: any,
+  templateResult: { success?: boolean, error: ErrorMessage },
+  template: NormalizedTemplateViewModel,
   skillGroups: any,
   skills: any,
   retrieved: boolean,
-  actions: any,
+  actions: typeof actions,
   params: {
     templateId: string,
   },
 };
 
-class TemplatePageComponent extends React.Component<TemplatePageComponentProps, any> {
+class TemplatePageComponent extends React.Component<TemplatePageComponentProps, void> {
   componentWillMount() {
     if (!this.props.retrieved) {
       this.props.actions.retrieveTemplate(this.props.params.templateId);
@@ -30,11 +30,9 @@ class TemplatePageComponent extends React.Component<TemplatePageComponentProps, 
 
   render() {
     const { template, skillGroups, skills, templateResult } = this.props;
-    const { success, error }: { success?: boolean, error?: { message: string } } = templateResult || {};
+    const { success, error } = templateResult;
 
     if (this.props.retrieved && success) {
-      const [firstCategory] = template.categories;
-
       return (
         <div>
           <TemplatePageHeader

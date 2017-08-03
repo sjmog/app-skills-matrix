@@ -10,7 +10,8 @@
   "include": [
     "frontend/**/*",
     "backend/**/*",
-    "test/**/*"
+    "test/**/*",
+    "types/*.d.ts"
   ],
   "exclude": [
     "node_modules"

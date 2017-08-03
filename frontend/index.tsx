@@ -11,7 +11,7 @@ import { adminRoutes, userRoutes } from './routes';
 import adminReducers from './modules/admin/index';
 import userReducers from './modules/user/index';
 
-const state = (window as any).$REDUX_STATE;
+const state: ClientState | AdminClientState = (window as any).$REDUX_STATE;
 const context = (window as any).$CONTEXT;
 const reducers = context === 'admin' ? adminReducers : userReducers;
 const routes = context === 'admin' ? adminRoutes : userRoutes;

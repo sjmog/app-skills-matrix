@@ -1,6 +1,5 @@
 /* tslint:disable no-param-reassign */
 import { Skill } from './skill';
-import { UnhydratedSkill as EvaluationSkill } from '../evaluations/skill';
 
 type UnhydratedTemplate = {
   id: string,
@@ -11,25 +10,14 @@ type UnhydratedTemplate = {
   skillGroups: SkillGroup[],
 };
 
-export type SkillGroup = { category: string, level: string, skills: number[] };
-
-type NormalizedTemplateViewModel = {
-  id: string,
-  name: string,
-  version: number,
-  categories: string[],
-  levels: string[],
-  skillGroups: { [id: string]: SkillGroup },
-};
-
 export type Template = {
   id: string,
   skillGroups: SkillGroup[],
-  viewModel: () => { id: string, name: string },
+  viewModel: () => TemplateViewModel,
   normalizedViewModel: () => NormalizedTemplateViewModel,
   evaluationData: () => { id: string, name: string, version: number, categories: string[], levels: string[] },
   userDetailsViewModel: () => { name: string },
-  createSkillGroups: (skills: Skill[]) => { skills: EvaluationSkill[], skillGroups: SkillGroup[] },
+  createSkillGroups: (skills: Skill[]) => { skills: UnhydratedEvaluationSkill[], skillGroups: SkillGroup[] },
 };
 
 export default ({ id, name, version, categories, levels, skillGroups }: UnhydratedTemplate): Template => Object.freeze({

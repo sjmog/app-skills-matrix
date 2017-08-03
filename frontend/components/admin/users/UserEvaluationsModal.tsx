@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Modal, Button } from 'react-bootstrap';
 
 import UserEvaluationsList from './UserEvaluationsList';
-import { EvaluationMetadataViewModel } from '../../../../types/evaluations';
 
 type UserEvaluationsModalProps = {
   showModal: boolean

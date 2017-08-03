@@ -194,7 +194,7 @@ const handlerFunctions = Object.freeze({
                   ? Promise.all([evaluations.updateEvaluation(completedApplication), users.getUserById(mentorId)])
                     .then(([updatedEvaluation, mentor]) => {
                       sendMail(updatedEvaluation.getSelfEvaluationCompleteEmail(mentor));
-                      res.status(200).json({ status: updatedEvaluation.status });
+                      res.status(200).json(updatedEvaluation.subjectMetadataViewModel());
                     })
                   : res.status(403).json(SUBJECT_CAN_ONLY_UPDATE_NEW_EVALUATION());
               }

@@ -4,7 +4,7 @@ import * as R from 'ramda';
 import matrices from '../models/matrices/index';
 import createHandler from './createHandler';
 import { TEMPLATE_NOT_FOUND } from './errors';
-import { UnhydratedSkill } from '../models/evaluations/skill';
+import { Template } from '../models/matrices/template';
 
 const { templates, skills } = matrices;
 
@@ -18,7 +18,7 @@ const handlerFunctions = Object.freeze({
               (retrievedTemplate
                 ? templates.updateTemplate(retrievedTemplate, template)
                 : templates.addTemplate(template)))
-            .then(t => res.status(201).json(t.viewModel())))
+            .then((t: Template) => res.status(201).json(t.viewModel())))
         .catch(next);
     },
     retrieve: (req, res, next) => {
@@ -35,7 +35,7 @@ const handlerFunctions = Object.freeze({
   skills: {
     save: (req, res, next) => {
       Promise.try(() => JSON.parse(req.body.skill))
-        .then((newSkills: UnhydratedSkill[]) =>
+        .then((newSkills: UnhydratedEvaluationSkill[]) =>
           Promise.map([].concat(newSkills),
             skill => skills.getById(skill.id)
               .then(retrievedSkill =>

@@ -26,7 +26,8 @@ const getMenteeEvaluations = mentorId =>
         .then(evaluations => evaluations.map(evaluation => evaluation.mentorMetadataViewModel()))
         .then(evaluations => ({ name: name || username, evaluations })));
 
-const augmentWithEvaluations = users =>
+
+const augmentWithEvaluations = (users): Promise<UserWithEvaluations[]> =>
   Promise.map(
     users,
     (user: User) =>
@@ -34,34 +35,35 @@ const augmentWithEvaluations = users =>
         .then(evaluations => evaluations.map(evaluation => evaluation.adminMetadataViewModel()))
         .then(evaluations => Object.assign({}, user.manageUserViewModel(), { evaluations })));
 
-export const adminClientState = () => Promise.all([userCollection.getAll(), templates.getAll()])
-  .then(([allUsers = [], allTemplates = []]) =>
-    augmentWithEvaluations(allUsers)
-      .then(users => (
-        {
-          users: {
-            users,
-            newEvaluations: [],
-          },
-          matrices: {
-            templates: R.map(domainTemplate => domainTemplate.viewModel(), allTemplates),
-          },
-        })));
+export const adminClientState = (): Promise<AdminClientState> =>
+  Promise.all([userCollection.getAll(), templates.getAll()])
+    .then(([allUsers = [], allTemplates = []]) =>
+      augmentWithEvaluations(allUsers)
+        .then(users => (
+          {
+            users: {
+              users,
+              newEvaluations: [],
+            },
+            matrices: {
+              templates: R.map(domainTemplate => domainTemplate.viewModel(), allTemplates),
+            },
+          })));
 
-export const clientState = (user: User) =>
+export const clientState = (user: User): Promise<ClientState> =>
   (user ? Promise.all([
-    userCollection.getUserById(user.mentorId),
-    templates.getById(user.templateId),
-    getSubjectEvaluations(user.id),
-    getMenteeEvaluations(user.id),
-  ]).then(([mentor, template, evaluations, menteeEvaluations]) =>
-    ({
-      user: {
-        userDetails: user ? user.userDetailsViewModel() : null,
-        mentorDetails: mentor ? mentor.userDetailsViewModel() : null,
-        template: template ? template.viewModel() : null,
-        evaluations,
-        menteeEvaluations,
-      },
-    }))
+      userCollection.getUserById(user.mentorId),
+      templates.getById(user.templateId),
+      getSubjectEvaluations(user.id),
+      getMenteeEvaluations(user.id),
+    ]).then(([mentor, template, evaluations, menteeEvaluations]) =>
+      ({
+        user: {
+          userDetails: user ? user.userDetailsViewModel() : null,
+          mentorDetails: mentor ? mentor.userDetailsViewModel() : null,
+          template: template ? template.viewModel() : null,
+          evaluations,
+          menteeEvaluations,
+        },
+      }))
     : Promise.resolve({ user: {} }));

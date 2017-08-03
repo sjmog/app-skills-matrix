@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Row, Table } from 'react-bootstrap';
 import { Link } from 'react-router';
 
-const templateDetailsRow = (template) => {
+const templateDetailsRow = (template: TemplateViewModel) => {
   const { id, name } = template;
   return (
     <tr key={id}>
@@ -10,7 +10,6 @@ const templateDetailsRow = (template) => {
       <td>
         <Link to={{
           pathname: `/admin/matrices/templates/${id}`,
-          state: { template },
         }}
         >
           Modify
@@ -19,7 +18,7 @@ const templateDetailsRow = (template) => {
     </tr>);
 };
 
-const TemplateList = ({ templates }: { templates: { id: string, name: string }[]}) =>
+const TemplateList = ({ templates }: { templates: TemplateViewModel[]}) =>
   (
     <Row>
       <Table responsive bordered>

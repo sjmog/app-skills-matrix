@@ -27,11 +27,11 @@ export type User = {
   mentorId: string,
   email: string,
   isAdmin: () => boolean,
-  manageUserViewModel: () => { id: string, username: string, name: string, email: string, mentorId: string, templateId: string },
+  manageUserViewModel: () => UserDetailsViewModel, // TODO: combine these
+  userDetailsViewModel: () => UserDetailsViewModel,
   feedbackData: () => UserFeedback,
   signingData: () => { id: string, username: string },
   evaluationData: () => { id: string, name: string, email: string },
-  userDetailsViewModel: () => { id: string, name: string, username: string, avatarUrl: string, email: string, mentorId: string, templateId: string },
   hasTemplate: boolean,
   hasMentor: boolean,
   setMentor: (newMentorId: string) => ErrorResponse | { mentorId: string, modifiedDate: Date, error: boolean },
@@ -50,7 +50,7 @@ const user = ({ _id, name, email, username, templateId, mentorId, avatarUrl }: U
     return auth.isAdmin(email);
   },
   manageUserViewModel() {
-    return ({ id: _id.toString(), username, name, email, mentorId, templateId });
+    return ({ id: _id.toString(), username, name, avatarUrl, email, mentorId, templateId });
   },
   feedbackData() {
     return ({ id: _id.toString(), name: name || username, mentorId });
@@ -87,5 +87,5 @@ export const newUser = (name: string, email: string, avatarUrl: string, username
   name,
   email,
   createdDate: new Date(),
-  avatarUrl
+  avatarUrl,
 });

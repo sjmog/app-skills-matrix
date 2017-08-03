@@ -5,8 +5,13 @@ import { Row } from 'react-bootstrap';
 import { actions } from '../../../modules/admin/matrices';
 import SaveEntityForm from './SaveEntityForm';
 
-// TODO: add types
-class SaveTemplateComponent extends React.Component<any,any> {
+type SaveTemplateComponentProps = {
+  actions: typeof actions,
+  success: boolean,
+  error: ErrorMessage,
+};
+
+class SaveTemplateComponent extends React.Component<SaveTemplateComponentProps, any> {
   constructor(props) {
     super(props);
     this.state = { template: '' };

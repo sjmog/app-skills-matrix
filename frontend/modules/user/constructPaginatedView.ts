@@ -32,7 +32,7 @@ const sortSkillGroupsByInverseLevel = levels =>
 const orderCategories = categories =>
   obj => R.reduce((acc, curr: number) => [].concat(acc, obj[curr]), [])(categories);
 
-export default (evaluation) => {
+export default (evaluation): any => {
   const skillGroups = R.path(['skillGroups'], evaluation);
   const skills = R.path(['skills'], evaluation);
   const levels = R.path(['template', 'levels'], evaluation);

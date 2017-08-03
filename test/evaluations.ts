@@ -663,7 +663,7 @@ describe('evaluations', () => {
             .set('Cookie', `${cookieName}=${normalUserOneToken}`)
             .expect(200)
             .then(({ body }) => {
-              expect(body).to.deep.equal({ status: SELF_EVALUATION_COMPLETE });
+              expect(body.status).to.equal(SELF_EVALUATION_COMPLETE);
             })
             .then(() => evaluations.findOne({ _id: evaluationId }))
             .then((completedApplication) => {

@@ -12,26 +12,17 @@ const STATUS_WITH_ACTION = keymirror({
   OBJECTIVE: null,
 });
 
-export type UnhydratedSkill = {
-  id: number,
-  name: string,
-  type: string,
-  criteria: string,
-  questions: { title: string }[],
-  status: { current: string | null, previous: string | null },
-};
-
 export type Skill = {
   id: number,
   currentStatus: () => string | null,
   statusForNextEvaluation: () => string | null,
-  feedbackData: () => UnhydratedSkill,
+  feedbackData: () => UnhydratedEvaluationSkill,
   addAction: (string) => boolean | string,
   removeAction: (string) => boolean | string,
-  updateStatus: (string) => UnhydratedSkill,
+  updateStatus: (string) => UnhydratedEvaluationSkill,
 };
 
-export default ({ id, name, criteria, type, questions, status }: UnhydratedSkill): Skill => Object.freeze({
+export default ({ id, name, criteria, type, questions, status }: UnhydratedEvaluationSkill): Skill => Object.freeze({
   id,
   currentStatus() {
     return status.current;

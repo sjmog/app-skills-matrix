@@ -6,7 +6,11 @@ import { SaveTemplate } from './SaveTemplate';
 import { SaveSkill } from './SaveSkill';
 import TemplateList from './TemplateList';
 
-export const ManageMatricesPageComponent = ({ templates }) =>
+type ManageMatricesPageComponentProps = {
+  templates: { id: string, name: string }[],
+};
+
+export const ManageMatricesPageComponent = ({ templates }: ManageMatricesPageComponentProps) =>
   (
     <div>
       <Row><h1 className="header">Matrices</h1></Row>

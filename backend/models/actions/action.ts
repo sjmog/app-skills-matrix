@@ -1,11 +1,11 @@
 import { User, UserFeedback } from '../users/user';
-import { Skill, UnhydratedSkill } from '../evaluations/skill';
+import { Skill } from '../evaluations/skill';
 import { Evaluation, EvaluationFeedback } from '../evaluations/evaluation';
 
 type UnhydratedAction = {
   type: string,
   user: UserFeedback,
-  skill: UnhydratedSkill,
+  skill: UnhydratedEvaluationSkill,
   evaluation: EvaluationFeedback,
 };
 

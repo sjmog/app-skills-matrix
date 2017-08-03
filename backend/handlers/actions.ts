@@ -16,19 +16,18 @@ const handlerFunctions = Object.freeze({
       const { userId } = req.params;
       const { user }: { user: User } = res.locals;
 
+      const fetchActions = () => Promise.try(() => actions.find(userId, evaluationId, type))
+        .then(a => res.status(200).json(a.map(action => action.viewModel())))
+        .catch(next);
+
       if (user.id === userId) {
-        return Promise.try(() => actions.find(userId, evaluationId, type))
-          .then(a => res.status(200).json(a.map(action => action.viewModel())))
-          .catch(next);
+        return fetchActions();
       }
 
       Promise.try(() => users.getUserById(userId))
         .then(({ mentorId }) =>
           (user.id === mentorId
-            ? Promise.try(() => actions.find(userId, evaluationId, type))
-              .then(a => res.status(200).json(a.map(action => action.viewModel())))
-              .catch(next)
-            : res.status(403).json(ONLY_USER_AND_MENTOR_CAN_SEE_ACTIONS())));
+            ? fetchActions() : res.status(403).json(ONLY_USER_AND_MENTOR_CAN_SEE_ACTIONS())));
     },
   },
 });

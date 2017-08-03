@@ -16,7 +16,6 @@
     "test": "eval $(cat .env.test) mocha --recursive --compilers ts:ts-node/register,tsx:ts-node/register",
     "build": "webpack --debug",
     "watch": "NODE_ENV=local webpack --watch",
-    "flow": "flow",
     "precommit": "npm run lint",
     "prepush": "eval $(cat .env.test) npm run test",
     "postinstall": "webpack",
