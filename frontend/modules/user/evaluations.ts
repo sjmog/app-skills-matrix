@@ -62,9 +62,27 @@ export const actions = {
   evaluationCompleteFailure,
 };
 
+const addFakeNotes = (evaluation) => {
+  const evaluationId = R.prop('id', evaluation);
+  const note1 = { id: 'note_id_1', author: 'author_id', note: 'This is a fake note' };
+  const note2 = { id: 'note_id_2', author: 'author_id', note: 'This is a fake note' };
+
+  const skillNotesLens = R.lensPath(['skills', `${evaluationId}_1`, 'notes']);
+  const notesLens = R.lensPath(['notes']);
+
+  return R.compose(
+    R.set(notesLens, { note_id_1: note1, note_id_2: note2 }),
+    R.set(skillNotesLens, ['note_id_1', 'note_id_2']),
+  )(evaluation);
+};
+
 function retrieveEvaluation(evaluationId) {
   return dispatch => api.retrieveEvaluation(evaluationId)
-    .then(evaluation => dispatch(retrieveEvaluationSuccess(evaluation)))
+    .then((evaluation) => {
+      /* TEMPORARY STUB */
+      const evaluationWithNotes = addFakeNotes(evaluation);
+      return dispatch(retrieveEvaluationSuccess(evaluationWithNotes));
+    })
     .catch(error => dispatch(retrieveEvaluationFailure(error, evaluationId)));
 }
 
