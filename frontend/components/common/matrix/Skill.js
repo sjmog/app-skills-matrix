@@ -19,7 +19,7 @@ const skillColour = (currentStatus, previousStatus) => {
 
 const skillState = (status) => {
   let currentStatus = status;
-  if (currentStatus === null) {
+  if (!currentStatus) {
     currentStatus = 'NOT_ATTAINED';
   }
   switch (currentStatus) {
