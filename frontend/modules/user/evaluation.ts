@@ -101,7 +101,7 @@ export const actionCreators = {
   previousCategory,
 };
 
-export const initialValues = {
+export const initialState = {
   evaluationId: '',
   paginatedView: [],
   currentSkill: null,
@@ -137,7 +137,7 @@ export default handleActions({
 
     return Object.assign({}, state, initialisedEvaluation);
   },
-  [actions.terminateEvaluation]: () => initialValues,
+  [actions.terminateEvaluation]: () => initialState,
   [actions.nextSkill]: (state) => {
     const { paginatedView, currentSkill, lastSkill } = state;
 
@@ -199,7 +199,7 @@ export default handleActions({
 
     return Object.assign({}, state, { currentSkill });
   },
-}, initialValues);
+}, initialState);
 
 export const getCurrentEvaluation = evaluation =>
   R.path(['evaluationId'], evaluation);

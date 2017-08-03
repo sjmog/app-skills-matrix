@@ -101,3 +101,6 @@ export const getErringSkills = (state, skillUids) => {
     R.prop('errors'),
   )(state);
 };
+
+export const getNotesForSkill = (state, skillUid) =>
+  R.path(['entities', skillUid, 'notes'], state);

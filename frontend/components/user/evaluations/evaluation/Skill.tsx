@@ -1,5 +1,7 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import { Panel, Label, ButtonGroup, Button, Glyphicon } from 'react-bootstrap';
+import * as selectors from '../../../../modules/user';
 
 import { SKILL_STATUS } from '../../../../modules/user/evaluations';
 
@@ -11,6 +13,7 @@ import '../evaluation.scss';
 type SkillProps = {
   level: string,
   skill: any,
+  notes: any,
   skillStatus: {
     current: string,
     previous: string,
@@ -23,7 +26,7 @@ type SkillProps = {
   isLastSkill: boolean,
 };
 
-const Skill = ({ level, skill, skillStatus, updateSkillStatus, postUpdateNavigation, prevSkill, nextSkill, isFirstSkill, isLastSkill }: SkillProps) => {
+const Skill = ({ level, notes, skill, skillStatus, updateSkillStatus, postUpdateNavigation, prevSkill, nextSkill, isFirstSkill, isLastSkill }: SkillProps) => {
   const { name, skillUid, id, criteria, questions } = skill;
 
   return (
@@ -38,6 +41,7 @@ const Skill = ({ level, skill, skillStatus, updateSkillStatus, postUpdateNavigat
         }
       >
         <SkillBody criteria={criteria} questions={questions} />
+        { notes ? notes.map(note => <p>{note.note}</p>) : false }
         <SkillActions
           skillStatus={skillStatus}
           onAttained={() => updateSkillStatus(id, SKILL_STATUS.ATTAINED, skillUid).then(() => postUpdateNavigation())}
@@ -66,4 +70,12 @@ const Skill = ({ level, skill, skillStatus, updateSkillStatus, postUpdateNavigat
   );
 };
 
-export default Skill;
+export default connect(
+    (state, { skill: { skillUid } }) => {
+        const noteIds = selectors.getNotesForSkill(state, skillUid);
+
+        return {
+            notes: selectors.getNotes(state, noteIds),
+        };
+    },
+)(Skill);

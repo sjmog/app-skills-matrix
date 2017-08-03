@@ -65,9 +65,9 @@ export const actions = {
 const addFakeNotes = (evaluation) => {
   const evaluationId = R.prop('id', evaluation);
   const note1 = { id: 'note_id_1', author: 'author_id', note: 'This is a fake note' };
-  const note2 = { id: 'note_id_2', author: 'author_id', note: 'This is a fake note' };
+  const note2 = { id: 'note_id_2', author: 'author_id', note: 'This is another fake note' };
 
-  const skillNotesLens = R.lensPath(['skills', `${evaluationId}_1`, 'notes']);
+  const skillNotesLens = R.lensPath(['skills', `${evaluationId}_161`, 'notes']);
   const notesLens = R.lensPath(['notes']);
 
   return R.compose(

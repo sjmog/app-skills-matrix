@@ -1,8 +1,8 @@
 import { expect } from 'chai';
+import * as R from 'ramda';
 import evaluationModel from '../../../../../../backend/models/evaluations/evaluation';
 import evaluations from '../../../../../fixtures/evaluations';
-import * as R from 'ramda';
-import reducer, { actionTypes, initialValues } from '../../../../../../frontend/modules/user/evaluation';
+import reducer, { actionTypes, initialState } from '../../../../../../frontend/modules/user/evaluation';
 import { ObjectID } from 'bson';
 
 const fixtureEvaluation = Object.assign({}, evaluations[0], { _id: new ObjectID() });
@@ -12,18 +12,9 @@ const evaluation = evaluationViewModel;
 const skills = R.prop('skills', evaluationViewModel);
 
 describe('Evaluation reducer', () => {
-  describe('INIT', () => {
-    it('sets the initial state', () => {
-      const state = undefined;
-      const action = { type: 'INIT' };
-
-      expect(reducer(state, action)).to.eql(initialValues);
-    });
-  });
-
   describe('SET_AS_CURRENT_EVALUATION', () => {
     it('sets the ID of the evaluation', () => {
-      const state = initialValues;
+      const state = initialState;
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
         payload: { evaluation, skills },
@@ -34,7 +25,7 @@ describe('Evaluation reducer', () => {
     });
 
     it('sets paginated view of skills in evaluation that are sorted by category and level', () => {
-      const state = initialValues;
+      const state = initialState;
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
         payload: { evaluation, skills },
@@ -114,7 +105,7 @@ describe('Evaluation reducer', () => {
     });
 
     it('sets current skill to be the first that is unevaluated', () => {
-      const state = initialValues;
+      const state = initialState;
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
         payload: { evaluation, skills },
@@ -129,7 +120,7 @@ describe('Evaluation reducer', () => {
     });
 
     it('sets current skill to be the last when all have been evaluated', () => {
-      const state = initialValues;
+      const state = initialState;
 
       const setStatusToAttained = skill => Object.assign({}, skill, { status: { current: 'ATTAINED' } });
       const evaluatedSkills = R.map(setStatusToAttained, skills);
@@ -148,7 +139,7 @@ describe('Evaluation reducer', () => {
     });
 
     it('sets first skill', () => {
-      const state = initialValues;
+      const state = initialState;
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
         payload: { evaluation, skills },
@@ -162,7 +153,7 @@ describe('Evaluation reducer', () => {
     });
 
     it('sets last skill', () => {
-      const state = initialValues;
+      const state = initialState;
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
         payload: { evaluation, skills },
@@ -177,7 +168,7 @@ describe('Evaluation reducer', () => {
     });
 
     it('sets first category', () => {
-      const state = initialValues;
+      const state = initialState;
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
         payload: { evaluation, skills },
@@ -188,7 +179,7 @@ describe('Evaluation reducer', () => {
     });
 
     it('sets last category', () => {
-      const state = initialValues;
+      const state = initialState;
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
         payload: { evaluation, skills },

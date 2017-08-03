@@ -4,8 +4,9 @@ import evaluation, * as fromEvaluation from './evaluation';
 import evaluations, * as fromEvaluations from './evaluations';
 import skills, * as fromSkills from './skills';
 import actions, * as fromActions from './actions';
+import notes, * as fromNotes from './notes';
 
-const entities = combineReducers({ evaluations, skills });
+const entities = combineReducers({ evaluations, skills, notes });
 
 export default combineReducers({ user, entities, actions, evaluation });
 
@@ -52,6 +53,9 @@ export const getErringSkills = ({ entities: { skills } }, skillUids) =>
 export const getSkillError = ({ entities: { skills } }, skillUid) =>
   fromSkills.getSkillError(skills, skillUid);
 
+export const getNotesForSkill = ({ entities: { skills } }, skillUid) =>
+  fromSkills.getNotesForSkill(skills, skillUid);
+
 /* EVALUATIONS SELECTORS */
 
 export const getSubjectName = ({ entities: { evaluations } }, evalId) =>
@@ -86,6 +90,11 @@ export const getSkillGroupsWithReversedSkills = ({ entities: { evaluations } }, 
 
 export const getSkillUids = ({ entities: { evaluations } }, evalId) =>
   fromEvaluations.getSkillUids(evaluations, evalId);
+
+/* NOTES SELECTORS */
+
+export const getNotes = ({ entities: { notes } }, noteIds) =>
+  fromNotes.getNotes(notes, noteIds);
 
 /* ACTIONS SELECTORS */
 
