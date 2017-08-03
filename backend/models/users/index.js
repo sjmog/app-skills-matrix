@@ -17,16 +17,16 @@ module.exports = {
       .then(retrievedUser => user(retrievedUser));
   },
   getUserByUsername: username => collection.findOne({ username })
-      .then(res => (res ? user(res) : null)),
+    .then(res => (res ? user(res) : null)),
   getUserById: id => collection.findOne({ _id: ObjectId(id) })
-      .then(res => (res ? user(res) : null)),
+    .then(res => (res ? user(res) : null)),
   updateUser: (original, updates) => collection.updateOne({ _id: ObjectId(original.id) }, { $set: updates })
-      .then(() => collection.findOne({ _id: ObjectId(original.id) }))
-      .then(res => (res ? user(res) : null)),
+    .then(() => collection.findOne({ _id: ObjectId(original.id) }))
+    .then(res => (res ? user(res) : null)),
   getAll: () => collection.find()
-      .then(res => res.toArray())
-      .then(res => res.map(doc => user(doc))),
+    .then(res => res.toArray())
+    .then(res => res.map(doc => user(doc))),
   getByMentorId: id => collection.find({ mentorId: id })
-      .then(res => res.toArray())
-      .then(res => res.map(doc => user(doc))),
+    .then(res => res.toArray())
+    .then(res => res.map(doc => user(doc))),
 };

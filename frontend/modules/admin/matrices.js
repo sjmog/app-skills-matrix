@@ -26,14 +26,14 @@ function saveTemplate(template) {
 
 function saveSkill(skill) {
   return dispatch => api.saveSkill(skill)
-      .then(savedSkill => dispatch(saveSkillSuccess(savedSkill)))
-      .catch(err => dispatch(saveSkillFailure(err)));
+    .then(savedSkill => dispatch(saveSkillSuccess(savedSkill)))
+    .catch(err => dispatch(saveSkillFailure(err)));
 }
 
 function retrieveTemplate(templateId) {
   return dispatch => Promise.all([api.getTemplate(templateId), api.getSkills()])
-      .then(([template, skills]) => dispatch(retrieveTemplateSuccess({ template, skills })))
-      .catch(err => dispatch(retrieveTemplateFailure(err)));
+    .then(([template, skills]) => dispatch(retrieveTemplateSuccess({ template, skills })))
+    .catch(err => dispatch(retrieveTemplateFailure(err)));
 }
 
 export const actions = {

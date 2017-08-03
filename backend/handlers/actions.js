@@ -23,8 +23,8 @@ const handlerFunctions = Object.freeze({
         .then(({ mentorId }) =>
           (user.id === mentorId
             ? Promise.try(() => actions.find(userId, evaluationId, type))
-                .then(a => res.status(200).json(a.map(action => action.viewModel)))
-                .catch(next)
+              .then(a => res.status(200).json(a.map(action => action.viewModel)))
+              .catch(next)
             : res.status(403).json(ONLY_USER_AND_MENTOR_CAN_SEE_ACTIONS())));
     },
   },

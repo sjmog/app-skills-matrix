@@ -19,7 +19,7 @@ const selectMentor = (user, users, onSelectMentor) => (
         <option key={user.id} value={user.id}>{user.name || user.username}</option>)}
     </FormControl>
   </FormGroup>
-  );
+);
 
 const selectTemplate = (user, templates, onSelectTemplate) => (
   <FormGroup controlId="selectMentor">
@@ -33,7 +33,7 @@ const selectTemplate = (user, templates, onSelectTemplate) => (
       { templates.map(template => <option key={template.id} value={template.id}>{template.name}</option>)}
     </FormControl>
   </FormGroup>
-  );
+);
 
 function userDetailsRow(user, isSelected, onUserSelectionChange, makeSelectMentorComponent, makeSelectTemplateComponent, viewUserEvaluations) {
   const { id, name, email, username } = user;

@@ -76,11 +76,11 @@ class EvaluationPageComponent extends React.Component {
         <div className="evaluation-grid__item">
           <Row>
             <h4>Legend</h4>
-            <p className="skill--legend skill--attained">Attained</p>
-            <p className="skill--legend skill--newly-attained">Newly attained</p>
-            <p className="skill--legend skill--objective">Objective</p>
-            <p className="skill--legend skill--feedback">Feedback</p>
-            <p className="skill--legend skill--not-attained">Not attained</p>
+            <p className="skill--legend skill--attained state--icon--ATTAINED">Attained</p>
+            <p className="skill--legend skill--newly-attained state--icon--ATTAINED">Newly attained</p>
+            <p className="skill--legend skill--objective state--icon--OBJECTIVE">Objective</p>
+            <p className="skill--legend skill--feedback state--icon--FEEDBACK">Feedback</p>
+            <p className="skill--legend skill--not-attained state--icon--NOT_ATTAINED">Not attained</p>
           </Row>
           <Row>
             <Col md={20}>

@@ -18,29 +18,29 @@ const UserEvaluationsList = ({ evaluations }) => (
     </thead>
     <tbody>
       {
-      evaluations.map(({ id, createdDate, templateName, status, evaluationUrl, feedbackUrl, objectivesUrl }) =>
-        (<tr key={id}>
-          <td>{moment(createdDate).format('D MMM YYYY')}</td>
-          <td>{templateName}</td>
-          <td>
-            <EvaluationStatusLabel status={status} />
-          </td>
-          <td>
-            <div>
-              <Button href={evaluationUrl} className="action-btn">
+        evaluations.map(({ id, createdDate, templateName, status, evaluationUrl, feedbackUrl, objectivesUrl }) =>
+          (<tr key={id}>
+            <td>{moment(createdDate).format('D MMM YYYY')}</td>
+            <td>{templateName}</td>
+            <td>
+              <EvaluationStatusLabel status={status} />
+            </td>
+            <td>
+              <div>
+                <Button href={evaluationUrl} className="action-btn">
                 View
-              </Button>
-              <Button href={feedbackUrl} className="action-btn">
+                </Button>
+                <Button href={feedbackUrl} className="action-btn">
                 Feedback
-              </Button>
-              <Button href={objectivesUrl} className="action-btn">
+                </Button>
+                <Button href={objectivesUrl} className="action-btn">
                 Objectives
-              </Button>
-            </div>
-          </td>
-        </tr>),
-      )
-    }
+                </Button>
+              </div>
+            </td>
+          </tr>),
+        )
+      }
     </tbody>
   </Table>
 );

@@ -19,7 +19,7 @@ const Skill = ({ level, skill, skillStatus, updateSkillStatus, postUpdateNavigat
             <h4 className="skill-header__title">{name}</h4>
             <Label className="skill-header__label" bsStyle="info">{level}</Label>
           </div>
-      }
+        }
       >
         <SkillBody criteria={criteria} questions={questions} />
         <SkillActions
