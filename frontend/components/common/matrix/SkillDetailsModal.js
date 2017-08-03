@@ -56,7 +56,7 @@ const SkillDetailsModal = ({ skillUid, skill, error, showModal, onClose, updateS
 
 
 SkillDetailsModal.propTypes = {
-  skillUid: PropTypes.string.isRequired,
+  skillUid: PropTypes.string,
   showModal: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   updateSkillStatus: PropTypes.func,
@@ -67,7 +67,7 @@ SkillDetailsModal.propTypes = {
     type: PropTypes.string,
     version: PropTypes.number,
     questions: PropTypes.array,
-  }).isRequired,
+  }),
   error: PropTypes.string,
   canUpdateSkillStatus: PropTypes.bool,
 };

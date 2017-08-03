@@ -75,6 +75,7 @@ describe('evaluations', () => {
           expect(body.template.name).to.equal('Node JS Dev');
           expect(body.skillGroups[1]).to.not.be.undefined;
           expect(body.skills[`${evaluationId}_1`]).to.not.be.undefined;
+          expect(body.skillUids).to.be.an('array').that.includes(`${evaluationId}_1`);
           expect(body.view).to.equal('SUBJECT');
         }));
 

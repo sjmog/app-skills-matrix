@@ -46,12 +46,15 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
     templateName: template.name,
   };
 
+  const viewModelSkills = arrayToUniquelyKeyedObject(_id, skills);
+
   const viewModel = {
     id: _id,
     subject: user,
     status,
     template,
-    skills: arrayToUniquelyKeyedObject(_id, skills),
+    skills: viewModelSkills,
+    skillUids: R.keys(viewModelSkills),
     skillGroups: arrayToKeyedObject(_id, makeSkillsUnique(_id, skillGroups)),
   };
 

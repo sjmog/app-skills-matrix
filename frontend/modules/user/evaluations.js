@@ -87,8 +87,7 @@ const initialState = {
 
 export default handleActions({
   [retrieveEvaluationSuccess]: (state, action) => {
-    const evalWithSkillUidsArray = R.merge(action.payload, { skills: R.keys(action.payload.skills) });
-    const entities = R.merge(state.entities, { [action.payload.id]: evalWithSkillUidsArray });
+    const entities = R.merge(state.entities, { [action.payload.id]: action.payload });
     const fetchStatus = R.merge(state.fetchStatus, { [action.payload.id]: EVALUATION_FETCH_STATUS.LOADED });
     return R.merge(state, { entities, fetchStatus });
   },
@@ -130,7 +129,7 @@ export const getSkillGroups = (state, evalId) =>
   R.path(['entities', evalId, 'skillGroups'], state);
 
 export const getSkillUids = (state, evalId) =>
-  R.path(['entities', evalId, 'skills'], state);
+  R.path(['entities', evalId, 'skillUids'], state);
 
 export const getLevels = (state, evalId) =>
   R.path(['entities', evalId, 'template', 'levels'], state);

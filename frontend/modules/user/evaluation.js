@@ -6,6 +6,8 @@ import constructPaginatedView from './constructPaginatedView';
 
 const getEvalById = (state, evalId) => R.path(['entities', 'evaluations', 'entities', evalId], state);
 
+const getSkillUids = evaluation => R.prop('skillUids', evaluation);
+
 const getSkillDetails = (state, skillUids) => {
   const allSkills = R.path(['entities', 'skills', 'entities'], state);
   return R.pickAll(skillUids, allSkills);
@@ -43,7 +45,7 @@ function initEvaluation(evaluationId) {
   return (dispatch, getState) => {
     const state = getState();
     const evaluation = getEvalById(state, evaluationId);
-    const skills = getSkillDetails(state, evaluation.skills);
+    const skills = getSkillDetails(state, getSkillUids(evaluation));
     return dispatch(actions.setAsCurrentEvaluation(evaluation, skills));
   };
 }
@@ -52,7 +54,7 @@ function nextUnevaluatedSkill(evaluationId) {
   return (dispatch, getState) => {
     const state = getState();
     const evaluation = getEvalById(state, evaluationId);
-    const skills = getSkillDetails(state, evaluation.skills);
+    const skills = getSkillDetails(state, getSkillUids(evaluation));
     return dispatch(actions.nextUnevaluatedSkill(skills));
   };
 }
@@ -69,7 +71,7 @@ function nextCategory(evaluationId) {
   return (dispatch, getState) => {
     const state = getState();
     const evaluation = getEvalById(state, evaluationId);
-    const skills = getSkillDetails(state, evaluation.skills);
+    const skills = getSkillDetails(state, getSkillUids(evaluation));
     return dispatch(actions.nextCategory(skills));
   };
 }
@@ -78,7 +80,7 @@ function previousCategory(evaluationId) {
   return (dispatch, getState) => {
     const state = getState();
     const evaluation = getEvalById(state, evaluationId);
-    const skills = getSkillDetails(state, evaluation.skills);
+    const skills = getSkillDetails(state, getSkillUids(evaluation));
     return dispatch(actions.previousCategory(skills));
   };
 }
