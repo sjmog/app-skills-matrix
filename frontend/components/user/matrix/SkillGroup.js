@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 
 import Skill from './Skill';
 
-const SkillGroup = ({ skillGroup, viewSkillDetails, skillBeingEvaluated }) => (
+const SkillGroup = ({ skillGroup, viewSkillDetails }) => (
   <td>
     <div className="skillGroupContainer">
       {
@@ -12,7 +12,6 @@ const SkillGroup = ({ skillGroup, viewSkillDetails, skillBeingEvaluated }) => (
               key={skillUid}
               skillUid={skillUid}
               viewSkillDetails={viewSkillDetails}
-              isBeingEvaluated={skillBeingEvaluated === skillUid}
             />
           ),
         )
@@ -23,7 +22,6 @@ const SkillGroup = ({ skillGroup, viewSkillDetails, skillBeingEvaluated }) => (
 
 SkillGroup.propTypes = {
   skillGroup: PropTypes.object.isRequired,
-  skillBeingEvaluated: PropTypes.string,
 };
 
 export default SkillGroup;

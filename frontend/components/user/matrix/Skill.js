@@ -67,8 +67,10 @@ Skill.propTypes = {
     }).isRequired,
   }).isRequired,
   viewSkillDetails: PropTypes.func.isRequired,
+  isBeingEvaluated: PropTypes.bool.isRequired,
 };
 
 export default connect((state, { skillUid }) => ({
   skill: selectors.getSkill(state, skillUid),
+  isBeingEvaluated: selectors.getCurrentSkillUid(state) === skillUid,
 }))(Skill);

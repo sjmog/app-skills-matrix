@@ -35,6 +35,11 @@ class Evaluation extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    const { evaluationId, uiActions } = this.props;
+    uiActions.terminateEvaluation(evaluationId);
+  }
+
   nextSkill() {
     const { uiActions } = this.props;
     uiActions.nextSkill();
@@ -125,7 +130,6 @@ class Evaluation extends React.Component {
           </Col>
           <Col md={5} className="evaluation-panel evaluation-panel--right">
             <Matrix
-              skillBeingEvaluated={currentSkillUid}
               categories={[].concat(currentSkill.category)}
               levels={R.slice(levels.indexOf(currentSkill.level), Infinity, levels)}
               skillGroups={skillGroups}

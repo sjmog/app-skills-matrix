@@ -25,6 +25,7 @@ const getNextUnevaluatedSkill = (paginatedView, skills, currentSkillUid) => {
 
 export const actionTypes = keymirror({
   SET_AS_CURRENT_EVALUATION: null,
+  TERMINATE_EVALUATION: null,
   NEXT_UNEVALUATED_SKILL: null,
   NEXT_SKILL: null,
   PREVIOUS_SKILL: null,
@@ -34,6 +35,7 @@ export const actionTypes = keymirror({
 
 export const actions = {
   setAsCurrentEvaluation: createAction(actionTypes.SET_AS_CURRENT_EVALUATION, (evaluation, skills) => ({ evaluation, skills })),
+  terminateEvaluation: createAction(actionTypes.TERMINATE_EVALUATION),
   nextUnevaluatedSkill: createAction(actionTypes.NEXT_UNEVALUATED_SKILL, skills => skills),
   nextSkill: createAction(actionTypes.NEXT_SKILL),
   previousSkill: createAction(actionTypes.PREVIOUS_SKILL),
@@ -48,6 +50,10 @@ function initEvaluation(evaluationId) {
     const skills = getSkillDetails(state, getSkillUids(evaluation));
     return dispatch(actions.setAsCurrentEvaluation(evaluation, skills));
   };
+}
+
+function terminateEvaluation() {
+  return actions.terminateEvaluation();
 }
 
 function nextUnevaluatedSkill(evaluationId) {
@@ -87,6 +93,7 @@ function previousCategory(evaluationId) {
 
 export const actionCreators = {
   initEvaluation,
+  terminateEvaluation,
   nextSkill,
   prevSkill,
   nextUnevaluatedSkill,
@@ -130,6 +137,7 @@ export default handleActions({
 
     return Object.assign({}, state, initialisedEvaluation);
   },
+  [actions.terminateEvaluation]: () => initialValues,
   [actions.nextSkill]: (state) => {
     const { paginatedView, currentSkill, lastSkill } = state;
 
