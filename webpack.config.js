@@ -3,7 +3,8 @@ module.exports = {
   devtool: 'source-map',
   output: {
     path: __dirname + '/frontend/dist',
-    filename: 'bundle.js'
+    filename: 'bundle.js',
+    publicPath: '/',
   },
   module: {
     loaders: [
