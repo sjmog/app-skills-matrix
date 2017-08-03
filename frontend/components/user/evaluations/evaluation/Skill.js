@@ -8,12 +8,12 @@ import SkillBody from './SkillBody';
 import '../evaluation.scss';
 
 const Skill = ({ level, skill, skillStatus, updateSkillStatus, postUpdateNavigation, prevSkill, nextSkill, isFirstSkill, isLastSkill }) => {
-  const { name, skillId, updateId, criteria, questions } = skill;
+  const { name, skillUid, id, criteria, questions } = skill;
 
   return (
     <div>
       <Panel
-        key={skillId}
+        key={skillUid}
         header={
           <div className="skill-header">
             <h4 className="skill-header__title">{name}</h4>
@@ -24,23 +24,23 @@ const Skill = ({ level, skill, skillStatus, updateSkillStatus, postUpdateNavigat
         <SkillBody criteria={criteria} questions={questions} />
         <SkillActions
           skillStatus={skillStatus}
-          onAttained={() => updateSkillStatus(updateId, SKILL_STATUS.ATTAINED, skillId).then(() => postUpdateNavigation())}
-          onNotAttained={() => updateSkillStatus(updateId, SKILL_STATUS.NOT_ATTAINED, skillId).then(() => postUpdateNavigation())}
-          onFeedbackRequest={() => updateSkillStatus(updateId, SKILL_STATUS.FEEDBACK, skillId).then(() => postUpdateNavigation())}
-          onSetObjective={() => updateSkillStatus(updateId, SKILL_STATUS.OBJECTIVE, skillId).then(() => postUpdateNavigation())}
+          onAttained={() => updateSkillStatus(id, SKILL_STATUS.ATTAINED, skillUid).then(() => postUpdateNavigation())}
+          onNotAttained={() => updateSkillStatus(id, SKILL_STATUS.NOT_ATTAINED, skillUid).then(() => postUpdateNavigation())}
+          onFeedbackRequest={() => updateSkillStatus(id, SKILL_STATUS.FEEDBACK, skillUid).then(() => postUpdateNavigation())}
+          onSetObjective={() => updateSkillStatus(id, SKILL_STATUS.OBJECTIVE, skillUid).then(() => postUpdateNavigation())}
         />
       </Panel>
       <ButtonGroup className="pull-right">
         <Button
           disabled={isFirstSkill}
-          onClick={() => prevSkill(skillId)}
+          onClick={() => prevSkill(skillUid)}
         >
           <Glyphicon glyph="chevron-left" />
           Previous skill
         </Button>
         <Button
           disabled={isLastSkill}
-          onClick={() => nextSkill(skillId)}
+          onClick={() => nextSkill(skillUid)}
         >
           Next skill
           <Glyphicon glyph="chevron-right" />
@@ -55,8 +55,11 @@ Skill.propTypes = {
   isFirstSkill: PropTypes.bool.isRequired,
   level: PropTypes.string.isRequired,
   skill: PropTypes.shape({
-    skillId: PropTypes.string.isRequired,
-  }),
+    skillUid: PropTypes.string.isRequired,
+    id: PropTypes.number.isRequired,
+    criteria: PropTypes.string,
+    questions: PropTypes.arrayOf(PropTypes.shape({ title: PropTypes.string.isRequired })),
+  }).isRequired,
   updateSkillStatus: PropTypes.func.isRequired,
   postUpdateNavigation: PropTypes.func.isRequired,
   nextSkill: PropTypes.func.isRequired,

@@ -49,16 +49,16 @@ export default ({
       .then(getData)
       .catch(handleError);
   },
-  subjectUpdateSkillStatus(evaluationId, skillGroupId, skillId, status) {
-    return axios.post(`/skillz/evaluations/${evaluationId}`, { action: 'subjectUpdateSkillStatus', skillGroupId, skillId, status })
+  subjectUpdateSkillStatus(evaluationId, skillId, status) {
+    return axios.post(`/skillz/evaluations/${evaluationId}`, { action: 'subjectUpdateSkillStatus', skillId, status })
       .catch(handleError);
   },
-  mentorUpdateSkillStatus(evaluationId, skillGroupId, skillId, status) {
-    return axios.post(`/skillz/evaluations/${evaluationId}`, { action: 'mentorUpdateSkillStatus', skillGroupId, skillId, status })
+  mentorUpdateSkillStatus(evaluationId, skillId, status) {
+    return axios.post(`/skillz/evaluations/${evaluationId}`, { action: 'mentorUpdateSkillStatus', skillId, status })
       .catch(handleError);
   },
-  adminUpdateSkillStatus(evaluationId, skillGroupId, skillId, status) {
-    return axios.post(`/skillz/evaluations/${evaluationId}`, { action: 'adminUpdateSkillStatus', skillGroupId, skillId, status })
+  adminUpdateSkillStatus(evaluationId, skillId, status) {
+    return axios.post(`/skillz/evaluations/${evaluationId}`, { action: 'adminUpdateSkillStatus', skillId, status })
       .catch(handleError);
   },
   evaluationComplete(evaluationId) {

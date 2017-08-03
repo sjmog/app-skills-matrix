@@ -3,12 +3,12 @@ const R = require('ramda');
 const hydrateSkillsWithStaticData = skills =>
   ({ id: skillGroupId, level, category, skills: skillsInSkillGroup }) =>
     R.map(
-      (skillId) => {
-        const { id: updateId, name, criteria, questions } = skills[skillId];
+      (skillUid) => {
+        const { id, name, criteria, questions } = skills[skillUid];
 
         return ({
-          skillId,
-          updateId,
+          skillUid,
+          id,
           name,
           criteria,
           questions,

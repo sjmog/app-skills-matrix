@@ -13,7 +13,7 @@ describe('Skills reducer', () => {
 
       const action = {
         type: actionTypes.SKILL_STATUS_UPDATE_SUCCESS,
-        payload: { skillId: 'SKILL_ID', status: 'NEW_STATUS' },
+        payload: { skillUid: 'SKILL_ID', status: 'NEW_STATUS' },
       };
 
       expect(reducer(state, action)).to.eql({
@@ -36,7 +36,7 @@ describe('Skills reducer', () => {
 
       const action = {
         type: actionTypes.SKILL_STATUS_UPDATE_SUCCESS,
-        payload: { skillId: 'SKILL_ID', status: 'NEW_STATUS' },
+        payload: { skillUid: 'SKILL_ID', status: 'NEW_STATUS' },
       };
 
       expect(reducer(state, action)).to.eql({
@@ -56,7 +56,7 @@ describe('Skills reducer', () => {
 
       const action = {
         type: actionTypes.SKILL_STATUS_UPDATE_FAILURE,
-        payload: { skillId: 'SKILL_ID', error: { message: 'MSG' } },
+        payload: { skillUid: 'SKILL_ID', error: { message: 'MSG' } },
       };
 
       expect(reducer(state, action)).to.eql({ errors: { SKILL_ID: 'MSG' } });
@@ -69,7 +69,7 @@ describe('Skills reducer', () => {
 
       const action = {
         type: actionTypes.SKILL_STATUS_UPDATE_FAILURE,
-        payload: { skillId: 'SKILL_ID', error: 'foo' },
+        payload: { skillUid: 'SKILL_ID', error: 'foo' },
       };
 
       expect(reducer(state, action)).to.eql({ errors: { SKILL_ID: 'unknown' } });
@@ -84,7 +84,7 @@ describe('Skills reducer', () => {
 
       const action = {
         type: actionTypes.SKILL_STATUS_UPDATE_FAILURE,
-        payload: { skillId: 'SKILL_ID_2', error: { message: 'MSG_2' } },
+        payload: { skillUid: 'SKILL_ID_2', error: { message: 'MSG_2' } },
       };
 
       expect(reducer(state, action)).to.eql({ errors: { SKILL_ID_1: 'MSG_1', SKILL_ID_2: 'MSG_2' } });
@@ -99,7 +99,7 @@ describe('Skills reducer', () => {
 
       const action = {
         type: actionTypes.SKILL_STATUS_UPDATE_FAILURE,
-        payload: { skillId: 'SKILL_ID', error: { message: 'MSG_2' } },
+        payload: { skillUid: 'SKILL_ID', error: { message: 'MSG_2' } },
       };
 
       expect(reducer(state, action)).to.eql({ errors: { SKILL_ID: 'MSG_2' } });

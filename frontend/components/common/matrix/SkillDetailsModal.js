@@ -6,7 +6,7 @@ import { SKILL_STATUS } from '../../../modules/user/evaluations';
 import * as selectors from '../../../modules/user';
 import SkillActions from '../SkillActions';
 
-const SkillDetailsModal = ({ skillId, skill, error, showModal, onClose, updateSkillStatus, canUpdateSkillStatus }) => (
+const SkillDetailsModal = ({ skillUid, skill, error, showModal, onClose, updateSkillStatus, canUpdateSkillStatus }) => (
   <div>
     <Modal show={showModal} onHide={onClose}>
       <Modal.Header closeButton>
@@ -35,10 +35,10 @@ const SkillDetailsModal = ({ skillId, skill, error, showModal, onClose, updateSk
               canUpdateSkillStatus
                 ? <SkillActions
                   skillStatus={skill.status}
-                  onAttained={() => updateSkillStatus(skill.id, SKILL_STATUS.ATTAINED, skillId)}
-                  onNotAttained={() => updateSkillStatus(skill.id, SKILL_STATUS.NOT_ATTAINED, skillId)}
-                  onFeedbackRequest={() => updateSkillStatus(skill.id, SKILL_STATUS.FEEDBACK, skillId)}
-                  onSetObjective={() => updateSkillStatus(skill.id, SKILL_STATUS.OBJECTIVE, skillId)}
+                  onAttained={() => updateSkillStatus(skill.id, SKILL_STATUS.ATTAINED, skillUid)}
+                  onNotAttained={() => updateSkillStatus(skill.id, SKILL_STATUS.NOT_ATTAINED, skillUid)}
+                  onFeedbackRequest={() => updateSkillStatus(skill.id, SKILL_STATUS.FEEDBACK, skillUid)}
+                  onSetObjective={() => updateSkillStatus(skill.id, SKILL_STATUS.OBJECTIVE, skillUid)}
                 />
                 : false
             }
@@ -56,7 +56,7 @@ const SkillDetailsModal = ({ skillId, skill, error, showModal, onClose, updateSk
 
 
 SkillDetailsModal.propTypes = {
-  skillId: PropTypes.string,
+  skillUid: PropTypes.string.isRequired,
   showModal: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   updateSkillStatus: PropTypes.func,
@@ -67,12 +67,12 @@ SkillDetailsModal.propTypes = {
     type: PropTypes.string,
     version: PropTypes.number,
     questions: PropTypes.array,
-  }),
+  }).isRequired,
   error: PropTypes.string,
   canUpdateSkillStatus: PropTypes.bool,
 };
 
-export default connect((state, { skillId }) => ({
-  skill: selectors.getSkill(state, skillId),
-  error: selectors.getSkillError(state, skillId),
+export default connect((state, { skillUid }) => ({
+  skill: selectors.getSkill(state, skillUid),
+  error: selectors.getSkillError(state, skillUid),
 }))(SkillDetailsModal);

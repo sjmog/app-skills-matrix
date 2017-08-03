@@ -74,7 +74,7 @@ class Evaluation extends React.Component {
       initialisedEvaluation,
       updateSkillStatus,
       currentSkill,
-      currentSkillId,
+      currentSkillUid,
       currentSkillStatus,
       lastSkill,
       firstSkill,
@@ -118,14 +118,14 @@ class Evaluation extends React.Component {
               updateSkillStatus={updateSkillStatus}
               nextSkill={this.nextSkill}
               prevSkill={this.prevSkill}
-              isFirstSkill={currentSkillId === firstSkill.skillId}
-              isLastSkill={currentSkillId === lastSkill.skillId}
+              isFirstSkill={currentSkillUid === firstSkill.skillUid}
+              isLastSkill={currentSkillUid === lastSkill.skillUid}
               postUpdateNavigation={this.postUpdateNavigation}
             />
           </Col>
           <Col md={5} className="evaluation-panel evaluation-panel--right">
             <Matrix
-              skillBeingEvaluated={currentSkillId}
+              skillBeingEvaluated={currentSkillUid}
               categories={[].concat(currentSkill.category)}
               levels={R.slice(levels.indexOf(currentSkill.level), Infinity, levels)}
               skillGroups={skillGroups}
@@ -144,7 +144,7 @@ class Evaluation extends React.Component {
 }
 
 const skillShape = PropTypes.shape({
-  skillId: PropTypes.string.isRequired,
+  skillUid: PropTypes.string.isRequired,
   skillGroupId: PropTypes.number.isRequired,
   level: PropTypes.string.isRequired,
   category: PropTypes.string.isRequired,
@@ -159,7 +159,7 @@ Evaluation.propTypes = {
   updateSkillStatus: PropTypes.func.isRequired,
   initialisedEvaluation: PropTypes.string,
   currentSkill: skillShape,
-  currentSkillId: PropTypes.string,
+  currentSkillUid: PropTypes.string,
   currentSkillStatus: PropTypes.shape({
     current: PropTypes.string,
     previous: PropTypes.string,
@@ -175,19 +175,19 @@ export default connect(
   (state, props) => {
     const { evaluationId } = props;
     const currentSkill = selectors.getCurrentSkill(state);
-    const currentSkillId = selectors.getCurrentSkillId(state);
-    const skillIdsForEvaluation = selectors.getSkillIds(state, evaluationId);
+    const currentSkillUid = selectors.getCurrentSkillUid(state);
+    const skillUidsForEvaluation = selectors.getSkillUids(state, evaluationId);
 
     return ({
       initialisedEvaluation: selectors.getCurrentEvaluation(state),
       currentSkill,
-      currentSkillId,
-      currentSkillStatus: selectors.getSkillStatus(state, currentSkillId),
+      currentSkillUid,
+      currentSkillStatus: selectors.getSkillStatus(state, currentSkillUid),
       firstCategory: selectors.getFirstCategory(state),
       lastCategory: selectors.getLastCategory(state),
       firstSkill: selectors.getFirstSkill(state),
       lastSkill: selectors.getLastSkill(state),
-      erringSkills: selectors.getErringSkills(state, skillIdsForEvaluation),
+      erringSkills: selectors.getErringSkills(state, skillUidsForEvaluation),
       skillGroups: selectors.getSkillGroupsWithReversedSkills(state, evaluationId),
     });
   },

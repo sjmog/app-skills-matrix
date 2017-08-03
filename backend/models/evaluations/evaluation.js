@@ -20,12 +20,12 @@ const VIEW = keymirror({
 const arrayToKeyedObject = (evaluationId, arr) =>
   arr.reduce((acc, item) => Object.assign({}, acc, { [item.id]: item }), {});
 
-const uniqueId = (evaluationId, id) => evaluationId + id;
+const uniqueId = (evaluationId, id) => `${evaluationId}_${id}`;
 
 const makeSkillsUnique = (evaluationId, skillGroups) =>
   R.map(skillGroup => Object.assign({},
     skillGroup,
-    { skills: R.map(skillId => uniqueId(evaluationId, skillId))(skillGroup.skills) }))(skillGroups);
+    { skills: R.map(skillId => uniqueId(evaluationId, skillId))(R.prop('skills', skillGroup)) }))(skillGroups);
 
 const arrayToUniquelyKeyedObject = (evaluationId, arr) =>
   R.reduce(

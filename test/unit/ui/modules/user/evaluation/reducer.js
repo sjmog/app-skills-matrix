@@ -44,7 +44,8 @@ describe('Evaluation reducer', () => {
 
       expect(newState.paginatedView.length).to.equal(12);
 
-      expect(newState.paginatedView[0].skillId).to.equal(evalId + 4);
+      expect(newState.paginatedView[0].skillUid).to.equal(`${evalId}_4`);
+      expect(newState.paginatedView[0].id).to.equal(4);
       expect(newState.paginatedView[0].skillGroupId).to.equal(3);
       expect(newState.paginatedView[0].level).to.equal('Novice');
       expect(newState.paginatedView[0].category).to.equal('Magicness');
@@ -56,57 +57,57 @@ describe('Evaluation reducer', () => {
         },
       ]);
 
-      expect(newState.paginatedView[1].skillId).to.equal(evalId + 11);
+      expect(newState.paginatedView[1].id).to.equal(11);
       expect(newState.paginatedView[1].skillGroupId).to.equal(10);
       expect(newState.paginatedView[1].level).to.equal('Experienced Beginner');
       expect(newState.paginatedView[1].category).to.equal('Magicness');
 
-      expect(newState.paginatedView[2].skillId).to.equal(evalId + 12);
+      expect(newState.paginatedView[2].id).to.equal(12);
       expect(newState.paginatedView[2].skillGroupId).to.equal(11);
       expect(newState.paginatedView[2].level).to.equal('Knowledgeable');
       expect(newState.paginatedView[2].category).to.equal('Magicness');
 
-      expect(newState.paginatedView[3].skillId).to.equal(evalId + 3);
+      expect(newState.paginatedView[3].id).to.equal(3);
       expect(newState.paginatedView[3].skillGroupId).to.equal(5);
       expect(newState.paginatedView[3].level).to.equal('Expert');
       expect(newState.paginatedView[3].category).to.equal('Magicness');
 
-      expect(newState.paginatedView[4].skillId).to.equal(evalId + 1);
+      expect(newState.paginatedView[4].id).to.equal(1);
       expect(newState.paginatedView[4].skillGroupId).to.equal(4);
       expect(newState.paginatedView[4].level).to.equal('Novice');
       expect(newState.paginatedView[4].category).to.equal('Dragon Flight');
 
-      expect(newState.paginatedView[5].skillId).to.equal(evalId + 9);
+      expect(newState.paginatedView[5].id).to.equal(9);
       expect(newState.paginatedView[5].skillGroupId).to.equal(8);
       expect(newState.paginatedView[5].level).to.equal('Experienced Beginner');
       expect(newState.paginatedView[5].category).to.equal('Dragon Flight');
 
-      expect(newState.paginatedView[6].skillId).to.equal(evalId + 10);
+      expect(newState.paginatedView[6].id).to.equal(10);
       expect(newState.paginatedView[6].skillGroupId).to.equal(9);
       expect(newState.paginatedView[6].level).to.equal('Knowledgeable');
       expect(newState.paginatedView[6].category).to.equal('Dragon Flight');
 
-      expect(newState.paginatedView[7].skillId).to.equal(evalId + 2);
+      expect(newState.paginatedView[7].id).to.equal(2);
       expect(newState.paginatedView[7].skillGroupId).to.equal(2);
       expect(newState.paginatedView[7].level).to.equal('Expert');
       expect(newState.paginatedView[7].category).to.equal('Dragon Flight');
 
-      expect(newState.paginatedView[8].skillId).to.equal(evalId + 5);
+      expect(newState.paginatedView[8].id).to.equal(5);
       expect(newState.paginatedView[8].skillGroupId).to.equal(0);
       expect(newState.paginatedView[8].level).to.equal('Novice');
       expect(newState.paginatedView[8].category).to.equal('Dragon Slaying');
 
-      expect(newState.paginatedView[9].skillId).to.equal(evalId + 7);
+      expect(newState.paginatedView[9].id).to.equal(7);
       expect(newState.paginatedView[9].skillGroupId).to.equal(6);
       expect(newState.paginatedView[9].level).to.equal('Experienced Beginner');
       expect(newState.paginatedView[9].category).to.equal('Dragon Slaying');
 
-      expect(newState.paginatedView[10].skillId).to.equal(evalId + 8);
+      expect(newState.paginatedView[10].id).to.equal(8);
       expect(newState.paginatedView[10].skillGroupId).to.equal(7);
       expect(newState.paginatedView[10].level).to.equal('Knowledgeable');
       expect(newState.paginatedView[10].category).to.equal('Dragon Slaying');
 
-      expect(newState.paginatedView[11].skillId).to.equal(evalId + 6);
+      expect(newState.paginatedView[11].id).to.equal(6);
       expect(newState.paginatedView[11].skillGroupId).to.equal(1);
       expect(newState.paginatedView[11].level).to.equal('Expert');
       expect(newState.paginatedView[11].category).to.equal('Dragon Slaying');
@@ -121,7 +122,7 @@ describe('Evaluation reducer', () => {
 
       const newState = reducer(state, action);
 
-      expect(newState.currentSkill.skillId).to.equal(evalId + 4);
+      expect(newState.currentSkill.id).to.equal(4);
       expect(newState.currentSkill.skillGroupId).to.equal(3);
       expect(newState.currentSkill.level).to.equal('Novice');
       expect(newState.currentSkill.category).to.equal('Magicness');
@@ -140,7 +141,7 @@ describe('Evaluation reducer', () => {
 
       const newState = reducer(state, action);
 
-      expect(newState.currentSkill.skillId).to.equal(evalId + 6);
+      expect(newState.currentSkill.id).to.equal(6);
       expect(newState.currentSkill.skillGroupId).to.equal(1);
       expect(newState.currentSkill.level).to.equal('Expert');
       expect(newState.currentSkill.category).to.equal('Dragon Slaying');
@@ -154,7 +155,7 @@ describe('Evaluation reducer', () => {
       };
 
       const newState = reducer(state, action);
-      expect(newState.firstSkill.skillId).to.equal(evalId + 4);
+      expect(newState.firstSkill.id).to.equal(4);
       expect(newState.firstSkill.skillGroupId).to.equal(3);
       expect(newState.firstSkill.level).to.equal('Novice');
       expect(newState.firstSkill.category).to.equal('Magicness');
@@ -169,7 +170,7 @@ describe('Evaluation reducer', () => {
 
       const newState = reducer(state, action);
 
-      expect(newState.lastSkill.skillId).to.equal(evalId + 6);
+      expect(newState.lastSkill.id).to.equal(6);
       expect(newState.lastSkill.skillGroupId).to.equal(1);
       expect(newState.lastSkill.level).to.equal('Expert');
       expect(newState.lastSkill.category).to.equal('Dragon Slaying');
@@ -201,62 +202,62 @@ describe('Evaluation reducer', () => {
   describe('NEXT_SKILL', () => {
     it('sets current skill to be the next skill in the paginated view', () => {
       const state = {
-        paginatedView: [{ skillId: 1 }, { skillId: 0 }, { skillId: 2 }],
-        currentSkill: { skillId: 1 },
-        lastSkill: { skillId: 2 },
+        paginatedView: [{ skillUid: 1 }, { skillUid: 0 }, { skillUid: 2 }],
+        currentSkill: { skillUid: 1 },
+        lastSkill: { skillUid: 2 },
       };
       const action = { type: actionTypes.NEXT_SKILL };
 
       const newState = reducer(state, action);
-      expect(newState.currentSkill).to.eql({ skillId: 0 });
+      expect(newState.currentSkill).to.eql({ skillUid: 0 });
     });
 
     it('does not update current skill when current is the last skill', () => {
       const state = {
-        paginatedView: [{ skillId: 1 }, { skillId: 0 }, { skillId: 2 }],
-        currentSkill: { skillId: 2 },
-        lastSkill: { skillId: 2 },
+        paginatedView: [{ skillUid: 1 }, { skillUid: 0 }, { skillUid: 2 }],
+        currentSkill: { skillUid: 2 },
+        lastSkill: { skillUid: 2 },
       };
       const action = { type: actionTypes.NEXT_SKILL };
 
       const newState = reducer(state, action);
-      expect(newState.currentSkill).to.eql({ skillId: 2 });
+      expect(newState.currentSkill).to.eql({ skillUid: 2 });
     });
   });
 
   describe('PREVIOUS_SKILL', () => {
     it('sets current skill to be the previous skill in the paginated view', () => {
       const state = {
-        paginatedView: [{ skillId: 1 }, { skillId: 0 }, { skillId: 2 }],
-        currentSkill: { skillId: 0 },
-        firstSkill: { skillId: 1 },
+        paginatedView: [{ skillUid: 1 }, { skillUid: 0 }, { skillUid: 2 }],
+        currentSkill: { skillUid: 0 },
+        firstSkill: { skillUid: 1 },
       };
       const action = { type: actionTypes.PREVIOUS_SKILL };
 
       const newState = reducer(state, action);
-      expect(newState.currentSkill).to.eql({ skillId: 1 });
+      expect(newState.currentSkill).to.eql({ skillUid: 1 });
     });
 
     it('does not update current skill when current is the first skill', () => {
       const state = {
-        paginatedView: [{ skillId: 1 }, { skillId: 0 }, { skillId: 2 }],
-        currentSkill: { skillId: 1 },
-        firstSkill: { skillId: 1 },
+        paginatedView: [{ skillUid: 1 }, { skillUid: 0 }, { skillUid: 2 }],
+        currentSkill: { skillUid: 1 },
+        firstSkill: { skillUid: 1 },
       };
 
       const action = { type: actionTypes.PREVIOUS_SKILL };
 
       const newState = reducer(state, action);
-      expect(newState.currentSkill).to.eql({ skillId: 1 });
+      expect(newState.currentSkill).to.eql({ skillUid: 1 });
     });
   });
 
   describe('NEXT_UNEVALUATED_SKILL', () => {
     it('sets current skill to be the next skill that has not been evaluated', () => {
       const state = {
-        paginatedView: [{ skillId: 1 }, { skillId: 0 }, { skillId: 2 }],
-        currentSkill: { skillId: 1 },
-        lastSkill: { skillId: 2 },
+        paginatedView: [{ skillUid: 1 }, { skillUid: 0 }, { skillUid: 2 }],
+        currentSkill: { skillUid: 1 },
+        lastSkill: { skillUid: 2 },
       };
 
       const action = {
@@ -287,14 +288,14 @@ describe('Evaluation reducer', () => {
       };
 
       const newState = reducer(state, action);
-      expect(newState.currentSkill).to.eql({ skillId: 2 });
+      expect(newState.currentSkill).to.eql({ skillUid: 2 });
     });
 
     it('sets current skill to last skill when all remaining skills have been evaluated', () => {
       const state = {
-        paginatedView: [{ skillId: 1 }, { skillId: 0 }, { skillId: 2 }],
-        currentSkill: { skillId: 1 },
-        lastSkill: { skillId: 2 },
+        paginatedView: [{ skillUid: 1 }, { skillUid: 0 }, { skillUid: 2 }],
+        currentSkill: { skillUid: 1 },
+        lastSkill: { skillUid: 2 },
       };
 
       const action = {
@@ -325,14 +326,14 @@ describe('Evaluation reducer', () => {
       };
 
       const newState = reducer(state, action);
-      expect(newState.currentSkill).to.eql({ skillId: 2 });
+      expect(newState.currentSkill).to.eql({ skillUid: 2 });
     });
 
     it('does not update current skill when it is the last skill', () => {
       const state = {
-        paginatedView: [{ skillId: 1 }, { skillId: 0 }, { skillId: 2 }],
-        currentSkill: { skillId: 2 },
-        lastSkill: { skillId: 2 },
+        paginatedView: [{ skillUid: 1 }, { skillUid: 0 }, { skillUid: 2 }],
+        currentSkill: { skillUid: 2 },
+        lastSkill: { skillUid: 2 },
       };
 
       const action = {
@@ -363,7 +364,7 @@ describe('Evaluation reducer', () => {
       };
 
       const newState = reducer(state, action);
-      expect(newState.currentSkill).to.eql({ skillId: 2 });
+      expect(newState.currentSkill).to.eql({ skillUid: 2 });
     });
   });
 
@@ -371,12 +372,12 @@ describe('Evaluation reducer', () => {
     it('sets current skill to the first unevaluated skill in the next category', () => {
       const state = {
         paginatedView: [
-          { skillId: 0, category: 'Magicness' },
-          { skillId: 1, category: 'Dragon Flight' },
-          { skillId: 2, category: 'Dragon Flight' },
-          { skillId: 3, category: 'Dragon Flight' },
+          { skillUid: 0, category: 'Magicness' },
+          { skillUid: 1, category: 'Dragon Flight' },
+          { skillUid: 2, category: 'Dragon Flight' },
+          { skillUid: 3, category: 'Dragon Flight' },
         ],
-        currentSkill: { skillId: 0, category: 'Magicness' },
+        currentSkill: { skillUid: 0, category: 'Magicness' },
         lastCategory: 'Dragon Flight',
       };
 
@@ -415,18 +416,18 @@ describe('Evaluation reducer', () => {
       };
 
       const newState = reducer(state, action);
-      expect(newState.currentSkill).to.eql({ skillId: 2, category: 'Dragon Flight' });
+      expect(newState.currentSkill).to.eql({ skillUid: 2, category: 'Dragon Flight' });
     });
 
     it('sets current skill to last skill in the next category when all skills have been evaluated', () => {
       const state = {
         paginatedView: [
-          { skillId: 0, category: 'Magicness' },
-          { skillId: 1, category: 'Dragon Flight' },
-          { skillId: 2, category: 'Dragon Flight' },
-          { skillId: 3, category: 'Dragon Slaying' },
+          { skillUid: 0, category: 'Magicness' },
+          { skillUid: 1, category: 'Dragon Flight' },
+          { skillUid: 2, category: 'Dragon Flight' },
+          { skillUid: 3, category: 'Dragon Slaying' },
         ],
-        currentSkill: { skillId: 0, category: 'Magicness' },
+        currentSkill: { skillUid: 0, category: 'Magicness' },
         lastCategory: 'Dragon Slaying',
       };
 
@@ -465,15 +466,15 @@ describe('Evaluation reducer', () => {
       };
 
       const newState = reducer(state, action);
-      expect(newState.currentSkill).to.eql({ skillId: 2, category: 'Dragon Flight' });
+      expect(newState.currentSkill).to.eql({ skillUid: 2, category: 'Dragon Flight' });
     });
 
     it('does not update current skill when current is in the last category', () => {
       const state = {
         paginatedView: [
-          { skillId: 0, category: 'Magicness' },
+          { skillUid: 0, category: 'Magicness' },
         ],
-        currentSkill: { skillId: 0, category: 'Magicness' },
+        currentSkill: { skillUid: 0, category: 'Magicness' },
         lastCategory: 'Magicness',
       };
 
@@ -491,7 +492,7 @@ describe('Evaluation reducer', () => {
       };
 
       const newState = reducer(state, action);
-      expect(newState.currentSkill).to.eql({ skillId: 0, category: 'Magicness' });
+      expect(newState.currentSkill).to.eql({ skillUid: 0, category: 'Magicness' });
     });
   });
 
@@ -499,11 +500,11 @@ describe('Evaluation reducer', () => {
     it('sets current skill to the first unevaluated skill in the previous category', () => {
       const state = {
         paginatedView: [
-          { skillId: 0, category: 'Magicness' },
-          { skillId: 1, category: 'Magicness' },
-          { skillId: 2, category: 'Dragon Flight' },
+          { skillUid: 0, category: 'Magicness' },
+          { skillUid: 1, category: 'Magicness' },
+          { skillUid: 2, category: 'Dragon Flight' },
         ],
-        currentSkill: { skillId: 2, category: 'Dragon Flight' },
+        currentSkill: { skillUid: 2, category: 'Dragon Flight' },
         firstCategory: 'Magicness',
       };
 
@@ -535,17 +536,17 @@ describe('Evaluation reducer', () => {
       };
 
       const newState = reducer(state, action);
-      expect(newState.currentSkill).to.eql({ skillId: 0, category: 'Magicness' });
+      expect(newState.currentSkill).to.eql({ skillUid: 0, category: 'Magicness' });
     });
 
     it('sets current skill to last skill in the previous category when all skills have been evaluated', () => {
       const state = {
         paginatedView: [
-          { skillId: 0, category: 'Magicness' },
-          { skillId: 1, category: 'Magicness' },
-          { skillId: 2, category: 'Dragon Flight' },
+          { skillUid: 0, category: 'Magicness' },
+          { skillUid: 1, category: 'Magicness' },
+          { skillUid: 2, category: 'Dragon Flight' },
         ],
-        currentSkill: { skillId: 2, category: 'Dragon Flight' },
+        currentSkill: { skillUid: 2, category: 'Dragon Flight' },
         firstCategory: 'Magicness',
       };
 
@@ -577,15 +578,15 @@ describe('Evaluation reducer', () => {
       };
 
       const newState = reducer(state, action);
-      expect(newState.currentSkill).to.eql({ skillId: 1, category: 'Magicness' });
+      expect(newState.currentSkill).to.eql({ skillUid: 1, category: 'Magicness' });
     });
 
     it('does not update current skill when current is in the first category', () => {
       const state = {
         paginatedView: [
-          { skillId: 0, category: 'Magicness' },
+          { skillUid: 0, category: 'Magicness' },
         ],
-        currentSkill: { skillId: 0, category: 'Magicness' },
+        currentSkill: { skillUid: 0, category: 'Magicness' },
         firstCategory: 'Magicness',
       };
 
@@ -603,7 +604,7 @@ describe('Evaluation reducer', () => {
       };
 
       const newState = reducer(state, action);
-      expect(newState.currentSkill).to.eql({ skillId: 0, category: 'Magicness' });
+      expect(newState.currentSkill).to.eql({ skillUid: 0, category: 'Magicness' });
     });
   });
 });

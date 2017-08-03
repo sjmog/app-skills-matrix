@@ -22,8 +22,8 @@ export const getCurrentEvaluation = ({ evaluation }) =>
 export const getCurrentSkill = ({ evaluation }) =>
   fromEvaluation.getCurrentSkill(evaluation);
 
-export const getCurrentSkillId = ({ evaluation }) =>
-  fromEvaluation.getCurrentSkillId(evaluation);
+export const getCurrentSkillUid = ({ evaluation }) =>
+  fromEvaluation.getCurrentSkillUid(evaluation);
 
 export const getFirstCategory = ({ evaluation }) =>
   fromEvaluation.getFirstCategory(evaluation);
@@ -40,17 +40,17 @@ export const getLastSkill = ({ evaluation }) =>
 
 /* SKILLS SELECTORS */
 
-export const getSkillStatus = ({ entities: { skills } }, skillId) =>
-  fromSkills.getSkillStatus(skills, skillId);
+export const getSkillStatus = ({ entities: { skills } }, skillUid) =>
+  fromSkills.getSkillStatus(skills, skillUid);
 
-export const getSkill = ({ entities: { skills } }, skillId) =>
-  fromSkills.getSkill(skills, skillId);
+export const getSkill = ({ entities: { skills } }, skillUid) =>
+  fromSkills.getSkill(skills, skillUid);
 
-export const getErringSkills = ({ entities: { skills } }, skillIds) =>
-  fromSkills.getErringSkills(skills, skillIds);
+export const getErringSkills = ({ entities: { skills } }, skillUids) =>
+  fromSkills.getErringSkills(skills, skillUids);
 
-export const getSkillError = ({ entities: { skills } }, skillId) =>
-  fromSkills.getSkillError(skills, skillId);
+export const getSkillError = ({ entities: { skills } }, skillUid) =>
+  fromSkills.getSkillError(skills, skillUid);
 
 /* EVALUATIONS SELECTORS */
 
@@ -84,8 +84,8 @@ export const getError = ({ entities: { evaluations } }, evalId) =>
 export const getSkillGroupsWithReversedSkills = ({ entities: { evaluations } }, evalId) =>
   fromEvaluations.getSkillGroupsWithReversedSkills(evaluations, evalId);
 
-export const getSkillIds = ({ entities: { evaluations } }, evalId) =>
-  fromEvaluations.getSkillIds(evaluations, evalId);
+export const getSkillUids = ({ entities: { evaluations } }, evalId) =>
+  fromEvaluations.getSkillUids(evaluations, evalId);
 
 /* ACTIONS SELECTORS */
 

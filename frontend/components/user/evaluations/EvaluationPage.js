@@ -31,10 +31,10 @@ class EvaluationPageComponent extends React.Component {
     }
   }
 
-  updateSkillStatus(updateId, newSkillStatus, skillId) {
+  updateSkillStatus(skillId, newSkillStatus, skillUid) {
     const { skillActions, view, params: { evaluationId } } = this.props;
 
-    return skillActions.updateSkillStatus(view, evaluationId, updateId, newSkillStatus, skillId);
+    return skillActions.updateSkillStatus(view, evaluationId, skillId, newSkillStatus, skillUid);
   }
 
   render() {

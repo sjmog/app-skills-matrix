@@ -7,10 +7,10 @@ const SkillGroup = ({ skillGroup, viewSkillDetails, skillBeingEvaluated }) => (
     <div className="skillGroupContainer">
       {
         skillGroup.skills.map(
-          skillId => (
+          skillUid => (
             <Skill
-              key={skillId}
-              skillId={skillId}
+              key={skillUid}
+              skillUid={skillUid}
               viewSkillDetails={viewSkillDetails}
               isBeingEvaluated={skillBeingEvaluated === skillId}
             />

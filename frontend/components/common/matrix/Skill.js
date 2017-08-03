@@ -36,7 +36,7 @@ const skillState = (status) => {
   }
 };
 
-const Skill = ({ skillId, skill, viewSkillDetails, isBeingEvaluated }) => {
+const Skill = ({ skillUid, skill, viewSkillDetails, isBeingEvaluated }) => {
   const statusClass = skill.status ? skillColour(skill.status.current, skill.status.previous) : '';
   const beingEvaluatedClass = isBeingEvaluated ? 'skill--current' : false;
 
@@ -44,21 +44,21 @@ const Skill = ({ skillId, skill, viewSkillDetails, isBeingEvaluated }) => {
   const currentStateLabel = `The current state of this skill is: ${currentStateStatus}`;
 
   return (
-    <div aria-hidden role="button" className={`skill--card ${statusClass} ${beingEvaluatedClass} previous--${skill.status.previous}`} onClick={() => viewSkillDetails(skillId)}>
+    <div aria-hidden role="button" className={`skill--card ${statusClass} ${beingEvaluatedClass} previous--${skill.status.previous}`} onClick={() => viewSkillDetails(skillUid)}>
       {skill.name}
       <div className={'skill-card--state'}>
-        <span data-tip data-for={`skill-${skillId}-previous`} className={`state--icon--${skill.status.previous}`} />
-        <ReactTooltip place="top" id={`skill-${skillId}-previous`} type="dark" effect="solid">{`The previous state of this skill was: ${skill.status.previous ? skill.status.previous : 'not attained'}`}</ReactTooltip>
+        <span data-tip data-for={`skill-${skillUid}-previous`} className={`state--icon--${skill.status.previous}`} />
+        <ReactTooltip place="top" id={`skill-${skillUid}-previous`} type="dark" effect="solid">{`The previous state of this skill was: ${skill.status.previous ? skill.status.previous : 'not attained'}`}</ReactTooltip>
 
-        <span data-tip data-for={`skill-${skillId}-current`} className={`state--icon--${skill.status.current}`} />
-        <ReactTooltip place="top" id={`skill-${skillId}-current`} type="dark" effect="solid">{currentStateLabel}</ReactTooltip>
+        <span data-tip data-for={`skill-${skillUid}-current`} className={`state--icon--${skill.status.current}`} />
+        <ReactTooltip place="top" id={`skill-${skillUid}-current`} type="dark" effect="solid">{currentStateLabel}</ReactTooltip>
       </div>
     </div>
   );
 };
 
 Skill.propTypes = {
-  skillId: PropTypes.string.isRequired,
+  skillUid: PropTypes.string.isRequired,
   skill: PropTypes.shape({
     name: PropTypes.string.isRequired,
     status: PropTypes.shape({
@@ -69,6 +69,6 @@ Skill.propTypes = {
   viewSkillDetails: PropTypes.func.isRequired,
 };
 
-export default connect((state, { skillId }) => ({
-  skill: selectors.getSkill(state, skillId),
+export default connect((state, { skillUid }) => ({
+  skill: selectors.getSkill(state, skillUid),
 }))(Skill);
