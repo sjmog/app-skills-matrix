@@ -8,19 +8,19 @@ const SkillGroup = ({ skillGroup, skills, viewSkillDetails, skillBeingEvaluated 
     <Table bordered>
       <tbody>
         {
-        skillGroup.skills.map(
-          (skillId) => {
-            const skill = skills[skillId];
-            return (
-              <Skill
-                key={skillId}
-                skill={skill}
-                viewSkillDetails={viewSkillDetails}
-                isBeingEvaluated={skillBeingEvaluated === skillId}
-              />
-            );
-          })
-      }
+          skillGroup.skills.map(
+            (skillId) => {
+              const skill = skills[skillId];
+              return (
+                <Skill
+                  key={skillId}
+                  skill={skill}
+                  viewSkillDetails={viewSkillDetails}
+                  isBeingEvaluated={skillBeingEvaluated === skillId}
+                />
+              );
+            })
+        }
       </tbody>
     </Table>
   </td>

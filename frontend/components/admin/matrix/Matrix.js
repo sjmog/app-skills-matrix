@@ -46,18 +46,18 @@ class Matrix extends React.Component {
           </thead>
           <tbody className="matrix-table__body">
             {
-            levels.map(levelName => (
-              <Level
-                key={levelName}
-                categories={categories}
-                levelName={levelName}
-                skillGroups={skillGroups}
-                skills={skills}
-                viewSkillDetails={this.viewSkillDetails}
-                skillBeingEvaluated={skillBeingEvaluated}
-              />
-            ))
-          }
+              levels.map(levelName => (
+                <Level
+                  key={levelName}
+                  categories={categories}
+                  levelName={levelName}
+                  skillGroups={skillGroups}
+                  skills={skills}
+                  viewSkillDetails={this.viewSkillDetails}
+                  skillBeingEvaluated={skillBeingEvaluated}
+                />
+              ))
+            }
           </tbody>
         </Table>
         <SkillDetailsModal
