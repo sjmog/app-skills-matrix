@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es2016",
+    "sourceMap": true,
+    "allowJs": true,
+    "jsx": "react",
+    "outDir": "./dist"
+  },
+  "include": [
+    "frontend/**/*",
+    "backend/**/*",
+    "test/**/*",
+    "types/*.d.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
