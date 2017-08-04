@@ -66,4 +66,5 @@ const Skill = ({ skillUid, skill, viewSkillDetails, isBeingEvaluated }: SkillPro
 
 export default connect((state, { skillUid }) => ({
   skill: selectors.getSkill(state, skillUid),
+  isBeingEvaluated: selectors.getCurrentSkillUid(state) === skillUid,
 }))(Skill);

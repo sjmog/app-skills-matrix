@@ -66,6 +66,11 @@ class Evaluation extends React.Component<EvaluationProps, any> {
     }
   }
 
+  componentWillUnmount() {
+    const { evaluationId, uiActions } = this.props;
+    uiActions.terminateEvaluation(evaluationId);
+  }
+
   nextSkill() {
     const { uiActions } = this.props;
     uiActions.nextSkill();
