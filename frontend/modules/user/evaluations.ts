@@ -1,7 +1,7 @@
 import { handleActions, createAction } from 'redux-actions';
 import * as keymirror from 'keymirror';
 import * as R from 'ramda';
-
+import * as moment from 'moment';
 import api from '../../api';
 
 export const EVALUATION_VIEW = keymirror({
@@ -64,10 +64,30 @@ export const actions = {
 
 const addFakeNotes = (evaluation) => {
   const evaluationId = R.prop('id', evaluation);
-  const note1 = { id: 'note_id_1', author: 'author_id', note: 'This is a fake note' };
-  const note2 = { id: 'note_id_2', author: 'author_id', note: 'This is another fake note' };
+  // TODO: Would be nice to normalize users.
+  const note1 = {
+    id: 'note_id_1',
+    author: {
+      name: 'Charlie Harris',
+      username: 'charlieharris1',
+      avatarUrl: 'https://avatars3.githubusercontent.com/u/11438777?v=4',
+    },
+    note: 'This is a fake note',
+    date: moment(),
+  };
 
-  const skillNotesLens = R.lensPath(['skills', `${evaluationId}_161`, 'notes']);
+  const note2 = {
+    id: 'note_id_2',
+    author: {
+      name: 'Jo Bloggs',
+      username: 'jobloggs',
+      avatarUrl: 'https://avatars1.githubusercontent.com/u/1444502?v=4',
+    },
+    date: moment(),
+    note: 'This is another fake note',
+  };
+
+  const skillNotesLens = R.lensPath(['skills', `${evaluationId}_156`, 'notes']);
   const notesLens = R.lensPath(['notes']);
 
   return R.compose(
@@ -76,7 +96,7 @@ const addFakeNotes = (evaluation) => {
   )(evaluation);
 };
 
-function retrieveEvaluation(evaluationId) {
+function retrieveEvaluation (evaluationId) {
   return dispatch => api.retrieveEvaluation(evaluationId)
     .then((evaluation) => {
       /* TEMPORARY STUB */
@@ -86,7 +106,7 @@ function retrieveEvaluation(evaluationId) {
     .catch(error => dispatch(retrieveEvaluationFailure(error, evaluationId)));
 }
 
-function evaluationComplete(evaluationId) {
+function evaluationComplete (evaluationId) {
   return dispatch => api.evaluationComplete(evaluationId)
     .then(({ status }) => dispatch(evaluationCompleteSuccess(evaluationId, status)))
     .catch(error => dispatch(evaluationCompleteFailure(evaluationId, error)));

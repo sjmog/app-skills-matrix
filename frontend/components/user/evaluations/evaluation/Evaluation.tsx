@@ -11,6 +11,7 @@ import { actionCreators as uiActionCreators } from '../../../../modules/user/eva
 import EvaluationHeader from './EvaluationHeader';
 import Matrix from '../../matrix/Matrix';
 import Skill from './Skill';
+import Notes from '../Notes';
 
 const { SUBJECT, MENTOR, ADMIN } = EVALUATION_VIEW;
 const { NEW, SELF_EVALUATION_COMPLETE } = EVALUATION_STATUS;
@@ -147,6 +148,7 @@ class Evaluation extends React.Component<EvaluationProps, any> {
         </Row>
         <Row>
           <Col md={7} className="evaluation-panel">
+            <Row>
             <Skill
               level={currentSkill.level}
               skill={currentSkill}
@@ -158,6 +160,12 @@ class Evaluation extends React.Component<EvaluationProps, any> {
               isLastSkill={currentSkillUid === lastSkill.skillUid}
               postUpdateNavigation={this.postUpdateNavigation}
             />
+            </Row>
+            <Row>
+            <Notes
+              skillUid={currentSkillUid}
+            />
+            </Row>
           </Col>
           <Col md={5} className="evaluation-panel evaluation-panel--right">
             <Matrix

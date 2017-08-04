@@ -1,6 +1,8 @@
-import { expect } from 'chai';
-import reducer, { initialState } from '../../../../../../frontend/modules/user/notes';
-import { constants as evalActionTypes } from '../../../../../../frontend/modules/user/evaluations';
+import {expect} from 'chai';
+import * as moment from 'moment';
+
+import reducer, {initialState, actionTypes} from '../../../../../../frontend/modules/user/notes';
+import {constants as evalActionTypes} from '../../../../../../frontend/modules/user/evaluations';
 
 describe('Evaluation reducer', () => {
   describe('RETRIEVE_EVALUATION_SUCCESS', () => {
@@ -52,6 +54,36 @@ describe('Evaluation reducer', () => {
       };
 
       expect(reducer(state, action).entities).to.eql({ note_1: { b: 'B' } });
+    });
+  });
+
+  describe('ADD_NOTE_SUCCESS', () => {
+    it('adds a new note', () => {
+      const state = {
+        entities: {}
+      };
+      const action = {
+        type: actionTypes.ADD_NOTE_SUCCESS,
+        payload: { note: { id: 'note_1' } }
+      };
+
+      expect(reducer(state, action).entities).to.eql({ note_1: { id: 'note_1' } })
+    });
+
+    it('does not remove any existing notes when a new one is added', () => {
+      const state = {
+        entities: { note_1: { id: 'note_1' } },
+      };
+      const action = {
+        type: actionTypes.ADD_NOTE_SUCCESS,
+        payload: { note: { id: 'note_2' } }
+      };
+
+      expect(reducer(state, action).entities).to.eql(
+        {
+          note_1: { id: 'note_1' },
+          note_2: { id: 'note_2' }
+        })
     });
   });
 });

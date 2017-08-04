@@ -1,7 +1,5 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
 import { Panel, Label, ButtonGroup, Button, Glyphicon } from 'react-bootstrap';
-import * as selectors from '../../../../modules/user';
 
 import { SKILL_STATUS } from '../../../../modules/user/evaluations';
 
@@ -13,7 +11,6 @@ import '../evaluation.scss';
 type SkillProps = {
   level: string,
   skill: any,
-  notes: any,
   skillStatus: {
     current: string,
     previous: string,
@@ -26,7 +23,7 @@ type SkillProps = {
   isLastSkill: boolean,
 };
 
-const Skill = ({ level, notes, skill, skillStatus, updateSkillStatus, postUpdateNavigation, prevSkill, nextSkill, isFirstSkill, isLastSkill }: SkillProps) => {
+const Skill = ({ level, skill, skillStatus, updateSkillStatus, postUpdateNavigation, prevSkill, nextSkill, isFirstSkill, isLastSkill }: SkillProps) => {
   const { name, skillUid, id, criteria, questions } = skill;
 
   return (
@@ -40,8 +37,7 @@ const Skill = ({ level, notes, skill, skillStatus, updateSkillStatus, postUpdate
           </div>
         }
       >
-        <SkillBody criteria={criteria} questions={questions} />
-        { notes ? notes.map(note => <p>{note.note}</p>) : false }
+        <SkillBody criteria={criteria} questions={questions}/>
         <SkillActions
           skillStatus={skillStatus}
           onAttained={() => updateSkillStatus(id, SKILL_STATUS.ATTAINED, skillUid).then(() => postUpdateNavigation())}
@@ -50,32 +46,24 @@ const Skill = ({ level, notes, skill, skillStatus, updateSkillStatus, postUpdate
           onSetObjective={() => updateSkillStatus(id, SKILL_STATUS.OBJECTIVE, skillUid).then(() => postUpdateNavigation())}
         />
       </Panel>
-      <ButtonGroup className="pull-right">
-        <Button
-          disabled={isFirstSkill}
-          onClick={() => prevSkill(skillUid)}
-        >
-          <Glyphicon glyph="chevron-left" />
-          Previous skill
-        </Button>
-        <Button
-          disabled={isLastSkill}
-          onClick={() => nextSkill(skillUid)}
-        >
-          Next skill
-          <Glyphicon glyph="chevron-right" />
-        </Button>
-      </ButtonGroup>
+        <ButtonGroup className="pull-right">
+          <Button
+            disabled={isFirstSkill}
+            onClick={() => prevSkill(skillUid)}
+          >
+            <Glyphicon glyph="chevron-left"/>
+            Previous skill
+          </Button>
+          <Button
+            disabled={isLastSkill}
+            onClick={() => nextSkill(skillUid)}
+          >
+            Next skill
+            <Glyphicon glyph="chevron-right"/>
+          </Button>
+        </ButtonGroup>
     </div>
   );
 };
 
-export default connect(
-    (state, { skill: { skillUid } }) => {
-        const noteIds = selectors.getNotesForSkill(state, skillUid);
-
-        return {
-            notes: selectors.getNotes(state, noteIds),
-        };
-    },
-)(Skill);
+export default Skill;

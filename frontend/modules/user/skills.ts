@@ -3,6 +3,8 @@ import * as R from 'ramda';
 import * as keymirror from 'keymirror';
 
 import { actions as evaluationsActions } from './evaluations';
+import { actions as noteActions } from './notes';
+
 import api from '../../api';
 
 export const EVALUATION_VIEW = keymirror({
@@ -78,6 +80,21 @@ export default handleActions({
     const errorLens = R.lensPath(['errors', skillUid]);
 
     return R.set(errorLens, errorMsg, state);
+  },
+  [noteActions.addNoteSuccess]: (state, action) => {
+    const { skillUid } = action.payload;
+    const skill = R.path(['entities', skillUid], state);
+
+    if (!skill) return state;
+
+    const noteId = R.path(['payload', 'note', 'id'], action) ;
+    const notes = noteId
+      ? R.concat([noteId], R.path(['entities', skillUid, 'notes'], state) || [])
+      : R.path(['entities', skillUid, 'notes'], state);
+
+    const skillNotesLens = R.lensPath(['entities', skillUid, 'notes']);
+
+    return R.set(skillNotesLens, notes, state);
   },
 }, initialState);
 

@@ -1,5 +1,6 @@
-import { expect } from 'chai';
-import reducer, { actionTypes } from '../../../../../../frontend/modules/user/skills';
+import {expect} from 'chai';
+import reducer, {actionTypes} from '../../../../../../frontend/modules/user/skills';
+import {actionTypes as noteActionTypes} from '../../../../../../frontend/modules/user/notes';
 
 describe('Skills reducer', () => {
   describe('SKILL_STATUS_UPDATE_SUCCESS', () => {
@@ -96,7 +97,6 @@ describe('Skills reducer', () => {
           SKILL_ID: 'MSG_1',
         },
       };
-
       const action = {
         type: actionTypes.SKILL_STATUS_UPDATE_FAILURE,
         payload: { skillUid: 'SKILL_ID', error: { message: 'MSG_2' } },
@@ -105,4 +105,134 @@ describe('Skills reducer', () => {
       expect(reducer(state, action)).to.eql({ errors: { SKILL_ID: 'MSG_2' } });
     });
   });
+
+  describe('ADD_NOTE_SUCCESS', () => {
+    it('adds a new note', () => {
+      const state = {
+        entities: {
+          SKILL_ID: {
+            notes: [],
+          }
+        }
+      };
+
+      const action = {
+        type: noteActionTypes.ADD_NOTE_SUCCESS,
+        payload: {
+          skillUid: 'SKILL_ID',
+          note: { id: 'note_1' }
+        }
+      };
+
+      expect(reducer(state, action).entities).to.eql({ SKILL_ID: { notes: ['note_1'] } })
+    });
+
+    it('does not alter anything but the notes property of a skill', () => {
+      const state = {
+        entities: {
+          SKILL_ID: {
+            a: 'A',
+            notes: [],
+          }
+        }
+      };
+
+      const action = {
+        type: noteActionTypes.ADD_NOTE_SUCCESS,
+        payload: {
+          skillUid: 'SKILL_ID',
+          note: { id: 'note_1' }
+        }
+      };
+
+      expect(reducer(state, action).entities).to.eql({ SKILL_ID: { a: 'A', notes: ['note_1'] } })
+    });
+
+    it('adds new note to the front of an existing list of notes', () => {
+      const state = {
+        entities: {
+          SKILL_ID: {
+            notes: ['note_1'],
+          }
+        }
+      };
+
+      const action = {
+        type: noteActionTypes.ADD_NOTE_SUCCESS,
+        payload: {
+          skillUid: 'SKILL_ID',
+          note: { id: 'note_2' }
+        }
+      };
+
+      expect(reducer(state, action).entities).to.eql({ SKILL_ID: { notes: ['note_2', 'note_1'] } })
+    });
+
+    it('does not add a note if there is no associated skill entity', () => {
+      const state = {
+        entities: {
+          SKILL_ID_1: {
+            notes: ['note_1'],
+          }
+        }
+      };
+      const action = {
+        type: noteActionTypes.ADD_NOTE_SUCCESS,
+        payload: {
+          skillUid: 'SKILL_ID_2',
+          note: { id: 'note_2' }
+        }
+      };
+
+      expect(reducer(state, action).entities).to.eql({ SKILL_ID_1: { notes: ['note_1'] } });
+    });
+
+    it('adds a note when a skill has no existing notes property', () => {
+      const state = {
+        entities: {
+          SKILL_ID: {
+            no: 'notes',
+          }
+        }
+      };
+      const action = {
+        type: noteActionTypes.ADD_NOTE_SUCCESS,
+        payload: {
+          skillUid: 'SKILL_ID',
+          note: { id: 'note_1' }
+        }
+      };
+
+      expect(reducer(state, action).entities).to.eql({ SKILL_ID: { no: 'notes', notes: ['note_1'] } })
+    });
+
+    it('does not alter state when there are no skill entities', () => {
+      const state = {
+        NO: 'ENTITIES'
+      };
+      const action = {
+        type: noteActionTypes.ADD_NOTE_SUCCESS,
+        payload: {
+          skillUid: 'SKILL_ID',
+          note: { id: 'note_1' }
+        }
+      };
+
+      expect(reducer(state, action)).to.eql({ NO: 'ENTITIES' })
+    });
+
+    it('does not alter state when payload is malformed', () => {
+      const state = {
+        entities: {
+          SKILL_ID: { notes: ['note_1'] }
+        }
+      };
+
+      [{}, [], { a: 'A', note: { id: 'note_2' } }, { skillUid: 'SKILL_ID', b: 'B' }].forEach(payload =>
+        expect(reducer(state, {
+          type: noteActionTypes.ADD_NOTE_SUCCESS,
+          payload
+        })).to.eql({ entities: { SKILL_ID: { notes: ['note_1'] } } }))
+    });
+  })
 });
