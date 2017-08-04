@@ -6,11 +6,11 @@ import { Row, Alert } from 'react-bootstrap';
 import { actions } from '../../../modules/admin/matrices';
 
 import TemplatePageHeader from './TemplatePageHeader';
-import Matrix from '../../common/matrix/Matrix';
+import Matrix from '../matrix/Matrix';
 
 // todo: fix types
 type TemplatePageComponentProps = {
-  templateResult: { success?: boolean, error: ErrorMessage },
+  templateResult: { success?: boolean, error?: ErrorMessage },
   template: NormalizedTemplateViewModel,
   skillGroups: any,
   skills: any,
@@ -29,10 +29,14 @@ class TemplatePageComponent extends React.Component<TemplatePageComponentProps, 
   }
 
   render() {
+    if (!this.props.retrieved) {
+      return false;
+    }
+
     const { template, skillGroups, skills, templateResult } = this.props;
     const { success, error } = templateResult;
 
-    if (this.props.retrieved && success) {
+     if (success) {
       return (
         <div>
           <TemplatePageHeader

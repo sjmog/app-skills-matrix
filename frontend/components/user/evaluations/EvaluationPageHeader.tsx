@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Row } from 'react-bootstrap';
 
-import { actions, EVALUATION_STATUS, EVALUATION_VIEW } from '../../../modules/user/evaluations';
+import { actionCreators, EVALUATION_STATUS, EVALUATION_VIEW } from '../../../modules/user/evaluations';
 import * as selectors from '../../../modules/user';
 import PageHeader from '../../common/PageHeader';
 
@@ -106,6 +106,6 @@ export default connect(
     });
   },
   dispatch => ({
-    actions: bindActionCreators(actions, dispatch),
+    actions: bindActionCreators(actionCreators, dispatch),
   }),
 )(EvaluationPageHeader);

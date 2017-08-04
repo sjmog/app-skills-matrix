@@ -1,18 +1,16 @@
 import * as React from 'react';
 
-import { getSkillGroup } from '../helpers/index';
+import { getSkillGroup } from '../../common/helpers/index';
 import SkillGroup from './SkillGroup';
 
 type LevelProps = {
   categories: string[],
   levelName: string,
-  skillGroups: any, // TODO: fix type
-  skills: any,
-  skillBeingEvaluated: number,
-  viewSkillDetails: (e: any) => void,
+  skillGroups: any,
+  viewSkillDetails: (skillUid: string) => void,
 };
 
-const Level = ({ categories, levelName, skillGroups, skills, viewSkillDetails, skillBeingEvaluated }: LevelProps) =>
+const Level = ({ categories, levelName, skillGroups, viewSkillDetails }: LevelProps) =>
   (
     <tr>
       <td>{<strong>{levelName}</strong>}</td>
@@ -22,9 +20,7 @@ const Level = ({ categories, levelName, skillGroups, skills, viewSkillDetails, s
             <SkillGroup
               key={categoryName}
               skillGroup={getSkillGroup(levelName, categoryName, skillGroups)}
-              skills={skills}
               viewSkillDetails={viewSkillDetails}
-              skillBeingEvaluated={skillBeingEvaluated}
             />
           ),
         )

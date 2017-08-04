@@ -1,0 +1,126 @@
+@import 'common';
+
+dl {
+  padding: 0.5em;
+  margin-bottom: 0px;
+}
+
+dt {
+  float: left;
+  clear: left;
+  width: 150px;
+  text-align: left;
+  font-weight: bold;
+  color: black;
+}
+
+dt:after {
+  content: ":";
+}
+
+dd {
+  margin: 0 0 0 110px;
+  padding: 0 0 0.5em 0;
+
+  .table {
+    font-size: 18px;
+  }
+}
+
+.table {
+  background-color: #f9f9f9;
+  font-size: 14px;
+  margin-bottom: 0px;
+  -webkit-border-radius:6px;
+  -moz-border-radius:6px;
+  border-radius:6px;
+}
+
+.table .table {
+  margin-bottom: 0;
+}
+
+.skill--legend {
+  border: solid 1px #ddd;
+  padding: 10px;
+  margin-left: 1px;
+  display: inline-block;
+}
+
+.skill--legend::before {
+  margin-right: 5px;
+}
+
+.skill--attained {
+  background-color: $attained;
+}
+
+.skill--newly-attained {
+  background-color: $newly-attained;
+}
+
+.skill--feedback {
+  background-color: $feedback;
+}
+
+.skill--objective {
+  background-color: $objective;
+}
+
+.skill--current {
+  -webkit-box-shadow:inset 4px 0 lightslategray;
+  -moz-box-shadow:inset 4px 0 lightslategray;
+  box-shadow:inset 4px 0 lightslategray;
+}
+
+.skillGroupContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.skill--card {
+  border: 1px solid #ccc;
+  padding: 5px 25px 5px;
+  min-width: 170px;
+  position: relative;
+  margin-bottom: 5px;
+  min-height: 55px;
+
+  .skill-card--state {
+    position: absolute;
+    top: 5px;
+    right: 0;
+    width: 20px;
+    border-left: 1px solid #aaa;
+    height: 85%;
+
+    a {
+      display: block;
+      margin: 0 3px;
+    }
+  }
+}
+
+.state--icon--ATTAINED::before {
+  content: '\e006';
+  font-family: 'Glyphicons Halflings';
+}
+.state--icon--null::before,
+.state--icon--NOT_ATTAINED::before {
+  content: '\e014';
+  font-family: 'Glyphicons Halflings';
+}
+.state--icon--OBJECTIVE::before {
+  content: '\e087';
+  font-family: 'Glyphicons Halflings';
+}
+.state--icon--FEEDBACK::before {
+  content: '\e111';
+  font-family: 'Glyphicons Halflings';
+}
+
+.__react_component_tooltip.show {
+  max-width: 175px;
+  width: 175px;
+  text-transform: lowercase;
+}

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Modal, Button, Alert } from 'react-bootstrap';
 
 import { SKILL_STATUS } from '../../../modules/user/evaluations';
-import SkillActions from '../SkillActions';
+import SkillActions from '../../common/SkillActions';
 
 type SkillDetailsModalProps = {
   showModal: boolean,

@@ -4,6 +4,7 @@ module.exports = {
   output: {
     path: `${__dirname}/frontend/dist`,
     filename: 'bundle.js',
+    publicPath: '/',
   },
   resolve: {
     // Add '.ts' and '.tsx' as resolvable extensions.

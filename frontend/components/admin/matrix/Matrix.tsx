@@ -4,7 +4,7 @@ import { Table } from 'react-bootstrap';
 import Level from './Level';
 import SkillDetailsModal from './SkillDetailsModal';
 
-import '../../common/matrix/matrix.scss';
+import '../../common/matrix.scss';
 
 class Matrix extends React.Component<any, any> {
   constructor(props) {

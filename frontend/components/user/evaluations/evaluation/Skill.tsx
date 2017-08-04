@@ -15,7 +15,7 @@ type SkillProps = {
     current: string,
     previous: string,
   },
-  updateSkillStatus: (skillId: number, status: string) => Promise<void>,
+  updateSkillStatus: (skillId: number, status: string, skillUid: string) => Promise<void>,
   postUpdateNavigation: () => void,
   prevSkill: (skillId: number) => void,
   nextSkill: (skillId: number) => void,
@@ -24,12 +24,12 @@ type SkillProps = {
 };
 
 const Skill = ({ level, skill, skillStatus, updateSkillStatus, postUpdateNavigation, prevSkill, nextSkill, isFirstSkill, isLastSkill }: SkillProps) => {
-  const { name, skillId, criteria, questions } = skill;
+  const { name, skillUid, id, criteria, questions } = skill;
 
   return (
     <div>
       <Panel
-        key={skillId}
+        key={skillUid}
         header={
           <div className="skill-header">
             <h4 className="skill-header__title">{name}</h4>
@@ -40,23 +40,23 @@ const Skill = ({ level, skill, skillStatus, updateSkillStatus, postUpdateNavigat
         <SkillBody criteria={criteria} questions={questions} />
         <SkillActions
           skillStatus={skillStatus}
-          onAttained={() => updateSkillStatus(skillId, SKILL_STATUS.ATTAINED).then(() => postUpdateNavigation())}
-          onNotAttained={() => updateSkillStatus(skillId, SKILL_STATUS.NOT_ATTAINED).then(() => postUpdateNavigation())}
-          onFeedbackRequest={() => updateSkillStatus(skillId, SKILL_STATUS.FEEDBACK).then(() => postUpdateNavigation())}
-          onSetObjective={() => updateSkillStatus(skillId, SKILL_STATUS.OBJECTIVE).then(() => postUpdateNavigation())}
+          onAttained={() => updateSkillStatus(id, SKILL_STATUS.ATTAINED, skillUid).then(() => postUpdateNavigation())}
+          onNotAttained={() => updateSkillStatus(id, SKILL_STATUS.NOT_ATTAINED, skillUid).then(() => postUpdateNavigation())}
+          onFeedbackRequest={() => updateSkillStatus(id, SKILL_STATUS.FEEDBACK, skillUid).then(() => postUpdateNavigation())}
+          onSetObjective={() => updateSkillStatus(id, SKILL_STATUS.OBJECTIVE, skillUid).then(() => postUpdateNavigation())}
         />
       </Panel>
       <ButtonGroup className="pull-right">
         <Button
           disabled={isFirstSkill}
-          onClick={() => prevSkill(skillId)}
+          onClick={() => prevSkill(skillUid)}
         >
           <Glyphicon glyph="chevron-left" />
           Previous skill
         </Button>
         <Button
           disabled={isLastSkill}
-          onClick={() => nextSkill(skillId)}
+          onClick={() => nextSkill(skillUid)}
         >
           Next skill
           <Glyphicon glyph="chevron-right" />
