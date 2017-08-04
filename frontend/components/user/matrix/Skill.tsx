@@ -48,7 +48,7 @@ const Skill = ({ skillUid, skill, viewSkillDetails, isBeingEvaluated }: SkillPro
   const beingEvaluatedClass = isBeingEvaluated ? 'skill--current' : false;
 
   const currentStateStatus = skillState(skill.status.current);
-  const currentStateLabel = `The current state of this skill is: ${currentStateStatus}`;
+  const currentStateLabel = `The current state of this skill is: ${currentStateStatus[1]}`;
 
   return (
     <div aria-hidden role="button" className={`skill--card ${statusClass} ${beingEvaluatedClass} previous--${skill.status.previous}`} onClick={() => viewSkillDetails(skillUid)}>
