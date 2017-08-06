@@ -96,6 +96,9 @@ export const getSkillUids = ({ entities: { evaluations } }, evalId) =>
 export const getNotes = ({ entities: { notes } }, noteIds) =>
   fromNotes.getNotes(notes, noteIds);
 
+export const getNotesError = ({ entities: { notes } }) =>
+  fromNotes.getNotesError(notes);
+
 /* ACTIONS SELECTORS */
 
 export const getFeedbackForEvaluation = ({ actions }, evaluationId) =>

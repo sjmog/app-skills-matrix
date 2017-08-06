@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Media, Form, FormGroup, FormControl, Button } from 'react-bootstrap';
+import { Media, Form, FormGroup, FormControl, Button, Alert } from 'react-bootstrap';
 import * as selectors from '../../../modules/user';
 import { actionCreators } from '../../../modules/user/notes';
 
@@ -33,18 +33,16 @@ class Notes extends React.Component {
   }
 
   render() {
-    const { notes, skillUid, noteActions } = this.props;
+    const { notes, skillUid, noteActions, error } = this.props;
 
     return (
       <div>
         <h3>Notes</h3>
-        <Form
-          inline
-          onSubmit={this.handleSubmit}
-        >
+        { error ? <Alert bsStyle="danger"><p>There was a problem adding your note</p></Alert> : false }
+        <Form onSubmit={this.handleSubmit}>
           <FormGroup controlId="formInlineName">
             {' '}
-            <FormControl type="text" onChange={this.handleChange}/>
+            <FormControl type="text" onChange={this.handleChange} />
           </FormGroup>
           {' '}
           <Button
@@ -77,6 +75,7 @@ export default connect(
 
     return {
       notes: selectors.getNotes(state, noteIds),
+      error: selectors.getNotesError(state),
     };
   },
   dispatch => ({

@@ -29,15 +29,20 @@ const addNoteSuccess = createAction(
   (skillUid, note) => ({ skillUid, note }),
 );
 
+const addNoteFailure = createAction(
+  actionTypes.ADD_NOTE_FAILURE,
+);
+
 export const actions = {
   addNoteSuccess,
+  addNoteFailure,
 };
 
 function addNote(skillUid, note) {
   return dispatch =>
     stubNoteAddition(skillUid, note)
       .then(persistedNote => dispatch(addNoteSuccess(skillUid, persistedNote)))
-      .catch(err => dispatch());
+      .catch(error => dispatch(addNoteFailure(error)));
 }
 
 export const actionCreators = {
@@ -46,7 +51,7 @@ export const actionCreators = {
 
 export const initialState = {
   entities: {},
-  errors: {},
+  error: {},
 };
 
 const getNoteLens = id => R.lensPath(['entities', id]);
@@ -60,6 +65,9 @@ export default handleActions({
   [addNoteSuccess]: (state, action) => {
     const noteId = R.path(['payload', 'note', 'id'], action);
     return R.set(getNoteLens(noteId), R.path(['payload', 'note'], action), state);
+  },
+  [addNoteFailure]: (state, action) => {
+    return R.merge(state, { error: action.payload });
   },
 }, initialState);
 
@@ -76,4 +84,10 @@ export const getNotes = (state, noteIds) => {
     R.pickAll(noteIds),
     R.prop('entities'),
   )(state);
+};
+
+// TODO: Write test for this.
+export const getNotesError = (state) => {
+  const error = R.prop('error', state);
+  return R.isEmpty(error) ? false : error;
 };
