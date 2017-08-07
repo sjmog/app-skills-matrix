@@ -71,20 +71,8 @@ export default handleActions({
   },
 }, initialState);
 
-export const getNotes = (state, noteIds) => {
-  const notes = R.prop('entities', state);
-
-  if (!isArray(noteIds) || !isObject(notes)) {
-    return [];
-  }
-
-  return R.compose(
-    R.filter(note => !R.isNil(note)),
-    R.values,
-    R.pickAll(noteIds),
-    R.prop('entities'),
-  )(state);
-};
+export const getNote = (state, noteId) =>
+  R.path(['entities', noteId], state);
 
 // TODO: Write test for this.
 export const getNotesError = (state) => {
