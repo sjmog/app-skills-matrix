@@ -12,13 +12,13 @@ import fixtureTemplates from '../fixtures/templates';
 const [expectedInitialEvaluation, completedEvaluation, expectedMergedEvaluation] = fixtureEvaluations;
 
 const testUser = user({ _id: 'user_id', name: 'Jake', username: 'Jake', email: 'jake@hello.com', mentorId: '123', templateId: '123', avatarUrl: 'abc' });
-const testTemplate = template(fixtureTemplates[0]);
+const testTemplate = template(fixtureTemplates[0] as any);
 const testSkills = skills(fixtureSkills);
 
 describe('new evaluation', () => {
   it('creates a new evaluation for a user', () => {
     const created = newEvaluation(testTemplate, testUser, testSkills, new Date(Date.parse('5 jan 2013')));
-    expect(R.omit(['createdDate'], created.dataModel())).to.deep.equal(R.omit(['createdDate'], expectedInitialEvaluation));
+    expect(R.omit(['createdDate', '_id'], created.dataModel())).to.deep.equal(R.omit(['createdDate', '_id'], expectedInitialEvaluation));
   });
 });
 
@@ -26,6 +26,6 @@ describe('second evaluation', () => {
   it('handles no changes to the template', () => {
     const newEval = newEvaluation(testTemplate, testUser, testSkills, new Date(Date.parse('5 jan 2013')));
     const mergedEvaluation = newEval.mergePreviousEvaluation(evaluation(completedEvaluation));
-    expect(R.omit(['createdDate'], mergedEvaluation.dataModel())).to.deep.equal(R.omit(['createdDate'], expectedMergedEvaluation));
+    expect(R.omit(['createdDate', '_id'], mergedEvaluation.dataModel())).to.deep.equal(R.omit(['createdDate', '_id'], expectedMergedEvaluation));
   });
 });

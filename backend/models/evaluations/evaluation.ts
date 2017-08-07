@@ -6,7 +6,8 @@ import { Email } from '../../services/email';
 import { User } from '../users/user';
 import skill, { Skill } from './skill';
 import { Skill as TemplateSkill } from '../matrices/skill';
-import { Template } from '../matrices/template';
+import { EvaluationTemplate, Template } from '../matrices/template';
+import { ObjectID } from 'mongodb';
 
 const HOST = process.env.HOST;
 
@@ -25,7 +26,7 @@ const VIEW = keymirror({
 type UnhydratedEvaluation = {
   user: EvaluationUser,
   createdDate: Date,
-  template: { name: string },
+  template: EvaluationTemplate,
   skillGroups: SkillGroup[],
   skills: UnhydratedEvaluationSkill[],
   status: string,
@@ -33,9 +34,9 @@ type UnhydratedEvaluation = {
 
 export type EvaluationUpdate = {
   id: string;
-  user: {},
+  user: EvaluationUser,
   createdDate: Date,
-  template: {},
+  template: EvaluationTemplate,
   skillGroups: SkillGroup[],
   skills: UnhydratedEvaluationSkill[],
   status: string,
@@ -48,9 +49,9 @@ export type EvaluationFeedback = {
 
 export type Evaluation = {
   id: string | null,
-  user: {},
+  user: EvaluationUser,
   createdDate: Date,
-  template: {},
+  template: EvaluationTemplate,
   skillGroups: SkillGroup[],
   status: string,
   dataModel: () => UnhydratedEvaluation,
@@ -73,15 +74,15 @@ export type Evaluation = {
   mergePreviousEvaluation: (previousEvaluation: Evaluation) => Evaluation,
 };
 
-const arrayToKeyedObject = (evaluationId, arr) =>
+const arrayToKeyedObject = <T extends { id: string | number }>(evaluationId: string, arr: T[]) =>
   arr.reduce((acc, item) => Object.assign({}, acc, { [item.id]: item }), {});
 
 const uniqueId = (evaluationId, id) => `${evaluationId}_${id}`;
 
-const makeSkillsUnique = (evaluationId, skillGroups) =>
+const makeSkillsUnique = (evaluationId, skillGroups: SkillGroup[]) =>
   R.map(skillGroup => Object.assign({},
     skillGroup,
-    { skills: R.map(skillId => uniqueId(evaluationId, skillId))(R.prop('skills', skillGroup)) }))(skillGroups);
+    { skills: R.map(skillId => uniqueId(evaluationId, skillId), R.prop('skills', skillGroup)) }), skillGroups);
 
 const arrayToUniquelyKeyedObject = (evaluationId, arr: UnhydratedEvaluationSkill[]) =>
   R.reduce(
@@ -111,7 +112,7 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
     template,
     skills: viewModelSkills,
     skillUids: R.keys(viewModelSkills),
-    skillGroups: arrayToKeyedObject(_id, makeSkillsUnique(_id, skillGroups)),
+    skillGroups: arrayToKeyedObject(_id.toString(), makeSkillsUnique(_id, skillGroups)),
   };
 
   return Object.freeze({
@@ -237,7 +238,7 @@ export default evaluation;
 export const newEvaluation = (template: Template, user: User, allSkills: TemplateSkill[], date: Date = new Date()) => {
   const { skillGroups, skills } = template.createSkillGroups(allSkills);
   return evaluation({
-    _id: null,
+    _id: new ObjectID(),
     user: user.evaluationData(),
     createdDate: date,
     status: STATUS.NEW,

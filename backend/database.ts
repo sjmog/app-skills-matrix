@@ -7,7 +7,7 @@ const databaseUrl: string = process.env.MONGO_URL || 'mongodb://localhost:27017/
 const connect = memoize(() => mongodb.MongoClient.connect(databaseUrl));
 const getCollection = memoize(collection => connect().then(db => db.collection(collection)));
 
-export type DatabaseObject = { _id?: ObjectID };
+export type DatabaseObject = { _id: ObjectID };
 
 export default {
   connect,

@@ -10,12 +10,14 @@ type UnhydratedTemplate = {
   skillGroups: SkillGroup[],
 };
 
+export type EvaluationTemplate = { id: string, name: string, version: number, categories: string[], levels: string[] };
+
 export type Template = {
   id: string,
   skillGroups: SkillGroup[],
   viewModel: () => TemplateViewModel,
   normalizedViewModel: () => NormalizedTemplateViewModel,
-  evaluationData: () => { id: string, name: string, version: number, categories: string[], levels: string[] },
+  evaluationData: () => EvaluationTemplate,
   userDetailsViewModel: () => { name: string },
   createSkillGroups: (skills: Skill[]) => { skills: UnhydratedEvaluationSkill[], skillGroups: SkillGroup[] },
 };

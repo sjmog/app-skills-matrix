@@ -1,5 +1,8 @@
+import { ObjectID } from 'mongodb';
+
 export default [
   {
+    _id: new ObjectID(),
     user: {
       id: 'user_id',
       name: 'Jake',
@@ -291,6 +294,7 @@ export default [
     ],
   },
   {
+    _id: new ObjectID(),
     user: {
       id: 'user_id',
       name: 'Jake',
@@ -419,6 +423,7 @@ export default [
     ],
   },
   {
+    _id: new ObjectID(),
     user: {
       id: 'user_id',
       name: 'Jake',

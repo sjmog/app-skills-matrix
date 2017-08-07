@@ -39,6 +39,7 @@
     "@types/mocha": "^2.2.41",
     "@types/mongodb": "^2.2.9",
     "@types/node": "^8.0.19",
+    "@types/node-uuid": "0.0.28",
     "@types/ramda": "^0.24.6",
     "@types/react": "^15.6.1",
     "@types/react-bootstrap": "0.0.52",

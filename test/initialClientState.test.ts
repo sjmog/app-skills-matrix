@@ -8,6 +8,7 @@ import auth from '../backend/models/auth';
 import templatesFixture from './fixtures/templates';
 import skillsFixture from './fixtures/skills';
 import evaluationsFixture from './fixtures/evaluations';
+import { ObjectID } from 'bson';
 
 const { sign, cookieName } = auth;
 const { prepopulateUsers, users, insertTemplate, assignTemplate, clearDb, insertSkill, insertEvaluation, assignMentor } = helpers;
@@ -78,11 +79,11 @@ describe('initial client state', () => {
       let oldEvaluationId;
       let newEvaluationId;
 
-      return insertEvaluation(Object.assign({}, evaluation, { createdDate: beforeNow }), normalUserOneId)
+      return insertEvaluation(Object.assign({}, evaluation, { createdDate: beforeNow, _id: new ObjectID() }), normalUserOneId)
         .then(({ insertedId }) => {
           oldEvaluationId = insertedId;
         })
-        .then(() => insertEvaluation(Object.assign({}, evaluation, { createdDate: now }), normalUserOneId))
+        .then(() => insertEvaluation(Object.assign({}, evaluation, { createdDate: now, _id: new ObjectID() }), normalUserOneId))
         .then(({ insertedId }) => {
           newEvaluationId = insertedId;
         })
@@ -112,11 +113,11 @@ describe('initial client state', () => {
       let newMenteeEvaluationId;
 
       return assignMentor(normalUserTwoId, normalUserOneId)
-        .then(() => insertEvaluation(Object.assign({}, evaluation, { createdDate: beforeNow }), normalUserTwoId))
+        .then(() => insertEvaluation(Object.assign({}, evaluation, { createdDate: beforeNow, _id: new ObjectID() }), normalUserTwoId))
         .then(({ insertedId }) => {
           oldMenteeEvaluationId = insertedId;
         })
-        .then(() => insertEvaluation(Object.assign({}, evaluation, { createdDate: now }), normalUserTwoId))
+        .then(() => insertEvaluation(Object.assign({}, evaluation, { createdDate: now, _id: new ObjectID() }), normalUserTwoId))
         .then(({ insertedId }) => {
           newMenteeEvaluationId = insertedId;
         })
@@ -263,11 +264,11 @@ describe('initial client state', () => {
       let oldEvaluationId;
       let newEvaluationId;
 
-      return insertEvaluation(Object.assign({}, evaluation, { createdDate: beforeNow }), normalUserOneId)
+      return insertEvaluation(Object.assign({}, evaluation, { createdDate: beforeNow, _id: new ObjectID() }), normalUserOneId)
         .then(({ insertedId }) => {
           oldEvaluationId = String(insertedId);
         })
-        .then(() => insertEvaluation(Object.assign({}, evaluation, { createdDate: now }), normalUserOneId))
+        .then(() => insertEvaluation(Object.assign({}, evaluation, { createdDate: now, _id: new ObjectID() }), normalUserOneId))
         .then(({ insertedId }) => {
           newEvaluationId = String(insertedId);
         })

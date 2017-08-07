@@ -17,6 +17,7 @@ type TemplateSkillViewModel = {
 };
 
 type SkillGroup = {
+  id: number,
   category: string,
   level: string,
   skills: number[],
