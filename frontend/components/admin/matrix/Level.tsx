@@ -8,11 +8,10 @@ type LevelProps = {
   levelName: string,
   skillGroups: any, // TODO: fix type
   skills: any,
-  skillBeingEvaluated: number,
   viewSkillDetails: (e: any) => void,
 };
 
-const Level = ({ categories, levelName, skillGroups, skills, viewSkillDetails, skillBeingEvaluated }: LevelProps) =>
+const Level = ({ categories, levelName, skillGroups, skills, viewSkillDetails }: LevelProps) =>
   (
     <tr>
       <td>{<strong>{levelName}</strong>}</td>
@@ -24,7 +23,6 @@ const Level = ({ categories, levelName, skillGroups, skills, viewSkillDetails, s
               skillGroup={getSkillGroup(levelName, categoryName, skillGroups)}
               skills={skills}
               viewSkillDetails={viewSkillDetails}
-              skillBeingEvaluated={skillBeingEvaluated}
             />
           ),
         )

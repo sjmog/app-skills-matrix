@@ -7,14 +7,13 @@ type SkillGroupProps = {
   skillGroup: any, // TODO get types
   skills: any, // TODO get types
   viewSkillDetails: (e: any) => void,
-  skillBeingEvaluated: number,
 };
 
-const SkillGroup = ({ skillGroup, skills, viewSkillDetails, skillBeingEvaluated }: SkillGroupProps) => (
+const SkillGroup = ({ skillGroup, skills, viewSkillDetails }: SkillGroupProps) => (
   <td>
     <Table bordered>
       <tbody>
-        {
+      {
         skillGroup.skills.map(
           (skillId) => {
             const skill = skills[skillId];
@@ -24,7 +23,6 @@ const SkillGroup = ({ skillGroup, skills, viewSkillDetails, skillBeingEvaluated 
                 key={skillId}
                 skill={skill}
                 viewSkillDetails={viewSkillDetails}
-                isBeingEvaluated={skillBeingEvaluated === skillId}
               />
             );
           })

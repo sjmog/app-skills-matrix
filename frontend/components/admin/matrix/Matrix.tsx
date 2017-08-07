@@ -6,12 +6,20 @@ import SkillDetailsModal from './SkillDetailsModal';
 
 import '../../common/matrix.scss';
 
-class Matrix extends React.Component<any, any> {
+type MatrixProps = {
+  categories: string[],
+  levels: string[],
+  skillGroups: any,
+  skills: any,
+};
+
+class Matrix extends React.Component<MatrixProps, { showModal: boolean, currentSkill: any }> {
   constructor(props) {
     super(props);
 
     this.state = {
       showModal: false,
+      currentSkill: null,
     };
 
     this.viewSkillDetails = this.viewSkillDetails.bind(this);
@@ -33,18 +41,18 @@ class Matrix extends React.Component<any, any> {
   }
 
   render() {
-    const { categories, levels, skillGroups, skills, skillBeingEvaluated, updateSkillStatus, canUpdateSkillStatus } = this.props;
+    const { categories, levels, skillGroups, skills } = this.props;
     return (
       <div>
         <Table responsive>
           <thead className="matrix-table__head">
-            <tr>
-              <th>{' '}</th>
-              { categories.map(categoryName => (<th key={categoryName}>{categoryName}</th>)) }
-            </tr>
+          <tr>
+            <th>{' '}</th>
+            {categories.map(categoryName => (<th key={categoryName}>{categoryName}</th>))}
+          </tr>
           </thead>
           <tbody className="matrix-table__body">
-            {
+          {
             levels.map(levelName => (
               <Level
                 key={levelName}
@@ -53,7 +61,6 @@ class Matrix extends React.Component<any, any> {
                 skillGroups={skillGroups}
                 skills={skills}
                 viewSkillDetails={this.viewSkillDetails}
-                skillBeingEvaluated={skillBeingEvaluated}
               />
             ))
           }
@@ -63,8 +70,6 @@ class Matrix extends React.Component<any, any> {
           showModal={this.state.showModal}
           onClose={this.hideSkillDetails}
           skill={this.state.currentSkill && skills[this.state.currentSkill.id]}
-          updateSkillStatus={updateSkillStatus}
-          canUpdateSkillStatus={canUpdateSkillStatus}
         />
       </div>
     );
