@@ -8,7 +8,7 @@ import { actions as evaluationsActions } from './evaluations';
 const isArray = val => R.type(val) === 'Array';
 const isObject = val => R.type(val) === 'Object';
 
-const stubNoteAddition = (skillUid, note) => Promise.resolve({
+const stubNoteAddition = (skillUid, note) => Promise.reject({
   id: `note_id_${Math.random()}`,
   author: {
     name: 'Jo Bloggs',
@@ -22,6 +22,7 @@ const stubNoteAddition = (skillUid, note) => Promise.resolve({
 export const actionTypes = keymirror({
   ADD_NOTE_SUCCESS: null,
   ADD_NOTE_FAILURE: null,
+  CLEAR_ERROR: null,
 });
 
 const addNoteSuccess = createAction(
@@ -33,6 +34,10 @@ const addNoteFailure = createAction(
   actionTypes.ADD_NOTE_FAILURE,
 );
 
+const clearError = createAction(
+  actionTypes.CLEAR_ERROR,
+);
+
 export const actions = {
   addNoteSuccess,
   addNoteFailure,
@@ -42,7 +47,12 @@ function addNote(skillUid, note) {
   return dispatch =>
     stubNoteAddition(skillUid, note)
       .then(persistedNote => dispatch(addNoteSuccess(skillUid, persistedNote)))
-      .catch(error => dispatch(addNoteFailure(error)));
+      .catch((error) => {
+        dispatch(addNoteFailure(error));
+        setTimeout(() => {
+          dispatch(clearError());
+        }, 5000);
+      });
 }
 
 export const actionCreators = {
@@ -68,6 +78,9 @@ export default handleActions({
   },
   [addNoteFailure]: (state, action) => {
     return R.merge(state, { error: action.payload });
+  },
+  [clearError]: (state, action) => {
+    return R.merge(state, { error: null });
   },
 }, initialState);
 
