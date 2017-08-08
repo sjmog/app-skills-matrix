@@ -58,6 +58,7 @@ const initialState = {
 };
 
 const errorsLens = R.lensPath(['errors']);
+const getSkillNoteLens = skillUid => R.lensPath(['entities', skillUid, 'notes']);
 
 export default handleActions({
   [evaluationsActions.retrieveEvaluationSuccess]: (state, action) => {
@@ -92,9 +93,18 @@ export default handleActions({
       ? R.concat([noteId], R.path(['entities', skillUid, 'notes'], state) || [])
       : R.path(['entities', skillUid, 'notes'], state);
 
-    const skillNotesLens = R.lensPath(['entities', skillUid, 'notes']);
+    return R.set(getSkillNoteLens(skillUid), notes, state);
+  },
+  [noteActions.removeNoteSuccess]: (state, action) => {
+    const { skillUid, noteId } = action.payload;
+    console.log('skillUid:', skillUid);
+    // TODO: Why doesn't TS allow R.path?
+    const skill = R.path(['entities', skillUid], state);
 
-    return R.set(skillNotesLens, notes, state);
+    if (!skill || !noteId) return state;
+
+    const notes = R.reject(id => id === noteId, R.path(['entities', skillUid, 'notes'], state));
+    return R.set(getSkillNoteLens(skillUid), notes, state);
   },
 }, initialState);
 

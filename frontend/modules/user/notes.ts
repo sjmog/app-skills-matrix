@@ -16,15 +16,23 @@ const stubNoteAddition = (skillUid, note) => Promise.resolve({
   note,
 });
 
+const stubNoteRemoval = noteId => Promise.resolve();
+
 export const actionTypes = keymirror({
   ADD_NOTE_SUCCESS: null,
   ADD_NOTE_FAILURE: null,
   CLEAR_ERROR: null,
+  REMOVE_NOTE_SUCCESS: null,
 });
 
 const addNoteSuccess = createAction(
   actionTypes.ADD_NOTE_SUCCESS,
   (skillUid, note) => ({ skillUid, note }),
+);
+
+const removeNoteSuccess = createAction(
+  actionTypes.REMOVE_NOTE_SUCCESS,
+  (skillUid, noteId) => ({ skillUid, noteId }),
 );
 
 const addNoteFailure = createAction(
@@ -38,12 +46,13 @@ const clearError = createAction(
 export const actions = {
   addNoteSuccess,
   addNoteFailure,
+  removeNoteSuccess,
 };
 
 function addNote(skillUid, note) {
   return dispatch =>
     stubNoteAddition(skillUid, note)
-      .then(persistedNote => dispatch(addNoteSuccess(skillUid, persistedNote)))
+      .then(persistedNote => dispatch(addNoteSuccess(skillUid, persistedNote))) // TODO: Could we display a validation style error instead?
       .catch((error) => {
         dispatch(addNoteFailure(error));
         setTimeout(() => {
@@ -52,8 +61,22 @@ function addNote(skillUid, note) {
       });
 }
 
+// TODO: We need to remove the note from the skill.
+function removeNote(skillUid, noteId) {
+  return dispatch =>
+    stubNoteRemoval(noteId)
+      .then(() => dispatch(removeNoteSuccess(skillUid, noteId)))
+      .catch((error) => {
+        dispatch(addNoteFailure(error)); // TODO: Make the error message relate to removal of notes.
+        setTimeout(() => {
+          dispatch(clearError());
+        }, 5000);
+      });
+}
+
 export const actionCreators = {
   addNote,
+  removeNote,
 };
 
 export const initialState = {
@@ -76,8 +99,13 @@ export default handleActions({
   [addNoteFailure]: (state, action) => {
     return R.merge(state, { error: action.payload });
   },
-  [clearError]: (state, action) => {
+  [clearError]: (state) => {
     return R.merge(state, { error: null });
+  },
+  [removeNoteSuccess]: (state, action) => {
+    const noteId = R.path(['action', 'payload', 'noteId'], action);
+    const entities = R.omit([action.payload], state.entities);
+    return R.merge(state, { entities });
   },
 }, initialState);
 

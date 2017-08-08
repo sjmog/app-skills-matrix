@@ -234,5 +234,147 @@ describe('Skills reducer', () => {
           payload
         })).to.eql({ entities: { SKILL_ID: { notes: ['note_1'] } } }))
     });
-  })
+  });
+
+  describe('REMOVE_NOTE_SUCCESS', () => {
+    it('removes an existing note', () => {
+      const state = {
+        entities: {
+          SKILL_ID: {
+            notes: ['note_1'],
+          }
+        }
+      };
+
+      const action = {
+        type: noteActionTypes.REMOVE_NOTE_SUCCESS,
+        payload: {
+          skillUid: 'SKILL_ID',
+          noteId: 'note_1',
+        }
+      };
+
+      expect(reducer(state, action).entities).to.eql({ SKILL_ID: { notes: [] } })
+    });
+
+    it('removes an existing note and leaves others alone', () => {
+      const state = {
+        entities: {
+          SKILL_ID: {
+            notes: ['note_1', 'note_2'],
+          }
+        }
+      };
+
+      const action = {
+        type: noteActionTypes.REMOVE_NOTE_SUCCESS,
+        payload: {
+          skillUid: 'SKILL_ID',
+          noteId: 'note_1',
+        }
+      };
+
+      expect(reducer(state, action).entities).to.eql({ SKILL_ID: { notes: ['note_2'] } })
+    });
+
+    it("leaves existing notes alone when the id is for a note the skill doesn't have", () => {
+      const state = {
+        entities: {
+          SKILL_ID: {
+            notes: ['note_1'],
+          }
+        }
+      };
+
+      const action = {
+        type: noteActionTypes.REMOVE_NOTE_SUCCESS,
+        payload: {
+          skillUid: 'SKILL_ID',
+          noteId: 'note_2',
+        }
+      };
+
+      expect(reducer(state, action).entities).to.eql({ SKILL_ID: { notes: ['note_1'] } })
+    });
+
+    it("leaves existing notes alone no id is provided", () => {
+      const state = {
+        entities: {
+          SKILL_ID: {
+            notes: ['note_1'],
+          }
+        }
+      };
+
+      const action = {
+        type: noteActionTypes.REMOVE_NOTE_SUCCESS,
+        payload: {
+          skillUid: 'SKILL_ID',
+          noteId: null,
+        }
+      };
+
+      expect(reducer(state, action).entities).to.eql({ SKILL_ID: { notes: ['note_1'] } })
+    });
+
+    it("leaves existing notes alone when there is no note id property", () => {
+      const state = {
+        entities: {
+          SKILL_ID: {
+            notes: ['note_1'],
+          }
+        }
+      };
+
+      const action = {
+        type: noteActionTypes.REMOVE_NOTE_SUCCESS,
+        payload: {
+          skillUid: 'SKILL_ID',
+          foo: 'bar',
+        }
+      };
+
+      expect(reducer(state, action).entities).to.eql({ SKILL_ID: { notes: ['note_1'] } })
+    });
+
+    it("leaves existing notes alone when there is no skill uid property", () => {
+      const state = {
+        entities: {
+          SKILL_ID: {
+            notes: ['note_1'],
+          }
+        }
+      };
+
+      const action = {
+        type: noteActionTypes.REMOVE_NOTE_SUCCESS,
+        payload: {
+          foo: 'bar',
+          noteId: null,
+        }
+      };
+
+      expect(reducer(state, action).entities).to.eql({ SKILL_ID: { notes: ['note_1'] } })
+    });
+
+    it("leaves state alone when the skill doesn't exist", () => {
+      const state = {
+        entities: {
+          SKILL_ID_1: {
+            notes: ['note_1'],
+          }
+        }
+      };
+
+      const action = {
+        type: noteActionTypes.REMOVE_NOTE_SUCCESS,
+        payload: {
+          skillUid: 'SKILL_ID_2',
+          noteId: 'note_1',
+        }
+      };
+
+      expect(reducer(state, action).entities).to.eql({ SKILL_ID_1: { notes: ['note_1'] } })
+    });
+  });
 });

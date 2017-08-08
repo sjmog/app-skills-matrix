@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Media, Form, FormGroup, FormControl, Button, Alert } from 'react-bootstrap';
+import { Form, FormGroup, FormControl, Button, Alert } from 'react-bootstrap';
 import * as selectors from '../../../modules/user';
 import { actionCreators } from '../../../modules/user/notes';
 
@@ -38,7 +38,7 @@ class Notes extends React.Component<NotesProps, any>{
   }
 
   render() {
-    const { noteIds, error } = this.props;
+    const { skillUid, noteIds, error } = this.props;
 
     return (
       <div>
@@ -55,7 +55,7 @@ class Notes extends React.Component<NotesProps, any>{
             Add note
           </Button>
         </Form>
-        { noteIds.map(noteId => <Note noteId={noteId} />) }
+        { noteIds.map(noteId => <Note skillUid={skillUid} noteId={noteId} />) }
       </div>
     );
   }
