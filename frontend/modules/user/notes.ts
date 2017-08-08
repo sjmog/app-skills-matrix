@@ -5,10 +5,7 @@ import * as moment from 'moment';
 
 import { actions as evaluationsActions } from './evaluations';
 
-const isArray = val => R.type(val) === 'Array';
-const isObject = val => R.type(val) === 'Object';
-
-const stubNoteAddition = (skillUid, note) => Promise.reject({
+const stubNoteAddition = (skillUid, note) => Promise.resolve({
   id: `note_id_${Math.random()}`,
   author: {
     name: 'Jo Bloggs',

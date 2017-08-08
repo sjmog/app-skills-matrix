@@ -27,12 +27,12 @@ class Notes extends React.Component<NotesProps, any>{
   }
 
   handleChange(event) {
-    console.log('event.target.value:', event.target.value);
     this.setState({ value: event.target.value });
   }
 
   handleSubmit(e) {
     e.preventDefault();
+    this.setState({ value: '' });
     const { skillUid, noteActions: { addNote } } = this.props;
     addNote(skillUid, this.state.value);
   }
@@ -47,7 +47,7 @@ class Notes extends React.Component<NotesProps, any>{
         <Form onSubmit={this.handleSubmit}>
           <FormGroup controlId="formInlineName">
             {' '}
-            <FormControl type="text" onChange={this.handleChange} />
+            <FormControl type="text" value={this.state.value} onChange={this.handleChange} />
           </FormGroup>
           {' '}
           <Button
