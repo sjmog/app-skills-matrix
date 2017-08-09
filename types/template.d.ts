@@ -1,5 +1,5 @@
 type Question = {
-  name: string,
+  title: string,
 };
 
 type UnhydratedTemplateSkill = {

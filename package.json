@@ -81,7 +81,7 @@
     "pify": "^3.0.0",
     "ramda": "^0.24.1",
     "react": "^15.4.2",
-    "react-bootstrap": "^0.30.8",
+    "react-bootstrap": "^0.31.2",
     "react-copy-to-clipboard": "^5.0.0",
     "react-dom": "^15.4.2",
     "react-redux": "^5.0.2",
