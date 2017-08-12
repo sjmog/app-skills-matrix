@@ -5,11 +5,11 @@ import usersData from '../fixtures/users';
 import database from '../../backend/database';
 import { encrypt, decrypt } from '../../backend/models/evaluations/encryption';
 
-const users = database.collection('users');
-const templates = database.collection('templates');
-const skills = database.collection('skills');
-const evaluations = database.collection('evaluations');
-const actions = database.collection('actions');
+const users: any = database.collection('users');
+const templates: any = database.collection('templates');
+const skills: any = database.collection('skills');
+const evaluations: any = database.collection('evaluations');
+const actions: any = database.collection('actions');
 
 const prepopulateUsers = () => users.remove({}).then(() => users.insertMany(usersData));
 
@@ -29,5 +29,5 @@ export default {
   getAllActions: () => actions.find({}).then(e => e.toArray()),
   insertAction: userId => action => actions.insertOne(Object.assign({}, action, { user: { id: String(userId) } })),
   clearDb: () => Promise.all([users.remove({}), templates.remove({}), skills.remove({}), evaluations.remove({}), actions.remove({})]),
-  skillStatus: (skillList: {id: string}[], skillId) => R.prop('status', R.find(skill => skill.id === skillId, skillList)),
+  skillStatus: (skillList: { id: string }[], skillId) => R.prop('status', R.find(skill => skill.id === skillId, skillList)),
 };

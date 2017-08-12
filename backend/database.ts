@@ -11,9 +11,9 @@ export type DatabaseObject = { _id: ObjectID };
 
 export default {
   connect,
-  collection: (collection): any => new Proxy({}, {
+  collection: collection => new Proxy({}, {
     get: (object, methodName) => (...args) =>
       getCollection(collection)
         .then(c => c[methodName](...args)),
-  }),
+  }) as mongodb.Collection<any>,
 };

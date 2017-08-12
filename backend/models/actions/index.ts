@@ -3,7 +3,7 @@ import { ObjectID } from 'mongodb';
 import database from '../../database';
 import action, { Action, newAction } from './action';
 
-const collection = database.collection('actions');
+const collection: any = database.collection('actions');
 
 collection.ensureIndex({ 'skill.id': 1 }, { background: true });
 collection.ensureIndex({ 'evaluation.id': 1 }, { background: true });
@@ -18,7 +18,7 @@ export default {
       .then(({ insertedId }) => collection.findOne({ _id: new ObjectID(insertedId) }))
       .then(retrievedAction => action(retrievedAction));
   },
-  removeAction: (type, userId, skillId, evaluationId): Promise<void> => collection.deleteOne({ 'user.id': userId, 'skill.id': skillId, 'evaluation.id': evaluationId, type }),
+  removeAction: (type, userId, skillId, evaluationId) => collection.deleteOne({ 'user.id': userId, 'skill.id': skillId, 'evaluation.id': evaluationId, type }),
   find: (userId, evaluationId, type): Promise<Action[]> => {
     const query = { 'user.id': userId };
     if (evaluationId) {

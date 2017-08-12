@@ -34,8 +34,8 @@ export default ({
       .then(getData)
       .catch(handleError);
   },
-  saveSkill(skill): Promise<TemplateSkillViewModel> {
-    return axios.post('/skillz/matrices/skills', { action: 'save', skill })
+  saveSkills(skills: UnhydratedTemplateSkill[]): Promise<TemplateSkillViewModel> {
+    return axios.post('/skillz/matrices/skills', { action: 'save', skills })
       .then(getData)
       .catch(handleError);
   },

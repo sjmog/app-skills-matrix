@@ -5,8 +5,8 @@ import template, { newTemplate, Template } from './template';
 import skills from './skills';
 import skill, { newSkill, Skill } from './skill';
 
-const templatesCollection = database.collection('templates');
-const skillsCollection = database.collection('skills');
+const templatesCollection: any = database.collection('templates');
+const skillsCollection: any = database.collection('skills');
 
 skillsCollection.ensureIndex({ id: 1 }, { unique: true, background: true });
 templatesCollection.ensureIndex({ id: 1 }, { unique: true, background: true });

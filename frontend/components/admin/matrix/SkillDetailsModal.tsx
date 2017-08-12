@@ -69,7 +69,7 @@ class SkillDetailsModal extends React.Component<SkillDetailsModalProps, { skill:
             <Modal.Title>Skill Details</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Form onSubmit={() => onModifySkill(this.state.skill)}>
+            <Form>
               <FormGroup>
                 <ControlLabel>id</ControlLabel>
                 <FormControl.Static>{skill.id}</FormControl.Static>
@@ -122,7 +122,7 @@ class SkillDetailsModal extends React.Component<SkillDetailsModalProps, { skill:
                   <Glyphicon glyph="plus" /></Button>
               </Panel>
 
-              <Button bsStyle="primary" type="submit">
+              <Button bsStyle="primary" onClick={() => onModifySkill(this.state.skill)}>
                 <Glyphicon glyph="plus" /> Update Question</Button>
             </Form>
           </Modal.Body>

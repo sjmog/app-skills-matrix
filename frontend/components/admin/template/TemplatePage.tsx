@@ -8,12 +8,11 @@ import { actions } from '../../../modules/admin/matrices';
 import TemplatePageHeader from './TemplatePageHeader';
 import Matrix from '../matrix/Matrix';
 
-// todo: fix types
 type TemplatePageComponentProps = {
   templateResult: { success?: boolean, error?: ErrorMessage },
   template: NormalizedTemplateViewModel,
-  skillGroups: any,
-  skills: any,
+  skillGroups: SkillGroup[],
+  skills: UnhydratedTemplateSkill[],
   retrieved: boolean,
   actions: typeof actions,
   params: {
