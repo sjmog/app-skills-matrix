@@ -44,7 +44,7 @@ const HeaderComponent = ({ username }: HeaderComponentProps) => (
 
 const Header = connect(
   state => ({
-    username: selectors.getUsername(state),
+    username: selectors.getLoggedInUsername(state),
   }),
 )(HeaderComponent);
 

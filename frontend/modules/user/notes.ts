@@ -8,9 +8,10 @@ import { actions as evaluationsActions } from './evaluations';
 const stubNoteAddition = (skillUid, note) => Promise.resolve({
   id: `note_id_${Math.random()}`,
   author: {
-    name: 'Jo Bloggs',
-    username: 'jobloggs',
-    avatarUrl: 'https://avatars1.githubusercontent.com/u/1444502?v=4',
+    name: 'Charlie Harris',
+    username: 'charlieharris1',
+    avatarUrl: 'https://avatars3.githubusercontent.com/u/11438777?v=4',
+    id: '597e06f3b2eb1361e210c413',
   },
   date: moment(),
   note,

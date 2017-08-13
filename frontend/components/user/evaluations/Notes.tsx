@@ -55,7 +55,7 @@ class Notes extends React.Component<NotesProps, any>{
             Add note
           </Button>
         </Form>
-        { noteIds.map(noteId => <Note skillUid={skillUid} noteId={noteId} />) }
+        { noteIds.map(noteId => <Note key={noteId} skillUid={skillUid} noteId={noteId} />) }
       </div>
     );
   }

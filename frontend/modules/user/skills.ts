@@ -97,8 +97,6 @@ export default handleActions({
   },
   [noteActions.removeNoteSuccess]: (state, action) => {
     const { skillUid, noteId } = action.payload;
-    console.log('skillUid:', skillUid);
-    // TODO: Why doesn't TS allow R.path?
     const skill = R.path(['entities', skillUid], state);
 
     if (!skill || !noteId) return state;

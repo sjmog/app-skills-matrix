@@ -11,10 +11,11 @@ import { actionCreators } from '../../../modules/user/notes';
 type NoteProps = {
   note: any,
   skillUid: any,
+  loggedInUserId: any,
 };
 
 // TODO: Destructure note or use selectors
-const Note = ({ skillUid, note, noteActions }) => (
+const Note = ({ skillUid, note, noteActions, loggedInUserId }) => (
   <Media>
     <Media.Left>
       <img width={64} height={64} src={note.author.avatarUrl} alt="User avatar"/>
@@ -24,9 +25,13 @@ const Note = ({ skillUid, note, noteActions }) => (
       <p>{note.note}</p>
     </Media.Body>
     <Media.Right>
-      <Button onClick={() => noteActions.removeNote(skillUid, note.id)}>
-        <Glyphicon glyph="remove-sign" />
-      </Button>
+      {
+        note.author.id === loggedInUserId
+          ? <Button onClick={() => noteActions.removeNote(skillUid, note.id)}>
+              <Glyphicon glyph="remove-sign"/>
+            </Button>
+          : false
+      }
     </Media.Right>
   </Media>
 );
@@ -34,6 +39,7 @@ const Note = ({ skillUid, note, noteActions }) => (
 export default connect(
   (state, { noteId }) => ({
     note: selectors.getNote(state, noteId),
+    loggedInUserId: selectors.getLoggedInUserId(state),
   }),
   dispatch => ({
     noteActions: bindActionCreators(actionCreators, dispatch),

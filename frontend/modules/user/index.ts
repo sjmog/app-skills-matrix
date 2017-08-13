@@ -12,8 +12,11 @@ export default combineReducers({ user, entities, actions, evaluation });
 
 /* USER SELECTORS */
 
-export const getUsername = ({ user }) =>
-  fromUser.getUsername(user);
+export const getLoggedInUsername = ({ user }) =>
+  fromUser.getLoggedInUsername(user);
+
+export const getLoggedInUserId = ({ user }) =>
+  fromUser.getLoggedInUserId(user);
 
 /* EVALUATION SELECTORS */
 
