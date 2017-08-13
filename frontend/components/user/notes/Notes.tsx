@@ -41,13 +41,13 @@ class Notes extends React.Component<NotesProps, any>{
     const { skillUid, noteIds, error } = this.props;
 
     return (
-      <div>
+      <div className="notes">
         <h4>Notes</h4>
         { error ? <Alert bsStyle="danger"><p>There was a problem adding your note</p></Alert> : false }
         <Form onSubmit={this.handleSubmit}>
-          <FormGroup controlId="formInlineName">
+          <FormGroup controlId="formControlsTextarea">
             {' '}
-            <FormControl type="text" value={this.state.value} onChange={this.handleChange} />
+            <FormControl componentClass="textarea" value={this.state.value} onChange={this.handleChange} />
           </FormGroup>
           {' '}
           <Button

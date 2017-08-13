@@ -11,6 +11,7 @@
 }
 
 .evaluation-panel {
+  display: grid;
  padding-left: 0;
 }
 
@@ -69,4 +70,8 @@
 }
 .remove:focus {
   outline: none !important;
+}
+
+.notes textarea {
+  resize: vertical;
 }

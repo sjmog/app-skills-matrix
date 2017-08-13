@@ -148,7 +148,6 @@ class Evaluation extends React.Component<EvaluationProps, any> {
         </Row>
         <Row>
           <Col md={7} className="evaluation-panel">
-            <Row>
             <Skill
               level={currentSkill.level}
               skill={currentSkill}
@@ -160,12 +159,7 @@ class Evaluation extends React.Component<EvaluationProps, any> {
               isLastSkill={currentSkillUid === lastSkill.skillUid}
               postUpdateNavigation={this.postUpdateNavigation}
             />
-            </Row>
-            <Row>
-            <Notes
-              skillUid={currentSkillUid}
-            />
-            </Row>
+            <Notes skillUid={currentSkillUid} />
           </Col>
           <Col md={5} className="evaluation-panel evaluation-panel--right">
             <Matrix

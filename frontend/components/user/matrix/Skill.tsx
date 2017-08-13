@@ -24,7 +24,7 @@ const skillColour = (currentStatus, previousStatus) => {
     return 'skill--objective';
   }
 
-  return '';
+  return 'skill--not-attained';
 };
 
 const skillState = (status) => {
