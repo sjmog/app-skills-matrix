@@ -75,6 +75,7 @@ class EvaluationPageComponent extends React.Component<EvaluationPageComponentPro
         <Evaluation
           evaluationId={evaluationId}
           view={view}
+          categories={categories}
           levels={levels}
           status={status}
           updateSkillStatus={this.updateSkillStatus}

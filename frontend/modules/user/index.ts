@@ -41,7 +41,6 @@ export const getFirstSkill = ({ evaluation }) =>
 export const getLastSkill = ({ evaluation }) =>
   fromEvaluation.getLastSkill(evaluation);
 
-
 /* SKILLS SELECTORS */
 
 export const getSkillStatus = ({ entities: { skills } }, skillUid) =>

@@ -31,6 +31,7 @@ export const actionTypes = keymirror({
   PREVIOUS_SKILL: null,
   NEXT_CATEGORY: null,
   PREVIOUS_CATEGORY: null,
+  SET_CURRENT_SKILL: null,
 });
 
 export const actions = {
@@ -41,6 +42,7 @@ export const actions = {
   previousSkill: createAction(actionTypes.PREVIOUS_SKILL),
   nextCategory: createAction(actionTypes.NEXT_CATEGORY, skills => skills),
   previousCategory: createAction(actionTypes.PREVIOUS_CATEGORY, skills => skills),
+  setCurrentSkill: createAction(actionTypes.SET_CURRENT_SKILL, skillUid => skillUid),
 };
 
 function initEvaluation(evaluationId) {
@@ -197,6 +199,11 @@ export default handleActions({
     const elements = R.filter(R.propEq('category', prevCategory), paginatedView);
     const currentSkill = getFirstUnevaluatedSkill(elements, skills) || R.last(elements);
 
+    return Object.assign({}, state, { currentSkill });
+  },
+  [actions.setCurrentSkill]: (state, action) => {
+    const { paginatedView } = state;
+    const currentSkill = R.find(R.propEq('skillUid', action.payload))(paginatedView);
     return Object.assign({}, state, { currentSkill });
   },
 }, initialState);

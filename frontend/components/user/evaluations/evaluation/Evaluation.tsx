@@ -1,20 +1,16 @@
 import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as R from 'ramda';
 import { Grid, Col, Row, Alert } from 'react-bootstrap';
 
 import * as selectors from '../../../../modules/user';
-import { actionCreators as evaluationActionCreators, EVALUATION_VIEW, EVALUATION_STATUS } from '../../../../modules/user/evaluations';
+import { actionCreators as evaluationActionCreators } from '../../../../modules/user/evaluations';
 import { actionCreators as uiActionCreators } from '../../../../modules/user/evaluation';
 
 import EvaluationHeader from './EvaluationHeader';
-import Matrix from '../../matrix/Matrix';
+import Progress from './Progress';
 import Skill from './Skill';
 import Notes from '../../notes/Notes';
-
-const { SUBJECT, MENTOR, ADMIN } = EVALUATION_VIEW;
-const { NEW, SELF_EVALUATION_COMPLETE } = EVALUATION_STATUS;
 
 // TODO: fix types
 type Skill = {
@@ -28,6 +24,7 @@ type EvaluationProps = {
   evaluationId: string,
   view: string,
   levels: string[],
+  categories: string[],
   skillGroups?: any,
   status: string,
   updateSkillStatus: (skillId: number) => Promise<void>,
@@ -105,6 +102,7 @@ class Evaluation extends React.Component<EvaluationProps, any> {
   render() {
     const {
       levels,
+      categories,
       skillGroups,
       view,
       status,
@@ -147,7 +145,7 @@ class Evaluation extends React.Component<EvaluationProps, any> {
           />
         </Row>
         <Row>
-          <Col md={7} className="evaluation-panel">
+          <Col md={8} className="evaluation-panel">
             <Skill
               level={currentSkill.level}
               skill={currentSkill}
@@ -161,17 +159,11 @@ class Evaluation extends React.Component<EvaluationProps, any> {
             />
             <Notes skillUid={currentSkillUid} />
           </Col>
-          <Col md={5} className="evaluation-panel evaluation-panel--right">
-            <Matrix
-              categories={[].concat(currentSkill.category)}
-              levels={R.slice(levels.indexOf(currentSkill.level), Infinity, levels)}
+          <Col md={4} className="evaluation-panel evaluation-panel--right">
+            <Progress
+              categories={categories}
+              levels={levels}
               skillGroups={skillGroups}
-              updateSkillStatus={updateSkillStatus}
-              canUpdateSkillStatus={
-                view === ADMIN
-                || (view === SUBJECT && status === NEW)
-                || (view === MENTOR && status === SELF_EVALUATION_COMPLETE)
-              }
             />
           </Col>
         </Row>
