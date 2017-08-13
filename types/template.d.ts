@@ -3,17 +3,12 @@ type Question = {
 };
 
 type UnhydratedTemplateSkill = {
-  id: string,
+  id: number,
   name: string,
   version: number,
   criteria: string,
   type: string,
   questions: Question[],
-};
-
-type TemplateSkillViewModel = {
-  id: string,
-  name: string,
 };
 
 type SkillGroup = {

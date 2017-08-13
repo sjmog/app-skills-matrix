@@ -21,6 +21,15 @@ type TemplatePageComponentProps = {
 };
 
 class TemplatePageComponent extends React.Component<TemplatePageComponentProps, void> {
+  constructor(props) {
+    super(props);
+    this.onModifySkill = this.onModifySkill.bind(this);
+  }
+
+  onModifySkill(skill: UnhydratedTemplateSkill) {
+    this.props.actions.saveSkills([skill]);
+  }
+
   componentWillMount() {
     if (!this.props.retrieved) {
       this.props.actions.retrieveTemplate(this.props.params.templateId);
@@ -47,6 +56,7 @@ class TemplatePageComponent extends React.Component<TemplatePageComponentProps, 
               levels={template.levels}
               skillGroups={skillGroups}
               skills={skills}
+              onModifySkill={this.onModifySkill}
             />
           </Row>
         </div>

@@ -3,7 +3,7 @@ import * as React from 'react';
 import { SKILL_STATUS } from '../../../modules/user/evaluations';
 
 type SkillProps = {
-  skill: any, // TODO get type
+  skill: UnhydratedTemplateSkill,
   viewSkillDetails: (e:any) => void,
 };
 

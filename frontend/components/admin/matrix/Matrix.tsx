@@ -11,6 +11,7 @@ type MatrixProps = {
   levels: string[],
   skillGroups: any,
   skills: UnhydratedTemplateSkill[],
+  onModifySkill: (skill: UnhydratedTemplateSkill) => void,
 };
 
 class Matrix extends React.Component<MatrixProps, { showModal: boolean, currentSkill: UnhydratedTemplateSkill }> {
@@ -70,7 +71,7 @@ class Matrix extends React.Component<MatrixProps, { showModal: boolean, currentS
           showModal={this.state.showModal}
           onClose={this.hideSkillDetails}
           skill={this.state.currentSkill && skills[this.state.currentSkill.id]}
-          onModifySkill={() => {}}
+          onModifySkill={this.props.onModifySkill}
         />
       </div>
     );

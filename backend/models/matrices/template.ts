@@ -50,7 +50,7 @@ export default ({ id, name, version, categories, levels, skillGroups }: Unhydrat
     let skills = [];
     const newSkillGroups = skillGroups.map((skillGroup, index) => {
       skills = skills.concat(skillGroup.skills.map(skillId =>
-        Object.assign({}, allSkills[skillId].evaluationData(), { status: { previous: null, current: null } })));
+        Object.assign({}, allSkills[skillId].data(), { status: { previous: null, current: null } })));
       return ({
         id: index,
         category: skillGroup.category,
