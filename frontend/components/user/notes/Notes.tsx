@@ -42,7 +42,7 @@ class Notes extends React.Component<NotesProps, any>{
 
     return (
       <div>
-        <h3>Notes</h3>
+        <h4>Notes</h4>
         { error ? <Alert bsStyle="danger"><p>There was a problem adding your note</p></Alert> : false }
         <Form onSubmit={this.handleSubmit}>
           <FormGroup controlId="formInlineName">

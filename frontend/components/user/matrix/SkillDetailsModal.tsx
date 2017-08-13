@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { SKILL_STATUS } from '../../../modules/user/evaluations';
 import * as selectors from '../../../modules/user/index';
 import SkillActions from '../../common/SkillActions';
+import Notes from '../notes/Notes';
 
 type SkillDetailsModalProps = {
   skillUid: string,
@@ -25,20 +26,16 @@ const SkillDetailsModal = ({ skillUid, skill, error, showModal, onClose, updateS
       <Modal.Body>
         { skill
           ? <div>
-            <dl>
-              <dt>id</dt>
-              <dd>{skill.id}</dd>
-              <dt>name</dt>
-              <dd>{skill.name}</dd>
-              <dt>criteria</dt>
-              <dd>{skill.criteria ? skill.criteria : '-'}</dd>
-              <dt>type</dt>
-              <dd>{skill.type ? skill.type : '-'}</dd>
-              <dt>questions</dt>
-              <dd>
-                {skill.questions ? <ul>{skill.questions.map(({ title }) => <li key={title}>{title}</li>)}</ul> : '-'}
-              </dd>
-            </dl>
+              <dl>
+                <dt>Name</dt>
+                <dd>{skill.name}</dd>
+                <dt>Criteria</dt>
+                <dd>{skill.criteria ? skill.criteria : '-'}</dd>
+                <dt>Questions</dt>
+                <dd>
+                  {skill.questions ? <ul>{skill.questions.map(({ title }) => <li key={title}>{title}</li>)}</ul> : '-'}
+                </dd>
+              </dl>
             {
               canUpdateSkillStatus
                 ? <SkillActions
@@ -51,6 +48,9 @@ const SkillDetailsModal = ({ skillUid, skill, error, showModal, onClose, updateS
                 : false
             }
             { error ? <Alert bsStyle="danger">Something went wrong: {error}</Alert> : false }
+            <Notes
+              skillUid={skillUid}
+            />
           </div>
           : null
         }

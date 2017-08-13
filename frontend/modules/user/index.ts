@@ -59,6 +59,9 @@ export const getSkillError = ({ entities: { skills } }, skillUid) =>
 export const getNotesForSkill = ({ entities: { skills } }, skillUid) =>
   fromSkills.getNotesForSkill(skills, skillUid);
 
+export const hasNotes = ({ entities: { skills } }, skillUid) =>
+  fromSkills.hasNotes(skills, skillUid);
+
 /* EVALUATIONS SELECTORS */
 
 export const getSubjectName = ({ entities: { evaluations } }, evalId) =>

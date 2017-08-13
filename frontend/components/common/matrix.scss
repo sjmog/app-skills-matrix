@@ -99,8 +99,25 @@ dd {
       margin: 0 3px;
     }
   }
+
+  .skill-card--notes {
+    position: absolute;
+    top: 5px;
+    left: 0;
+    width: 20px;
+    height: 85%;
+
+    span {
+      display: block;
+      margin: 0 3px;
+    }
+  }
 }
 
+.state--icon--notes::before {
+  content: '\e111';
+  font-family: 'Glyphicons Halflings';
+}
 .state--icon--ATTAINED::before {
   content: '\e006';
   font-family: 'Glyphicons Halflings';
@@ -115,12 +132,11 @@ dd {
   font-family: 'Glyphicons Halflings';
 }
 .state--icon--FEEDBACK::before {
-  content: "\e085";
+  content: '\e085';
   font-family: 'Glyphicons Halflings';
 }
 
 .__react_component_tooltip.show {
   max-width: 175px;
   width: 175px;
-  text-transform: lowercase;
 }

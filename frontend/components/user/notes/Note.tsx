@@ -6,7 +6,6 @@ import { Media, Button, Glyphicon } from 'react-bootstrap';
 import * as selectors from '../../../modules/user';
 import { actionCreators } from '../../../modules/user/notes';
 
-
 // TODO: fix types
 type NoteProps = {
   note: any,
@@ -21,15 +20,18 @@ const Note = ({ skillUid, note, noteActions, loggedInUserId }) => (
       <img width={64} height={64} src={note.author.avatarUrl} alt="User avatar"/>
     </Media.Left>
     <Media.Body>
-      <p>{`${note.author.name || note.author.username} - ${moment(note.date).format('DD/MM/YYYY')}`}</p>
-      <p>{note.note}</p>
+      <p>
+        <b>{`${note.author.name || note.author.username}`}</b>{' '}<i>{moment(note.date).format('ll')}</i>
+        <br />
+        {note.note}
+      </p>
     </Media.Body>
     <Media.Right>
       {
         note.author.id === loggedInUserId
-          ? <Button onClick={() => noteActions.removeNote(skillUid, note.id)}>
-              <Glyphicon glyph="remove-sign"/>
-            </Button>
+          ? <button className="remove" onClick={() => noteActions.removeNote(skillUid, note.id)}>
+            <Glyphicon glyph="remove"/>
+          </button>
           : false
       }
     </Media.Right>

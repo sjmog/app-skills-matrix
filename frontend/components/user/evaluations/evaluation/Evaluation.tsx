@@ -11,7 +11,7 @@ import { actionCreators as uiActionCreators } from '../../../../modules/user/eva
 import EvaluationHeader from './EvaluationHeader';
 import Matrix from '../../matrix/Matrix';
 import Skill from './Skill';
-import Notes from '../Notes';
+import Notes from '../../notes/Notes';
 
 const { SUBJECT, MENTOR, ADMIN } = EVALUATION_VIEW;
 const { NEW, SELF_EVALUATION_COMPLETE } = EVALUATION_STATUS;

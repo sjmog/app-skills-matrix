@@ -127,5 +127,11 @@ export const getErringSkills = (state, skillUids) => {
   )(state);
 };
 
+// TODO: Stop using any here if possible
+const notesForSkill:any = (skillUid, state) => R.path(['entities', skillUid, 'notes'], state);
+
 export const getNotesForSkill = (state, skillUid) =>
-  R.path(['entities', skillUid, 'notes'], state);
+  notesForSkill(skillUid, state) || [];
+
+export const hasNotes = (state, skillUid) =>
+  R.length(notesForSkill(skillUid, state)) > 0;

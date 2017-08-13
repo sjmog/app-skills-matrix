@@ -50,3 +50,23 @@
 .nav-btn--left {
   border-radius: 6px 0 0 6px;
 }
+
+.remove {
+  -webkit-appearance: none;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  float: right;
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 1;
+  color: #000;
+  opacity: .2;
+}
+
+.remove:hover {
+  opacity: .4;
+}
+.remove:focus {
+  outline: none !important;
+}

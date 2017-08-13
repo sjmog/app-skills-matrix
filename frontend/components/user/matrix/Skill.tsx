@@ -10,6 +10,7 @@ type SkillProps = {
   skill: any,
   viewSkillDetails: (skillUid: string) => void,
   isBeingEvaluated: boolean,
+  hasNotes: boolean,
 };
 
 const skillColour = (currentStatus, previousStatus) => {
@@ -43,7 +44,7 @@ const skillState = (status) => {
   }
 };
 
-const Skill = ({ skillUid, skill, viewSkillDetails, isBeingEvaluated }: SkillProps) => {
+const Skill = ({ skillUid, skill, viewSkillDetails, isBeingEvaluated, hasNotes }: SkillProps) => {
   const statusClass = skill.status ? skillColour(skill.status.current, skill.status.previous) : '';
   const beingEvaluatedClass = isBeingEvaluated ? 'skill--current' : false;
 
@@ -52,6 +53,14 @@ const Skill = ({ skillUid, skill, viewSkillDetails, isBeingEvaluated }: SkillPro
 
   return (
     <div aria-hidden role="button" className={`skill--card ${statusClass} ${beingEvaluatedClass} previous--${skill.status.previous}`} onClick={() => viewSkillDetails(skillUid)}>
+      {
+        hasNotes
+          ? <div className={'skill-card--notes'}>
+              <span data-tip data-for={`skill-${skillUid}-notes`} className={`state--icon--notes`} />
+              <ReactTooltip place="top" id={`skill-${skillUid}-notes`} type="dark" effect="solid">{'Skill has notes'}</ReactTooltip>
+            </div>
+          : false
+      }
       {skill.name}
       <div className={'skill-card--state'}>
         <span data-tip data-for={`skill-${skillUid}-previous`} className={`state--icon--${skill.status.previous}`} />
@@ -67,4 +76,5 @@ const Skill = ({ skillUid, skill, viewSkillDetails, isBeingEvaluated }: SkillPro
 export default connect((state, { skillUid }) => ({
   skill: selectors.getSkill(state, skillUid),
   isBeingEvaluated: selectors.getCurrentSkillUid(state) === skillUid,
+  hasNotes: selectors.hasNotes(state, skillUid),
 }))(Skill);
