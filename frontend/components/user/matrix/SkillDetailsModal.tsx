@@ -26,16 +26,17 @@ const SkillDetailsModal = ({ skillUid, skill, error, showModal, onClose, updateS
       <Modal.Body>
         { skill
           ? <div>
-              <dl>
-                <dt>Name</dt>
-                <dd>{skill.name}</dd>
-                <dt>Criteria</dt>
-                <dd>{skill.criteria ? skill.criteria : '-'}</dd>
-                <dt>Questions</dt>
-                <dd>
-                  {skill.questions ? <ul>{skill.questions.map(({ title }) => <li key={title}>{title}</li>)}</ul> : '-'}
-                </dd>
-              </dl>
+                <h4>Name</h4>
+                <p>{skill.name}</p>
+                <h4>Criteria</h4>
+                <p>{skill.criteria ? skill.criteria : '-'}</p>
+                <h4>Questions</h4>
+                <div>
+                  {skill.questions && skill.questions.length > 0
+                    ? <ul>{skill.questions.map(({ title }) => <li key={title}>{title}</li>)}</ul>
+                    : <p>-</p>
+                  }
+                </div>
             {
               canUpdateSkillStatus
                 ? <SkillActions
