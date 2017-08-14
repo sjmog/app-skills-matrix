@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as R from 'ramda';
 import { Table } from 'react-bootstrap';
 
 import Level from './Level';
@@ -30,7 +31,7 @@ class Matrix extends React.Component<MatrixProps, { showModal: boolean, currentS
   viewSkillDetails(skill) {
     this.setState({
       showModal: true,
-      currentSkill: skill,
+      currentSkill: R.clone(skill),
     });
   }
 

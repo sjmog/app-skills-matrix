@@ -6,7 +6,7 @@ import {
   FormGroup,
   FormControl,
   Glyphicon,
-  ControlLabel, Panel,
+  ControlLabel, Panel, InputGroup,
 } from 'react-bootstrap';
 
 type SkillDetailsModalProps = {
@@ -29,6 +29,10 @@ class SkillDetailsModal extends React.Component<SkillDetailsModalProps, { skill:
     this.state = { skill: this.props.skill };
     this.updateSkillState = this.updateSkillState.bind(this);
     this.addQuestion = this.addQuestion.bind(this);
+    this.updateQuestion = this.updateQuestion.bind(this);
+    this.removeQuestion = this.removeQuestion.bind(this);
+    this.closeModel = this.closeModel.bind(this);
+    this.updateSkill = this.updateSkill.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -47,6 +51,12 @@ class SkillDetailsModal extends React.Component<SkillDetailsModalProps, { skill:
     return this.setState({ skill });
   }
 
+  removeQuestion(index) {
+    const skill = this.state.skill;
+    skill.questions.splice(index, 1);
+    return this.setState({ skill });
+  }
+
   updateSkillState(e) {
     const field = e.target.name;
     const skill = this.state.skill;
@@ -54,8 +64,18 @@ class SkillDetailsModal extends React.Component<SkillDetailsModalProps, { skill:
     return this.setState({ skill });
   }
 
+  closeModel() {
+    this.setState({ skill: null });
+    this.props.onClose();
+  }
+
+  updateSkill() {
+    this.props.onModifySkill(this.state.skill);
+    this.closeModel();
+  }
+
   render() {
-    const { showModal, onModifySkill, onClose } = this.props;
+    const { showModal } = this.props;
     const { skill } = this.state;
 
     if (!skill) {
@@ -64,7 +84,7 @@ class SkillDetailsModal extends React.Component<SkillDetailsModalProps, { skill:
 
     return (
       <div>
-        <Modal show={showModal} onHide={onClose}>
+        <Modal show={showModal} onHide={this.closeModel}>
           <Modal.Header closeButton>
             <Modal.Title>Skill Details</Modal.Title>
           </Modal.Header>
@@ -110,24 +130,34 @@ class SkillDetailsModal extends React.Component<SkillDetailsModalProps, { skill:
 
               <Panel header={<h3>Questions</h3>}>
                 {skill.questions ?
-                  skill.questions.map(({ title }, index) =>
-                    <FieldGroup
-                      id={`question_${index}`}
-                      type="text"
-                      value={title}
-                      onChange={e => this.updateQuestion(e.target.value, index)}
-                      placeholder="Question"
-                    />) : false}
+                  skill.questions.map((q, index) =>
+                    (<FormGroup controlId={`question_${index}`}>
+                      <InputGroup>
+                        <FormControl name={`question_${index}`}
+                                     key={`question_${index}`}
+                                     type="text"
+                                     value={q.title}
+                                     onChange={(e: any) => this.updateQuestion(e.target.value, index)}
+                                     placeholder="Question"
+                        />
+                        <InputGroup.Button>
+                          <Button onClick={() => this.removeQuestion(index)}>
+                            <Glyphicon glyph="minus" />
+                          </Button>
+                        </InputGroup.Button>
+                      </InputGroup>
+                    </FormGroup>)) :
+                  false}
                 <Button bsStyle="primary" onClick={this.addQuestion}>
                   <Glyphicon glyph="plus" /></Button>
               </Panel>
 
-              <Button bsStyle="primary" onClick={() => onModifySkill(this.state.skill)}>
-                <Glyphicon glyph="plus" /> Update Question</Button>
+              <Button bsStyle="primary" onClick={this.updateSkill}>
+                Update Skill</Button>
             </Form>
           </Modal.Body>
           <Modal.Footer>
-            <Button onClick={onClose}>Close</Button>
+            <Button onClick={this.closeModel}>Close</Button>
           </Modal.Footer>
         </Modal>
       </div>
