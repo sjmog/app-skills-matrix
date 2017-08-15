@@ -1,63 +1,168 @@
 import * as React from 'react';
-import { Modal, Button, Alert } from 'react-bootstrap';
-
-import { SKILL_STATUS } from '../../../modules/user/evaluations';
-import SkillActions from '../../common/SkillActions';
+import {
+  Modal,
+  Button,
+  Form,
+  FormGroup,
+  FormControl,
+  Glyphicon,
+  ControlLabel, Panel, InputGroup,
+} from 'react-bootstrap';
 
 type SkillDetailsModalProps = {
   showModal: boolean,
-  onClose: (e:any) => void,
-  skill: any, // TODO: get type
-  updateSkillStatus: (skillId: number, status: string) => void,
-  canUpdateSkillStatus: boolean,
+  onClose: () => void,
+  skill?: UnhydratedTemplateSkill,
+  onModifySkill: (skill: UnhydratedTemplateSkill) => void,
 };
 
-const SkillDetailsModal = ({ showModal, onClose, skill, updateSkillStatus, canUpdateSkillStatus }: SkillDetailsModalProps) => (
-  <div>
-    <Modal show={showModal} onHide={onClose}>
-      <Modal.Header closeButton>
-        <Modal.Title>Skill Details</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        { skill
-            ? <div>
-              <dl>
-                <dt>id</dt>
-                <dd>{skill.id}</dd>
-                <dt>name</dt>
-                <dd>{skill.name}</dd>
-                <dt>criteria</dt>
-                <dd>{skill.criteria ? skill.criteria : '-'}</dd>
-                <dt>type</dt>
-                <dd>{skill.type ? skill.type : '-'}</dd>
-                <dt>version</dt>
-                <dd>{skill.version ? skill.version : '-'}</dd>
-                <dt>questions</dt>
-                <dd>
-                  {skill.questions ? <ul>{skill.questions.map(({ title }) => <li key={title}>{title}</li>)}</ul> : '-'}
-                </dd>
-              </dl>
-              {
-                canUpdateSkillStatus
-                  ? <SkillActions
-                    skillStatus={skill.status}
-                    onAttained={() => updateSkillStatus(skill.id, SKILL_STATUS.ATTAINED)}
-                    onNotAttained={() => updateSkillStatus(skill.id, SKILL_STATUS.NOT_ATTAINED)}
-                    onFeedbackRequest={() => updateSkillStatus(skill.id, SKILL_STATUS.FEEDBACK)}
-                    onSetObjective={() => updateSkillStatus(skill.id, SKILL_STATUS.OBJECTIVE)}
-                  />
-                  : false
-              }
-              { skill.error ? <Alert bsStyle="danger">Something went wrong: {skill.error.message}</Alert> : false }
-            </div>
-            : null
-          }
-      </Modal.Body>
-      <Modal.Footer>
-        <Button onClick={onClose}>Close</Button>
-      </Modal.Footer>
-    </Modal>
-  </div>
-  );
+const FieldGroup = ({ id, label = '', ...props }) =>
+  (<FormGroup controlId={id}>
+    {label && <ControlLabel>{label}</ControlLabel>}
+    <FormControl name={id} {...props} />
+  </FormGroup>);
+
+
+class SkillDetailsModal extends React.Component<SkillDetailsModalProps, { skill: UnhydratedTemplateSkill }> {
+  constructor(props) {
+    super(props);
+    this.state = { skill: this.props.skill };
+    this.updateSkillState = this.updateSkillState.bind(this);
+    this.addQuestion = this.addQuestion.bind(this);
+    this.updateQuestion = this.updateQuestion.bind(this);
+    this.removeQuestion = this.removeQuestion.bind(this);
+    this.closeModel = this.closeModel.bind(this);
+    this.updateSkill = this.updateSkill.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({ skill: nextProps.skill });
+  }
+
+  addQuestion() {
+    const skill = this.state.skill;
+    skill.questions.push({ title: '' });
+    return this.setState({ skill });
+  }
+
+  updateQuestion(newValue, index) {
+    const skill = this.state.skill;
+    skill.questions[index] = { title: newValue };
+    return this.setState({ skill });
+  }
+
+  removeQuestion(index) {
+    const skill = this.state.skill;
+    skill.questions.splice(index, 1);
+    return this.setState({ skill });
+  }
+
+  updateSkillState(e) {
+    const field = e.target.name;
+    const skill = this.state.skill;
+    skill[field] = e.target.value;
+    return this.setState({ skill });
+  }
+
+  closeModel() {
+    this.setState({ skill: null });
+    this.props.onClose();
+  }
+
+  updateSkill() {
+    this.props.onModifySkill(this.state.skill);
+    this.closeModel();
+  }
+
+  render() {
+    const { showModal } = this.props;
+    const { skill } = this.state;
+
+    if (!skill) {
+      return false;
+    }
+
+    return (
+      <div>
+        <Modal show={showModal} onHide={this.closeModel}>
+          <Modal.Header closeButton>
+            <Modal.Title>Skill Details</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form>
+              <FormGroup>
+                <ControlLabel>id</ControlLabel>
+                <FormControl.Static>{skill.id}</FormControl.Static>
+              </FormGroup>
+              <FormGroup>
+                <ControlLabel>version</ControlLabel>
+                <FormControl.Static>{skill.version}</FormControl.Static>
+              </FormGroup>
+              <FieldGroup
+                id="name"
+                type="text"
+                label="Name"
+                value={skill.name || ''}
+                onChange={this.updateSkillState}
+                placeholder="Name"
+              />
+              <FieldGroup
+                id="criteria"
+                type="text"
+                label="Criteria"
+                value={skill.criteria || ''}
+                onChange={this.updateSkillState}
+                placeholder="criteria"
+              />
+              <FormGroup controlId="type">
+                <ControlLabel>Type</ControlLabel>
+                <FormControl
+                  componentClass="select"
+                  placeholder="type"
+                  onChange={this.updateSkillState}
+                  defaultValue={skill.type}
+                >
+                  <option value="select" disabled>select</option>
+                  <option value="behaviour">behaviour</option>
+                  <option value="skill">skill</option>
+                </FormControl>
+              </FormGroup>
+
+              <Panel header={<h3>Questions</h3>}>
+                {skill.questions ?
+                  skill.questions.map((q, index) =>
+                    (<FormGroup controlId={`question_${index}`}>
+                      <InputGroup>
+                        <FormControl name={`question_${index}`}
+                                     key={`question_${index}`}
+                                     type="text"
+                                     value={q.title}
+                                     onChange={(e: any) => this.updateQuestion(e.target.value, index)}
+                                     placeholder="Question"
+                        />
+                        <InputGroup.Button>
+                          <Button onClick={() => this.removeQuestion(index)}>
+                            <Glyphicon glyph="minus" />
+                          </Button>
+                        </InputGroup.Button>
+                      </InputGroup>
+                    </FormGroup>)) :
+                  false}
+                <Button bsStyle="primary" onClick={this.addQuestion}>
+                  <Glyphicon glyph="plus" /></Button>
+              </Panel>
+
+              <Button bsStyle="primary" onClick={this.updateSkill}>
+                Update Skill</Button>
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={this.closeModel}>Close</Button>
+          </Modal.Footer>
+        </Modal>
+      </div>
+    );
+  }
+}
 
 export default SkillDetailsModal;

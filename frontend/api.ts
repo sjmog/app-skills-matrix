@@ -24,18 +24,18 @@ export default ({
       .then(getData)
       .catch(handleError);
   },
-  saveTemplate(template): Promise<TemplateViewModel> {
+  saveTemplate(template: string): Promise<TemplateViewModel> {
     return axios.post('/skillz/matrices/templates', { action: 'save', template })
       .then(getData)
       .catch(handleError);
   },
-  getTemplate(templateId): Promise<NormalizedTemplateViewModel> {
+  getTemplate(templateId: string): Promise<NormalizedTemplateViewModel> {
     return axios.get(`/skillz/matrices/templates/${templateId}`)
       .then(getData)
       .catch(handleError);
   },
-  saveSkill(skill): Promise<TemplateSkillViewModel> {
-    return axios.post('/skillz/matrices/skills', { action: 'save', skill })
+  saveSkills(skills: UnhydratedTemplateSkill[]): Promise<UnhydratedTemplateSkill[]> {
+    return axios.post('/skillz/matrices/skills', { action: 'save', skills })
       .then(getData)
       .catch(handleError);
   },

@@ -142,7 +142,7 @@ describe('matrices', () => {
         .post(`${prefix}/skills`)
         .send({
           action: 'save',
-          skill: JSON.stringify(sampleSkill),
+          skills: [sampleSkill],
         })
         .set('Cookie', `${cookieName}=${adminToken}`)
         .expect(201)
@@ -157,7 +157,7 @@ describe('matrices', () => {
         .post(`${prefix}/skills`)
         .send({
           action: 'save',
-          skill: JSON.stringify(skillsFixture),
+          skills: skillsFixture,
         })
         .set('Cookie', `${cookieName}=${adminToken}`)
         .expect(201)
@@ -174,7 +174,7 @@ describe('matrices', () => {
             .post(`${prefix}/skills`)
             .send({
               action: 'save',
-              skill: JSON.stringify(Object.assign({}, sampleSkill, { name: 'new name', questions: [] })),
+              skills: [Object.assign({}, sampleSkill, { name: 'new name', questions: [] })],
             })
             .set('Cookie', `${cookieName}=${adminToken}`)
             .expect(201))

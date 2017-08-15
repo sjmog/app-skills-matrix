@@ -5,6 +5,7 @@ import matrices from '../models/matrices/index';
 import createHandler from './createHandler';
 import { TEMPLATE_NOT_FOUND } from './errors';
 import { Template } from '../models/matrices/template';
+import { Skill } from '../models/matrices/skill';
 
 const { templates, skills } = matrices;
 
@@ -34,15 +35,13 @@ const handlerFunctions = Object.freeze({
   },
   skills: {
     save: (req, res, next) => {
-      Promise.try(() => JSON.parse(req.body.skill))
-        .then((newSkills: UnhydratedEvaluationSkill[]) =>
-          Promise.map([].concat(newSkills),
-            skill => skills.getById(skill.id)
-              .then(retrievedSkill =>
-                (retrievedSkill
-                  ? skills.updateSkill(retrievedSkill, skill)
-                  : skills.addSkill(skill))))
-            .then(changedSkills => res.status(201).json(R.map(s => s.viewModel(), changedSkills))))
+      Promise.map<UnhydratedTemplateSkill, Skill>(req.body.skills,
+        skill => skills.getById(skill.id)
+          .then(retrievedSkill =>
+            (retrievedSkill
+              ? skills.updateSkill(retrievedSkill, skill)
+              : skills.addSkill(skill))))
+        .then(changedSkills => res.status(201).json(R.map(s => s.data(), changedSkills)))
         .catch(next);
     },
     getAll: (req, res, next) =>

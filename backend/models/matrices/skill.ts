@@ -1,15 +1,11 @@
 export type Skill = {
-  id: string,
-  viewModel: () => TemplateSkillViewModel,
-  evaluationData: () => UnhydratedTemplateSkill,
+  id: number,
+  data: () => UnhydratedTemplateSkill,
 };
 
 export default ({ id, name, version, criteria, type, questions }: UnhydratedTemplateSkill): Skill => Object.freeze({
   id,
-  viewModel() {
-    return { id, name };
-  },
-  evaluationData() {
+  data() {
     return { id, name, version, criteria, type, questions };
   },
 });

@@ -8,12 +8,11 @@ import { actions } from '../../../modules/admin/matrices';
 import TemplatePageHeader from './TemplatePageHeader';
 import Matrix from '../matrix/Matrix';
 
-// todo: fix types
 type TemplatePageComponentProps = {
   templateResult: { success?: boolean, error?: ErrorMessage },
   template: NormalizedTemplateViewModel,
-  skillGroups: any,
-  skills: any,
+  skillGroups: SkillGroup[],
+  skills: UnhydratedTemplateSkill[],
   retrieved: boolean,
   actions: typeof actions,
   params: {
@@ -22,6 +21,15 @@ type TemplatePageComponentProps = {
 };
 
 class TemplatePageComponent extends React.Component<TemplatePageComponentProps, void> {
+  constructor(props) {
+    super(props);
+    this.onModifySkill = this.onModifySkill.bind(this);
+  }
+
+  onModifySkill(skill: UnhydratedTemplateSkill) {
+    this.props.actions.saveSkills([skill]);
+  }
+
   componentWillMount() {
     if (!this.props.retrieved) {
       this.props.actions.retrieveTemplate(this.props.params.templateId);
@@ -48,6 +56,7 @@ class TemplatePageComponent extends React.Component<TemplatePageComponentProps, 
               levels={template.levels}
               skillGroups={skillGroups}
               skills={skills}
+              onModifySkill={this.onModifySkill}
             />
           </Row>
         </div>

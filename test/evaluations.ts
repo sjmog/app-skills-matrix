@@ -551,9 +551,9 @@ describe('evaluations', () => {
     it('replaces existing action when status of a skill is updated from one action type to another', () => {
       const originalSkillStatus = 'FEEDBACK';
       const postUpdateSkillStatus = 'OBJECTIVE';
-      const skillId = R.path(['skills', 0, 'id'])(evaluation);
+      const skillId = R.path<number>(['skills', 0, 'id'], evaluation);
       const skillLens = R.lensPath(['skills', 0, 'status', 'current']);
-      const originalEval = R.set(skillLens, originalSkillStatus)(evaluation);
+      const originalEval = R.set(skillLens, originalSkillStatus, evaluation);
 
       return insertEvaluation(Object.assign({}, originalEval, { status: NEW }), normalUserOneId)
         .then(({ insertedId }) => {

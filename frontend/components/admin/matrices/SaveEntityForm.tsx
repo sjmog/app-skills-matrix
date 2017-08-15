@@ -7,7 +7,7 @@ type SaveEntityFormProps = {
   saveEntity: (e: any) => void,
   updateEntityInLocalState: (e: any) => void,
   success: boolean,
-  error: ErrorMessage,
+  error?: ErrorMessage,
 };
 
 const SaveEntityForm = ({ entityName, entity, saveEntity, updateEntityInLocalState, success, error }: SaveEntityFormProps) =>
