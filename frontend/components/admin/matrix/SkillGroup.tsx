@@ -4,8 +4,8 @@ import { Table } from 'react-bootstrap';
 import Skill from './Skill';
 
 type SkillGroupProps = {
-  skillGroup: any, // TODO get types
-  skills: any, // TODO get types
+  skillGroup: SkillGroup,
+  skills: UnhydratedTemplateSkill[],
   viewSkillDetails: (e: any) => void,
 };
 

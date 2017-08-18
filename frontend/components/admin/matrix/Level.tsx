@@ -6,8 +6,8 @@ import SkillGroup from './SkillGroup';
 type LevelProps = {
   categories: string[],
   levelName: string,
-  skillGroups: any, // TODO: fix type
-  skills: any,
+  skillGroups: NormalizedSkillGroups,
+  skills: UnhydratedTemplateSkill[],
   viewSkillDetails: (e: any) => void,
 };
 

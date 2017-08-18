@@ -10,7 +10,7 @@ import '../../common/matrix.scss';
 type MatrixProps = {
   categories: string[],
   levels: string[],
-  skillGroups: any,
+  skillGroups: NormalizedSkillGroups,
   skills: UnhydratedTemplateSkill[],
   onModifySkill: (skill: UnhydratedTemplateSkill) => void,
 };

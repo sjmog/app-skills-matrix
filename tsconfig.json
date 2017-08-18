@@ -13,6 +13,9 @@
     "test/**/*",
     "types/*.d.ts"
   ],
+  "awesomeTypescriptLoaderOptions": {
+    "transpileOnly": true
+  },
   "exclude": [
     "node_modules"
   ]

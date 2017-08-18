@@ -7,7 +7,7 @@ import { SaveSkill } from './SaveSkill';
 import TemplateList from './TemplateList';
 
 type ManageMatricesPageComponentProps = {
-  templates: { id: string, name: string }[],
+  templates: TemplateViewModel[],
 };
 
 export const ManageMatricesPageComponent = ({ templates }: ManageMatricesPageComponentProps) =>

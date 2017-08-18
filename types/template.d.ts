@@ -29,5 +29,7 @@ type NormalizedTemplateViewModel = {
   version: number,
   categories: string[],
   levels: string[],
-  skillGroups: { [id: string]: SkillGroup },
+  skillGroups: NormalizedSkillGroups,
 };
+
+type NormalizedSkillGroups = { [id: string]: SkillGroup };

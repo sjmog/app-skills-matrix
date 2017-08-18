@@ -4,40 +4,47 @@ import api from '../../api';
 import * as R from 'ramda';
 
 export const constants = keymirror({
-  SAVE_TEMPLATE_SUCCESS: null,
-  SAVE_TEMPLATE_FAILURE: null,
+  ADD_TEMPLATE_SUCCESS: null,
+  ADD_TEMPLATE_FAILURE: null,
   SAVE_SKILLS_SUCCESS: null,
-  SAVE_SKILL_FAILURE: null,
+  SAVE_SKILLS_FAILURE: null,
   RETRIEVE_TEMPLATE_SUCCESS: null,
   RETRIEVE_TEMPLATE_FAILURE: null,
 });
 
-const saveTemplateSuccess = createAction(constants.SAVE_TEMPLATE_SUCCESS);
-const saveTemplateFailure = createAction(constants.SAVE_TEMPLATE_FAILURE);
+const addTemplateSuccess = createAction(constants.ADD_TEMPLATE_SUCCESS);
+const addTemplateFailure = createAction(constants.ADD_TEMPLATE_FAILURE);
 const saveSkillsSuccess = createAction(constants.SAVE_SKILLS_SUCCESS);
-const saveSkillFailure = createAction(constants.SAVE_SKILL_FAILURE);
+const saveSkillsFailure = createAction(constants.SAVE_SKILLS_FAILURE);
 const retrieveTemplateSuccess = createAction(constants.RETRIEVE_TEMPLATE_SUCCESS);
 const retrieveTemplateFailure = createAction(constants.RETRIEVE_TEMPLATE_FAILURE);
 
-type MatricesState = {
-  templateResult: { success: boolean, error: ErrorMessage },
-  skillResult: { success: boolean, error: ErrorMessage },
-  templates: TemplateViewModel[],
-  retrieved: boolean,
-  skills: UnhydratedTemplateSkill[],
-  skillGroups: SkillGroup[],
+type ApiResult = {
+  success: boolean,
+  error: ErrorMessage,
 };
 
-function saveTemplate(template: string) {
-  return dispatch => api.saveTemplate(template)
-    .then(savedTemplate => dispatch(saveTemplateSuccess(savedTemplate)))
-    .catch(err => dispatch(saveTemplateFailure(err)));
+export type MatricesState = {
+  templateFetchResult?: ApiResult &
+    {
+      skills: UnhydratedTemplateSkill[],
+      template: NormalizedTemplateViewModel,
+    },
+  templateAddResult?: ApiResult,
+  skillResult: ApiResult,
+  templates: TemplateViewModel[],
+};
+
+function addTemplate(template: string) {
+  return dispatch => api.addTemplate(template)
+    .then(savedTemplate => dispatch(addTemplateSuccess(savedTemplate)))
+    .catch(err => dispatch(addTemplateFailure(err)));
 }
 
 function saveSkills(skills: UnhydratedTemplateSkill[]) {
   return dispatch => api.saveSkills(skills)
     .then(updateSkills => dispatch(saveSkillsSuccess({ updateSkills })))
-    .catch(err => dispatch(saveSkillFailure(err)));
+    .catch(err => dispatch(saveSkillsFailure(err)));
 }
 
 function retrieveTemplate(templateId: string) {
@@ -47,51 +54,57 @@ function retrieveTemplate(templateId: string) {
 }
 
 export const actions = {
-  saveTemplate,
+  addTemplate,
   saveSkills,
   retrieveTemplate,
 };
 
-const handleSaveTemplateSuccess = (state: MatricesState, action): MatricesState =>
+const buildTemplateFetchSuccessResult = (template, skills) => ({
+  templateFetchResult: {
+    success: true,
+    error: null,
+    template,
+    skills,
+  },
+});
+
+const handleAddTemplateSuccess = (state: MatricesState, action): MatricesState =>
   Object.assign({}, state, {
-    templateResult: { success: true, error: null },
+    templateAddResult: { success: true, error: null },
     templates: [].concat(state.templates, action.payload),
   });
 
 const handleRetrieveTemplateSuccess = (state: MatricesState, action): MatricesState =>
-  Object.assign({}, state, {
-    retrieved: true,
-    templateResult: { success: true, error: null },
-    template: action.payload.template,
-    skills: action.payload.skills,
-    skillGroups: action.payload.template.skillGroups,
-  });
+  Object.assign({}, state, buildTemplateFetchSuccessResult(action.payload.template, action.payload.skills));
 
+// TODO: split this into two actions
 const handleSaveSkillSuccess = (state: MatricesState, action): MatricesState => {
-  let skills = state.skills;
-  const updatedSkills: UnhydratedTemplateSkill[] = action.payload.updatedSkills;
-  if (state.skills) {
-    skills = state.skills.map((skill) => {
-      const updatedSkill = R.find((s => s.id === skill.id), updatedSkills);
-      if (updatedSkill) {
-        return updatedSkill;
-      }
-      return skill;
-    });
+  const skillResult = { skillResult: { success: true, error: null } };
+  if (!state.templateFetchResult) {
+    return Object.assign({}, state, skillResult);
   }
-  return Object.assign({}, state, { skillResult: { success: true, error: null }, skills });
+  const updatedSkills: UnhydratedTemplateSkill[] = action.payload.updatedSkills;
+  const skills = state.templateFetchResult.skills.map((skill) => {
+    const updatedSkill = R.find((s => s.id === skill.id), updatedSkills);
+    if (updatedSkill) {
+      return updatedSkill;
+    }
+    return skill;
+  });
+  const templateFetchResult = buildTemplateFetchSuccessResult(state.templateFetchResult.template, skills);
+  return Object.assign({}, state, skillResult, templateFetchResult);
 };
 
 export const reducers = handleActions({
-  [saveTemplateSuccess]: handleSaveTemplateSuccess,
-  [saveTemplateFailure]: (state, action) => Object.assign({}, state, {
-    templateResult: {
+  [addTemplateSuccess]: handleAddTemplateSuccess,
+  [addTemplateFailure]: (state, action) => Object.assign({}, state, {
+    templateAddResult: {
       error: action.payload,
       success: false,
     },
   }),
   [saveSkillsSuccess]: handleSaveSkillSuccess,
-  [saveSkillFailure]: (state, action) => Object.assign({}, state, {
+  [saveSkillsFailure]: (state, action) => Object.assign({}, state, {
     skillResult: {
       error: action.payload,
       success: false,
@@ -99,10 +112,10 @@ export const reducers = handleActions({
   }),
   [retrieveTemplateSuccess]: handleRetrieveTemplateSuccess,
   [retrieveTemplateFailure]: (state, action) => Object.assign({}, state, {
-    templateResult: {
+    templateFetchResult: {
       error: action.payload,
       success: false,
     },
   }),
-}, { templateResult: {}, skillResult: {} });
+}, { });
 

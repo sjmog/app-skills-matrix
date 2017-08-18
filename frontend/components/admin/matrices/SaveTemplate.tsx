@@ -26,7 +26,7 @@ class SaveTemplateComponent extends React.Component<SaveTemplateComponentProps, 
 
   saveTemplate(e) {
     e.preventDefault();
-    this.props.actions.saveTemplate(this.state.template);
+    this.props.actions.addTemplate(this.state.template);
   }
 
   render() {
@@ -49,7 +49,7 @@ class SaveTemplateComponent extends React.Component<SaveTemplateComponentProps, 
 }
 
 export const SaveTemplate = connect(
-  state => state.matrices.templateResult || {},
+  state => state.matrices.templateAddResult || {},
   dispatch => ({
     actions: bindActionCreators(actions, dispatch),
   }),
