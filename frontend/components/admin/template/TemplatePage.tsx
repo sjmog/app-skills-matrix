@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as R from 'ramda';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Row, Alert } from 'react-bootstrap';
@@ -20,6 +21,11 @@ class TemplatePageComponent extends React.Component<TemplatePageComponentProps, 
   constructor(props) {
     super(props);
     this.onModifySkill = this.onModifySkill.bind(this);
+    this.onAddSkill = this.onAddSkill.bind(this);
+  }
+
+  onAddSkill(template, level, category) {
+    this.props.actions.addSkillToTemplate(level, category, template);
   }
 
   onModifySkill(skill: UnhydratedTemplateSkill) {
@@ -33,7 +39,7 @@ class TemplatePageComponent extends React.Component<TemplatePageComponentProps, 
   }
 
   render() {
-    if (!this.props.templateFetchResult || this.props.templateFetchResult.template.id !== this.props.params.templateId) {
+    if (!this.props.templateFetchResult) {
       return false;
     }
 
@@ -52,6 +58,7 @@ class TemplatePageComponent extends React.Component<TemplatePageComponentProps, 
               skillGroups={template.skillGroups}
               skills={skills}
               onModifySkill={this.onModifySkill}
+              onAddSkill={R.curry(this.onAddSkill)(template)}
             />
           </Row>
         </div>

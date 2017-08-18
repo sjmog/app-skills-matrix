@@ -120,6 +120,59 @@ describe('matrices', () => {
           .expect(test().expect)));
   });
 
+  describe('POST /matrices/templates/:templateId { action: addSkill }', () => {
+    it('adds an empty skill to the requested skill group', () =>
+      Promise.all([Promise.map(skillsFixture, insertSkill), insertTemplate(Object.assign({}, sampleTemplate))])
+        .then(() => request(app)
+          .post(`${prefix}/templates/eng-nodejs`)
+          .send({ action: 'addSkill', level: 'Expert', category: 'Magicness' })
+          .set('Cookie', `${cookieName}=${adminToken}`)
+          .expect(200)
+          .then(() => templates.findOne({ id: 'eng-nodejs' }))
+          .then((newTemplate) => {
+            expect(newTemplate.skillGroups[5].level).to.equal('Expert');
+            expect(newTemplate.skillGroups[5].category).to.equal('Magicness');
+            expect(newTemplate.skillGroups[5].skills.length).to.equal(2);
+          })));
+
+    const errorCases =
+      [
+        () => ({
+          desc: 'not authorized',
+          token: normalUserToken,
+          body: { action: 'addSkill', level: 'Expert', category: 'Magicness' },
+          expect: 403,
+        }),
+        () => ({
+          desc: 'bad action',
+          token: adminToken,
+          body: { action: 'foo', level: 'Expert', category: 'Magicness' },
+          expect: 400,
+        }),
+        () => ({
+          desc: 'bad level',
+          token: adminToken,
+          body: { action: 'addSkill', level: 'Foo', category: 'Magicness' },
+          expect: 400,
+        }),
+        () => ({
+          desc: 'bad category',
+          token: adminToken,
+          body: { action: 'addSkill', level: 'Expert', category: 'Foo' },
+          expect: 400,
+        }),
+      ];
+
+    errorCases.forEach(test =>
+      it(`should handle error cases '${test().desc}'`, () =>
+        insertTemplate(Object.assign({}, sampleTemplate))
+          .then(() => request(app)
+            .post(`${prefix}/templates/eng-nodejs`)
+            .send(test().body)
+            .set('Cookie', `${cookieName}=${test().token}`)
+            .expect(test().expect))));
+  });
+
   describe('GET matrices/skills', () => {
     it('gets all the skills', () =>
       Promise.map(skillsFixture, insertSkill)

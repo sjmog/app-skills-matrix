@@ -14,3 +14,4 @@ export const MENTOR_REVIEW_COMPLETE = () => ({ message: 'This evaluation has bee
 export const MENTOR_CAN_ONLY_UPDATE_AFTER_SELF_EVALUATION = () => ({ message: 'You can\'t update this evaluation until your mentee has completed their self-evaluation.' });
 export const ONLY_USER_AND_MENTOR_CAN_SEE_ACTIONS = () => ({ message: 'You can\'t see actions for another user unless you are their mentor.' });
 export const USER_NOT_ADMIN = () => ({ message: 'You must be an admin user to make this request' });
+export const INVALID_LEVEL_OR_CATEGORY = (level, category, templateId) => ({ message: `Level '${level}' or Category '${category}' not found in tempate '${templateId}'`});

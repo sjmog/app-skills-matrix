@@ -1,5 +1,6 @@
 /* tslint:disable no-param-reassign */
 import { Skill } from './skill';
+import * as R from 'ramda';
 
 type UnhydratedTemplate = {
   id: string,
@@ -20,9 +21,16 @@ export type Template = {
   evaluationData: () => EvaluationTemplate,
   userDetailsViewModel: () => { name: string },
   createSkillGroups: (skills: Skill[]) => { skills: UnhydratedEvaluationSkill[], skillGroups: SkillGroup[] },
+  addSkill: (level: string, category: string, skillId: number) => Template,
+  hasLevel: (level: string) => boolean,
+  hasCategory: (category: string) => boolean,
 };
 
-export default ({ id, name, version, categories, levels, skillGroups }: UnhydratedTemplate): Template => Object.freeze({
+
+const getSkillGroup = (level: string, category: string, skillGroups: SkillGroup[]) =>
+  R.find((group: SkillGroup) => (group.level === level && group.category === category), skillGroups);
+
+const template = ({ id, name, version, categories, levels, skillGroups }: UnhydratedTemplate): Template => Object.freeze({
   id,
   skillGroups,
   viewModel() {
@@ -60,8 +68,20 @@ export default ({ id, name, version, categories, levels, skillGroups }: Unhydrat
     });
     return { skills, skillGroups: newSkillGroups };
   },
+  addSkill(level, category, skillId) {
+    const skillGroup = getSkillGroup(level, category, skillGroups);
+    skillGroup.skills.push(skillId);
+    return template({ id, name, version, categories, levels, skillGroups });
+  },
+  hasLevel(level) {
+    return R.contains(level, levels);
+  },
+  hasCategory(category) {
+    return R.contains(category, categories);
+  },
 });
 
+export default template;
 export const newTemplate = (id: string, name: string, skillGroups: SkillGroup[], levels: string[], categories: string[]) =>
   ({
     id,
