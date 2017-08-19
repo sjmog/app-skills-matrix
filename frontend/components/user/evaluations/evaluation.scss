@@ -20,7 +20,7 @@
 }
 
 .skill-body {
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .skill-body___info-block {
@@ -30,6 +30,11 @@
   margin-top: 10px;
 }
 
+.skill__next-skill {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
 .skill-header {
   min-height: 58px;
   display: flex;
@@ -37,11 +42,7 @@
 }
 
 .skill-header__title {
-  flex: 1;
-  margin-right: 6px;
-}
-
-.skill-header__label {
+  margin-top: 10px;
 }
 
 .nav-btn--right {
@@ -74,4 +75,32 @@
 
 .notes textarea {
   resize: vertical;
+}
+
+.evaluation-header {
+  padding-left: 0;
+}
+
+.evaluation-header .label {
+  padding-top: 4px;
+  padding-bottom: 9px;
+}
+
+.evaluation-header--right {
+  padding-right: 0;
+  padding-left: 0;
+}
+
+.evaluation-header__category-label {
+  margin-top: 0;
+  margin-bottom: 0;
+  display: inline-block;
+}
+
+.evaluation-header__navigation {
+  font-size: 16px;
+}
+
+.evaluation-header__cta {
+  font-size: 16px;
 }

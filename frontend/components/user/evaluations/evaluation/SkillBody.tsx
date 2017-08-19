@@ -17,21 +17,17 @@ class SkillBody extends React.Component<SkillBodyProps, any> {
   render() {
     return (
       <div className="skill-body">
-        <p>{`  ${this.props.criteria}`}</p>
+        <p>{`  ${this.props.criteria} `}
         {
           this.props.questions.length
-            ? <Button
-              active={this.state.open}
-              onClick={() => this.setState({ open: !this.state.open })}
-            >
-              {'I\'m not sure'}
-            </Button>
-            : false
+          ? <a href="#" onClick={() => this.setState({ open: !this.state.open })}>Still not sure?</a>
+          : false
         }
+        </p>
         {this.state.open
           ? <div className="skill-body___info-block">
             <ul>
-              {this.props.questions.map(({ title }) => <li key={title}>{title}</li>)}
+              {this.props.questions.map(({ title }, i) => <li key={i}>{title}</li>)}
             </ul>
           </div>
           : false

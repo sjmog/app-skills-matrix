@@ -10,7 +10,6 @@ import { actionCreators as uiActionCreators } from '../../../../modules/user/eva
 import EvaluationHeader from './EvaluationHeader';
 import Progress from './Progress';
 import Skill from './Skill';
-import Notes from '../../notes/Notes';
 
 // TODO: fix types
 type Skill = {
@@ -44,16 +43,22 @@ type EvaluationProps = {
   evalActions: any,
 };
 
+const skillErrors = erringSkills => (
+  <Row>
+    {
+      erringSkills.map(name =>
+        (<Alert bsStyle="danger" key={name}>{`There was a problem updating a skill: ${name}`}</Alert>))
+    }
+  </Row>
+);
+
 class Evaluation extends React.Component<EvaluationProps, any> {
   constructor(props) {
     super(props);
 
-    this.nextSkill = this.nextSkill.bind(this);
-    this.prevSkill = this.prevSkill.bind(this);
     this.nextCategory = this.nextCategory.bind(this);
-    this.previousCategory = this.previousCategory.bind(this);
     this.evaluationComplete = this.evaluationComplete.bind(this);
-    this.postUpdateNavigation = this.postUpdateNavigation.bind(this);
+    this.nextUnevaluatedSkill = this.nextUnevaluatedSkill.bind(this);
   }
 
   componentDidMount() {
@@ -69,24 +74,9 @@ class Evaluation extends React.Component<EvaluationProps, any> {
     uiActions.terminateEvaluation(evaluationId);
   }
 
-  nextSkill() {
-    const { uiActions } = this.props;
-    uiActions.nextSkill();
-  }
-
-  prevSkill() {
-    const { uiActions } = this.props;
-    uiActions.prevSkill();
-  }
-
   nextCategory() {
     const { uiActions, evaluationId } = this.props;
     uiActions.nextCategory(evaluationId);
-  }
-
-  previousCategory() {
-    const { uiActions, evaluationId } = this.props;
-    uiActions.previousCategory(evaluationId);
   }
 
   evaluationComplete() {
@@ -94,7 +84,7 @@ class Evaluation extends React.Component<EvaluationProps, any> {
     evalActions.evaluationComplete(evaluationId);
   }
 
-  postUpdateNavigation() {
+  nextUnevaluatedSkill() {
     const { uiActions, evaluationId } = this.props;
     uiActions.nextUnevaluatedSkill(evaluationId);
   }
@@ -104,18 +94,14 @@ class Evaluation extends React.Component<EvaluationProps, any> {
       levels,
       categories,
       skillGroups,
-      view,
-      status,
       initialisedEvaluation,
       updateSkillStatus,
       currentSkill,
       currentSkillUid,
       currentSkillStatus,
       lastSkill,
-      firstSkill,
       evaluationId,
       lastCategory,
-      firstCategory,
       erringSkills,
     } = this.props;
 
@@ -124,23 +110,13 @@ class Evaluation extends React.Component<EvaluationProps, any> {
     }
     return (
       <Grid>
-        { erringSkills
-          ? <Row>
-            {
-              erringSkills.map(name =>
-                (<Alert bsStyle="danger" key={name}>{`There was a problem updating a skill: ${name}`}</Alert>))
-            }
-          </Row>
-          : false
-        }
+        {erringSkills && erringSkills.length > 0 ? skillErrors(erringSkills) : false}
         <Row>
           <EvaluationHeader
             evaluationId={evaluationId}
             currentCategory={currentSkill.category}
-            isFirstCategory={currentSkill.category === firstCategory}
             isLastCategory={currentSkill.category === lastCategory}
             nextCategory={this.nextCategory}
-            previousCategory={this.previousCategory}
             evaluationComplete={this.evaluationComplete}
           />
         </Row>
@@ -151,13 +127,9 @@ class Evaluation extends React.Component<EvaluationProps, any> {
               skill={currentSkill}
               skillStatus={currentSkillStatus}
               updateSkillStatus={updateSkillStatus}
-              nextSkill={this.nextSkill}
-              prevSkill={this.prevSkill}
-              isFirstSkill={currentSkillUid === firstSkill.skillUid}
+              nextUnevaluatedSkill={this.nextUnevaluatedSkill}
               isLastSkill={currentSkillUid === lastSkill.skillUid}
-              postUpdateNavigation={this.postUpdateNavigation}
             />
-            <Notes skillUid={currentSkillUid} />
           </Col>
           <Col md={4} className="evaluation-panel evaluation-panel--right">
             <Progress
@@ -184,10 +156,8 @@ export default connect(
       currentSkill,
       currentSkillUid,
       currentSkillStatus: selectors.getSkillStatus(state, currentSkillUid),
-      firstCategory: selectors.getFirstCategory(state),
-      lastCategory: selectors.getLastCategory(state),
-      firstSkill: selectors.getFirstSkill(state),
       lastSkill: selectors.getLastSkill(state),
+      lastCategory: selectors.getLastCategory(state),
       erringSkills: selectors.getErringSkills(state, skillUidsForEvaluation),
       skillGroups: selectors.getSkillGroupsWithReversedSkills(state, evaluationId),
     });

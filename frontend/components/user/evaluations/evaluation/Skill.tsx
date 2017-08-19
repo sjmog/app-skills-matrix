@@ -1,12 +1,17 @@
 import * as React from 'react';
-import { Panel, Label, ButtonGroup, Button, Glyphicon } from 'react-bootstrap';
+import { Panel, ButtonGroup, Button, Glyphicon } from 'react-bootstrap';
 
 import { SKILL_STATUS } from '../../../../modules/user/evaluations';
 
 import SkillActions from '../../../common/SkillActions';
 import SkillBody from './SkillBody';
+import Notes from '../../notes/Notes';
 import '../evaluation.scss';
 
+const foo = [
+  { title: 'Lorem ipsum dolor sit amet, id atqui atomorum nec, id vel virtute quaerendum. Mel eu scripta omnesque detraxit, ex simul perpetua.' },
+  { title: 'Lorem ipsum dolor sit amet, id atqui atomorum nec, id vel virtute quaerendum. Mel eu scripta omnesque detraxit, ex simul perpetua.' }
+];
 // todo: fix types
 type SkillProps = {
   level: string,
@@ -15,53 +20,42 @@ type SkillProps = {
     current: string,
     previous: string,
   },
-  updateSkillStatus: (skillId: number, status: string, skillUid: string) => Promise<void>,
-  postUpdateNavigation: () => void,
-  prevSkill: (skillId: number) => void,
-  nextSkill: (skillId: number) => void,
-  isFirstSkill: boolean,
   isLastSkill: boolean,
+  updateSkillStatus: (skillId: number, status: string, skillUid: string) => Promise<void>,
+  nextUnevaluatedSkill: () => void,
 };
 
-const Skill = ({ level, skill, skillStatus, updateSkillStatus, postUpdateNavigation, prevSkill, nextSkill, isFirstSkill, isLastSkill }: SkillProps) => {
+const Skill = ({ skill, skillStatus, updateSkillStatus, nextUnevaluatedSkill, isLastSkill }: SkillProps) => {
   const { name, skillUid, id, criteria, questions } = skill;
 
   return (
     <div>
-      <Panel
-        key={skillUid}
-        header={
-          <div className="skill-header">
-            <h4 className="skill-header__title">{name}</h4>
-            <Label className="skill-header__label" bsStyle="info">{level}</Label>
-          </div>
-        }
-      >
-        <SkillBody criteria={criteria} questions={questions}/>
-        <SkillActions
-          skillStatus={skillStatus}
-          onAttained={() => updateSkillStatus(id, SKILL_STATUS.ATTAINED, skillUid).then(() => postUpdateNavigation())}
-          onNotAttained={() => updateSkillStatus(id, SKILL_STATUS.NOT_ATTAINED, skillUid).then(() => postUpdateNavigation())}
-          onFeedbackRequest={() => updateSkillStatus(id, SKILL_STATUS.FEEDBACK, skillUid).then(() => postUpdateNavigation())}
-          onSetObjective={() => updateSkillStatus(id, SKILL_STATUS.OBJECTIVE, skillUid).then(() => postUpdateNavigation())}
+      <Panel key={skillUid}>
+        <h4 className="skill-header__title">{name}</h4>
+        <SkillBody
+          criteria={criteria}
+          questions={questions}
         />
+          <SkillActions
+            skillStatus={skillStatus}
+            onAttained={() => updateSkillStatus(id, SKILL_STATUS.ATTAINED, skillUid)}
+            onNotAttained={() => updateSkillStatus(id, SKILL_STATUS.NOT_ATTAINED, skillUid)}
+            onFeedbackRequest={() => updateSkillStatus(id, SKILL_STATUS.FEEDBACK, skillUid)}
+            onSetObjective={() => updateSkillStatus(id, SKILL_STATUS.OBJECTIVE, skillUid)}
+          />
+          <ButtonGroup className="skill__next-skill">
+            <Button
+              bsStyle="primary"
+              disabled={isLastSkill || !skillStatus.current}
+              onClick={() => nextUnevaluatedSkill()}
+            >
+              <strong>Next</strong>
+              {' '}
+              <Glyphicon glyph="chevron-right"/>
+            </Button>
+          </ButtonGroup>
+        <Notes skillUid={skillUid}/>
       </Panel>
-        <ButtonGroup className="pull-right">
-          <Button
-            disabled={isFirstSkill}
-            onClick={() => prevSkill(skillUid)}
-          >
-            <Glyphicon glyph="chevron-left"/>
-            Previous skill
-          </Button>
-          <Button
-            disabled={isLastSkill}
-            onClick={() => nextSkill(skillUid)}
-          >
-            Next skill
-            <Glyphicon glyph="chevron-right"/>
-          </Button>
-        </ButtonGroup>
     </div>
   );
 };

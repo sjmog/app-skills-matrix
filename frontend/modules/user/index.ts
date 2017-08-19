@@ -29,14 +29,8 @@ export const getCurrentSkill = ({ evaluation }) =>
 export const getCurrentSkillUid = ({ evaluation }) =>
   fromEvaluation.getCurrentSkillUid(evaluation);
 
-export const getFirstCategory = ({ evaluation }) =>
-  fromEvaluation.getFirstCategory(evaluation);
-
 export const getLastCategory = ({ evaluation }) =>
   fromEvaluation.getLastCategory(evaluation);
-
-export const getFirstSkill = ({ evaluation }) =>
-  fromEvaluation.getFirstSkill(evaluation);
 
 export const getLastSkill = ({ evaluation }) =>
   fromEvaluation.getLastSkill(evaluation);
