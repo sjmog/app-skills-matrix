@@ -3,13 +3,15 @@ import * as R from 'ramda';
 
 import usersData from '../fixtures/users';
 import database from '../../backend/database';
-import { encrypt, decrypt } from '../../backend/models/evaluations/encryption';
+import { encrypt, decrypt as decryptSkills } from '../../backend/models/evaluations/encryption';
+import { decrypt as decryptNote } from '../../backend/models/notes/encryption';
 
 const users: any = database.collection('users');
 const templates: any = database.collection('templates');
 const skills: any = database.collection('skills');
 const evaluations: any = database.collection('evaluations');
 const actions: any = database.collection('actions');
+const notes: any = database.collection('notes');
 
 const prepopulateUsers = () => users.remove({}).then(() => users.insertMany(usersData));
 
@@ -24,10 +26,11 @@ export default {
   insertSkill: skill => skills.insertOne(Object.assign({}, skill)),
   evaluations,
   insertEvaluation: (evaluation, userId) => evaluations.insertOne(encrypt(Object.assign({}, evaluation, { user: { id: String(userId) } }))),
-  getEvaluation: evaluationId => evaluations.findOne({ _id: new ObjectID(evaluationId) }).then(decrypt),
-  getEvaluations: () => evaluations.find({}).then(e => e.toArray()).then(R.map(decrypt)),
+  getEvaluation: evaluationId => evaluations.findOne({ _id: new ObjectID(evaluationId) }).then(decryptSkills),
+  getEvaluations: () => evaluations.find({}).then(e => e.toArray()).then(R.map(decryptSkills)),
   getAllActions: () => actions.find({}).then(e => e.toArray()),
   insertAction: userId => action => actions.insertOne(Object.assign({}, action, { user: { id: String(userId) } })),
-  clearDb: () => Promise.all([users.remove({}), templates.remove({}), skills.remove({}), evaluations.remove({}), actions.remove({})]),
+  clearDb: () => Promise.all([users.remove({}), templates.remove({}), skills.remove({}), evaluations.remove({}), actions.remove({}), notes.remove({})]),
   skillStatus: (skillList: { id: string }[], skillId) => R.prop('status', R.find(skill => skill.id === skillId, skillList)),
+  getNotes: (userId, skillId) => notes.find({ userId, skillId }).then(e => e.toArray()).then(R.map(decryptNote)),
 };

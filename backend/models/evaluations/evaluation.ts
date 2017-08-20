@@ -64,8 +64,9 @@ export type Evaluation = {
   newEvaluationEmail: () => Email,
   feedbackData: () => EvaluationFeedback,
   getSelfEvaluationCompleteEmail: (user: User) => Email,
-  findSkill: (skillId: string) => Skill | null,
-  updateSkill: (skillId: string, status: string) => EvaluationUpdate,
+  findSkill: (skillId: number) => Skill | null,
+  updateSkill: (skillId: number, status: string) => EvaluationUpdate,
+  addSkillNote: (skillId: number, note: string) => EvaluationUpdate,
   isNewEvaluation: () => boolean,
   selfEvaluationComplete: () => EvaluationUpdate,
   selfEvaluationCompleted: () => boolean,
@@ -173,6 +174,17 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
         template,
         skillGroups,
         skills: skills.map(s => (s.id === skillId ? skill(s).updateStatus(newSkillStatus) : s)),
+        status,
+      };
+    },
+    addSkillNote(skillId, noteId) {
+      return {
+        id: _id,
+        user,
+        createdDate,
+        template,
+        skillGroups,
+        skills: skills.map(s => (s.id === skillId ? skill(s).addNote(noteId) : s)),
         status,
       };
     },

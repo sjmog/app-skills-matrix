@@ -20,9 +20,10 @@ export type Skill = {
   addAction: (string) => boolean | string,
   removeAction: (string) => boolean | string,
   updateStatus: (string) => UnhydratedEvaluationSkill,
+  addNote: (string) => UnhydratedEvaluationSkill,
 };
 
-export default ({ id, name, criteria, type, questions, status }: UnhydratedEvaluationSkill): Skill => Object.freeze({
+export default ({ id, name, criteria, type, questions, status, notes }: UnhydratedEvaluationSkill): Skill => Object.freeze({
   id,
   currentStatus() {
     return status.current;
@@ -50,6 +51,18 @@ export default ({ id, name, criteria, type, questions, status }: UnhydratedEvalu
         previous: status.previous,
         current: newStatus,
       },
+      notes, // TODO: Test - notes continue to be persisted when there is an update.
+    };
+  },
+  addNote(newNoteId: string) {
+    return {
+      id,
+      name,
+      criteria,
+      type,
+      questions,
+      status,
+      notes: Array.isArray(notes) ? [].concat(notes, newNoteId) : [newNoteId],
     };
   },
 });

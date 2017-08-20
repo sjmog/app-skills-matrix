@@ -27,6 +27,7 @@ type UnhydratedEvaluationSkill = {
   criteria: string,
   questions: { title: string }[],
   status: { current: string | null, previous: string | null },
+  notes?: string[],
 };
 
 type EvaluationSkillGroup = UnhydratedSkillGroup & { id: number };
