@@ -10,9 +10,10 @@ import '../../common/matrix.scss';
 type MatrixProps = {
   categories: string[],
   levels: string[],
-  skillGroups: any,
+  skillGroups: NormalizedSkillGroups,
   skills: UnhydratedTemplateSkill[],
   onModifySkill: (skill: UnhydratedTemplateSkill) => void,
+  onAddSkill: (level: string, category: string) => void,
 };
 
 class Matrix extends React.Component<MatrixProps, { showModal: boolean, currentSkill: UnhydratedTemplateSkill }> {
@@ -43,7 +44,7 @@ class Matrix extends React.Component<MatrixProps, { showModal: boolean, currentS
   }
 
   render() {
-    const { categories, levels, skillGroups, skills } = this.props;
+    const { categories, levels, skillGroups, skills, onAddSkill } = this.props;
     return (
       <div>
         <Table responsive>
@@ -63,6 +64,7 @@ class Matrix extends React.Component<MatrixProps, { showModal: boolean, currentS
                 skillGroups={skillGroups}
                 skills={skills}
                 viewSkillDetails={this.viewSkillDetails}
+                onAddSkill={onAddSkill}
               />
             ))
           }

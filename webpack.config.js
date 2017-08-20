@@ -1,3 +1,5 @@
+const { CheckerPlugin } = require('awesome-typescript-loader');
+
 module.exports = {
   entry: './frontend/index.tsx',
   devtool: 'source-map',
@@ -47,5 +49,8 @@ module.exports = {
         loader: "source-map-loader"
       }
     ],
-  }
+  },
+  plugins: [
+    new CheckerPlugin()
+  ]
 };

@@ -33,3 +33,4 @@ client_secret.json
 google-sheets-token.json
 dokku.md
 .idea
+.awcache

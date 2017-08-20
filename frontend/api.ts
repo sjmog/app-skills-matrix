@@ -24,8 +24,13 @@ export default ({
       .then(getData)
       .catch(handleError);
   },
-  saveTemplate(template: string): Promise<TemplateViewModel> {
-    return axios.post('/skillz/matrices/templates', { action: 'save', template })
+  addTemplate(template: string): Promise<TemplateViewModel> {
+    return axios.post('/skillz/matrices/templates', { action: 'add', template })
+      .then(getData)
+      .catch(handleError);
+  },
+  addSkill(templateId, level, category): Promise<{ template: TemplateViewModel, skills: UnhydratedTemplateSkill[] }> {
+    return axios.post(`/skillz/matrices/templates/${templateId}`, { action: 'addSkill', level, category })
       .then(getData)
       .catch(handleError);
   },

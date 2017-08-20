@@ -1,29 +1,31 @@
 import * as React from 'react';
+import * as R from 'ramda';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Row, Alert } from 'react-bootstrap';
 
-import { actions } from '../../../modules/admin/matrices';
+import { actions, MatricesState } from '../../../modules/admin/matrices';
 
 import TemplatePageHeader from './TemplatePageHeader';
 import Matrix from '../matrix/Matrix';
 
-type TemplatePageComponentProps = {
-  templateResult: { success?: boolean, error?: ErrorMessage },
-  template: NormalizedTemplateViewModel,
-  skillGroups: SkillGroup[],
-  skills: UnhydratedTemplateSkill[],
-  retrieved: boolean,
-  actions: typeof actions,
-  params: {
-    templateId: string,
-  },
-};
+type TemplatePageComponentProps = MatricesState &
+  {
+    actions: typeof actions,
+    params: {
+      templateId: string,
+    },
+  };
 
 class TemplatePageComponent extends React.Component<TemplatePageComponentProps, void> {
   constructor(props) {
     super(props);
     this.onModifySkill = this.onModifySkill.bind(this);
+    this.onAddSkill = this.onAddSkill.bind(this);
+  }
+
+  onAddSkill(template, level, category) {
+    this.props.actions.addSkillToTemplate(level, category, template);
   }
 
   onModifySkill(skill: UnhydratedTemplateSkill) {
@@ -31,20 +33,19 @@ class TemplatePageComponent extends React.Component<TemplatePageComponentProps, 
   }
 
   componentWillMount() {
-    if (!this.props.retrieved) {
+    if (!this.props.templateFetchResult || this.props.templateFetchResult.template.id !== this.props.params.templateId) {
       this.props.actions.retrieveTemplate(this.props.params.templateId);
     }
   }
 
   render() {
-    if (!this.props.retrieved) {
+    if (!this.props.templateFetchResult) {
       return false;
     }
 
-    const { template, skillGroups, skills, templateResult } = this.props;
-    const { success, error } = templateResult;
+    const { template, skills, success, error } = this.props.templateFetchResult;
 
-     if (success) {
+    if (success) {
       return (
         <div>
           <TemplatePageHeader
@@ -54,9 +55,10 @@ class TemplatePageComponent extends React.Component<TemplatePageComponentProps, 
             <Matrix
               categories={template.categories}
               levels={template.levels}
-              skillGroups={skillGroups}
+              skillGroups={template.skillGroups}
               skills={skills}
               onModifySkill={this.onModifySkill}
+              onAddSkill={R.curry(this.onAddSkill)(template)}
             />
           </Row>
         </div>

@@ -1,15 +1,16 @@
 import * as React from 'react';
-import { Table } from 'react-bootstrap';
+import { Button, Table } from 'react-bootstrap';
 
 import Skill from './Skill';
 
 type SkillGroupProps = {
-  skillGroup: any, // TODO get types
-  skills: any, // TODO get types
-  viewSkillDetails: (e: any) => void,
+  skillGroup: SkillGroup,
+  skills: UnhydratedTemplateSkill[],
+  viewSkillDetails: (skill: UnhydratedTemplateSkill) => void,
+  onAddSkill: (level: string, category: string) => void,
 };
 
-const SkillGroup = ({ skillGroup, skills, viewSkillDetails }: SkillGroupProps) => (
+const SkillGroup = ({ skillGroup, skills, viewSkillDetails, onAddSkill }: SkillGroupProps) => (
   <td>
     <Table bordered>
       <tbody>
@@ -29,6 +30,8 @@ const SkillGroup = ({ skillGroup, skills, viewSkillDetails }: SkillGroupProps) =
       }
       </tbody>
     </Table>
+    <Button bsStyle="primary" onClick={() => onAddSkill(skillGroup.level, skillGroup.category)}>
+      New Skill</Button>
   </td>
 );
 
