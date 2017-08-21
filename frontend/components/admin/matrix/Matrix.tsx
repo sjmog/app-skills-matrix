@@ -13,10 +13,20 @@ type MatrixProps = {
   skillGroups: NormalizedSkillGroups,
   skills: UnhydratedTemplateSkill[],
   onModifySkill: (skill: UnhydratedTemplateSkill) => void,
+  onReplaceSkill: (level: string, category: string, skill: UnhydratedTemplateSkill) => void,
   onAddSkill: (level: string, category: string) => void,
 };
 
-class Matrix extends React.Component<MatrixProps, { showModal: boolean, currentSkill: UnhydratedTemplateSkill }> {
+type MatrixState = {
+  showModal: boolean,
+  currentSkill: {
+    skill: UnhydratedTemplateSkill,
+    level: string,
+    category: string,
+  },
+};
+
+class Matrix extends React.Component<MatrixProps, MatrixState> {
   constructor(props) {
     super(props);
 
@@ -29,10 +39,14 @@ class Matrix extends React.Component<MatrixProps, { showModal: boolean, currentS
     this.hideSkillDetails = this.hideSkillDetails.bind(this);
   }
 
-  viewSkillDetails(skill) {
+  viewSkillDetails(level, category, skill) {
     this.setState({
       showModal: true,
-      currentSkill: R.clone(skill),
+      currentSkill: {
+        skill: R.clone(skill),
+        level,
+        category,
+      },
     });
   }
 
@@ -73,8 +87,11 @@ class Matrix extends React.Component<MatrixProps, { showModal: boolean, currentS
         <SkillDetailsModal
           showModal={this.state.showModal}
           onClose={this.hideSkillDetails}
-          skill={this.state.currentSkill && skills[this.state.currentSkill.id]}
+          skill={this.state.currentSkill && skills[this.state.currentSkill.skill.id]}
+          level={this.state.currentSkill && this.state.currentSkill.level}
+          category={this.state.currentSkill && this.state.currentSkill.category}
           onModifySkill={this.props.onModifySkill}
+          onReplaceSkill={this.props.onReplaceSkill}
         />
       </div>
     );

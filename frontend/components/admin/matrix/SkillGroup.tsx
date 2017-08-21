@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { Button, Table } from 'react-bootstrap';
+import * as R from 'ramda';
 
 import Skill from './Skill';
 
 type SkillGroupProps = {
   skillGroup: SkillGroup,
   skills: UnhydratedTemplateSkill[],
-  viewSkillDetails: (skill: UnhydratedTemplateSkill) => void,
+  viewSkillDetails: (level: string, category: string, skill: UnhydratedTemplateSkill) => void,
   onAddSkill: (level: string, category: string) => void,
 };
 
@@ -23,7 +24,7 @@ const SkillGroup = ({ skillGroup, skills, viewSkillDetails, onAddSkill }: SkillG
               <Skill
                 key={skillId}
                 skill={skill}
-                viewSkillDetails={viewSkillDetails}
+                viewSkillDetails={R.curry(viewSkillDetails)(skillGroup.level, skillGroup.category)}
               />
             );
           })

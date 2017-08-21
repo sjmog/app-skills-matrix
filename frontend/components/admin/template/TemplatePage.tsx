@@ -32,6 +32,11 @@ class TemplatePageComponent extends React.Component<TemplatePageComponentProps, 
     this.props.actions.saveSkills([skill]);
   }
 
+  onReplaceSkill(level: string, category: string, skill: UnhydratedTemplateSkill) {
+    // TODO do something
+    console.log(level, category);
+  }
+
   componentWillMount() {
     if (!this.props.templateFetchResult || this.props.templateFetchResult.template.id !== this.props.params.templateId) {
       this.props.actions.retrieveTemplate(this.props.params.templateId);
@@ -58,6 +63,7 @@ class TemplatePageComponent extends React.Component<TemplatePageComponentProps, 
               skillGroups={template.skillGroups}
               skills={skills}
               onModifySkill={this.onModifySkill}
+              onReplaceSkill={this.onReplaceSkill}
               onAddSkill={R.curry(this.onAddSkill)(template)}
             />
           </Row>
