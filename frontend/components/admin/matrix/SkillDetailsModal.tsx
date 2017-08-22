@@ -17,6 +17,7 @@ type SkillDetailsModalProps = {
   category?: string,
   onModifySkill: (skill: UnhydratedTemplateSkill) => void,
   onReplaceSkill: (level: string, category: string, skill: UnhydratedTemplateSkill) => void,
+  onRemoveSkill: (level: string, category: string, skill: UnhydratedTemplateSkill) => void,
 };
 
 const FieldGroup = ({ id, label = '', ...props }) =>
@@ -37,6 +38,7 @@ class SkillDetailsModal extends React.Component<SkillDetailsModalProps, { skill:
     this.closeModel = this.closeModel.bind(this);
     this.updateSkill = this.updateSkill.bind(this);
     this.replaceSkill = this.replaceSkill.bind(this);
+    this.removeSkill = this.removeSkill.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -77,8 +79,14 @@ class SkillDetailsModal extends React.Component<SkillDetailsModalProps, { skill:
     this.props.onModifySkill(this.state.skill);
     this.closeModel();
   }
+
   replaceSkill() {
     this.props.onReplaceSkill(this.props.level, this.props.category, this.state.skill);
+    this.closeModel();
+  }
+
+  removeSkill() {
+    this.props.onRemoveSkill(this.props.level, this.props.category, this.state.skill);
     this.closeModel();
   }
 
@@ -164,6 +172,8 @@ class SkillDetailsModal extends React.Component<SkillDetailsModalProps, { skill:
                 Clarify Skill</Button>
               <Button bsStyle="primary" onClick={this.replaceSkill}>
                 Replace Skill</Button>
+              <Button bsStyle="danger" onClick={this.removeSkill}>
+                Remove Skill</Button>
             </Form>
           </Modal.Body>
           <Modal.Footer>

@@ -10,6 +10,8 @@ export const constants = keymirror({
   SAVE_SKILLS_FAILURE: null,
   ADD_SKILL_SUCCESS: null,
   ADD_SKILL_FAILURE: null,
+  REMOVE_SKILL_SUCCESS: null,
+  REMOVE_SKILL_FAILURE: null,
   REPLACE_SKILL_SUCCESS: null,
   REPLACE_SKILL_FAILURE: null,
   RETRIEVE_TEMPLATE_SUCCESS: null,
@@ -22,6 +24,8 @@ const saveSkillsSuccess = createAction(constants.SAVE_SKILLS_SUCCESS);
 const saveSkillsFailure = createAction(constants.SAVE_SKILLS_FAILURE);
 const addSkillSuccess = createAction(constants.ADD_SKILL_SUCCESS);
 const addSkillFailure = createAction(constants.ADD_SKILL_FAILURE);
+const removeSkillSuccess = createAction(constants.REMOVE_SKILL_SUCCESS);
+const removeSkillFailure = createAction(constants.REMOVE_SKILL_FAILURE);
 const replaceSkillSuccess = createAction(constants.REPLACE_SKILL_SUCCESS);
 const replaceSkillFailure = createAction(constants.REPLACE_SKILL_FAILURE);
 const retrieveTemplateSuccess = createAction(constants.RETRIEVE_TEMPLATE_SUCCESS);
@@ -67,6 +71,12 @@ function replaceSkill(level: string, category: string, template: NormalizedTempl
     .catch(err => dispatch(replaceSkillFailure(err)));
 }
 
+function removeSkill(level: string, category: string, template: NormalizedTemplateViewModel, skill: UnhydratedTemplateSkill) {
+  return dispatch => api.removeSkill(template.id, level, category, skill.id)
+    .then(res => dispatch(removeSkillSuccess({ template: res.template, skills: res.skills })))
+    .catch(err => dispatch(removeSkillFailure(err)));
+}
+
 function retrieveTemplate(templateId: string) {
   return dispatch => Promise.all([api.getTemplate(templateId), api.getSkills()])
     .then(([template, skills]) => dispatch(retrieveTemplateSuccess({ template, skills })))
@@ -79,6 +89,7 @@ export const actions = {
   retrieveTemplate,
   addSkillToTemplate,
   replaceSkill,
+  removeSkill,
 };
 
 const buildTemplateFetchSuccessResult = (state, template, skills?) => ({
@@ -142,6 +153,8 @@ export const reducers = handleActions({
   }),
   [addSkillSuccess]: handleUpdateTemplateSuccess,
   [addSkillFailure]: handleFetchTemplateFailure,
+  [removeSkillSuccess]: handleUpdateTemplateSuccess,
+  [removeSkillFailure]: handleFetchTemplateFailure,
   [replaceSkillSuccess]: handleUpdateTemplateSuccess,
   [replaceSkillFailure]: handleFetchTemplateFailure,
   [retrieveTemplateSuccess]: handleRetrieveTemplateSuccess,

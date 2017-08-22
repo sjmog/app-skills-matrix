@@ -233,6 +233,54 @@ describe('matrices', () => {
             .expect(test().expect))));
   });
 
+  describe('POST /matrices/templates/:templateId { action: removeSkill }', () => {
+    it('remove a skill from the template', () =>
+      Promise.all([Promise.map(skillsFixture, insertSkill), insertTemplate(Object.assign({}, sampleTemplate))])
+        .then(() => request(app)
+          .post(`${prefix}/templates/eng-nodejs`)
+          .send({ action: 'removeSkill', level: 'Novice', category: 'Dragon Flight', skillId: 1 })
+          .set('Cookie', `${cookieName}=${adminToken}`)
+          .expect(200)
+          .then(() => templates.findOne({ id: 'eng-nodejs' }))
+          .then((newTemplate) => {
+            const skillGroup = newTemplate.skillGroups[4];
+            expect(skillGroup.level).to.equal('Novice');
+            expect(skillGroup.category).to.equal('Dragon Flight');
+            expect(skillGroup.skills.length).to.equal(0);
+          })));
+
+    const errorCases =
+      [
+        () => ({
+          desc: 'not authorized',
+          token: normalUserToken,
+          body: { action: 'removeSkill', level: 'Expert', category: 'Magicness', skillId: skillsFixture[0].id },
+          expect: 403,
+        }),
+        () => ({
+          desc: 'bad level',
+          token: adminToken,
+          body: { action: 'replaceSkill', level: 'Foo', category: 'Magicness', skillId: skillsFixture[0].id },
+          expect: 400,
+        }),
+        () => ({
+          desc: 'bad category',
+          token: adminToken,
+          body: { action: 'replaceSkill', level: 'Expert', category: 'Foo', skillId: skillsFixture[0].id },
+          expect: 400,
+        }),
+      ];
+
+    errorCases.forEach(test =>
+      it(`should handle error cases '${test().desc}'`, () =>
+        insertTemplate(Object.assign({}, sampleTemplate))
+          .then(() => request(app)
+            .post(`${prefix}/templates/eng-nodejs`)
+            .send(test().body)
+            .set('Cookie', `${cookieName}=${test().token}`)
+            .expect(test().expect))));
+  });
+
   describe('GET matrices/skills', () => {
     it('gets all the skills', () =>
       Promise.map(skillsFixture, insertSkill)

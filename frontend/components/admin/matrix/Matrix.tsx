@@ -14,6 +14,7 @@ type MatrixProps = {
   skills: UnhydratedTemplateSkill[],
   onModifySkill: (skill: UnhydratedTemplateSkill) => void,
   onReplaceSkill: (level: string, category: string, skill: UnhydratedTemplateSkill) => void,
+  onRemoveSkill: (level: string, category: string, skill: UnhydratedTemplateSkill) => void,
   onAddSkill: (level: string, category: string) => void,
 };
 
@@ -92,6 +93,7 @@ class Matrix extends React.Component<MatrixProps, MatrixState> {
           category={this.state.currentSkill && this.state.currentSkill.category}
           onModifySkill={this.props.onModifySkill}
           onReplaceSkill={this.props.onReplaceSkill}
+          onRemoveSkill={this.props.onRemoveSkill}
         />
       </div>
     );

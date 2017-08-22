@@ -23,6 +23,7 @@ export type Template = {
   createSkillGroups: (skills: Skill[]) => { skills: UnhydratedEvaluationSkill[], skillGroups: SkillGroup[] },
   addSkill: (level: string, category: string, skillId: number) => Template,
   replaceSkill: (level: string, category: string, oldId: number, newId: number) => Template,
+  removeSkill: (level: string, category: string, skillId: number) => Template,
   hasLevel: (level: string) => boolean,
   hasCategory: (category: string) => boolean,
 };
@@ -78,6 +79,11 @@ const template = ({ id, name, version, categories, levels, skillGroups }: Unhydr
     const skillGroup = getSkillGroup(level, category, skillGroups);
     skillGroup.skills.push(newId);
     skillGroup.skills.splice(skillGroup.skills.indexOf(oldId), 1);
+    return template({ id, name, version, categories, levels, skillGroups });
+  },
+  removeSkill(level, category, skillId) {
+    const skillGroup = getSkillGroup(level, category, skillGroups);
+    skillGroup.skills.splice(skillGroup.skills.indexOf(skillId), 1);
     return template({ id, name, version, categories, levels, skillGroups });
   },
   hasLevel(level) {

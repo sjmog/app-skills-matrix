@@ -73,6 +73,25 @@ const handlerFunctions = Object.freeze({
           })
           .catch(next);
       },
+      removeSkill: (req, res, next) => {
+        Promise.try(() => templates.getById(req.params.templateId))
+          .then((template) => {
+            if (!template) {
+              return res.status(404).json(TEMPLATE_NOT_FOUND());
+            }
+            const { level, category } = req.body;
+            if (!template.hasLevel(level) || !template.hasCategory(category)) {
+              return res.status(400).json(INVALID_LEVEL_OR_CATEGORY(level, category, template.id));
+            }
+            const changes = template.removeSkill(level, category, req.body.skillId);
+            return Promise.all([templates.updateTemplate(template, changes), skills.getAll()])
+              .then(([t, skills]) => res.status(200).json({
+                template: t.normalizedViewModel(),
+                skills: skills.viewModel(),
+              }));
+          })
+          .catch(next);
+      },
     },
     skills:
       {
