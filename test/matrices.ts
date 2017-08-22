@@ -1,6 +1,7 @@
 import * as request from 'supertest';
 import { expect } from 'chai';
 import * as Promise from 'bluebird';
+import * as R from 'ramda';
 
 import app from '../backend/app';
 import auth from '../backend/models/auth';
@@ -159,6 +160,65 @@ describe('matrices', () => {
           desc: 'bad category',
           token: adminToken,
           body: { action: 'addSkill', level: 'Expert', category: 'Foo' },
+          expect: 400,
+        }),
+      ];
+
+    errorCases.forEach(test =>
+      it(`should handle error cases '${test().desc}'`, () =>
+        insertTemplate(Object.assign({}, sampleTemplate))
+          .then(() => request(app)
+            .post(`${prefix}/templates/eng-nodejs`)
+            .send(test().body)
+            .set('Cookie', `${cookieName}=${test().token}`)
+            .expect(test().expect))));
+  });
+
+  describe('POST /matrices/templates/:templateId { action: replaceSkill }', () => {
+    it('replace a skill in an existing skill group with a new skill passed in', () => {
+      const updatedSkill = R.clone(skillsFixture[0]);
+      updatedSkill.name = 'updated skill';
+
+      return Promise.all([Promise.map(skillsFixture, insertSkill), insertTemplate(Object.assign({}, sampleTemplate))])
+        .then(() => request(app)
+          .post(`${prefix}/templates/eng-nodejs`)
+          .send({ action: 'replaceSkill', level: 'Novice', category: 'Dragon Flight', skill: updatedSkill })
+          .set('Cookie', `${cookieName}=${adminToken}`)
+          .expect(200)
+          .then(() => templates.findOne({ id: 'eng-nodejs' }))
+          .then((newTemplate) => {
+            const skillGroup = newTemplate.skillGroups[4];
+            expect(skillGroup.level).to.equal('Novice');
+            expect(skillGroup.category).to.equal('Dragon Flight');
+            expect(skillGroup.skills.length).to.equal(1);
+            expect(skillGroup.skills[0]).to.not.equal(1);
+            return skills.findOne({ id: skillGroup.skills[0] })
+              .then((skill) => {
+                expect(skill).to.not.be.null;
+                expect(skill.name).to.equal(updatedSkill.name);
+              });
+          }));
+    });
+
+    // TODO: no skill validation (shouldn't be an issue right now)
+    const errorCases =
+      [
+        () => ({
+          desc: 'not authorized',
+          token: normalUserToken,
+          body: { action: 'replaceSkill', level: 'Expert', category: 'Magicness', skill: skillsFixture[0] },
+          expect: 403,
+        }),
+        () => ({
+          desc: 'bad level',
+          token: adminToken,
+          body: { action: 'replaceSkill', level: 'Foo', category: 'Magicness', skill: skillsFixture[0] },
+          expect: 400,
+        }),
+        () => ({
+          desc: 'bad category',
+          token: adminToken,
+          body: { action: 'replaceSkill', level: 'Expert', category: 'Foo', skill: skillsFixture[0] },
           expect: 400,
         }),
       ];

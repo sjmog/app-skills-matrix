@@ -45,12 +45,12 @@ export default {
       return skillsCollection.findOne({ id })
         .then(res => (res ? skill(res) : null));
     },
-    addNewSkill(): Promise<Skill> {
+    addNewSkill(values = { name: 'Placeholder', type: 'skill', criteria: '', questions: [] }): Promise<Skill> {
       // poor man's autoincrement is susceptible to race conditions
       return skillsCollection.findOne({}, { sort: [['id', 'descending']] })
         .then(((res) => {
           const newId = res.id + 1;
-          const aSkill = newSkill(newId, 'Placeholder', 'skill', 1, '', []);
+          const aSkill = newSkill(newId, values.name, values.type, 1, values.criteria, values.questions);
           return skillsCollection.insertOne(aSkill)
             .then(() => skillsCollection.findOne({ id: newId }))
             .then(retrievedSkill => skill(retrievedSkill));
