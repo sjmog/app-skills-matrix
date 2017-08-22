@@ -29,7 +29,7 @@ const FieldGroup = ({ id, label = '', ...props }) =>
 class SkillDetailsModal extends React.Component<SkillDetailsModalProps, { skill: UnhydratedTemplateSkill, level: string, category: string }> {
   constructor(props) {
     super(props);
-    this.state = { skill: this.props.skill, level: this.props.level, category: this.props.level };
+    this.state = { skill: this.props.skill, level: this.props.level, category: this.props.category };
     this.updateSkillState = this.updateSkillState.bind(this);
     this.addQuestion = this.addQuestion.bind(this);
     this.updateQuestion = this.updateQuestion.bind(this);
