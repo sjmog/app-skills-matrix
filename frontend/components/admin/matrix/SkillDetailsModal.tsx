@@ -13,7 +13,10 @@ type SkillDetailsModalProps = {
   showModal: boolean,
   onClose: () => void,
   skill?: UnhydratedTemplateSkill,
+  level?: string,
+  category?: string,
   onModifySkill: (skill: UnhydratedTemplateSkill) => void,
+  onReplaceSkill: (level: string, category: string, skill: UnhydratedTemplateSkill) => void,
 };
 
 const FieldGroup = ({ id, label = '', ...props }) =>
@@ -23,20 +26,21 @@ const FieldGroup = ({ id, label = '', ...props }) =>
   </FormGroup>);
 
 
-class SkillDetailsModal extends React.Component<SkillDetailsModalProps, { skill: UnhydratedTemplateSkill }> {
+class SkillDetailsModal extends React.Component<SkillDetailsModalProps, { skill: UnhydratedTemplateSkill, level: string, category: string }> {
   constructor(props) {
     super(props);
-    this.state = { skill: this.props.skill };
+    this.state = { skill: this.props.skill, level: this.props.level, category: this.props.category };
     this.updateSkillState = this.updateSkillState.bind(this);
     this.addQuestion = this.addQuestion.bind(this);
     this.updateQuestion = this.updateQuestion.bind(this);
     this.removeQuestion = this.removeQuestion.bind(this);
     this.closeModel = this.closeModel.bind(this);
     this.updateSkill = this.updateSkill.bind(this);
+    this.replaceSkill = this.replaceSkill.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({ skill: nextProps.skill });
+    this.setState({ skill: nextProps.skill, level: nextProps.level, category: nextProps.category });
   }
 
   addQuestion() {
@@ -71,6 +75,10 @@ class SkillDetailsModal extends React.Component<SkillDetailsModalProps, { skill:
 
   updateSkill() {
     this.props.onModifySkill(this.state.skill);
+    this.closeModel();
+  }
+  replaceSkill() {
+    this.props.onReplaceSkill(this.props.level, this.props.category, this.state.skill);
     this.closeModel();
   }
 
@@ -153,7 +161,9 @@ class SkillDetailsModal extends React.Component<SkillDetailsModalProps, { skill:
               </Panel>
 
               <Button bsStyle="primary" onClick={this.updateSkill}>
-                Update Skill</Button>
+                Clarify Skill</Button>
+              <Button bsStyle="primary" onClick={this.replaceSkill}>
+                Replace Skill</Button>
             </Form>
           </Modal.Body>
           <Modal.Footer>

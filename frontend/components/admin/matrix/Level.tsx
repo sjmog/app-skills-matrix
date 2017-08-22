@@ -8,7 +8,7 @@ type LevelProps = {
   levelName: string,
   skillGroups: NormalizedSkillGroups,
   skills: UnhydratedTemplateSkill[],
-  viewSkillDetails: (skill: UnhydratedTemplateSkill) => void,
+  viewSkillDetails: (level: string, category: string, skill: UnhydratedTemplateSkill) => void,
   onAddSkill: (level: string, category: string) => void,
 };
 

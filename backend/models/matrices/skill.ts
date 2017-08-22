@@ -10,7 +10,7 @@ export default ({ id, name, version, criteria, type, questions }: UnhydratedTemp
   },
 });
 
-export const newSkill = (id: string, name: string, type: string, version: number = 1, criteria: string, questions: Question[]) =>
+export const newSkill = (id: number, name: string, type: string, version: number = 1, criteria: string, questions: Question[]) =>
   ({
     id,
     name,

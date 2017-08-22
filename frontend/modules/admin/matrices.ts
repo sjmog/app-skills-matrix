@@ -10,6 +10,8 @@ export const constants = keymirror({
   SAVE_SKILLS_FAILURE: null,
   ADD_SKILL_SUCCESS: null,
   ADD_SKILL_FAILURE: null,
+  REPLACE_SKILL_SUCCESS: null,
+  REPLACE_SKILL_FAILURE: null,
   RETRIEVE_TEMPLATE_SUCCESS: null,
   RETRIEVE_TEMPLATE_FAILURE: null,
 });
@@ -20,6 +22,8 @@ const saveSkillsSuccess = createAction(constants.SAVE_SKILLS_SUCCESS);
 const saveSkillsFailure = createAction(constants.SAVE_SKILLS_FAILURE);
 const addSkillSuccess = createAction(constants.ADD_SKILL_SUCCESS);
 const addSkillFailure = createAction(constants.ADD_SKILL_FAILURE);
+const replaceSkillSuccess = createAction(constants.REPLACE_SKILL_SUCCESS);
+const replaceSkillFailure = createAction(constants.REPLACE_SKILL_FAILURE);
 const retrieveTemplateSuccess = createAction(constants.RETRIEVE_TEMPLATE_SUCCESS);
 const retrieveTemplateFailure = createAction(constants.RETRIEVE_TEMPLATE_FAILURE);
 
@@ -57,6 +61,12 @@ function addSkillToTemplate(level: string, category: string, template: Normalize
     .catch(err => dispatch(addSkillFailure(err)));
 }
 
+function replaceSkill(level: string, category: string, template: NormalizedTemplateViewModel, skill: UnhydratedTemplateSkill) {
+  return dispatch => api.replaceSkill(template.id, level, category, skill)
+    .then(res => dispatch(replaceSkillSuccess({ template: res.template, skills: res.skills })))
+    .catch(err => dispatch(replaceSkillFailure(err)));
+}
+
 function retrieveTemplate(templateId: string) {
   return dispatch => Promise.all([api.getTemplate(templateId), api.getSkills()])
     .then(([template, skills]) => dispatch(retrieveTemplateSuccess({ template, skills })))
@@ -68,6 +78,7 @@ export const actions = {
   saveSkills,
   retrieveTemplate,
   addSkillToTemplate,
+  replaceSkill,
 };
 
 const buildTemplateFetchSuccessResult = (state, template, skills?) => ({
@@ -106,8 +117,14 @@ const handleSaveSkillSuccess = (state: MatricesState, action): MatricesState => 
   return Object.assign({}, state, skillResult, templateFetchResult);
 };
 
-const handleAddSkillSuccess = (state, action) => Object.assign({}, state, buildTemplateFetchSuccessResult(state, action.payload.template, action.payload.skills));
+const handleUpdateTemplateSuccess = (state, action) => Object.assign({}, state, buildTemplateFetchSuccessResult(state, action.payload.template, action.payload.skills));
 
+const handleFetchTemplateFailure = (state, action) => Object.assign({}, state, {
+  templateFetchResult: {
+    error: action.payload,
+    success: false,
+  },
+});
 export const reducers = handleActions({
   [addTemplateSuccess]: handleAddTemplateSuccess,
   [addTemplateFailure]: (state, action) => Object.assign({}, state, {
@@ -123,19 +140,11 @@ export const reducers = handleActions({
       success: false,
     },
   }),
-  [addSkillSuccess]: handleAddSkillSuccess,
-  [addSkillFailure]: (state, action) => Object.assign({}, state, {
-    templateFetchResult: {
-      error: action.payload,
-      success: false,
-    },
-  }),
+  [addSkillSuccess]: handleUpdateTemplateSuccess,
+  [addSkillFailure]: handleFetchTemplateFailure,
+  [replaceSkillSuccess]: handleUpdateTemplateSuccess,
+  [replaceSkillFailure]: handleFetchTemplateFailure,
   [retrieveTemplateSuccess]: handleRetrieveTemplateSuccess,
-  [retrieveTemplateFailure]: (state, action) => Object.assign({}, state, {
-    templateFetchResult: {
-      error: action.payload,
-      success: false,
-    },
-  }),
+  [retrieveTemplateFailure]: handleFetchTemplateFailure,
 }, { });
 
