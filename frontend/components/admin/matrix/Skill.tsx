@@ -7,7 +7,7 @@ type SkillProps = {
 
 const Skill = ({ skill, viewSkillDetails }: SkillProps) => (
     <tr onClick={() => viewSkillDetails(skill)}>
-      <td>{skill.name}</td>
+      <td><p>{skill.id}</p>{skill.name}</td>
     </tr>
   );
 
