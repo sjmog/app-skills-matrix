@@ -34,6 +34,11 @@ export default ({
       .then(getData)
       .catch(handleError);
   },
+  replaceSkill(templateId, level, category, skill): Promise<{ template: TemplateViewModel, skills: UnhydratedTemplateSkill[] }> {
+    return axios.post(`/skillz/matrices/templates/${templateId}`, { action: 'replaceSkill', level, category, skill })
+      .then(getData)
+      .catch(handleError);
+  },
   getTemplate(templateId: string): Promise<NormalizedTemplateViewModel> {
     return axios.get(`/skillz/matrices/templates/${templateId}`)
       .then(getData)

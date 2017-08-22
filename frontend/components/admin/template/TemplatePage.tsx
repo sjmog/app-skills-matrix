@@ -22,6 +22,7 @@ class TemplatePageComponent extends React.Component<TemplatePageComponentProps, 
     super(props);
     this.onModifySkill = this.onModifySkill.bind(this);
     this.onAddSkill = this.onAddSkill.bind(this);
+    this.onReplaceSkill = this.onReplaceSkill.bind(this);
   }
 
   onAddSkill(template, level, category) {
@@ -32,9 +33,8 @@ class TemplatePageComponent extends React.Component<TemplatePageComponentProps, 
     this.props.actions.saveSkills([skill]);
   }
 
-  onReplaceSkill(level: string, category: string, skill: UnhydratedTemplateSkill) {
-    // TODO do something
-    console.log(level, category);
+  onReplaceSkill(template, level: string, category: string, skill: UnhydratedTemplateSkill) {
+    this.props.actions.replaceSkill(level, category, template, skill);
   }
 
   componentWillMount() {
@@ -63,7 +63,7 @@ class TemplatePageComponent extends React.Component<TemplatePageComponentProps, 
               skillGroups={template.skillGroups}
               skills={skills}
               onModifySkill={this.onModifySkill}
-              onReplaceSkill={this.onReplaceSkill}
+              onReplaceSkill={R.curry(this.onReplaceSkill)(template)}
               onAddSkill={R.curry(this.onAddSkill)(template)}
             />
           </Row>
