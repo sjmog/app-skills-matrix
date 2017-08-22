@@ -88,7 +88,7 @@ class Matrix extends React.Component<MatrixProps, MatrixState> {
         <SkillDetailsModal
           showModal={this.state.showModal}
           onClose={this.hideSkillDetails}
-          skill={this.state.currentSkill && skills[this.state.currentSkill.skill.id]}
+          skill={this.state.currentSkill && this.state.currentSkill.skill}
           level={this.state.currentSkill && this.state.currentSkill.level}
           category={this.state.currentSkill && this.state.currentSkill.category}
           onModifySkill={this.props.onModifySkill}

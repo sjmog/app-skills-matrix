@@ -116,14 +116,14 @@ const handleSaveSkillSuccess = (state: MatricesState, action): MatricesState => 
   if (!state.templateFetchResult) {
     return Object.assign({}, state, skillResult);
   }
-  const updatedSkills: UnhydratedTemplateSkill[] = action.payload.updatedSkills;
-  const skills = state.templateFetchResult.skills.map((skill) => {
+  const updatedSkills: UnhydratedTemplateSkill[] = action.payload.updateSkills;
+  const skills = R.map((skill) => {
     const updatedSkill = R.find((s => s.id === skill.id), updatedSkills);
     if (updatedSkill) {
       return updatedSkill;
     }
     return skill;
-  });
+  }, state.templateFetchResult.skills);
   const templateFetchResult = buildTemplateFetchSuccessResult(state, state.templateFetchResult.template, skills);
   return Object.assign({}, state, skillResult, templateFetchResult);
 };
