@@ -223,6 +223,9 @@ const handlerFunctions = Object.freeze({
       middleware: [
         ensureLoggedIn,
         validate({
+          params: {
+            evaluationId: Joi.string().required(),
+          },
           body: {
             note: Joi.string().required(),
             skillId: Joi.number().required(),

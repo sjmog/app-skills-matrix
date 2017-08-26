@@ -9,7 +9,6 @@ import templateData from './fixtures/templates';
 import skillsFixture from './fixtures/skills';
 import evaluationsFixture from './fixtures/evaluations';
 import actionsFixture from './fixtures/actions';
-import { STATUS } from '../backend/models/evaluations/evaluation';
 import auth from '../backend/models/auth';
 import helpers from './helpers';
 
@@ -170,9 +169,6 @@ describe('Notes', () => {
               .send(validNoteSubmission)
               .set('Cookie', `${cookieName}=${adminToken}`)
               .expect(200)));
-
-      it('adds a note to a list of existing notes'); // TODO: Look at the code for this and see if it needs testing.
-      it('skill has no notes field'); // TODO: Look at the code for this and see if it needs testing.
     });
 
     describe('failure', () => {
@@ -222,7 +218,7 @@ describe('Notes', () => {
               .set('Cookie', `${cookieName}=${normalUserOneToken}`)
               .expect(400)));
 
-      it('returns a bad request when request body is invalid', () =>
+      it('returns a bad request when an invalid request is made', () =>
         insertEvaluation(evaluation, normalUserOneId)
           .then(({ insertedId }) => {
             evaluationId = insertedId;

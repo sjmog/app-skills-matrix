@@ -51,7 +51,7 @@ export default ({ id, name, criteria, type, questions, status, notes }: Unhydrat
         previous: status.previous,
         current: newStatus,
       },
-      notes, // TODO: Test - notes continue to be persisted when there is an update.
+      notes,
     };
   },
   addNote(newNoteId: string) {
