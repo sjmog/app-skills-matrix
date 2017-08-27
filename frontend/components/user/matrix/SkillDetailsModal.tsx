@@ -8,6 +8,7 @@ import SkillActions from '../../common/SkillActions';
 import Notes from '../notes/Notes';
 
 type SkillDetailsModalProps = {
+  evaluationId: string,
   skillUid: string,
   showModal: boolean,
   onClose: () => void,
@@ -17,7 +18,7 @@ type SkillDetailsModalProps = {
   canUpdateSkillStatus: boolean,
 };
 
-const SkillDetailsModal = ({ skillUid, skill, error, showModal, onClose, updateSkillStatus, canUpdateSkillStatus }: SkillDetailsModalProps) => (
+const SkillDetailsModal = ({ evaluationId, skillUid, skill, error, showModal, onClose, updateSkillStatus, canUpdateSkillStatus }: SkillDetailsModalProps) => (
   <div>
     <Modal show={showModal} onHide={onClose}>
       <Modal.Header closeButton>
@@ -51,6 +52,8 @@ const SkillDetailsModal = ({ skillUid, skill, error, showModal, onClose, updateS
             { error ? <Alert bsStyle="danger">Something went wrong: {error}</Alert> : false }
             <Notes
               skillUid={skillUid}
+              skillId={skill.id}
+              evaluationId={evaluationId}
             />
           </div>
           : null

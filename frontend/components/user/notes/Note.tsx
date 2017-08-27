@@ -42,7 +42,6 @@ const Note = ({ skillUid, author, note, noteActions, loggedInUserId }) => (
 export default connect(
   (state, { noteId }) => {
     const note = selectors.getNote(state, noteId) as any; // TODO: fix this so it returns a note.
-    // TODO: NO NOTE IN STATE BECAUSE WE DON'T FETCH THEM ON FIRST LOAD
     return {
       note,
       author: selectors.getUser(state, note.userId),

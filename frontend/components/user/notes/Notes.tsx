@@ -41,7 +41,7 @@ class Notes extends React.Component<NotesProps, any>{
 
   render() {
     const { skillUid, noteIds, error } = this.props;
-    console.log('noteIds:', noteIds);
+
     return (
       <div className="notes">
         <h4>Notes</h4>

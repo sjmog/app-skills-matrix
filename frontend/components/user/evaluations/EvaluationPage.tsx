@@ -102,6 +102,7 @@ class EvaluationPageComponent extends React.Component<EvaluationPageComponentPro
           <Row>
             <Col md={20}>
               <Matrix
+                evaluationId={evaluationId}
                 categories={categories}
                 levels={levels}
                 skillGroups={skillGroups}

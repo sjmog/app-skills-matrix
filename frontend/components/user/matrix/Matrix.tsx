@@ -7,6 +7,7 @@ import SkillDetailsModal from './SkillDetailsModal';
 import '../../common/matrix.scss';
 
 type MatrixProps = {
+  evaluationId: string,
   categories: string[],
   levels: string[],
   skillGroups: any,
@@ -41,7 +42,7 @@ class Matrix extends React.Component<MatrixProps, any> {
   }
 
   render() {
-    const { categories, levels, skillGroups, updateSkillStatus, canUpdateSkillStatus } = this.props;
+    const { evaluationId, categories, levels, skillGroups, updateSkillStatus, canUpdateSkillStatus } = this.props;
     return (
       <div>
         <Table responsive>
@@ -66,6 +67,7 @@ class Matrix extends React.Component<MatrixProps, any> {
           </tbody>
         </Table>
         <SkillDetailsModal
+          evaluationId={evaluationId}
           skillUid={this.state.currentSkill}
           showModal={this.state.showModal}
           onClose={this.hideSkillDetails}
