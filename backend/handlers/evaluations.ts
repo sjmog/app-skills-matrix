@@ -1,6 +1,7 @@
 import * as Promise from 'bluebird';
 import * as validate from 'express-validation';
 import * as Joi from 'joi';
+import * as R from 'ramda';
 import createHandler from './createHandler';
 import { ensureLoggedIn } from '../middlewares/auth';
 
@@ -16,7 +17,6 @@ const {
   EVALUATION_NOT_FOUND,
   SKILL_NOT_FOUND,
   MUST_BE_SUBJECT_OF_EVALUATION_OR_MENTOR,
-  MUST_BE_LOGGED_IN_FOR_REQUEST,
   SUBJECT_CAN_ONLY_UPDATE_NEW_EVALUATION,
   MENTOR_REVIEW_COMPLETE,
   MENTOR_CAN_ONLY_UPDATE_AFTER_SELF_EVALUATION,
@@ -36,6 +36,38 @@ const addActions = (user: User, skill, evaluation, newStatus: string) => {
   return Promise.all(fns);
 };
 
+const isAuthorized = (evalUserId, reqUser) => {
+  if (reqUser.isAdmin() || reqUser.id === evalUserId) {
+    return true;
+  }
+
+  return users.getUserById(evalUserId)
+    .then(({ mentorId }) => (reqUser.id === mentorId));
+};
+
+// TODO: May want to make naming more specific here.
+const buildViewModel = (evaluation, notes, reqUser) => {
+  const addNotes = viewModel => ({
+    ...viewModel,
+    notes: notes.normalizedViewModel(),
+  });
+
+  if (reqUser.id === evaluation.user.id) {
+    return addNotes(evaluation.subjectEvaluationViewModel());
+  }
+
+  return users.getUserById(evaluation.user.id)
+    .then(({ mentorId }) => {
+      if (reqUser.id === mentorId) {
+        return addNotes(evaluation.mentorEvaluationViewModel());
+      }
+
+      if (reqUser.isAdmin()) {
+        return addNotes(evaluation.adminEvaluationViewModel());
+      }
+    });
+};
+
 const handlerFunctions = Object.freeze({
   evaluation: {
     retrieve: {
@@ -47,29 +79,21 @@ const handlerFunctions = Object.freeze({
         const { user } = res.locals;
 
         Promise.try(() => evaluations.getEvaluationById(evaluationId))
-          .then((evaluation) => {
-            if (!evaluation) {
-              return res.status(404).json(EVALUATION_NOT_FOUND());
-            }
-
-            if (user.id === evaluation.user.id) {
-              return res.status(200).json(evaluation.subjectEvaluationViewModel());
-            }
-
-            return users.getUserById(evaluation.user.id)
-              .then(({ mentorId }) => {
-                if (user.id === mentorId) {
-                  return res.status(200).json(evaluation.mentorEvaluationViewModel());
-                }
-
-                if (user.isAdmin()) {
-                  return res.status(200).json(evaluation.adminEvaluationViewModel());
-                }
-
-                return res.status(403).json(MUST_BE_SUBJECT_OF_EVALUATION_OR_MENTOR());
-              });
-          })
-          .catch(next);
+          .then(evaluation =>
+            Promise.resolve()
+              .then(() => {
+                if (!evaluation) { throw ({ status: 404, data: EVALUATION_NOT_FOUND() }); }
+              })
+              .then(() => isAuthorized(evaluation.user.id, user))
+              .then((authorized) => {
+                if (!authorized) { throw ({ status: 403, data: MUST_BE_SUBJECT_OF_EVALUATION_OR_MENTOR() }); }
+              })
+              .then(() => evaluation.getNoteIds())
+              .then(notes.getNotes)
+              .then(notes => buildViewModel(evaluation, notes, user))
+              .then(viewModel => res.status(200).json(viewModel)))
+          .catch(err =>
+            (err.status && err.data) ? res.status(err.status).json(err.data) : next(err));
       },
     },
     subjectUpdateSkillStatus: {

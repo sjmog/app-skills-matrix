@@ -5,8 +5,9 @@ import evaluations, * as fromEvaluations from './evaluations';
 import skills, * as fromSkills from './skills';
 import actions, * as fromActions from './actions';
 import notes, * as fromNotes from './notes';
+import users, * as fromUsers from './users';
 
-const entities = combineReducers({ evaluations, skills, notes });
+const entities = combineReducers({ evaluations, skills, notes, users });
 
 export default combineReducers({ user, entities, actions, evaluation });
 
@@ -117,3 +118,9 @@ export const getObjectivesRetrievedStatus = ({ actions }) =>
 
 export const getObjectivesError = ({ actions }) =>
   fromActions.getObjectivesError(actions);
+
+
+/* USERS SELECTORS */
+
+export const getUser = ({ entities: { users } }, userId) =>
+  fromUsers.getUser(users, userId);

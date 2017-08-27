@@ -1,8 +1,10 @@
 import { ObjectID } from 'mongodb';
+import * as R from 'ramda';
 
 import { encrypt, decrypt } from './encryption';
 import database from '../../database';
 import note, { Note, newNote } from './note';
+import notes from './notes';
 
 const collection = database.collection('notes');
 
@@ -17,5 +19,11 @@ export default {
     return collection.insertOne(encrypt(newNote(user.id, skillId, noteText)))
       .then(({ insertedId }) => collection.findOne({ _id: new ObjectID(insertedId) }))
       .then(res => (res ? note(decrypt(res)) : null));
+  },
+  getNotes: (noteIds = []): Promise<any> => { // TODO: Fix this type.
+    return collection.find({ _id: { $in: R.map(i => new ObjectID(i), noteIds) } })
+      .then(res => res.toArray())
+      .then(R.map(decrypt))
+      .then(notes);
   },
 };

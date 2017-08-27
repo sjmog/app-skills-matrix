@@ -28,6 +28,7 @@ const {
   getAllActions,
   skillStatus,
   insertAction,
+  insertNote,
 } = helpers;
 
 const { NEW, SELF_EVALUATION_COMPLETE, MENTOR_REVIEW_COMPLETE } = STATUS;
@@ -42,10 +43,15 @@ let normalUserOneId;
 let normalUserTwoId;
 
 let evaluationId;
+let noteId;
 
 describe('evaluations', () => {
   beforeEach(() =>
     clearDb()
+      .then(() => {
+        evaluationId = null;
+        noteId = null;
+      })
       .then(() => prepopulateUsers())
       .then(() => insertTemplate(templateData[0]))
       .then(() => skillsFixture.map(insertSkill))
@@ -82,6 +88,7 @@ describe('evaluations', () => {
           expect(body.skills[`${evaluationId}_1`]).to.not.be.undefined;
           expect(body.skillUids).to.be.an('array').that.includes(`${evaluationId}_1`);
           expect(body.view).to.equal('SUBJECT');
+          expect(body.notes).to.eql({});
         }));
 
     it('allows a mentor to view the evaluation of their mentee', () =>
@@ -101,6 +108,7 @@ describe('evaluations', () => {
               expect(body.skillGroups[1]).to.not.be.undefined;
               expect(body.skills[`${evaluationId}_1`]).to.not.be.undefined;
               expect(body.view).to.equal('MENTOR');
+              expect(body.notes).to.eql({});
             })));
 
     it('allows an admin user to view all evaluations', () =>
@@ -119,7 +127,36 @@ describe('evaluations', () => {
               expect(body.skillGroups[1]).to.not.be.undefined;
               expect(body.skills[`${evaluationId}_1`]).to.not.be.undefined;
               expect(body.view).to.equal('ADMIN');
+              expect(body.notes).to.eql({});
             })));
+
+    it('retrieves notes for an evaluation', () =>
+      insertNote({ note: 'This is a note' }) // TODO: Move this to fixtures.
+        .then(({ insertedId: insertedNoteId }) => {
+          noteId = String(insertedNoteId);
+          const skillNotesLens = R.lensPath(['skills', 0, 'notes']);
+          const evalWithNote = R.set(skillNotesLens, [insertedNoteId])(evaluation);
+          return insertEvaluation(evalWithNote, normalUserOneId);
+        })
+        .then(({ insertedId }) => {
+          evaluationId = insertedId;
+        })
+        .then(() =>
+          request(app)
+            .get(`${prefix}/evaluations/${evaluationId}`)
+            .set('Cookie', `${cookieName}=${normalUserOneToken}`)
+            .expect(200))
+        .then(({ body }) => {
+          const skillNotesLens = R.lensPath(['skills', 0, 'id']); // TODO: May want to clean this up.
+          const skillWithNoteAdded = R.view(skillNotesLens, evaluation);
+          expect(body.skills[`${evaluationId}_${skillWithNoteAdded}`].notes).to.eql([noteId]);
+          expect(body.notes).to.eql({
+            [noteId]: {
+              id: noteId,
+              note: 'This is a note',
+            },
+          });
+        }));
 
     it('sets evaluation view to subject if user is subject and admin', () =>
       insertEvaluation(evaluation, adminUserId)

@@ -3,19 +3,9 @@ import * as R from 'ramda';
 import * as keymirror from 'keymirror';
 import * as moment from 'moment';
 
-import { actions as evaluationsActions } from './evaluations';
+import api from '../../api';
 
-const stubNoteAddition = (skillUid, note) => Promise.resolve({
-  id: `note_id_${Math.random()}`,
-  author: {
-    name: 'Charlie Harris',
-    username: 'charlieharris1',
-    avatarUrl: 'https://avatars3.githubusercontent.com/u/11438777?v=4',
-    id: '597e06f3b2eb1361e210c413',
-  },
-  date: moment(),
-  note,
-});
+import { actions as evaluationsActions } from './evaluations';
 
 const stubNoteRemoval = noteId => Promise.resolve();
 
@@ -50,9 +40,9 @@ export const actions = {
   removeNoteSuccess,
 };
 
-function addNote(skillUid, note) {
+function addNote(evaluationId, skillId, skillUid, note) {
   return dispatch =>
-    stubNoteAddition(skillUid, note)
+    api.addNote(evaluationId, skillId, note)
       .then(persistedNote => dispatch(addNoteSuccess(skillUid, persistedNote))) // TODO: Could we display a validation style error instead?
       .catch((error) => {
         dispatch(addNoteFailure(error));

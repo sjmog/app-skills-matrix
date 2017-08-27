@@ -1,7 +1,6 @@
 import { handleActions, createAction } from 'redux-actions';
 import * as keymirror from 'keymirror';
 import * as R from 'ramda';
-import * as moment from 'moment';
 import api from '../../api';
 
 export const EVALUATION_VIEW = keymirror({
@@ -62,53 +61,18 @@ export const actions = {
   evaluationCompleteFailure,
 };
 
-const addFakeNotes = (evaluation) => {
-  const evaluationId = R.prop('id', evaluation);
-  // TODO: Would be nice to normalize users.
-  const note1 = {
-    id: 'note_id_1',
-    author: {
-      name: 'Charlie Harris',
-      username: 'charlieharris1',
-      avatarUrl: 'https://avatars3.githubusercontent.com/u/11438777?v=4',
-      id: '597e06f3b2eb1361e210c413',
-    },
-    note: 'This is a fake note',
-    date: moment(),
-  };
-
-  const note2 = {
-    id: 'note_id_2',
-    author: {
-      name: 'Jo Bloggs',
-      username: 'jobloggs',
-      avatarUrl: 'https://avatars1.githubusercontent.com/u/1444502?v=4',
-      id: '597e06f3b2eb1361e210c412',
-    },
-    date: moment(),
-    note: 'This is another fake note',
-  };
-
-  const skillNotesLens = R.lensPath(['skills', `${evaluationId}_156`, 'notes']);
-  const notesLens = R.lensPath(['notes']);
-
-  return R.compose(
-    R.set(notesLens, { note_id_1: note1, note_id_2: note2 }),
-    R.set(skillNotesLens, ['note_id_1', 'note_id_2']),
-  )(evaluation);
-};
-
-function retrieveEvaluation (evaluationId) {
+function retrieveEvaluation(evaluationId) {
   return dispatch => api.retrieveEvaluation(evaluationId)
     .then((evaluation) => {
-      /* TEMPORARY STUB */
-      const evaluationWithNotes = addFakeNotes(evaluation);
-      return dispatch(retrieveEvaluationSuccess(evaluationWithNotes));
+      return dispatch(retrieveEvaluationSuccess(evaluation));
     })
-    .catch(error => dispatch(retrieveEvaluationFailure(error, evaluationId)));
+    .catch(error => {
+      console.log('error:', error);
+      return dispatch(retrieveEvaluationFailure(error, evaluationId))
+    });
 }
 
-function evaluationComplete (evaluationId) {
+function evaluationComplete(evaluationId) {
   return dispatch => api.evaluationComplete(evaluationId)
     .then(({ status }) => dispatch(evaluationCompleteSuccess(evaluationId, status)))
     .catch(error => dispatch(evaluationCompleteFailure(evaluationId, error)));

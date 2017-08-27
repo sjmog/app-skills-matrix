@@ -16,6 +16,8 @@ const context = (window as any).$CONTEXT;
 const reducers = context === 'admin' ? adminReducers : userReducers;
 const routes = context === 'admin' ? adminRoutes : userRoutes;
 
+console.log('state:', state);
+
 const store = createStore(
   reducers,
   state,

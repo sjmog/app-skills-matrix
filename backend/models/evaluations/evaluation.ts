@@ -58,7 +58,7 @@ export type Evaluation = {
   subjectMetadataViewModel: () => EvaluationMetadataViewModel,
   mentorMetadataViewModel: () => EvaluationMetadataViewModel,
   adminMetadataViewModel: () => EvaluationMetadataViewModel,
-  subjectEvaluationViewModel: () => EvaluationViewModel,
+  subjectEvaluationViewModel: (notes?: any) => EvaluationViewModel, // TODO: Fix this definition.
   mentorEvaluationViewModel: () => EvaluationViewModel,
   adminEvaluationViewModel: () => EvaluationViewModel,
   newEvaluationEmail: () => Email,
@@ -73,6 +73,7 @@ export type Evaluation = {
   mentorReviewComplete: () => EvaluationUpdate,
   mentorReviewCompleted: () => boolean,
   mergePreviousEvaluation: (previousEvaluation: Evaluation) => Evaluation,
+  getNoteIds: () => any; // TODO: Fix this definition.
 };
 
 const arrayToKeyedObject = <T extends { id: string | number }>(evaluationId: string, arr: T[]) =>
@@ -242,6 +243,10 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
         skills: updatedSkills,
         status: STATUS.NEW,
       });
+    },
+    getNoteIds() {
+      const notes = R.map(R.prop('notes'), skills);
+      return R.flatten(R.reject(R.isNil, notes));
     },
   });
 };

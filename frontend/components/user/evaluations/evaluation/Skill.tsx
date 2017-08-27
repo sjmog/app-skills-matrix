@@ -10,10 +10,11 @@ import '../evaluation.scss';
 
 const foo = [
   { title: 'Lorem ipsum dolor sit amet, id atqui atomorum nec, id vel virtute quaerendum. Mel eu scripta omnesque detraxit, ex simul perpetua.' },
-  { title: 'Lorem ipsum dolor sit amet, id atqui atomorum nec, id vel virtute quaerendum. Mel eu scripta omnesque detraxit, ex simul perpetua.' }
+  { title: 'Lorem ipsum dolor sit amet, id atqui atomorum nec, id vel virtute quaerendum. Mel eu scripta omnesque detraxit, ex simul perpetua.' },
 ];
 // todo: fix types
 type SkillProps = {
+  evaluationId: string,
   level: string,
   skill: any,
   skillStatus: {
@@ -25,7 +26,7 @@ type SkillProps = {
   nextUnevaluatedSkill: () => void,
 };
 
-const Skill = ({ skill, skillStatus, updateSkillStatus, nextUnevaluatedSkill, isLastSkill }: SkillProps) => {
+const Skill = ({ evaluationId, skill, skillStatus, updateSkillStatus, nextUnevaluatedSkill, isLastSkill }: SkillProps) => {
   const { name, skillUid, id, criteria, questions } = skill;
 
   return (
@@ -54,7 +55,7 @@ const Skill = ({ skill, skillStatus, updateSkillStatus, nextUnevaluatedSkill, is
               <Glyphicon glyph="chevron-right"/>
             </Button>
           </ButtonGroup>
-        <Notes skillUid={skillUid}/>
+        <Notes evaluationId={evaluationId} skillId={id} skillUid={skillUid}/>
       </Panel>
     </div>
   );

@@ -123,6 +123,7 @@ class Evaluation extends React.Component<EvaluationProps, any> {
         <Row>
           <Col md={8} className="evaluation-panel">
             <Skill
+              evaluationId={evaluationId}
               level={currentSkill.level}
               skill={currentSkill}
               skillStatus={currentSkillStatus}

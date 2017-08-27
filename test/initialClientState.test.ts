@@ -54,6 +54,19 @@ describe('initial client state', () => {
         .expect(200)
         .then((res) => {
           const expectedState = {
+            entities: { // TODO: Split this up into separate assertions.
+              users: {
+                entities: {
+                  [normalUserOneId]: {
+                    email: 'user@magic.com',
+                    name: 'User Magic',
+                    id: normalUserOneId,
+                    templateId: 'eng-nodejs',
+                    username: 'magic',
+                  },
+                },
+              },
+            },
             user: {
               evaluations: [],
               menteeEvaluations: [],

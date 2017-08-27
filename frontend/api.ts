@@ -81,6 +81,12 @@ export default ({
       .then(getData)
       .catch(handleError);
   },
+  addNote(evaluationId, skillId, note): Promise<any> { // TODO: Note view model
+    console.log('note:', note);
+    return axios.post(`/skillz/evaluations/${evaluationId}`, { action: 'addNote', skillId, note })
+      .then(getData)
+      .catch(handleError);
+  },
   retrieveAllActions(userId, actionType) {
     return axios.get(`/skillz/users/${userId}/actions?type=${actionType}`)
       .then(getData)

@@ -3,8 +3,8 @@ import * as R from 'ramda';
 
 import usersData from '../fixtures/users';
 import database from '../../backend/database';
-import { encrypt, decrypt as decryptSkills } from '../../backend/models/evaluations/encryption';
-import { decrypt as decryptNote } from '../../backend/models/notes/encryption';
+import { encrypt as encryptSkills, decrypt as decryptSkills } from '../../backend/models/evaluations/encryption';
+import { decrypt as decryptNote, encrypt as encryptNote } from '../../backend/models/notes/encryption';
 
 const users: any = database.collection('users');
 const templates: any = database.collection('templates');
@@ -25,7 +25,7 @@ export default {
   skills,
   insertSkill: skill => skills.insertOne(Object.assign({}, skill)),
   evaluations,
-  insertEvaluation: (evaluation, userId) => evaluations.insertOne(encrypt(Object.assign({}, evaluation, { user: { id: String(userId) } }))),
+  insertEvaluation: (evaluation, userId) => evaluations.insertOne(encryptSkills(Object.assign({}, evaluation, { user: { id: String(userId) } }))),
   getEvaluation: evaluationId => evaluations.findOne({ _id: new ObjectID(evaluationId) }).then(decryptSkills),
   getEvaluations: () => evaluations.find({}).then(e => e.toArray()).then(R.map(decryptSkills)),
   getAllActions: () => actions.find({}).then(e => e.toArray()),
@@ -33,4 +33,5 @@ export default {
   clearDb: () => Promise.all([users.remove({}), templates.remove({}), skills.remove({}), evaluations.remove({}), actions.remove({}), notes.remove({})]),
   skillStatus: (skillList: { id: string }[], skillId) => R.prop('status', R.find(skill => skill.id === skillId, skillList)),
   getNotes: (userId, skillId) => notes.find({ userId, skillId }).then(e => e.toArray()).then(R.map(decryptNote)),
+  insertNote: note => notes.insertOne(encryptNote(note)),
 };
