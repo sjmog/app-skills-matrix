@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Table } from 'react-bootstrap';
 
 import Level from './Level';
-import SkillDetailsModal from './SkillDetailsModal';
+import SkillDetailsModal from '../../common/SkillDetailsModal';
 
 import '../../common/matrix.scss';
 

@@ -9,9 +9,11 @@ import './header.scss';
 
 type HeaderComponentProps = {
   username: string,
+  feedbackUrl: string, // TODO: These should not be required.
+  objectivesUrl: string,
 };
 
-const HeaderComponent = ({ username }: HeaderComponentProps) => (
+const HeaderComponent = ({ username, feedbackUrl, objectivesUrl }: HeaderComponentProps) => (
   <Navbar inverse collapseOnSelect>
     <Navbar.Header>
       <Navbar.Brand>
@@ -24,12 +26,8 @@ const HeaderComponent = ({ username }: HeaderComponentProps) => (
     </Navbar.Header>
     <Navbar.Collapse>
       <Nav>
-        <LinkContainer to="/feedback">
-          <NavItem eventKey={1}>Feedback</NavItem>
-        </LinkContainer>
-        <LinkContainer to="/objectives">
-          <NavItem eventKey={2}>Objectives</NavItem>
-        </LinkContainer>
+        { feedbackUrl ? <LinkContainer to={feedbackUrl}><NavItem eventKey={1}>Feedback</NavItem></LinkContainer> : false }
+        { objectivesUrl ? <LinkContainer to={objectivesUrl}><NavItem eventKey={2}>Objectives</NavItem></LinkContainer> : false }
       </Nav>
       <Nav pullRight>
         {
@@ -44,6 +42,8 @@ const HeaderComponent = ({ username }: HeaderComponentProps) => (
 
 const Header = connect(
   state => ({
+    feedbackUrl: selectors.getFeedbackUrlForLatestEval(state),
+    objectivesUrl: selectors.getObjectivesUrlForLatestEval(state),
     username: selectors.getLoggedInUsername(state),
   }),
 )(HeaderComponent);

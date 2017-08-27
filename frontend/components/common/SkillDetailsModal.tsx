@@ -2,10 +2,10 @@ import * as React from 'react';
 import { Modal, Button, Alert } from 'react-bootstrap';
 import { connect } from 'react-redux';
 
-import { SKILL_STATUS } from '../../../modules/user/evaluations';
-import * as selectors from '../../../modules/user/index';
-import SkillActions from '../../common/SkillActions';
-import Notes from '../notes/Notes';
+import { SKILL_STATUS } from '../../modules/user/evaluations';
+import * as selectors from '../../modules/user/index';
+import SkillActions from './SkillActions';
+import Notes from '../user/notes/Notes';
 
 type SkillDetailsModalProps = {
   evaluationId: string,

@@ -3,13 +3,12 @@ import user, * as fromUser from './user';
 import evaluation, * as fromEvaluation from './evaluation';
 import evaluations, * as fromEvaluations from './evaluations';
 import skills, * as fromSkills from './skills';
-import actions, * as fromActions from './actions';
 import notes, * as fromNotes from './notes';
 import users, * as fromUsers from './users';
 
 const entities = combineReducers({ evaluations, skills, notes, users });
 
-export default combineReducers({ user, entities, actions, evaluation });
+export default combineReducers({ user, entities, evaluation });
 
 /* USER SELECTORS */
 
@@ -18,6 +17,12 @@ export const getLoggedInUsername = ({ user }) =>
 
 export const getLoggedInUserId = ({ user }) =>
   fromUser.getLoggedInUserId(user);
+
+export const getFeedbackUrlForLatestEval = ({ user }) =>
+  fromUser.getFeedbackUrlForLatestEval(user);
+
+export const getObjectivesUrlForLatestEval = ({ user }) =>
+  fromUser.getObjectivesUrlForLatestEval(user);
 
 /* EVALUATION SELECTORS */
 
@@ -55,6 +60,9 @@ export const getNotesForSkill = ({ entities: { skills } }, skillUid) =>
 
 export const hasNotes = ({ entities: { skills } }, skillUid) =>
   fromSkills.hasNotes(skills, skillUid);
+
+export const getSkillsWithCurrentStatus = ({ entities: { skills } }, status, skillUids) =>
+  fromSkills.getSkillsWithCurrentStatus(skills, status, skillUids);
 
 /* EVALUATIONS SELECTORS */
 
@@ -98,27 +106,6 @@ export const getNote = ({ entities: { notes } }, noteId) =>
 
 export const getNotesError = ({ entities: { notes } }) =>
   fromNotes.getNotesError(notes);
-
-/* ACTIONS SELECTORS */
-
-export const getFeedbackForEvaluation = ({ actions }, evaluationId) =>
-  fromActions.getFeedbackForEvaluation(actions, evaluationId);
-
-export const getFeedbackRetrievedStatus = ({ actions }) =>
-  fromActions.getFeedbackRetrievedStatus(actions);
-
-export const getFeedbackError = ({ actions }) =>
-  fromActions.getFeedbackError(actions);
-
-export const geObjectivesForEvaluation = ({ actions }, evaluationId) =>
-  fromActions.geObjectivesForEvaluation(actions, evaluationId);
-
-export const getObjectivesRetrievedStatus = ({ actions }) =>
-  fromActions.getObjectivesRetrievedStatus(actions);
-
-export const getObjectivesError = ({ actions }) =>
-  fromActions.getObjectivesError(actions);
-
 
 /* USERS SELECTORS */
 

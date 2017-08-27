@@ -135,3 +135,16 @@ export const getNotesForSkill = (state, skillUid) =>
 
 export const hasNotes = (state, skillUid) =>
   R.length(notesForSkill(skillUid, state)) > 0;
+
+const hasStatus = type =>
+    skill => skill.status.current && skill.status.current === type;
+
+export const getSkillsWithCurrentStatus = (state, status, skillUids) => {
+  if (!Array.isArray(skillUids) || skillUids.length === 0) {
+    return [];
+  }
+
+  const skills = R.pickAll(skillUids, R.path(['entities'], state));
+  const skillsArray = R.values(skills);
+  return R.filter(hasStatus(status), skillsArray);
+};

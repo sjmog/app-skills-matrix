@@ -97,8 +97,8 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
   const metadata = {
     createdDate,
     evaluationUrl: `/evaluations/${_id}`,
-    feedbackUrl: `/user/${user.id}/evaluations/${_id}/feedback`,
-    objectivesUrl: `/user/${user.id}/evaluations/${_id}/objectives`,
+    feedbackUrl: `/evaluations/${_id}/feedback`,
+    objectivesUrl: `/evaluations/${_id}/objectives`,
     id: _id.toString(),
     usersName: user.name,
     status,

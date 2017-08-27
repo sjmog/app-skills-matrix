@@ -113,8 +113,8 @@ describe('initial client state', () => {
               expect(firstEvaluation.status).to.equal('NEW');
               expect(firstEvaluation.templateName).to.equal('Node JS Dev');
               expect(firstEvaluation.evaluationUrl).to.equal(`/evaluations/${String(newEvaluationId)}`);
-              expect(firstEvaluation.feedbackUrl).to.equal(`/user/${String(normalUserOneId)}/evaluations/${String(newEvaluationId)}/feedback`);
-              expect(firstEvaluation.objectivesUrl).to.equal(`/user/${String(normalUserOneId)}/evaluations/${String(newEvaluationId)}/objectives`);
+              expect(firstEvaluation.feedbackUrl).to.equal(`/evaluations/${String(newEvaluationId)}/feedback`);
+              expect(firstEvaluation.objectivesUrl).to.equal(`/evaluations/${String(newEvaluationId)}/objectives`);
               expect(firstEvaluation.view).to.equal('SUBJECT');
 
               expect(secondEvaluation.id).to.equal(String(oldEvaluationId));
@@ -149,8 +149,8 @@ describe('initial client state', () => {
             expect(firstEvaluation.status).to.equal('NEW');
             expect(firstEvaluation.templateName).to.equal('Node JS Dev');
             expect(firstEvaluation.evaluationUrl).to.equal(`/evaluations/${String(newMenteeEvaluationId)}`);
-            expect(firstEvaluation.feedbackUrl).to.equal(`/user/${String(normalUserTwoId)}/evaluations/${String(newMenteeEvaluationId)}/feedback`);
-            expect(firstEvaluation.objectivesUrl).to.equal(`/user/${String(normalUserTwoId)}/evaluations/${String(newMenteeEvaluationId)}/objectives`);
+            expect(firstEvaluation.feedbackUrl).to.equal(`/evaluations/${String(newMenteeEvaluationId)}/feedback`);
+            expect(firstEvaluation.objectivesUrl).to.equal(`/evaluations/${String(newMenteeEvaluationId)}/objectives`);
             expect(firstEvaluation.view).to.equal('MENTOR');
 
             expect(secondEvaluation.id).to.equal(String(oldMenteeEvaluationId));
@@ -300,8 +300,8 @@ describe('initial client state', () => {
 
               expect(firstEvaluation.createdDate).to.equal(now.toISOString());
               expect(firstEvaluation.evaluationUrl).to.equal(`/evaluations/${newEvaluationId}`);
-              expect(firstEvaluation.feedbackUrl).to.equal(`/user/${String(normalUserOneId)}/evaluations/${newEvaluationId}/feedback`);
-              expect(firstEvaluation.objectivesUrl).to.equal(`/user/${String(normalUserOneId)}/evaluations/${newEvaluationId}/objectives`);
+              expect(firstEvaluation.feedbackUrl).to.equal(`/evaluations/${newEvaluationId}/feedback`);
+              expect(firstEvaluation.objectivesUrl).to.equal(`/evaluations/${newEvaluationId}/objectives`);
               expect(firstEvaluation.id).to.equal(newEvaluationId);
               expect(firstEvaluation.status).to.equal('NEW');
               expect(firstEvaluation.templateName).to.equal('Node JS Dev');
@@ -309,8 +309,8 @@ describe('initial client state', () => {
 
               expect(secondEvaluation.createdDate).to.equal(beforeNow.toISOString());
               expect(secondEvaluation.evaluationUrl).to.equal(`/evaluations/${oldEvaluationId}`);
-              expect(secondEvaluation.feedbackUrl).to.equal(`/user/${String(normalUserOneId)}/evaluations/${oldEvaluationId}/feedback`);
-              expect(secondEvaluation.objectivesUrl).to.equal(`/user/${String(normalUserOneId)}/evaluations/${oldEvaluationId}/objectives`);
+              expect(secondEvaluation.feedbackUrl).to.equal(`/evaluations/${oldEvaluationId}/feedback`);
+              expect(secondEvaluation.objectivesUrl).to.equal(`/evaluations/${oldEvaluationId}/objectives`);
               expect(secondEvaluation.id).to.equal(oldEvaluationId);
               expect(secondEvaluation.status).to.equal('NEW');
               expect(secondEvaluation.templateName).to.equal('Node JS Dev');
