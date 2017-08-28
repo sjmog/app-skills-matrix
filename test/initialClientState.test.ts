@@ -58,6 +58,7 @@ describe('initial client state', () => {
               users: {
                 entities: {
                   [normalUserOneId]: {
+                    avatarUrl: 'https://www.tes.com/logo.svg',
                     email: 'user@magic.com',
                     name: 'User Magic',
                     id: normalUserOneId,
@@ -76,6 +77,7 @@ describe('initial client state', () => {
                 name: 'Node JS Dev',
               },
               userDetails: {
+                avatarUrl: 'https://www.tes.com/logo.svg',
                 email: 'user@magic.com',
                 name: 'User Magic',
                 id: normalUserOneId,
@@ -166,6 +168,7 @@ describe('initial client state', () => {
             .expect(200)
             .then((res) => {
               const expectedMentor = {
+                avatarUrl: 'https://www.tes.com/logo.svg',
                 email: 'dmorgantini@gmail.com',
                 name: 'David Morgantini',
                 username: 'dmorgantini',
@@ -200,6 +203,7 @@ describe('initial client state', () => {
             .expect(200)
             .then((res) => {
               const expectedUser = {
+                avatarUrl: 'https://www.tes.com/logo.svg',
                 email: 'user@magic.com',
                 id: normalUserOneId,
                 mentorId: adminUserId,
@@ -252,6 +256,7 @@ describe('initial client state', () => {
               name: 'David Morgantini',
               username: 'dmorgantini',
               evaluations: [],
+              avatarUrl: 'https://www.tes.com/logo.svg',
             },
             {
               email: 'user@magic.com',
@@ -260,6 +265,7 @@ describe('initial client state', () => {
               username: 'magic',
               templateId: 'eng-nodejs',
               evaluations: [],
+              avatarUrl: 'https://www.tes.com/logo.svg',
             },
             {
               email: 'user@dragon-riders.com',
@@ -267,6 +273,7 @@ describe('initial client state', () => {
               name: 'User Dragon Rider',
               username: 'dragon-riders',
               evaluations: [],
+              avatarUrl: 'https://www.tes.com/logo.svg',
             },
           ];
 

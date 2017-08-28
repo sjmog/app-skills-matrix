@@ -1,13 +1,10 @@
 import { handleActions, createAction } from 'redux-actions';
 import * as R from 'ramda';
 import * as keymirror from 'keymirror';
-import * as moment from 'moment';
 
 import api from '../../api';
 
 import { actions as evaluationsActions } from './evaluations';
-
-const stubNoteRemoval = noteId => Promise.resolve();
 
 export const actionTypes = keymirror({
   ADD_NOTE_SUCCESS: null,

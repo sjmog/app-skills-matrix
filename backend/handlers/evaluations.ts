@@ -48,24 +48,25 @@ const isAuthorized = (evalUserId, reqUser) => {
 };
 
 // TODO: May want to make naming more specific here.
-const buildViewModel = (evaluation, notes, reqUser) => {
-  const addNotes = viewModel => ({
+const buildViewModel = (evaluation, notes, retrievedUsers, reqUser) => {
+  const augment = viewModel => ({
     ...viewModel,
+    users: retrievedUsers.normalizedViewModel(),
     notes: notes.normalizedViewModel(),
   });
 
   if (reqUser.id === evaluation.user.id) {
-    return addNotes(evaluation.subjectEvaluationViewModel());
+    return augment(evaluation.subjectEvaluationViewModel());
   }
 
   return users.getUserById(evaluation.user.id)
     .then(({ mentorId }) => {
       if (reqUser.id === mentorId) {
-        return addNotes(evaluation.mentorEvaluationViewModel());
+        return augment(evaluation.mentorEvaluationViewModel());
       }
 
       if (reqUser.isAdmin()) {
-        return addNotes(evaluation.adminEvaluationViewModel());
+        return augment(evaluation.adminEvaluationViewModel());
       }
     });
 };
@@ -96,7 +97,10 @@ const handlerFunctions = Object.freeze({
               })
               .then(() => evaluation.getNoteIds())
               .then(notes.getNotes)
-              .then(notes => buildViewModel(evaluation, notes, user))
+              .then((retrievedNotes) => {
+                return users.getUsersById(retrievedNotes.getUserIds())
+                  .then(userIds => buildViewModel(evaluation, retrievedNotes, userIds, user));
+              })
               .then(viewModel => res.status(200).json(viewModel)))
           .catch(err =>
             (err.status && err.data) ? res.status(err.status).json(err.data) : next(err));

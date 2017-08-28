@@ -45,6 +45,13 @@ let normalUserTwoId;
 let evaluationId;
 let noteId;
 
+// TODO: move this to helpers.
+const addNoteIdsToSkill = (noteIds, skillId, oldEval) => {
+  const skillIndex = R.findIndex(R.propEq('id', skillId), oldEval.skills);
+  const skillNotesLens = R.lensPath(['skills', skillIndex, 'notes']);
+  return R.set(skillNotesLens, noteIds, oldEval);
+};
+
 describe('evaluations', () => {
   beforeEach(() =>
     clearDb()
@@ -130,14 +137,31 @@ describe('evaluations', () => {
               expect(body.notes).to.eql({});
             })));
 
-    it('retrieves notes for an evaluation', () =>
-      insertNote({ note: 'This is a note' }) // TODO: Move this to fixtures.
-        .then(({ insertedId: insertedNoteId }) => {
-          noteId = String(insertedNoteId);
-          const skillNotesLens = R.lensPath(['skills', 0, 'notes']);
-          const evalWithNote = R.set(skillNotesLens, [insertedNoteId])(evaluation);
-          return insertEvaluation(evalWithNote, normalUserOneId);
+    it('retrieves notes and the users that wrote them for an evaluation', () => {
+      let noteOneId;
+      let noteTwoId;
+      const skill = 5;
+      const createdDate = new Date();
+      const buildNoteForSkill = (skillId, userId, note) => ({ // TODO: may want to replace this with newNote().
+        skillId, userId,
+        note,
+        deleted: false,
+        createdDate,
+      });
+
+      const noteAddedBySubject = buildNoteForSkill(skill, normalUserOneId, 'My evaluation');
+      const noteAddedByAnotherUser = buildNoteForSkill(skill, normalUserTwoId, `Someone else's evaluation`);
+
+      return Promise.all([
+        insertNote(noteAddedBySubject),
+        insertNote(noteAddedByAnotherUser),
+      ])
+        .then(([{ insertedId: insertedNoteOneId }, { insertedId: insertedNoteTwoId }]) => {
+          noteOneId = String(insertedNoteOneId);
+          noteTwoId = String(insertedNoteTwoId);
         })
+        .then(() => addNoteIdsToSkill([noteOneId, noteTwoId], skill, evaluation))
+        .then(evalWithNotes => insertEvaluation(evalWithNotes, normalUserOneId))
         .then(({ insertedId }) => {
           evaluationId = insertedId;
         })
@@ -147,16 +171,22 @@ describe('evaluations', () => {
             .set('Cookie', `${cookieName}=${normalUserOneToken}`)
             .expect(200))
         .then(({ body }) => {
-          const skillNotesLens = R.lensPath(['skills', 0, 'id']); // TODO: May want to clean this up.
-          const skillWithNoteAdded = R.view(skillNotesLens, evaluation);
-          expect(body.skills[`${evaluationId}_${skillWithNoteAdded}`].notes).to.eql([noteId]);
-          expect(body.notes).to.eql({
-            [noteId]: {
-              id: noteId,
-              note: 'This is a note',
-            },
-          });
-        }));
+          expect(body.skills[`${evaluationId}_${skill}`].notes).to.eql([noteOneId, noteTwoId]);
+
+          expect(body.notes[noteOneId].userId).to.equal(normalUserOneId);
+          expect(body.notes[noteOneId].note).to.equal('My evaluation');
+          expect(body.notes[noteOneId].skillId).to.equal(skill);
+          expect(body.notes[noteOneId].createdDate).to.eql(createdDate.toISOString());
+
+          expect(body.notes[noteTwoId].userId).to.equal(normalUserTwoId);
+          expect(body.notes[noteTwoId].note).to.equal(`Someone else's evaluation`);
+
+          expect(body.users[normalUserOneId].username).to.equal('magic');
+          expect(body.users[normalUserOneId].avatarUrl).to.equal('https://www.tes.com/logo.svg');
+
+          expect(body.users[normalUserTwoId].username).to.equal('dragon-riders');
+        });
+    });
 
     it('sets evaluation view to subject if user is subject and admin', () =>
       insertEvaluation(evaluation, adminUserId)
