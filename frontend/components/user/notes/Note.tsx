@@ -15,7 +15,7 @@ type NoteProps = {
 };
 
 // TODO: Destructure note or use selectors
-const Note = ({ skillUid, author, note, noteActions, loggedInUserId }) => (
+const Note = ({ evaluationId, skillId, skillUid, author, note, noteActions, loggedInUserId }) => (
   <Media>
     <Media.Left>
       <img width={64} height={64} src={author.avatarUrl} alt="User avatar"/>
@@ -30,7 +30,7 @@ const Note = ({ skillUid, author, note, noteActions, loggedInUserId }) => (
     <Media.Right>
       {
         note.userId === loggedInUserId
-          ? <button className="remove" onClick={() => noteActions.removeNote(skillUid, note.id)}>
+          ? <button className="remove" onClick={() => noteActions.removeNote(evaluationId, skillId, skillUid, note.id)}>
             <Glyphicon glyph="remove"/>
           </button>
           : false

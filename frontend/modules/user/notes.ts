@@ -52,10 +52,9 @@ function addNote(evaluationId, skillId, skillUid, note) {
       });
 }
 
-// TODO: We need to remove the note from the skill.
-function removeNote(skillUid, noteId) {
+function removeNote(evaluationId, skillId, skillUid, noteId) {
   return dispatch =>
-    stubNoteRemoval(noteId)
+    api.deleteNote(evaluationId, skillId, noteId)
       .then(() => dispatch(removeNoteSuccess(skillUid, noteId)))
       .catch((error) => {
         dispatch(addNoteFailure(error)); // TODO: Make the error message relate to removal of notes.

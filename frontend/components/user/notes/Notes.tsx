@@ -40,7 +40,7 @@ class Notes extends React.Component<NotesProps, any>{
   }
 
   render() {
-    const { skillUid, noteIds, error } = this.props;
+    const { evaluationId, skillId, skillUid, noteIds, error } = this.props;
 
     return (
       <div className="notes">
@@ -57,7 +57,17 @@ class Notes extends React.Component<NotesProps, any>{
             Add note
           </Button>
         </Form>
-        { noteIds ? noteIds.map(noteId => <Note key={noteId} skillUid={skillUid} noteId={noteId} />) : false }
+        {
+          noteIds
+          ? noteIds.map(noteId =>
+              <Note
+                key={noteId}
+                evaluationId={evaluationId}
+                skillId={skillId}
+                skillUid={skillUid}
+                noteId={noteId} />)
+          : false
+      }
       </div>
     );
   }
