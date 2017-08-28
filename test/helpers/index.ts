@@ -33,5 +33,6 @@ export default {
   clearDb: () => Promise.all([users.remove({}), templates.remove({}), skills.remove({}), evaluations.remove({}), actions.remove({}), notes.remove({})]),
   skillStatus: (skillList: { id: string }[], skillId) => R.prop('status', R.find(skill => skill.id === skillId, skillList)),
   getNotes: (userId, skillId) => notes.find({ userId, skillId }).then(e => e.toArray()).then(R.map(decryptNote)),
+  getNoteById: id => notes.findOne({ _id: new ObjectID(id) }),
   insertNote: note => notes.insertOne(encryptNote(note)),
 };

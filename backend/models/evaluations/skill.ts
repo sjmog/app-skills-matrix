@@ -1,4 +1,5 @@
 import * as keymirror from 'keymirror';
+import * as R from 'ramda';
 
 export const SKILL_STATUS = keymirror({
   ATTAINED: null,
@@ -21,6 +22,7 @@ export type Skill = {
   removeAction: (string) => boolean | string,
   updateStatus: (string) => UnhydratedEvaluationSkill,
   addNote: (string) => UnhydratedEvaluationSkill,
+  deleteNote: (string) => any, // TODO: Fix this.
 };
 
 export default ({ id, name, criteria, type, questions, status, notes }: UnhydratedEvaluationSkill): Skill => Object.freeze({
@@ -55,6 +57,7 @@ export default ({ id, name, criteria, type, questions, status, notes }: Unhydrat
     };
   },
   addNote(newNoteId: string) {
+    console.log('notes:', notes);
     return {
       id,
       name,
@@ -63,6 +66,17 @@ export default ({ id, name, criteria, type, questions, status, notes }: Unhydrat
       questions,
       status,
       notes: Array.isArray(notes) ? [].concat(notes, newNoteId) : [newNoteId],
+    };
+  },
+  deleteNote(noteId :string) {
+    return {
+      id,
+      name,
+      criteria,
+      type,
+      questions,
+      status,
+      notes: Array.isArray(notes) ? R.reject(R.equals(noteId), notes) : [],
     };
   },
 });

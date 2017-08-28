@@ -67,6 +67,7 @@ export type Evaluation = {
   findSkill: (skillId: number) => Skill | null,
   updateSkill: (skillId: number, status: string) => EvaluationUpdate,
   addSkillNote: (skillId: number, note: string) => EvaluationUpdate,
+  deleteSkillNote: (skillId: number, note: string) => any; // TODO: Fix this definition.
   isNewEvaluation: () => boolean,
   selfEvaluationComplete: () => EvaluationUpdate,
   selfEvaluationCompleted: () => boolean,
@@ -186,6 +187,17 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
         template,
         skillGroups,
         skills: skills.map(s => (s.id === skillId ? skill(s).addNote(noteId) : s)),
+        status,
+      };
+    },
+    deleteSkillNote(skillId, noteId) {
+      return {
+        id: _id,
+        user,
+        createdDate,
+        template,
+        skillGroups,
+        skills: skills.map(s => (s.id === skillId ? skill(s).deleteNote(noteId) : s)),
         status,
       };
     },

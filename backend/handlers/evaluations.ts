@@ -21,6 +21,8 @@ const {
   MENTOR_REVIEW_COMPLETE,
   MENTOR_CAN_ONLY_UPDATE_AFTER_SELF_EVALUATION,
   USER_NOT_ADMIN,
+  MUST_BE_NOTE_AUTHOR,
+  NOTE_NOT_FOUND,
 } = require('./errors');
 
 const addActions = (user: User, skill, evaluation, newStatus: string) => {
@@ -82,11 +84,15 @@ const handlerFunctions = Object.freeze({
           .then(evaluation =>
             Promise.resolve()
               .then(() => {
-                if (!evaluation) { throw ({ status: 404, data: EVALUATION_NOT_FOUND() }); }
+                if (!evaluation) {
+                  throw ({ status: 404, data: EVALUATION_NOT_FOUND() });
+                }
               })
               .then(() => isAuthorized(evaluation.user.id, user))
               .then((authorized) => {
-                if (!authorized) { throw ({ status: 403, data: MUST_BE_SUBJECT_OF_EVALUATION_OR_MENTOR() }); }
+                if (!authorized) {
+                  throw ({ status: 403, data: MUST_BE_SUBJECT_OF_EVALUATION_OR_MENTOR() });
+                }
               })
               .then(() => evaluation.getNoteIds())
               .then(notes.getNotes)
@@ -287,6 +293,50 @@ const handlerFunctions = Object.freeze({
               });
           })
           .catch(next);
+      },
+    },
+    deleteNote: {
+      middleware: [
+        ensureLoggedIn,
+        validate({
+          params: {
+            evaluationId: Joi.string().required(),
+          },
+          body: {
+            noteId: Joi.string().required(),
+            skillId: Joi.number().required(),
+          },
+        }),
+      ],
+      handle: (req, res, next) => {
+        const { evaluationId } = req.params;
+        const { skillId, noteId } = req.body;
+        const { user } = res.locals;
+
+        Promise.try(() => notes.getNote(noteId)
+          .then((note) => {
+            if (!note) {
+              return res.status(404).json(NOTE_NOT_FOUND());
+            }
+
+            if (note.userId !== user.id) {
+              return res.status(403).json(MUST_BE_NOTE_AUTHOR());
+            }
+
+            return evaluations.getEvaluationById(evaluationId)
+              .then((evaluation) => {
+                if (!evaluation) { throw ({ status: 404, data: EVALUATION_NOT_FOUND() }); }
+
+                const skill = evaluation.findSkill(skillId);
+                if (!skill) { throw ({ status: 404, data: SKILL_NOT_FOUND() }); }
+
+                return evaluations.updateEvaluation(evaluation.deleteSkillNote(skillId, noteId));
+              })
+              .then(() => notes.updateNote(note.setDeletedFlag()))
+              .then(() => res.sendStatus(204));
+          }))
+          .catch(err =>
+            (err.status && err.data) ? res.status(err.status).json(err.data) : next(err));
       },
     },
   },

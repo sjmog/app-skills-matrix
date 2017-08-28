@@ -26,4 +26,15 @@ export default {
       .then(R.map(decrypt))
       .then(notes);
   },
+  getNote: (noteId: string): Promise<any> => {
+    return collection.findOne({ _id:  new ObjectID(noteId) })
+      .then(res => (res ? note(decrypt(res)) : null));
+  },
+  updateNote: (update: any): Promise<any> => {
+    return collection.updateOne(
+      { _id: new ObjectID(update.id) },
+      { $set: R.omit(['id'], encrypt(update)) })
+      .then(() => collection.findOne({ _id: new ObjectID(update.id) }))
+      .then(res => (res ? note(decrypt(res)) : null));
+  },
 };
