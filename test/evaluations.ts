@@ -140,7 +140,9 @@ describe('evaluations', () => {
     it('retrieves notes and the users that wrote them for an evaluation', () => {
       let noteOneId;
       let noteTwoId;
+
       const skill = 5;
+
       const createdDate = new Date();
       const buildNoteForSkill = (skillId, userId, note) => ({ // TODO: may want to replace this with newNote().
         skillId, userId,

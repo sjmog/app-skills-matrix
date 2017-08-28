@@ -16,4 +16,4 @@ export default handleActions({
 }, initialState);
 
 export const getUser = (state, userId) =>
-  R.path(['entities', userId], state);
+  R.path(['entities', userId], state) || {};

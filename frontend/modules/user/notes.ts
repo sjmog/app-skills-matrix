@@ -97,7 +97,7 @@ export default handleActions({
 }, initialState);
 
 export const getNote = (state, noteId) =>
-  R.path(['entities', noteId], state);
+  R.path(['entities', noteId], state) || {};
 
 // TODO: Write test for this.
 export const getNotesError = (state) => {
