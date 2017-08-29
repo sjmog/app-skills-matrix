@@ -17,6 +17,7 @@ export type Skill = {
   id: number,
   currentStatus: () => string | null,
   statusForNextEvaluation: () => string | null,
+  notes: () => any, // TODO: Fix this.
   feedbackData: () => UnhydratedEvaluationSkill,
   addAction: (string) => boolean | string,
   removeAction: (string) => boolean | string,
@@ -32,6 +33,9 @@ export default ({ id, name, criteria, type, questions, status, notes }: Unhydrat
   },
   statusForNextEvaluation() {
     return status.current === SKILL_STATUS.ATTAINED ? SKILL_STATUS.ATTAINED : null;
+  },
+  notes() {
+    return Array.isArray(notes) ? notes : [];
   },
   feedbackData() {
     return ({ id, name, criteria, type, questions, status });
@@ -57,7 +61,6 @@ export default ({ id, name, criteria, type, questions, status, notes }: Unhydrat
     };
   },
   addNote(newNoteId: string) {
-    console.log('notes:', notes);
     return {
       id,
       name,

@@ -238,11 +238,13 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
         if (!previousSkill) {
           return Object.assign({}, skillToUpdate, { status: { previous: null, current: null } });
         }
+
         return Object.assign({}, skillToUpdate, {
           status: {
             previous: previousSkill.currentStatus(),
             current: previousSkill.statusForNextEvaluation(),
           },
+          notes: previousSkill.notes(),
         });
       };
       const updatedSkills = previousEvaluation ? R.map(updateSkill, skills) : skills;
