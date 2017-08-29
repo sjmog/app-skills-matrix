@@ -3,8 +3,8 @@ import * as R from 'ramda';
 import * as keymirror from 'keymirror';
 
 import api from '../../api';
-
 import { actions as evaluationsActions } from './evaluations';
+import handleEvaluationRetrieved from './utils/entityRetrievedHandler';
 
 export const actionTypes = keymirror({
   ADD_NOTE_SUCCESS: null,
@@ -74,11 +74,7 @@ export const initialState = {
 const getNoteLens = id => R.lensPath(['entities', id]);
 
 export default handleActions({
-  [evaluationsActions.retrieveEvaluationSuccess]: (state, action) => {
-    const notes = R.path(['payload', 'notes'], action);
-    const entities = R.merge(state.entities, notes);
-    return R.merge(state, { entities });
-  },
+  [evaluationsActions.retrieveEvaluationSuccess]: handleEvaluationRetrieved('notes'),
   [addNoteSuccess]: (state, action) => {
     const noteId = R.path(['payload', 'note', 'id'], action);
     return R.set(getNoteLens(noteId), R.path(['payload', 'note'], action), state);

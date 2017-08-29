@@ -135,6 +135,7 @@ describe('evaluations', () => {
               expect(body.skills[`${evaluationId}_1`]).to.not.be.undefined;
               expect(body.view).to.equal('ADMIN');
               expect(body.notes).to.eql({});
+              expect(body.users).to.eql({});
             })));
 
     it('retrieves notes and the users that wrote them for an evaluation', () => {

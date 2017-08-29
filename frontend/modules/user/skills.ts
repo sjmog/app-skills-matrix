@@ -4,6 +4,7 @@ import * as keymirror from 'keymirror';
 
 import { actions as evaluationsActions } from './evaluations';
 import { actions as noteActions } from './notes';
+import handleEvaluationRetrieved from './utils/entityRetrievedHandler';
 
 import api from '../../api';
 
@@ -61,11 +62,7 @@ const errorsLens = R.lensPath(['errors']);
 const getSkillNoteLens = skillUid => R.lensPath(['entities', skillUid, 'notes']);
 
 export default handleActions({
-  [evaluationsActions.retrieveEvaluationSuccess]: (state, action) => {
-    const skills = R.path(['payload', 'skills'], action);
-    const entities = R.merge(state.entities, skills);
-    return R.merge(state, { entities });
-  },
+  [evaluationsActions.retrieveEvaluationSuccess]: handleEvaluationRetrieved('skills'),
   [updateSkillStatusSuccess]: (state, action) => {
     const { skillUid, status } = action.payload;
     const currentSkillStatusLens = R.lensPath(['entities', skillUid, 'status', 'current']);
