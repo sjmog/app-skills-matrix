@@ -15,7 +15,7 @@ type EvaluationViewModel = {
   subject: EvaluationUser,
   status: string,
   template: {},
-  skillGroups: { [id: string]: SkillGroup },
+  skillGroups: { [id: string]: UnhydratedSkillGroup },
   skills: { [id: string]: UnhydratedEvaluationSkill },
   view: string,
 };

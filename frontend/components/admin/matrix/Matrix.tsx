@@ -15,7 +15,7 @@ type MatrixProps = {
   onModifySkill: (skill: UnhydratedTemplateSkill) => void,
   onReplaceSkill: (level: string, category: string, skill: UnhydratedTemplateSkill) => void,
   onRemoveSkill: (level: string, category: string, skill: UnhydratedTemplateSkill) => void,
-  onAddSkill: (level: string, category: string) => void,
+  onAddSkill: (level: string, category: string, existingSkillId: number) => void,
 };
 
 type MatrixState = {

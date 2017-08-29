@@ -27,7 +27,7 @@ type UnhydratedEvaluation = {
   user: EvaluationUser,
   createdDate: Date,
   template: EvaluationTemplate,
-  skillGroups: SkillGroup[],
+  skillGroups: UnhydratedSkillGroup[],
   skills: UnhydratedEvaluationSkill[],
   status: string,
 };
@@ -37,7 +37,7 @@ export type EvaluationUpdate = {
   user: EvaluationUser,
   createdDate: Date,
   template: EvaluationTemplate,
-  skillGroups: SkillGroup[],
+  skillGroups: UnhydratedSkillGroup[],
   skills: UnhydratedEvaluationSkill[],
   status: string,
 };
@@ -52,7 +52,7 @@ export type Evaluation = {
   user: EvaluationUser,
   createdDate: Date,
   template: EvaluationTemplate,
-  skillGroups: SkillGroup[],
+  skillGroups: UnhydratedSkillGroup[],
   status: string,
   dataModel: () => UnhydratedEvaluation,
   subjectMetadataViewModel: () => EvaluationMetadataViewModel,
@@ -79,7 +79,7 @@ const arrayToKeyedObject = <T extends { id: string | number }>(evaluationId: str
 
 const uniqueId = (evaluationId, id) => `${evaluationId}_${id}`;
 
-const makeSkillsUnique = (evaluationId, skillGroups: SkillGroup[]) =>
+const makeSkillsUnique = (evaluationId, skillGroups: UnhydratedSkillGroup[]) =>
   R.map(skillGroup => Object.assign({},
     skillGroup,
     { skills: R.map(skillId => uniqueId(evaluationId, skillId), R.prop('skills', skillGroup)) }), skillGroups);

@@ -42,9 +42,9 @@ const handlerFunctions = Object.freeze({
               return res.status(400).json(INVALID_LEVEL_OR_CATEGORY(level, category, template.id));
             }
 
-            return skills.addNewSkill()
-              .then((newSkill) => {
-                const changes = template.addSkill(level, category, newSkill.id);
+            return (!!req.body.existingSkillId ? Promise.resolve({ id: req.body.existingSkillId }) : skills.addNewSkill())
+              .then(({ id }) => {
+                const changes = template.addSkill(level, category, id);
                 return Promise.all([templates.updateTemplate(template, changes), skills.getAll()]);
               }).then(([t, skills]) => res.status(200).json({
                 template: t.normalizedViewModel(),

@@ -136,6 +136,21 @@ describe('matrices', () => {
             expect(newTemplate.skillGroups[5].skills.length).to.equal(2);
           })));
 
+    it('adds an existing skill to the requested skill group', () =>
+      Promise.all([Promise.map(skillsFixture, insertSkill), insertTemplate(Object.assign({}, sampleTemplate))])
+        .then(() => request(app)
+          .post(`${prefix}/templates/eng-nodejs`)
+          .send({ action: 'addSkill', level: 'Expert', category: 'Magicness', existingSkillId: 99 })
+          .set('Cookie', `${cookieName}=${adminToken}`)
+          .expect(200)
+          .then(() => templates.findOne({ id: 'eng-nodejs' }))
+          .then((newTemplate) => {
+            expect(newTemplate.skillGroups[5].level).to.equal('Expert');
+            expect(newTemplate.skillGroups[5].category).to.equal('Magicness');
+            expect(newTemplate.skillGroups[5].skills.length).to.equal(2);
+            expect(newTemplate.skillGroups[5].skills).to.contain(99);
+          })));
+
     const errorCases =
       [
         () => ({

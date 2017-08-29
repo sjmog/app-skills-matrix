@@ -8,19 +8,19 @@ type UnhydratedTemplate = {
   version: number,
   categories: string[],
   levels: string[],
-  skillGroups: SkillGroup[],
+  skillGroups: UnhydratedSkillGroup[],
 };
 
 export type EvaluationTemplate = { id: string, name: string, version: number, categories: string[], levels: string[] };
 
 export type Template = {
   id: string,
-  skillGroups: SkillGroup[],
+  skillGroups: UnhydratedSkillGroup[],
   viewModel: () => TemplateViewModel,
   normalizedViewModel: () => NormalizedTemplateViewModel,
   evaluationData: () => EvaluationTemplate,
   userDetailsViewModel: () => { name: string },
-  createSkillGroups: (skills: Skill[]) => { skills: UnhydratedEvaluationSkill[], skillGroups: SkillGroup[] },
+  createSkillGroups: (skills: Skill[]) => { skills: UnhydratedEvaluationSkill[], skillGroups: UnhydratedSkillGroup[] },
   addSkill: (level: string, category: string, skillId: number) => Template,
   replaceSkill: (level: string, category: string, oldId: number, newId: number) => Template,
   removeSkill: (level: string, category: string, skillId: number) => Template,
@@ -29,8 +29,8 @@ export type Template = {
 };
 
 
-const getSkillGroup = (level: string, category: string, skillGroups: SkillGroup[]) =>
-  R.find((group: SkillGroup) => (group.level === level && group.category === category), skillGroups);
+const getSkillGroup = (level: string, category: string, skillGroups: UnhydratedSkillGroup[]) =>
+  R.find((group: UnhydratedSkillGroup) => (group.level === level && group.category === category), skillGroups);
 
 const template = ({ id, name, version, categories, levels, skillGroups }: UnhydratedTemplate): Template => Object.freeze({
   id,
@@ -95,7 +95,7 @@ const template = ({ id, name, version, categories, levels, skillGroups }: Unhydr
 });
 
 export default template;
-export const newTemplate = (id: string, name: string, skillGroups: SkillGroup[], levels: string[], categories: string[]) =>
+export const newTemplate = (id: string, name: string, skillGroups: UnhydratedSkillGroup[], levels: string[], categories: string[]) =>
   ({
     id,
     name,

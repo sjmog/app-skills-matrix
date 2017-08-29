@@ -26,8 +26,8 @@ class TemplatePageComponent extends React.Component<TemplatePageComponentProps, 
     this.onRemoveSkill = this.onRemoveSkill.bind(this);
   }
 
-  onAddSkill(template, level, category) {
-    this.props.actions.addSkillToTemplate(level, category, template);
+  onAddSkill(template, level, category, existingSkillId) {
+    this.props.actions.addSkillToTemplate(level, category, template, existingSkillId);
   }
 
   onModifySkill(skill: UnhydratedTemplateSkill) {

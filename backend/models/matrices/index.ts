@@ -1,4 +1,5 @@
 import * as R from 'ramda';
+import * as Promise from 'bluebird';
 
 import database from '../../database';
 import template, { newTemplate, Template } from './template';

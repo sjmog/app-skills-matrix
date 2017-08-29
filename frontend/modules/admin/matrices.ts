@@ -59,8 +59,8 @@ function saveSkills(skills: UnhydratedTemplateSkill[]) {
     .catch(err => dispatch(saveSkillsFailure(err)));
 }
 
-function addSkillToTemplate(level: string, category: string, template: NormalizedTemplateViewModel) {
-  return dispatch => api.addSkill(template.id, level, category)
+function addSkillToTemplate(level: string, category: string, template: NormalizedTemplateViewModel, existingSkillId) {
+  return dispatch => api.addSkill(template.id, level, category, existingSkillId)
     .then(res => dispatch(addSkillSuccess({ template: res.template, skills: res.skills })))
     .catch(err => dispatch(addSkillFailure(err)));
 }

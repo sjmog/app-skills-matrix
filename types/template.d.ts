@@ -11,7 +11,7 @@ type UnhydratedTemplateSkill = {
   questions: Question[],
 };
 
-type SkillGroup = {
+type UnhydratedSkillGroup = {
   id: number,
   category: string,
   level: string,
@@ -32,4 +32,4 @@ type NormalizedTemplateViewModel = {
   skillGroups: NormalizedSkillGroups,
 };
 
-type NormalizedSkillGroups = { [id: string]: SkillGroup };
+type NormalizedSkillGroups = { [id: string]: UnhydratedSkillGroup };

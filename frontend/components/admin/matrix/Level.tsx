@@ -9,7 +9,7 @@ type LevelProps = {
   skillGroups: NormalizedSkillGroups,
   skills: UnhydratedTemplateSkill[],
   viewSkillDetails: (level: string, category: string, skill: UnhydratedTemplateSkill) => void,
-  onAddSkill: (level: string, category: string) => void,
+  onAddSkill: (level: string, category: string, existingSkillId: number) => void,
 };
 
 const Level = ({ categories, levelName, skillGroups, skills, viewSkillDetails, onAddSkill }: LevelProps) =>
