@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Row } from 'react-bootstrap';
+import { Grid, Row } from 'react-bootstrap';
 import { connect } from 'react-redux';
 
 import { SaveTemplate } from './SaveTemplate';
@@ -12,14 +12,14 @@ type ManageMatricesPageComponentProps = {
 
 export const ManageMatricesPageComponent = ({ templates }: ManageMatricesPageComponentProps) =>
   (
-    <div>
+    <Grid>
       <Row><h1 className="header">Matrices</h1></Row>
       <TemplateList
         templates={templates}
       />
       <SaveTemplate />
       <SaveSkill />
-    </div>
+    </Grid>
   );
 
 export const ManageMatricesPage = connect(

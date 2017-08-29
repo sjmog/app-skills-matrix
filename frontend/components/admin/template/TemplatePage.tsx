@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as R from 'ramda';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Row, Alert } from 'react-bootstrap';
+import { Row, Alert, Col } from 'react-bootstrap';
 
 import { actions, MatricesState } from '../../../modules/admin/matrices';
 
@@ -57,22 +57,26 @@ class TemplatePageComponent extends React.Component<TemplatePageComponentProps, 
 
     if (success) {
       return (
-        <div>
-          <TemplatePageHeader
-            templateName={template.name}
-          />
-          <Row>
-            <Matrix
-              categories={template.categories}
-              levels={template.levels}
-              skillGroups={template.skillGroups}
-              skills={skills}
-              onModifySkill={this.onModifySkill}
-              onReplaceSkill={R.curry(this.onReplaceSkill)(template)}
-              onRemoveSkill={R.curry(this.onRemoveSkill)(template)}
-              onAddSkill={R.curry(this.onAddSkill)(template)}
-            />
-          </Row>
+        <div className="evaluation-grid">
+          <div className="evaluation-grid__item">
+            <TemplatePageHeader templateName={template.name}/>
+          </div>
+          <div className="evaluation-grid__item">
+            <Row>
+              <Col md={20}>
+                <Matrix
+                  categories={template.categories}
+                  levels={template.levels}
+                  skillGroups={template.skillGroups}
+                  skills={skills}
+                  onModifySkill={this.onModifySkill}
+                  onReplaceSkill={R.curry(this.onReplaceSkill)(template)}
+                  onRemoveSkill={R.curry(this.onRemoveSkill)(template)}
+                  onAddSkill={R.curry(this.onAddSkill)(template)}
+                />
+              </Col>
+            </Row>
+          </div>
         </div>
       );
     }

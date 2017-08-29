@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Row, Button } from 'react-bootstrap';
+import { Grid, Row, Button } from 'react-bootstrap';
 import * as R from 'ramda';
 import { actions } from '../../../modules/admin/users';
 import AddUserForm from './AddUserForm';
@@ -78,7 +78,7 @@ class ManageUsersPageComponent extends React.Component<any, any> {
 
   render() {
     return (
-      <div>
+      <Grid>
         <Row>
           <h1 className="header">Users</h1>
         </Row>
@@ -124,7 +124,7 @@ class ManageUsersPageComponent extends React.Component<any, any> {
             }
           </ul>
         </Row>
-      </div>
+      </Grid>
     );
   }
 }
