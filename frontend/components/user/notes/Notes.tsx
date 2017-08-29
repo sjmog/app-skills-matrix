@@ -53,6 +53,7 @@ class Notes extends React.Component<NotesProps, any>{
           </FormGroup>
           {' '}
           <Button
+            disabled={this.state.value.length === 0}
             type="submit">
             Add note
           </Button>
