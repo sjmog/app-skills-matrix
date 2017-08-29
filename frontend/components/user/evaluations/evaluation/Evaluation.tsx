@@ -160,7 +160,7 @@ export default connect(
       lastSkill: selectors.getLastSkill(state),
       lastCategory: selectors.getLastCategory(state),
       erringSkills: selectors.getErringSkills(state, skillUidsForEvaluation),
-      skillGroups: selectors.getSkillGroupsWithReversedSkills(state, evaluationId),
+      skillGroups: selectors.getSkillGroups(state, evaluationId),
     });
   },
   dispatch => ({

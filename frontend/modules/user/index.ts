@@ -93,9 +93,6 @@ export const getCategories = ({ entities: { evaluations } }, evalId) =>
 export const getError = ({ entities: { evaluations } }, evalId) =>
   fromEvaluations.getError(evaluations, evalId);
 
-export const getSkillGroupsWithReversedSkills = ({ entities: { evaluations } }, evalId) =>
-  fromEvaluations.getSkillGroupsWithReversedSkills(evaluations, evalId);
-
 export const getSkillUids = ({ entities: { evaluations } }, evalId) =>
   fromEvaluations.getSkillUids(evaluations, evalId);
 

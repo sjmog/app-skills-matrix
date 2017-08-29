@@ -143,10 +143,3 @@ export const getCategories = (state, evalId) =>
 
 export const getError = (state, evalId) =>
   R.path(['errors', evalId], state);
-
-export const getSkillGroupsWithReversedSkills = (state, evalId) => {
-  const reverseSkills = skillGroup =>
-    Object.assign({}, skillGroup, { skills: R.reverse(skillGroup.skills) });
-
-  return R.map(reverseSkills)(getSkillGroups(state, evalId) as any);
-};
