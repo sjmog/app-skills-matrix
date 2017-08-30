@@ -2,7 +2,7 @@ import { expect } from 'chai';
 
 import reducer, { actionTypes } from '../../../../../../frontend/modules/user/notes';
 
-describe('Evaluation reducer', () => {
+describe('Notes reducer', () => {
   describe('ADD_NOTE_SUCCESS', () => {
     it('adds a new note', () => {
       const state = {

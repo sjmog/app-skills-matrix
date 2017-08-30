@@ -6,7 +6,10 @@ export const USER_HAS_NO_TEMPLATE = username => ({ message: `User '${username}' 
 export const USER_HAS_NO_MENTOR = username => ({ message: `User '${username}' has not had a mentor selected` });
 export const EVALUATION_NOT_FOUND = () => ({ message: 'Evaluation not found' });
 export const SKILL_NOT_FOUND = () => ({ message: 'Skill not found' });
-export const MUST_BE_SUBJECT_OF_EVALUATION_OR_MENTOR = () => ({ message: 'Only the person being evaluated and their mentor can view an evaluation' });
+export const NOT_AUTHORIZED_TO_VIEW_EVALUATION = () => ({ message: 'Only the person being evaluated, their mentor and admin users can view an evaluation' });
+export const NOT_AUTHORIZED_TO_ADD_NOTE = () => ({ message: 'Only the person being evaluated, their mentor and admin users can add notes' });
+export const NOT_AUTHORIZED_TO_UPDATE_SKILL_STATUS = () => ({ message: 'You do not have permission to update the status of this skill' });
+export const NOT_AUTHORIZED_TO_MARK_EVAL_AS_COMPLETE = () => ({ message: 'You do not have permission to mark this evaluation as complete' });
 export const MUST_BE_LOGGED_IN = () => ({ message: 'You are not logged in' });
 export const MUST_BE_LOGGED_IN_FOR_REQUEST = () => ({ message: 'You must be logged in for this request to be fulfilled' });
 export const SUBJECT_CAN_ONLY_UPDATE_NEW_EVALUATION = () => ({ message: 'You can\'t make any changes to this evaluation.' });

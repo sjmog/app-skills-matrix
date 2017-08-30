@@ -1,7 +1,6 @@
 import * as Promise from 'bluebird';
 import * as validate from 'express-validation';
 import * as Joi from 'joi';
-import * as R from 'ramda';
 import createHandler from './createHandler';
 import { ensureLoggedIn } from '../middlewares/auth';
 
@@ -16,13 +15,16 @@ import sendMail from '../services/email/index';
 const {
   EVALUATION_NOT_FOUND,
   SKILL_NOT_FOUND,
-  MUST_BE_SUBJECT_OF_EVALUATION_OR_MENTOR,
+  NOT_AUTHORIZED_TO_UPDATE_SKILL_STATUS,
   SUBJECT_CAN_ONLY_UPDATE_NEW_EVALUATION,
   MENTOR_REVIEW_COMPLETE,
   MENTOR_CAN_ONLY_UPDATE_AFTER_SELF_EVALUATION,
   USER_NOT_ADMIN,
   MUST_BE_NOTE_AUTHOR,
   NOTE_NOT_FOUND,
+  NOT_AUTHORIZED_TO_VIEW_EVALUATION,
+  NOT_AUTHORIZED_TO_ADD_NOTE,
+  NOT_AUTHORIZED_TO_MARK_EVAL_AS_COMPLETE,
 } = require('./errors');
 
 const addActions = (user: User, skill, evaluation, newStatus: string) => {
@@ -38,17 +40,19 @@ const addActions = (user: User, skill, evaluation, newStatus: string) => {
   return Promise.all(fns);
 };
 
-const isAuthorized = (evalUserId, reqUser) => {
+const authorize = (evalUserId, reqUser, notAuthorizedMsg): PromiseLike<any> => {
   if (reqUser.isAdmin() || reqUser.id === evalUserId) {
-    return true;
+    return Promise.resolve();
   }
 
   return users.getUserById(evalUserId)
-    .then(({ mentorId }) => (reqUser.id === mentorId));
+    .then(({ mentorId }) => (
+      reqUser.id === mentorId
+        ? Promise.resolve()
+        : Promise.reject({ status: 403, data: notAuthorizedMsg })));
 };
 
-// TODO: May want to make naming more specific here.
-const buildViewModel = (evaluation, notes, retrievedUsers, reqUser) => {
+const buildEvalViewModel = (evaluation, notes, retrievedUsers, reqUser) => {
   const augment = viewModel => ({
     ...viewModel,
     users: retrievedUsers.normalizedViewModel(),
@@ -82,26 +86,19 @@ const handlerFunctions = Object.freeze({
         const { user } = res.locals;
 
         Promise.try(() => evaluations.getEvaluationById(evaluationId))
-          .then(evaluation =>
-            Promise.resolve()
-              .then(() => {
-                if (!evaluation) {
-                  throw ({ status: 404, data: EVALUATION_NOT_FOUND() });
-                }
-              })
-              .then(() => isAuthorized(evaluation.user.id, user))
-              .then((authorized) => {
-                if (!authorized) {
-                  throw ({ status: 403, data: MUST_BE_SUBJECT_OF_EVALUATION_OR_MENTOR() });
-                }
-              })
+          .then((evaluation) => {
+            if (!evaluation) {
+              throw ({ status: 404, data: EVALUATION_NOT_FOUND() });
+            }
+
+            return authorize(evaluation.user.id, user, NOT_AUTHORIZED_TO_VIEW_EVALUATION())
               .then(() => evaluation.getNoteIds())
               .then(notes.getNotes)
-              .then((retrievedNotes) => {
-                return users.getUsersById(retrievedNotes.getUserIds())
-                  .then(userIds => buildViewModel(evaluation, retrievedNotes, userIds, user));
-              })
-              .then(viewModel => res.status(200).json(viewModel)))
+              .then(retrievedNotes =>
+                users.getUsersById(retrievedNotes.getUserIds())
+                  .then(userIds => buildEvalViewModel(evaluation, retrievedNotes, userIds, user)))
+              .then(viewModel => res.status(200).json(viewModel));
+          })
           .catch(err =>
             (err.status && err.data) ? res.status(err.status).json(err.data) : next(err));
       },
@@ -122,7 +119,7 @@ const handlerFunctions = Object.freeze({
             }
 
             if (user.id !== evaluation.user.id) {
-              return res.status(403).json(MUST_BE_SUBJECT_OF_EVALUATION_OR_MENTOR());
+              return res.status(403).json(NOT_AUTHORIZED_TO_UPDATE_SKILL_STATUS());
             }
 
             const skill = evaluation.findSkill(skillId);
@@ -162,7 +159,7 @@ const handlerFunctions = Object.freeze({
             return users.getUserById(evaluation.user.id)
               .then((evalUser) => {
                 if (user.id !== evalUser.mentorId) {
-                  return res.status(403).json(MUST_BE_SUBJECT_OF_EVALUATION_OR_MENTOR());
+                  return res.status(403).json(NOT_AUTHORIZED_TO_UPDATE_SKILL_STATUS());
                 }
 
                 return evaluation.selfEvaluationCompleted()
@@ -241,7 +238,7 @@ const handlerFunctions = Object.freeze({
                 }
 
                 if (user.id !== mentorId) {
-                  return res.status(403).json(MUST_BE_SUBJECT_OF_EVALUATION_OR_MENTOR());
+                  return res.status(403).json(NOT_AUTHORIZED_TO_MARK_EVAL_AS_COMPLETE());
                 }
 
                 return evaluation.selfEvaluationCompleted()
@@ -271,8 +268,7 @@ const handlerFunctions = Object.freeze({
         const { skillId, note: noteText } = req.body;
         const { user } = res.locals;
 
-        Promise.try(() =>
-          evaluations.getEvaluationById(evaluationId))
+        Promise.try(() => evaluations.getEvaluationById(evaluationId))
           .then((evaluation) => {
 
             if (!evaluation) {
@@ -284,17 +280,11 @@ const handlerFunctions = Object.freeze({
               return res.status(400).json(SKILL_NOT_FOUND());
             }
 
-            return users.getUserById(evaluation.user.id)
-              .then(({ mentorId }) => {
-                if (user.id !== evaluation.user.id && user.id !== mentorId && !user.isAdmin()) {
-                  return res.status(403).json(MUST_BE_SUBJECT_OF_EVALUATION_OR_MENTOR()); // TODO: Rename to mention admin
-                }
-                return notes.addNote(user, skillId, noteText)
-                  .then((note) => {
-                    return evaluations.updateEvaluation(evaluation.addSkillNote(skillId, note.id))
-                      .then(() => res.status(200).json(note.viewModel()));
-                  });
-              });
+            return authorize(evaluation.user.id, user, NOT_AUTHORIZED_TO_ADD_NOTE)
+              .then(() => notes.addNote(user, skillId, noteText))
+              .then(note =>
+                evaluations.updateEvaluation(evaluation.addSkillNote(skillId, note.id))
+                  .then(() => res.status(200).json(note.viewModel())));
           })
           .catch(next);
       },
@@ -317,7 +307,7 @@ const handlerFunctions = Object.freeze({
         const { skillId, noteId } = req.body;
         const { user } = res.locals;
 
-        Promise.try(() => notes.getNote(noteId)
+        Promise.try(() => notes.getNote(noteId))
           .then((note) => {
             if (!note) {
               return res.status(404).json(NOTE_NOT_FOUND());
@@ -329,16 +319,20 @@ const handlerFunctions = Object.freeze({
 
             return evaluations.getEvaluationById(evaluationId)
               .then((evaluation) => {
-                if (!evaluation) { throw ({ status: 404, data: EVALUATION_NOT_FOUND() }); }
+                if (!evaluation) {
+                  throw ({ status: 404, data: EVALUATION_NOT_FOUND() });
+                }
 
                 const skill = evaluation.findSkill(skillId);
-                if (!skill) { throw ({ status: 404, data: SKILL_NOT_FOUND() }); }
+                if (!skill) {
+                  throw ({ status: 404, data: SKILL_NOT_FOUND() });
+                }
 
                 return evaluations.updateEvaluation(evaluation.deleteSkillNote(skillId, noteId));
               })
               .then(() => notes.updateNote(note.setDeletedFlag()))
               .then(() => res.sendStatus(204));
-          }))
+          })
           .catch(err =>
             (err.status && err.data) ? res.status(err.status).json(err.data) : next(err));
       },
