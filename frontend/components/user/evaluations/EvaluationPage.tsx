@@ -37,6 +37,12 @@ type EvaluationPageComponentProps = {
   skillActions: typeof skillsActionCreators,
 };
 
+const loadEvaluation = ({ params: { evaluationId }, fetchStatus, evalActions }) => {
+  if (!fetchStatus) {
+    evalActions.retrieveEvaluation(evaluationId);
+  }
+};
+
 class EvaluationPageComponent extends React.Component<EvaluationPageComponentProps, any> {
   constructor(props) {
     super(props);
@@ -45,10 +51,12 @@ class EvaluationPageComponent extends React.Component<EvaluationPageComponentPro
   }
 
   componentDidMount() {
-    const { params: { evaluationId }, fetchStatus, evalActions } = this.props;
+    loadEvaluation(this.props);
+  }
 
-    if (!fetchStatus) {
-      evalActions.retrieveEvaluation(evaluationId);
+  componentWillReceiveProps(nextProps) {
+    if (this.props.params.evaluationId !== nextProps.params.evaluationId) {
+      loadEvaluation(nextProps);
     }
   }
 

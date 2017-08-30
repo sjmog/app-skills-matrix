@@ -33,6 +33,13 @@ type ActionPageComponentProps = {
   actions: any,
 };
 
+const loadEvaluation = ({ params: { evaluationId }, fetchStatus, evalActions }) => {
+  if (!fetchStatus) {
+    evalActions.retrieveEvaluation(evaluationId);
+  }
+};
+
+
 class ActionPageComponent extends React.Component<ActionPageComponentProps, any> {
   constructor(props) {
     super(props);
@@ -45,10 +52,12 @@ class ActionPageComponent extends React.Component<ActionPageComponentProps, any>
   }
 
   componentDidMount() {
-    const { params: { evaluationId }, fetchStatus, evalActions } = this.props;
+    loadEvaluation(this.props);
+  }
 
-    if (!fetchStatus) {
-      evalActions.retrieveEvaluation(evaluationId);
+  componentWillReceiveProps(nextProps) {
+    if (this.props.params.evaluationId !== nextProps.params.evaluationId) {
+      loadEvaluation(nextProps);
     }
   }
 
