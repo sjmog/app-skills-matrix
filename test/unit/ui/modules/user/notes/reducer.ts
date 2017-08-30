@@ -33,17 +33,17 @@ describe('Evaluation reducer', () => {
     });
   });
 
-  describe('ADD_NOTE_FAILURE', () => {
+  describe('NOTE_ERROR', () => {
     it('adds an error', () => {
       const state = {
         error: {},
       };
       const action = {
-        type: actionTypes.ADD_NOTE_FAILURE,
-        payload: { message: 'reasons' },
+        type: actionTypes.NOTE_ERROR,
+        payload: 'reasons',
       };
 
-      expect(reducer(state, action).error).to.eql({ message: 'reasons' });
+      expect(reducer(state, action).error).to.eql('reasons');
     });
 
     it('overrides an existing error', () => {
@@ -51,11 +51,11 @@ describe('Evaluation reducer', () => {
         error: { message: 'reasons' },
       };
       const action = {
-        type: actionTypes.ADD_NOTE_FAILURE,
-        payload: { message: 'some other reasons' },
+        type: actionTypes.NOTE_ERROR,
+        payload: 'some other reasons',
       };
 
-      expect(reducer(state, action).error).to.eql({ message: 'some other reasons' });
+      expect(reducer(state, action).error).to.eql('some other reasons');
     });
   });
 });

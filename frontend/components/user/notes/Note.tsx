@@ -52,7 +52,7 @@ const Note = ({ noteId, evaluationId, skillId, skillUid, author, note, noteActio
         {
           note.userId === loggedInUserId
             ?
-            <button className="remove" onClick={() => noteActions.removeNote(evaluationId, skillId, skillUid, note.id)}>
+            <button className="remove" onClick={() => noteActions.deleteNote(evaluationId, skillId, skillUid, note.id)}>
               <Glyphicon glyph="remove"/>
             </button>
             : false

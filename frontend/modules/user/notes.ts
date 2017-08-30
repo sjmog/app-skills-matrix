@@ -8,9 +8,9 @@ import handleEvaluationRetrieved from './utils/entityRetrievedHandler';
 
 export const actionTypes = keymirror({
   ADD_NOTE_SUCCESS: null,
-  ADD_NOTE_FAILURE: null,
+  NOTE_ERROR: null,
   CLEAR_ERROR: null,
-  REMOVE_NOTE_SUCCESS: null,
+  DELETE_NOTE_SUCCESS: null,
 });
 
 const addNoteSuccess = createAction(
@@ -18,13 +18,13 @@ const addNoteSuccess = createAction(
   (skillUid, note) => ({ skillUid, note }),
 );
 
-const removeNoteSuccess = createAction(
-  actionTypes.REMOVE_NOTE_SUCCESS,
+const deleteNoteSuccess = createAction(
+  actionTypes.DELETE_NOTE_SUCCESS,
   (skillUid, noteId) => ({ skillUid, noteId }),
 );
 
-const addNoteFailure = createAction(
-  actionTypes.ADD_NOTE_FAILURE,
+const noteError = createAction(
+  actionTypes.NOTE_ERROR,
 );
 
 const clearError = createAction(
@@ -33,8 +33,8 @@ const clearError = createAction(
 
 export const actions = {
   addNoteSuccess,
-  addNoteFailure,
-  removeNoteSuccess,
+  deleteNoteSuccess,
+  noteError,
 };
 
 function addNote(evaluationId, skillId, skillUid, note) {
@@ -42,19 +42,23 @@ function addNote(evaluationId, skillId, skillUid, note) {
     api.addNote(evaluationId, skillId, note)
       .then(persistedNote => dispatch(addNoteSuccess(skillUid, persistedNote))) // TODO: Could we display a validation style error instead?
       .catch((error) => {
-        dispatch(addNoteFailure(error));
+        const message = error.message ? `Unable to add note: ${error.message}` : 'Unable to add note';
+        dispatch(noteError(message));
+
         setTimeout(() => {
           dispatch(clearError());
         }, 5000);
       });
 }
 
-function removeNote(evaluationId, skillId, skillUid, noteId) {
+function deleteNote(evaluationId, skillId, skillUid, noteId) {
   return dispatch =>
     api.deleteNote(evaluationId, skillId, noteId)
-      .then(() => dispatch(removeNoteSuccess(skillUid, noteId)))
+      .then(() => dispatch(deleteNoteSuccess(skillUid, noteId)))
       .catch((error) => {
-        dispatch(addNoteFailure(error)); // TODO: Make the error message relate to removal of notes.
+        const message = error.message ? `Unable to remove note: ${error.message}` : 'Unable to remove note';
+        dispatch(noteError(message));
+
         setTimeout(() => {
           dispatch(clearError());
         }, 5000);
@@ -63,7 +67,7 @@ function removeNote(evaluationId, skillId, skillUid, noteId) {
 
 export const actionCreators = {
   addNote,
-  removeNote,
+  deleteNote,
 };
 
 export const initialState = {
@@ -79,13 +83,13 @@ export default handleActions({
     const noteId = R.path(['payload', 'note', 'id'], action);
     return R.set(getNoteLens(noteId), R.path(['payload', 'note'], action), state);
   },
-  [addNoteFailure]: (state, action) => {
+  [noteError]: (state, action) => {
     return R.merge(state, { error: action.payload });
   },
   [clearError]: (state) => {
     return R.merge(state, { error: null });
   },
-  [removeNoteSuccess]: (state, action) => {
+  [deleteNoteSuccess]: (state, action) => {
     const noteId = R.path(['action', 'payload', 'noteId'], action);
     const entities = R.omit([action.payload], state.entities);
     return R.merge(state, { entities });

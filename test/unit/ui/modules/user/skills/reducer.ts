@@ -236,7 +236,7 @@ describe('Skills reducer', () => {
     });
   });
 
-  describe('REMOVE_NOTE_SUCCESS', () => {
+  describe('DELETE_NOTE_SUCCESS', () => {
     it('removes an existing note', () => {
       const state = {
         entities: {
@@ -247,7 +247,7 @@ describe('Skills reducer', () => {
       };
 
       const action = {
-        type: noteActionTypes.REMOVE_NOTE_SUCCESS,
+        type: noteActionTypes.DELETE_NOTE_SUCCESS,
         payload: {
           skillUid: 'SKILL_ID',
           noteId: 'note_1',
@@ -267,7 +267,7 @@ describe('Skills reducer', () => {
       };
 
       const action = {
-        type: noteActionTypes.REMOVE_NOTE_SUCCESS,
+        type: noteActionTypes.DELETE_NOTE_SUCCESS,
         payload: {
           skillUid: 'SKILL_ID',
           noteId: 'note_1',
@@ -287,7 +287,7 @@ describe('Skills reducer', () => {
       };
 
       const action = {
-        type: noteActionTypes.REMOVE_NOTE_SUCCESS,
+        type: noteActionTypes.DELETE_NOTE_SUCCESS,
         payload: {
           skillUid: 'SKILL_ID',
           noteId: 'note_2',
@@ -307,7 +307,7 @@ describe('Skills reducer', () => {
       };
 
       const action = {
-        type: noteActionTypes.REMOVE_NOTE_SUCCESS,
+        type: noteActionTypes.DELETE_NOTE_SUCCESS,
         payload: {
           skillUid: 'SKILL_ID',
           noteId: null,
@@ -327,7 +327,7 @@ describe('Skills reducer', () => {
       };
 
       const action = {
-        type: noteActionTypes.REMOVE_NOTE_SUCCESS,
+        type: noteActionTypes.DELETE_NOTE_SUCCESS,
         payload: {
           skillUid: 'SKILL_ID',
           foo: 'bar',
@@ -347,7 +347,7 @@ describe('Skills reducer', () => {
       };
 
       const action = {
-        type: noteActionTypes.REMOVE_NOTE_SUCCESS,
+        type: noteActionTypes.DELETE_NOTE_SUCCESS,
         payload: {
           foo: 'bar',
           noteId: null,
@@ -367,7 +367,7 @@ describe('Skills reducer', () => {
       };
 
       const action = {
-        type: noteActionTypes.REMOVE_NOTE_SUCCESS,
+        type: noteActionTypes.DELETE_NOTE_SUCCESS,
         payload: {
           skillUid: 'SKILL_ID_2',
           noteId: 'note_1',

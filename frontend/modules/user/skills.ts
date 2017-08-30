@@ -92,7 +92,7 @@ export default handleActions({
 
     return R.set(getSkillNoteLens(skillUid), notes, state);
   },
-  [noteActions.removeNoteSuccess]: (state, action) => {
+  [noteActions.deleteNoteSuccess]: (state, action) => {
     const { skillUid, noteId } = action.payload;
     const skill = R.path(['entities', skillUid], state);
 
