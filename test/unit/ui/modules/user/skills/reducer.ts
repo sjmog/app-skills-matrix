@@ -1,6 +1,6 @@
-import {expect} from 'chai';
-import reducer, {actionTypes} from '../../../../../../frontend/modules/user/skills';
-import {actionTypes as noteActionTypes} from '../../../../../../frontend/modules/user/notes';
+import { expect } from 'chai';
+import reducer, { actionTypes } from '../../../../../../frontend/modules/user/skills';
+import { actionTypes as noteActionTypes } from '../../../../../../frontend/modules/user/notes';
 
 describe('Skills reducer', () => {
   describe('SKILL_STATUS_UPDATE_SUCCESS', () => {
@@ -112,19 +112,19 @@ describe('Skills reducer', () => {
         entities: {
           SKILL_ID: {
             notes: [],
-          }
-        }
+          },
+        },
       };
 
       const action = {
         type: noteActionTypes.ADD_NOTE_SUCCESS,
         payload: {
           skillUid: 'SKILL_ID',
-          note: { id: 'note_1' }
-        }
+          note: { id: 'note_1' },
+        },
       };
 
-      expect(reducer(state, action).entities).to.eql({ SKILL_ID: { notes: ['note_1'] } })
+      expect(reducer(state, action).entities).to.eql({ SKILL_ID: { notes: ['note_1'] } });
     });
 
     it('does not alter anything but the notes property of a skill', () => {
@@ -133,19 +133,19 @@ describe('Skills reducer', () => {
           SKILL_ID: {
             a: 'A',
             notes: [],
-          }
-        }
+          },
+        },
       };
 
       const action = {
         type: noteActionTypes.ADD_NOTE_SUCCESS,
         payload: {
           skillUid: 'SKILL_ID',
-          note: { id: 'note_1' }
-        }
+          note: { id: 'note_1' },
+        },
       };
 
-      expect(reducer(state, action).entities).to.eql({ SKILL_ID: { a: 'A', notes: ['note_1'] } })
+      expect(reducer(state, action).entities).to.eql({ SKILL_ID: { a: 'A', notes: ['note_1'] } });
     });
 
     it('adds new note to the front of an existing list of notes', () => {
@@ -153,19 +153,19 @@ describe('Skills reducer', () => {
         entities: {
           SKILL_ID: {
             notes: ['note_1'],
-          }
-        }
+          },
+        },
       };
 
       const action = {
         type: noteActionTypes.ADD_NOTE_SUCCESS,
         payload: {
           skillUid: 'SKILL_ID',
-          note: { id: 'note_2' }
-        }
+          note: { id: 'note_2' },
+        },
       };
 
-      expect(reducer(state, action).entities).to.eql({ SKILL_ID: { notes: ['note_2', 'note_1'] } })
+      expect(reducer(state, action).entities).to.eql({ SKILL_ID: { notes: ['note_2', 'note_1'] } });
     });
 
     it('does not add a note if there is no associated skill entity', () => {
@@ -173,15 +173,15 @@ describe('Skills reducer', () => {
         entities: {
           SKILL_ID_1: {
             notes: ['note_1'],
-          }
-        }
+          },
+        },
       };
       const action = {
         type: noteActionTypes.ADD_NOTE_SUCCESS,
         payload: {
           skillUid: 'SKILL_ID_2',
-          note: { id: 'note_2' }
-        }
+          note: { id: 'note_2' },
+        },
       };
 
       expect(reducer(state, action).entities).to.eql({ SKILL_ID_1: { notes: ['note_1'] } });
@@ -192,47 +192,47 @@ describe('Skills reducer', () => {
         entities: {
           SKILL_ID: {
             no: 'notes',
-          }
-        }
+          },
+        },
       };
       const action = {
         type: noteActionTypes.ADD_NOTE_SUCCESS,
         payload: {
           skillUid: 'SKILL_ID',
-          note: { id: 'note_1' }
-        }
+          note: { id: 'note_1' },
+        },
       };
 
-      expect(reducer(state, action).entities).to.eql({ SKILL_ID: { no: 'notes', notes: ['note_1'] } })
+      expect(reducer(state, action).entities).to.eql({ SKILL_ID: { no: 'notes', notes: ['note_1'] } });
     });
 
     it('does not alter state when there are no skill entities', () => {
       const state = {
-        NO: 'ENTITIES'
+        NO: 'ENTITIES',
       };
       const action = {
         type: noteActionTypes.ADD_NOTE_SUCCESS,
         payload: {
           skillUid: 'SKILL_ID',
-          note: { id: 'note_1' }
-        }
+          note: { id: 'note_1' },
+        },
       };
 
-      expect(reducer(state, action)).to.eql({ NO: 'ENTITIES' })
+      expect(reducer(state, action)).to.eql({ NO: 'ENTITIES' });
     });
 
     it('does not alter state when payload is malformed', () => {
       const state = {
         entities: {
-          SKILL_ID: { notes: ['note_1'] }
-        }
+          SKILL_ID: { notes: ['note_1'] },
+        },
       };
 
       [{}, [], { a: 'A', note: { id: 'note_2' } }, { skillUid: 'SKILL_ID', b: 'B' }].forEach(payload =>
         expect(reducer(state, {
           type: noteActionTypes.ADD_NOTE_SUCCESS,
-          payload
-        })).to.eql({ entities: { SKILL_ID: { notes: ['note_1'] } } }))
+          payload,
+        })).to.eql({ entities: { SKILL_ID: { notes: ['note_1'] } } }));
     });
   });
 
@@ -242,8 +242,8 @@ describe('Skills reducer', () => {
         entities: {
           SKILL_ID: {
             notes: ['note_1'],
-          }
-        }
+          },
+        },
       };
 
       const action = {
@@ -251,10 +251,10 @@ describe('Skills reducer', () => {
         payload: {
           skillUid: 'SKILL_ID',
           noteId: 'note_1',
-        }
+        },
       };
 
-      expect(reducer(state, action).entities).to.eql({ SKILL_ID: { notes: [] } })
+      expect(reducer(state, action).entities).to.eql({ SKILL_ID: { notes: [] } });
     });
 
     it('removes an existing note and leaves others alone', () => {
@@ -262,8 +262,8 @@ describe('Skills reducer', () => {
         entities: {
           SKILL_ID: {
             notes: ['note_1', 'note_2'],
-          }
-        }
+          },
+        },
       };
 
       const action = {
@@ -271,19 +271,19 @@ describe('Skills reducer', () => {
         payload: {
           skillUid: 'SKILL_ID',
           noteId: 'note_1',
-        }
+        },
       };
 
-      expect(reducer(state, action).entities).to.eql({ SKILL_ID: { notes: ['note_2'] } })
+      expect(reducer(state, action).entities).to.eql({ SKILL_ID: { notes: ['note_2'] } });
     });
 
-    it("leaves existing notes alone when the id is for a note the skill doesn't have", () => {
+    it('leaves existing notes alone when the id is for a note the skill doesn\'t have', () => {
       const state = {
         entities: {
           SKILL_ID: {
             notes: ['note_1'],
-          }
-        }
+          },
+        },
       };
 
       const action = {
@@ -291,19 +291,19 @@ describe('Skills reducer', () => {
         payload: {
           skillUid: 'SKILL_ID',
           noteId: 'note_2',
-        }
+        },
       };
 
-      expect(reducer(state, action).entities).to.eql({ SKILL_ID: { notes: ['note_1'] } })
+      expect(reducer(state, action).entities).to.eql({ SKILL_ID: { notes: ['note_1'] } });
     });
 
-    it("leaves existing notes alone no id is provided", () => {
+    it('leaves existing notes alone no id is provided', () => {
       const state = {
         entities: {
           SKILL_ID: {
             notes: ['note_1'],
-          }
-        }
+          },
+        },
       };
 
       const action = {
@@ -311,19 +311,19 @@ describe('Skills reducer', () => {
         payload: {
           skillUid: 'SKILL_ID',
           noteId: null,
-        }
+        },
       };
 
-      expect(reducer(state, action).entities).to.eql({ SKILL_ID: { notes: ['note_1'] } })
+      expect(reducer(state, action).entities).to.eql({ SKILL_ID: { notes: ['note_1'] } });
     });
 
-    it("leaves existing notes alone when there is no note id property", () => {
+    it('leaves existing notes alone when there is no note id property', () => {
       const state = {
         entities: {
           SKILL_ID: {
             notes: ['note_1'],
-          }
-        }
+          },
+        },
       };
 
       const action = {
@@ -331,19 +331,19 @@ describe('Skills reducer', () => {
         payload: {
           skillUid: 'SKILL_ID',
           foo: 'bar',
-        }
+        },
       };
 
-      expect(reducer(state, action).entities).to.eql({ SKILL_ID: { notes: ['note_1'] } })
+      expect(reducer(state, action).entities).to.eql({ SKILL_ID: { notes: ['note_1'] } });
     });
 
-    it("leaves existing notes alone when there is no skill uid property", () => {
+    it('leaves existing notes alone when there is no skill uid property', () => {
       const state = {
         entities: {
           SKILL_ID: {
             notes: ['note_1'],
-          }
-        }
+          },
+        },
       };
 
       const action = {
@@ -351,19 +351,19 @@ describe('Skills reducer', () => {
         payload: {
           foo: 'bar',
           noteId: null,
-        }
+        },
       };
 
-      expect(reducer(state, action).entities).to.eql({ SKILL_ID: { notes: ['note_1'] } })
+      expect(reducer(state, action).entities).to.eql({ SKILL_ID: { notes: ['note_1'] } });
     });
 
-    it("leaves state alone when the skill doesn't exist", () => {
+    it('leaves state alone when the skill doesn\'t exist', () => {
       const state = {
         entities: {
           SKILL_ID_1: {
             notes: ['note_1'],
-          }
-        }
+          },
+        },
       };
 
       const action = {
@@ -371,10 +371,10 @@ describe('Skills reducer', () => {
         payload: {
           skillUid: 'SKILL_ID_2',
           noteId: 'note_1',
-        }
+        },
       };
 
-      expect(reducer(state, action).entities).to.eql({ SKILL_ID_1: { notes: ['note_1'] } })
+      expect(reducer(state, action).entities).to.eql({ SKILL_ID_1: { notes: ['note_1'] } });
     });
   });
 });

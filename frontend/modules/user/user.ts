@@ -1,7 +1,7 @@
 import { handleActions } from 'redux-actions';
 import * as R from 'ramda';
 
-export default (state = {}) => state; /* prortion of state never requires updating */
+export default (state = {}) => state; /* portion of state never requires updating */
 
 export const getLoggedInUsername = state =>
   R.path(['userDetails', 'username'], state);
@@ -9,15 +9,13 @@ export const getLoggedInUsername = state =>
 export const getLoggedInUserId = state =>
   R.path(['userDetails', 'id'], state);
 
-// TODO: add test for case when there is no latest.
-export const getFeedbackUrlForLatestEval = (state) => {
-  const userEvaluations = R.prop('evaluations', state) as any;
-  const latestEvaluation = R.head(userEvaluations);
-  return R.prop('feedbackUrl', latestEvaluation) || null;
+const getUrl = (keyName, state) => {
+  const url = R.path(['evaluations', 0, keyName], state);
+  return R.is(String, url) ? url : null;
 };
-// TODO: use a lens here.
-export const getObjectivesUrlForLatestEval = (state) => {
-  const userEvaluations = R.prop('evaluations', state) as any;
-  const latestEvaluation = R.head(userEvaluations);
-  return R.prop('objectivesUrl', latestEvaluation) || null;
-};
+
+export const getFeedbackUrlForLatestEval = state =>
+  getUrl('feedbackUrl', state);
+
+export const getObjectivesUrlForLatestEval = state =>
+  getUrl('objectivesUrl', state);
