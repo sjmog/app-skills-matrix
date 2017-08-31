@@ -6,7 +6,7 @@ import Level from './Level';
 import '../../../common/matrix.scss';
 import './progress.scss';
 
-type ProgressProps = {
+type ProgressProps = { // TODO: fix this
   categories: string[],
   levels: string[],
   skillGroups: any,
