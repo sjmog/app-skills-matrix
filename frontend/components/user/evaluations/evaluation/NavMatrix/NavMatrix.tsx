@@ -1,29 +1,28 @@
 import * as React from 'react';
 import { Table } from 'react-bootstrap';
 
-import Level from './Level';
+import NavMatrixLevel from './NavMatrixLevel';
 
-import '../../../common/matrix.scss';
-import './progress.scss';
+import '../../../../common/matrix.scss';
+import './nav-matrix.scss';
 
-type ProgressProps = { // TODO: fix this
+type NavMatrixProps = {
   categories: string[],
   levels: string[],
-  skillGroups: any,
+  skillGroups: SkillGroup[],
 };
 
-const Progress = ({ categories, levels, skillGroups }) => (
+const NavMatrix = ({ categories, levels, skillGroups }: NavMatrixProps) => (
   <div>
-    <Table responsive className="progress__table">
+    <Table responsive className="nav_matrix__table">
       <tbody>
       {
         levels.map(levelName => (
-          <Level
+          <NavMatrixLevel
             key={levelName}
             categories={categories}
             levelName={levelName}
             skillGroups={skillGroups}
-            viewSkillDetails={this.viewSkillDetails}
           />
         ))
       }
@@ -32,4 +31,4 @@ const Progress = ({ categories, levels, skillGroups }) => (
   </div>
 );
 
-export default Progress;
+export default NavMatrix;

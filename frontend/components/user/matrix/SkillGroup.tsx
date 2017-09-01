@@ -4,7 +4,7 @@ import * as R from 'ramda';
 import Skill from './Skill';
 
 type SkillGroupProps = {
-  skillGroup: any,
+  skillGroup: SkillGroup,
   viewSkillDetails: (skillUid: string) => void,
 };
 

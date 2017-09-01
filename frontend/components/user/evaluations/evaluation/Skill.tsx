@@ -8,15 +8,11 @@ import SkillBody from './SkillBody';
 import Notes from '../../notes/Notes';
 import '../evaluation.scss';
 
-const foo = [
-  { title: 'Lorem ipsum dolor sit amet, id atqui atomorum nec, id vel virtute quaerendum. Mel eu scripta omnesque detraxit, ex simul perpetua.' },
-  { title: 'Lorem ipsum dolor sit amet, id atqui atomorum nec, id vel virtute quaerendum. Mel eu scripta omnesque detraxit, ex simul perpetua.' },
-];
 // todo: fix types
 type SkillProps = {
   evaluationId: string,
   level: string,
-  skill: any,
+  skill: any, // TODO: This is UnhydratedEvaluationSkill & skillUid
   skillStatus: {
     current: string,
     previous: string,

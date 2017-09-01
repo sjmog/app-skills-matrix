@@ -8,7 +8,7 @@ import { actionCreators as evaluationActionCreators } from '../../../../modules/
 import { actionCreators as uiActionCreators } from '../../../../modules/user/evaluation';
 
 import EvaluationHeader from './EvaluationHeader';
-import Progress from './Progress';
+import NavMatrix from './NavMatrix/NavMatrix';
 import Skill from './Skill';
 
 // TODO: fix types
@@ -133,7 +133,7 @@ class Evaluation extends React.Component<EvaluationProps, any> {
             />
           </Col>
           <Col md={4} className="evaluation-panel evaluation-panel--right">
-            <Progress
+            <NavMatrix
               categories={categories}
               levels={levels}
               skillGroups={skillGroups}

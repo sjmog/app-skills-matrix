@@ -63,13 +63,8 @@ export const actions = {
 
 function retrieveEvaluation(evaluationId) {
   return dispatch => api.retrieveEvaluation(evaluationId)
-    .then((evaluation) => {
-      return dispatch(retrieveEvaluationSuccess(evaluation));
-    })
-    .catch(error => {
-      console.log('error:', error);
-      return dispatch(retrieveEvaluationFailure(error, evaluationId))
-    });
+    .then(evaluation => dispatch(retrieveEvaluationSuccess(evaluation)))
+    .catch(error => dispatch(retrieveEvaluationFailure(error, evaluationId)));
 }
 
 function evaluationComplete(evaluationId) {

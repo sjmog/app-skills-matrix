@@ -6,19 +6,14 @@ import { Media, Glyphicon } from 'react-bootstrap';
 import * as selectors from '../../../modules/user';
 import { actionCreators } from '../../../modules/user/notes';
 
-// TODO: fix types
 type NoteProps = {
-  note: any,
-  skillUid: any,
-  loggedInUserId: any,
-  author: any,
+  note: NoteViewModel,
+  skillUid: string,
+  loggedInUserId: string,
+  author: UserDetailsViewModel,
 };
 
-// TODO: Destructure note or use selectors
 const Note = ({ noteId, evaluationId, skillId, skillUid, author, note, noteActions, loggedInUserId }) => {
-  // TODO: Assumes note can never be an empty string.
-  /* Covers the case where a skill references as a note that does not exist in state
-    this should not occur, but if it does, having the id is useful for debugging */
   if (!note.userId || !note.note || !note.userId) {
     return (
       <Media>
@@ -64,7 +59,8 @@ const Note = ({ noteId, evaluationId, skillId, skillUid, author, note, noteActio
 
 export default connect(
   (state, { noteId }) => {
-    const note = selectors.getNote(state, noteId) as any; // TODO: fix this so it returns a note.
+    const note = selectors.getNote(state, noteId) as any; // TODO: Fix this.
+
     return {
       note,
       author: selectors.getUser(state, note.userId),

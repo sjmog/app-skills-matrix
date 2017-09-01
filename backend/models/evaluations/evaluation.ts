@@ -58,7 +58,7 @@ export type Evaluation = {
   subjectMetadataViewModel: () => EvaluationMetadataViewModel,
   mentorMetadataViewModel: () => EvaluationMetadataViewModel,
   adminMetadataViewModel: () => EvaluationMetadataViewModel,
-  subjectEvaluationViewModel: (notes?: any) => EvaluationViewModel, // TODO: Fix this definition.
+  subjectEvaluationViewModel: () => EvaluationViewModel,
   mentorEvaluationViewModel: () => EvaluationViewModel,
   adminEvaluationViewModel: () => EvaluationViewModel,
   newEvaluationEmail: () => Email,
@@ -67,14 +67,14 @@ export type Evaluation = {
   findSkill: (skillId: number) => Skill | null,
   updateSkill: (skillId: number, status: string) => EvaluationUpdate,
   addSkillNote: (skillId: number, note: string) => EvaluationUpdate,
-  deleteSkillNote: (skillId: number, note: string) => any; // TODO: Fix this definition.
+  deleteSkillNote: (skillId: number, note: string) => EvaluationUpdate;
   isNewEvaluation: () => boolean,
   selfEvaluationComplete: () => EvaluationUpdate,
   selfEvaluationCompleted: () => boolean,
   mentorReviewComplete: () => EvaluationUpdate,
   mentorReviewCompleted: () => boolean,
   mergePreviousEvaluation: (previousEvaluation: Evaluation) => Evaluation,
-  getNoteIds: () => any; // TODO: Fix this definition.
+  getNoteIds: () => string[];
 };
 
 const arrayToKeyedObject = <T extends { id: string | number }>(evaluationId: string, arr: T[]) =>

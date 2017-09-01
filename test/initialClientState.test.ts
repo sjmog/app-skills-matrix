@@ -53,30 +53,11 @@ describe('initial client state', () => {
         .set('Cookie', `${cookieName}=${normalUserOneToken}`)
         .expect(200)
         .then((res) => {
-          const expectedState = {
-            entities: { // TODO: Split this up into separate assertions.
-              users: {
-                entities: {
-                  [normalUserOneId]: {
-                    avatarUrl: 'https://www.tes.com/logo.svg',
-                    email: 'user@magic.com',
-                    name: 'User Magic',
-                    id: normalUserOneId,
-                    templateId: 'eng-nodejs',
-                    username: 'magic',
-                  },
-                },
-              },
-            },
-            user: {
-              evaluations: [],
-              menteeEvaluations: [],
-              mentorDetails: null,
-              template: {
-                id: 'eng-nodejs',
-                name: 'Node JS Dev',
-              },
-              userDetails: {
+          const { entities, user } = getInitialState(res.text);
+
+          expect(entities.users).to.eql({
+            entities: {
+              [normalUserOneId]: {
                 avatarUrl: 'https://www.tes.com/logo.svg',
                 email: 'user@magic.com',
                 name: 'User Magic',
@@ -85,9 +66,25 @@ describe('initial client state', () => {
                 username: 'magic',
               },
             },
-          };
+          });
 
-          expect(getInitialState(res.text)).to.deep.equal(expectedState);
+          expect(user).to.eql({
+            evaluations: [],
+            menteeEvaluations: [],
+            mentorDetails: null,
+            template: {
+              id: 'eng-nodejs',
+              name: 'Node JS Dev',
+            },
+            userDetails: {
+              avatarUrl: 'https://www.tes.com/logo.svg',
+              email: 'user@magic.com',
+              name: 'User Magic',
+              id: normalUserOneId,
+              templateId: 'eng-nodejs',
+              username: 'magic',
+            },
+          });
         }));
 
     it('returns initial state with evaluations from newest to oldest', () => {

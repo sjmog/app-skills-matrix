@@ -81,12 +81,12 @@ export default ({
       .then(getData)
       .catch(handleError);
   },
-  addNote(evaluationId, skillId, note): Promise<any> { // TODO: Note view model
+  addNote(evaluationId, skillId, note): Promise<NoteViewModel> {
     return axios.post(`/skillz/evaluations/${evaluationId}`, { action: 'addNote', skillId, note })
       .then(getData)
       .catch(handleError);
   },
-  deleteNote(evaluationId, skillId, noteId): Promise<any> { // TODO: fix definition.
+  deleteNote(evaluationId, skillId, noteId): Promise<any> {
     return axios.post(`/skillz/evaluations/${evaluationId}`, { action: 'deleteNote', skillId, noteId })
       .then(getData)
       .catch(handleError);

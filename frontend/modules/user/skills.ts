@@ -124,24 +124,24 @@ export const getErringSkills = (state, skillUids) => {
   )(state);
 };
 
-// TODO: Stop using any here if possible
-const notesForSkill:any = (skillUid, state) => R.path(['entities', skillUid, 'notes'], state);
+const notesForSkill = (skillUid: string, state): string[] => R.path(['entities', skillUid, 'notes'], state);
 
-export const getNotesForSkill = (state, skillUid) =>
+export const getNotesForSkill = (state, skillUid): string[] =>
   notesForSkill(skillUid, state) || [];
 
-export const hasNotes = (state, skillUid) =>
+export const hasNotes = (state, skillUid): boolean =>
   R.length(notesForSkill(skillUid, state)) > 0;
 
-const hasStatus = type =>
-    skill => skill.status.current && skill.status.current === type;
+// TODO: Specify the interface of a function that returns a function
+const hasStatus = status =>
+  (skill): boolean => R.path(['status', 'current'], skill) === status;
 
-export const getSkillsWithCurrentStatus = (state, status, skillUids) => {
-  if (!Array.isArray(skillUids) || skillUids.length === 0) {
+// TODO: Can we specify the expected shape of the state?
+export const getSkillsWithCurrentStatus = (state, status: string, skillUids: string[]): string[] => {
+  if (!R.is(Array, skillUids) || skillUids.length === 0) {
     return [];
   }
 
-  const skills = R.pickAll(skillUids, R.path(['entities'], state));
-  const skillsArray = R.values(skills);
-  return R.filter(hasStatus(status), skillsArray);
+  const skills = R.pickBy((val, key) => skillUids.indexOf(key) >= 0, R.path(['entities'], state));
+  return R.keys(skills).length > 0 ? R.keys(R.pickBy(hasStatus(status), skills)) : [];
 };

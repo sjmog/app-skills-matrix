@@ -23,7 +23,6 @@ export const adminRoutes = (
   </Router>
 );
 
-// TODO: May want to make action type a query param.
 export const userRoutes = (
   <Router history={browserHistory}>
     <Route path="/" component={UserApp}>

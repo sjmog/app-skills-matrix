@@ -9,8 +9,8 @@ import './header.scss';
 
 type HeaderComponentProps = {
   username: string,
-  feedbackUrl: string, // TODO: These should not be required.
-  objectivesUrl: string,
+  feedbackUrl?: string,
+  objectivesUrl?: string,
 };
 
 const HeaderComponent = ({ username, feedbackUrl, objectivesUrl }: HeaderComponentProps) => (

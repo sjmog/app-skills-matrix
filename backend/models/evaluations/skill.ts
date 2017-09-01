@@ -17,13 +17,13 @@ export type Skill = {
   id: number,
   currentStatus: () => string | null,
   statusForNextEvaluation: () => string | null,
-  notes: () => any, // TODO: Fix this.
+  notes: () => string[],
   feedbackData: () => UnhydratedEvaluationSkill,
   addAction: (string) => boolean | string,
   removeAction: (string) => boolean | string,
   updateStatus: (string) => UnhydratedEvaluationSkill,
   addNote: (string) => UnhydratedEvaluationSkill,
-  deleteNote: (string) => any, // TODO: Fix this.
+  deleteNote: (string) => UnhydratedEvaluationSkill,
 };
 
 export default ({ id, name, criteria, type, questions, status, notes }: UnhydratedEvaluationSkill): Skill => Object.freeze({
@@ -60,7 +60,7 @@ export default ({ id, name, criteria, type, questions, status, notes }: Unhydrat
       notes,
     };
   },
-  addNote(newNoteId: string) {
+    addNote(newNoteId: string) {
     return {
       id,
       name,
@@ -68,7 +68,7 @@ export default ({ id, name, criteria, type, questions, status, notes }: Unhydrat
       type,
       questions,
       status,
-      notes: Array.isArray(notes) ? [].concat(notes, newNoteId) : [newNoteId],
+      notes: R.is(Array, notes) ? [].concat(notes, newNoteId) : [newNoteId],
     };
   },
   deleteNote(noteId :string) {
@@ -79,7 +79,7 @@ export default ({ id, name, criteria, type, questions, status, notes }: Unhydrat
       type,
       questions,
       status,
-      notes: Array.isArray(notes) ? R.reject(R.equals(noteId), notes) : [],
+      notes: R.is(Array, notes) ? R.reject(R.equals(noteId), notes) : [],
     };
   },
 });

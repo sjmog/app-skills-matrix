@@ -6,7 +6,7 @@ import SkillGroup from './SkillGroup';
 type LevelProps = {
   categories: string[],
   levelName: string,
-  skillGroups: any,
+  skillGroups: any, // TODO: This needs to be SkillGroup[] without conflicting with the component name.
   viewSkillDetails: (skillUid: string) => void,
 };
 

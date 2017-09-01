@@ -1,20 +1,13 @@
-type UnhydratedNote = {
-  note: string,
-  userId: string,
-  skillId: string
-  createdDate: string,
-  deleted: boolean,
-  _id: object,
-};
+import { DatabaseObject } from '../../database';
 
 export type Note = {
   id: string,
   userId: string,
-  viewModel: () => UnhydratedNote,
-  setDeletedFlag: () => any,
+  viewModel: () => NoteViewModel,
+  setDeletedFlag: () => UnhydratedNote,
 };
 
-export default ({ _id, userId, skillId, note, createdDate, deleted }: UnhydratedNote): Note => Object.freeze({
+export default ({ _id, userId, skillId, note, createdDate, deleted }: DatabaseObject & UnhydratedNote): Note => Object.freeze({
   id: _id.toString(),
   userId,
   viewModel() {
@@ -38,8 +31,7 @@ export default ({ _id, userId, skillId, note, createdDate, deleted }: Unhydrated
   },
 });
 
-// TODO:  Can we use TS UnhydratedNote  here?
-export const newNote = (userId: string, skillId: string, note: string) => ({
+export const newNote = (userId: string, skillId: number, note: string) => ({
   skillId,
   userId,
   note,

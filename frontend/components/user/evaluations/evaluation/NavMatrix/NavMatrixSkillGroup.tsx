@@ -1,23 +1,23 @@
 import * as React from 'react';
 import * as R from 'ramda';
 
-import ProgressSkill from './ProgressSkill';
+import NavMatrixSkill from './NavMatrixSkill';
 
-type SkillGroupProps = {
-  skillGroup: any,
+type NavMatrixSkillGroupProps = {
+  skillGroup: SkillGroup,
   category: string,
 };
 
-const SkillGroup = ({ skillGroup, category }: SkillGroupProps) => {
+const NavMatrixSkillGroup = ({ skillGroup, category }: NavMatrixSkillGroupProps) => {
   const skills = R.reverse(skillGroup.skills);
 
   return (
-    <td className="progress__skill-group">
+    <td className="nav_matrix__skill-group">
       <div>
         {
           skills.map(
             skillUid => (
-              <ProgressSkill
+              <NavMatrixSkill
                 key={skillUid}
                 skillUid={skillUid}
                 category={category}
@@ -30,5 +30,5 @@ const SkillGroup = ({ skillGroup, category }: SkillGroupProps) => {
   );
 };
 
-export default SkillGroup;
+export default NavMatrixSkillGroup;
 

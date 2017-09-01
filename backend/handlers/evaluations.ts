@@ -40,7 +40,7 @@ const addActions = (user: User, skill, evaluation, newStatus: string) => {
   return Promise.all(fns);
 };
 
-const authorize = (evalUserId, reqUser, notAuthorizedMsg): PromiseLike<any> => {
+const authorize = (evalUserId, reqUser, notAuthorizedMsg): PromiseLike<void> => {
   if (reqUser.isAdmin() || reqUser.id === evalUserId) {
     return Promise.resolve();
   }
@@ -52,11 +52,12 @@ const authorize = (evalUserId, reqUser, notAuthorizedMsg): PromiseLike<any> => {
         : Promise.reject({ status: 403, data: notAuthorizedMsg })));
 };
 
-const buildEvalViewModel = (evaluation, notes, retrievedUsers, reqUser) => {
+// TODO: Add interface.
+const buildAggregateEvalViewModel = (evaluation, retrievedNotes, retrievedUsers, reqUser) => {
   const augment = viewModel => ({
     ...viewModel,
     users: retrievedUsers.normalizedViewModel(),
-    notes: notes.normalizedViewModel(),
+    notes: retrievedNotes.normalizedViewModel(),
   });
 
   if (reqUser.id === evaluation.user.id) {
@@ -96,7 +97,7 @@ const handlerFunctions = Object.freeze({
               .then(notes.getNotes)
               .then(retrievedNotes =>
                 users.getUsersById(retrievedNotes.getUserIds())
-                  .then(userIds => buildEvalViewModel(evaluation, retrievedNotes, userIds, user)))
+                  .then(userIds => buildAggregateEvalViewModel(evaluation, retrievedNotes, userIds, user)))
               .then(viewModel => res.status(200).json(viewModel));
           })
           .catch(err =>

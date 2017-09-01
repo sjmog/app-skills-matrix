@@ -95,7 +95,7 @@ describe('evaluations', () => {
           expect(body.skills[`${evaluationId}_1`]).to.not.be.undefined;
           expect(body.skillUids).to.be.an('array').that.includes(`${evaluationId}_1`);
           expect(body.view).to.equal('SUBJECT');
-          expect(body.notes).to.eql({});
+          expect(body.notes).to.eql({}); // TODO: Should assert on users here
         }));
 
     it('allows a mentor to view the evaluation of their mentee', () =>
@@ -115,7 +115,7 @@ describe('evaluations', () => {
               expect(body.skillGroups[1]).to.not.be.undefined;
               expect(body.skills[`${evaluationId}_1`]).to.not.be.undefined;
               expect(body.view).to.equal('MENTOR');
-              expect(body.notes).to.eql({});
+              expect(body.notes).to.eql({}); // TODO: Should assert on users here
             })));
 
     it('allows an admin user to view all evaluations', () =>

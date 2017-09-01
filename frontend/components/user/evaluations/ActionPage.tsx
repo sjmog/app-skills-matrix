@@ -1,11 +1,10 @@
 import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Grid, Row, Alert, Col, PageHeader } from 'react-bootstrap';
+import { Grid, Row, Alert, PageHeader } from 'react-bootstrap';
 
 import * as selectors from '../../../modules/user';
 import { actionCreators as evaluationsActionCreators, EVALUATION_FETCH_STATUS, SKILL_STATUS } from '../../../modules/user/evaluations';
-import { actionCreators as skillsActionCreators } from '../../../modules/user/skills';
 
 import ActionsList from './ActionsList';
 import SkillDetailsModal from '../../common/SkillDetailsModal';
@@ -15,22 +14,15 @@ const actionTypeToStatusMapping = {
   objectives: SKILL_STATUS.OBJECTIVE,
 };
 
-// todo fix types
 type ActionPageComponentProps = {
-  status?: string,
-  levels?: string[],
-  categories?: string[],
-  skillGroups: any,
-  view: string,
-  error: any,
+  error?: { message?: string },
   params: {
     evaluationId: string,
     actionType: string,
   },
   fetchStatus: boolean,
   evalActions: typeof evaluationsActionCreators,
-  skillActions: typeof skillsActionCreators,
-  actions: any,
+  actionSkillUids?: string[],
 };
 
 const loadEvaluation = ({ params: { evaluationId }, fetchStatus, evalActions }) => {
@@ -38,7 +30,6 @@ const loadEvaluation = ({ params: { evaluationId }, fetchStatus, evalActions }) 
     evalActions.retrieveEvaluation(evaluationId);
   }
 };
-
 
 class ActionPageComponent extends React.Component<ActionPageComponentProps, any> {
   constructor(props) {
@@ -76,7 +67,7 @@ class ActionPageComponent extends React.Component<ActionPageComponentProps, any>
   }
 
   render() {
-    const { error, actions, params: { evaluationId }, fetchStatus } = this.props;
+    const { error, actionSkillUids, params: { evaluationId }, fetchStatus } = this.props;
 
     if (error) {
       return (
@@ -91,11 +82,12 @@ class ActionPageComponent extends React.Component<ActionPageComponentProps, any>
     if (fetchStatus !== EVALUATION_FETCH_STATUS.LOADED) {
       return false;
     }
+
     return (
       <div>
         <Grid>
           <PageHeader title={this.props.params.actionType} />
-          { actions ? <ActionsList actions={actions} viewSkillDetails={this.viewSkillDetails} /> : false }
+          { actionSkillUids ? <ActionsList actionSkillUids={actionSkillUids} viewSkillDetails={this.viewSkillDetails} /> : false }
         </Grid>
         <SkillDetailsModal
           evaluationId={evaluationId}
@@ -117,12 +109,11 @@ export const ActionPage = connect(
     return ({
       error: selectors.getError(state, evalId),
       fetchStatus: selectors.getEvaluationFetchStatus(state, evalId),
-      actions: selectors.getSkillsWithCurrentStatus(state, actionTypeToStatusMapping[actionType], skillUids),
+      actionSkillUids: selectors.getSkillsWithCurrentStatus(state, actionTypeToStatusMapping[actionType], skillUids),
       view: selectors.getView(state, evalId),
     });
   },
   dispatch => ({
     evalActions: bindActionCreators(evaluationsActionCreators, dispatch),
-    skillActions: bindActionCreators(skillsActionCreators, dispatch),
   }),
 )(ActionPageComponent);

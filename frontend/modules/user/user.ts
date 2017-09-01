@@ -3,6 +3,7 @@ import * as R from 'ramda';
 
 export default (state = {}) => state; /* portion of state never requires updating */
 
+// TODO: Define interfaces
 export const getLoggedInUsername = state =>
   R.path(['userDetails', 'username'], state);
 

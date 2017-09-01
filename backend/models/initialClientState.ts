@@ -64,7 +64,7 @@ export const clientState = (user: User): Promise<ClientState> =>
               [user.id]: user.userDetailsViewModel(),
             },
           },
-        }, // TODO: Add test for this
+        },
         user: {
           userDetails: user ? user.userDetailsViewModel() : null,
           mentorDetails: mentor ? mentor.userDetailsViewModel() : null,

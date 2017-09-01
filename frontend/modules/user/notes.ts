@@ -40,7 +40,7 @@ export const actions = {
 function addNote(evaluationId, skillId, skillUid, note) {
   return dispatch =>
     api.addNote(evaluationId, skillId, note)
-      .then(persistedNote => dispatch(addNoteSuccess(skillUid, persistedNote))) // TODO: Could we display a validation style error instead?
+      .then(persistedNote => dispatch(addNoteSuccess(skillUid, persistedNote)))
       .catch((error) => {
         const message = error.message ? `Unable to add note: ${error.message}` : 'Unable to add note';
         dispatch(noteError(message));
@@ -96,7 +96,7 @@ export default handleActions({
   },
 }, initialState);
 
-export const getNote = (state, noteId) =>
+export const getNote = (state, noteId) => // TODO: Returns NoteViewModel
   R.path(['entities', noteId], state) || {};
 
 // TODO: Write test for this.
