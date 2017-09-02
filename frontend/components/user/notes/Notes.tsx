@@ -7,7 +7,7 @@ import { actionCreators } from '../../../modules/user/notes';
 
 import Note from './Note';
 
-import '../evaluations/evaluation.scss';
+import './notes.scss';
 
 type NotesProps = {
   skillUid: string,
