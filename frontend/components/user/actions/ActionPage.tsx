@@ -2,12 +2,22 @@ import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Grid, Row, Alert, PageHeader } from 'react-bootstrap';
+import * as moment from 'moment';
+import * as R from 'ramda';
 
 import * as selectors from '../../../modules/user';
-import { actionCreators as evaluationsActionCreators, EVALUATION_FETCH_STATUS, SKILL_STATUS } from '../../../modules/user/evaluations';
+import {
+  actionCreators as evaluationsActionCreators,
+  EVALUATION_FETCH_STATUS,
+  SKILL_STATUS,
+  EVALUATION_VIEW,
+} from '../../../modules/user/evaluations';
+const { SUBJECT } = EVALUATION_VIEW;
 
 import ActionsList from './ActionsList';
 import SkillDetailsModal from '../../common/SkillDetailsModal';
+
+const toTitle = str => (R.is(String, str) && str.length > 0 ? R.over(R.lensIndex(0), R.toUpper)(str) : '');
 
 const actionTypeToStatusMapping = {
   feedback: SKILL_STATUS.FEEDBACK,
@@ -23,6 +33,9 @@ type ActionPageComponentProps = {
   fetchStatus: boolean,
   evalActions: typeof evaluationsActionCreators,
   actionSkillUids?: string[],
+  date: Date,
+  view: string,
+  subject: string,
 };
 
 const loadEvaluation = ({ params: { evaluationId }, fetchStatus, evalActions }) => {
@@ -67,7 +80,7 @@ class ActionPageComponent extends React.Component<ActionPageComponentProps, any>
   }
 
   render() {
-    const { error, actionSkillUids, params: { evaluationId }, fetchStatus } = this.props;
+    const { error, actionSkillUids, params: { evaluationId, actionType }, fetchStatus, date, view, subject } = this.props;
 
     if (error) {
       return (
@@ -83,11 +96,23 @@ class ActionPageComponent extends React.Component<ActionPageComponentProps, any>
       return false;
     }
 
+    if (!actionTypeToStatusMapping[actionType]) {
+      return false;
+    }
+
     return (
       <div>
         <Grid>
-          <PageHeader title={this.props.params.actionType} />
-          { actionSkillUids ? <ActionsList actionSkillUids={actionSkillUids} viewSkillDetails={this.viewSkillDetails} /> : false }
+          {
+            view === SUBJECT
+              ? <PageHeader>{toTitle(actionType)} <small>{moment(date).format('ll')}</small></PageHeader>
+              : <PageHeader>{toTitle(actionType)} <small>{subject} - {moment(date).format('ll')}</small></PageHeader>
+          }
+          {
+            actionSkillUids
+              ? <ActionsList actionSkillUids={actionSkillUids} viewSkillDetails={this.viewSkillDetails} />
+              : false
+          }
         </Grid>
         <SkillDetailsModal
           evaluationId={evaluationId}
@@ -111,6 +136,8 @@ export const ActionPage = connect(
       fetchStatus: selectors.getEvaluationFetchStatus(state, evalId),
       actionSkillUids: selectors.getSkillsWithCurrentStatus(state, actionTypeToStatusMapping[actionType], skillUids),
       view: selectors.getView(state, evalId),
+      date: selectors.getEvaluationDate(state, evalId),
+      subject: selectors.getSubjectName(state, evalId),
     });
   },
   dispatch => ({

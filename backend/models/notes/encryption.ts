@@ -3,7 +3,7 @@ import * as crypto from 'crypto';
 const encryptionpassword = process.env.ENCRYPTION_PASSWORD;
 
 export const encrypt = (changes) => {
-  if (!changes.note) { // TODO: Is there a test that can be added here?
+  if (!changes.note) {
     return changes;
   }
 

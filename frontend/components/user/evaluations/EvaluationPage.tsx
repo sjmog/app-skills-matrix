@@ -8,7 +8,7 @@ import {
   actionCreators as evaluationsActionCreators,
   EVALUATION_VIEW,
   EVALUATION_STATUS,
-  EVALUATION_FETCH_STATUS
+  EVALUATION_FETCH_STATUS,
 } from '../../../modules/user/evaluations';
 import { actionCreators as skillsActionCreators } from '../../../modules/user/skills';
 

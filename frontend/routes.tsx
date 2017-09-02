@@ -9,7 +9,7 @@ import { ManageUsersPage } from './components/admin/users/ManageUsersPage';
 import { ManageMatricesPage } from './components/admin/matrices/ManageMatricesPage';
 import { TemplatePage } from './components/admin/template/TemplatePage';
 import { EvaluationPage } from './components/user/evaluations/EvaluationPage';
-import { ActionPage } from './components/user/evaluations/ActionPage';
+import { ActionPage } from './components/user/actions/ActionPage';
 
 export const adminRoutes = (
   <Router history={browserHistory}>

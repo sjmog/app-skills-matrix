@@ -6,6 +6,7 @@ export const encrypt = (changes) => {
   if (!changes.skills) {
     return changes;
   }
+
   const cipher = crypto.createCipher('aes192', encryptionpassword);
   let encryptedSkills = cipher.update(JSON.stringify(changes.skills), 'utf8', 'hex');
   encryptedSkills += cipher.final('hex');

@@ -116,6 +116,7 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
     skills: viewModelSkills,
     skillUids: R.keys(viewModelSkills),
     skillGroups: arrayToKeyedObject(_id.toString(), makeSkillsUnique(_id, skillGroups)),
+    createdDate,
   };
 
   return Object.freeze({

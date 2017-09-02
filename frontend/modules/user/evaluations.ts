@@ -115,6 +115,9 @@ export const getSubjectName = (state, evalId) =>
 export const getEvaluationName = (state, evalId) =>
   R.path(['entities', evalId, 'template', 'name'], state);
 
+export const getEvaluationDate = (state, evalId) =>
+  R.path(['entities', evalId, 'createdDate'], state);
+
 export const getEvaluationFetchStatus = (state, evalId) =>
   R.path(['fetchStatus', evalId], state);
 

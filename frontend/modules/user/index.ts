@@ -72,6 +72,9 @@ export const getSubjectName = ({ entities: { evaluations } }, evalId) =>
 export const getEvaluationName = ({ entities: { evaluations } }, evalId) =>
   fromEvaluations.getEvaluationName(evaluations, evalId);
 
+export const getEvaluationDate = ({ entities: { evaluations } }, evalId) =>
+  fromEvaluations.getEvaluationDate(evaluations, evalId);
+
 export const getEvaluationFetchStatus = ({ entities: { evaluations } }, category) =>
   fromEvaluations.getEvaluationFetchStatus(evaluations, category);
 

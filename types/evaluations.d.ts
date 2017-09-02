@@ -18,6 +18,7 @@ type EvaluationViewModel = {
   skillGroups: { [id: string]: UnhydratedSkillGroup },
   skills: { [id: string]: UnhydratedEvaluationSkill },
   view: string,
+  createdDate: Date,
 };
 
 type UnhydratedEvaluationSkill = {
