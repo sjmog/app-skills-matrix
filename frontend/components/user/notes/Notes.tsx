@@ -46,7 +46,7 @@ class Notes extends React.Component<NotesProps, any>{
         <h4>Notes</h4>
         { error ? <Alert bsStyle="danger"><p>{error}</p></Alert> : false }
         <Form onSubmit={this.handleSubmit}>
-          <FormGroup controlId="formControlsTextarea">
+          <FormGroup controlId="noteTextarea">
             {' '}
             <FormControl componentClass="textarea" value={this.state.value} onChange={this.handleChange} />
           </FormGroup>
