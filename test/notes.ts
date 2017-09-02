@@ -30,6 +30,7 @@ const {
   getNotes,
   insertNote,
   getNoteById,
+  addNoteIdsToSkill,
 } = helpers;
 
 
@@ -44,12 +45,6 @@ let normalUserTwoId;
 
 let evaluationId;
 let noteId;
-
-const addNoteIdsToSkill = (noteIds, skillId, oldEval) => {
-  const skillIndex = R.findIndex(R.propEq('id', skillId), oldEval.skills);
-  const skillNotesLens = R.lensPath(['skills', skillIndex, 'notes']);
-  return R.set(skillNotesLens, noteIds, oldEval);
-};
 
 describe('Notes', () => {
   beforeEach(() =>

@@ -10,6 +10,7 @@ import actionsFixture from './fixtures/actions';
 import { STATUS } from '../backend/models/evaluations/evaluation';
 import auth from '../backend/models/auth';
 import helpers from './helpers';
+import { newNote } from '../backend/models/notes/note';
 
 const { sign, cookieName } = auth;
 
@@ -29,6 +30,7 @@ const {
   skillStatus,
   insertAction,
   insertNote,
+  addNoteIdsToSkill,
 } = helpers;
 
 const { NEW, SELF_EVALUATION_COMPLETE, MENTOR_REVIEW_COMPLETE } = STATUS;
@@ -44,13 +46,6 @@ let normalUserTwoId;
 
 let evaluationId;
 let noteId;
-
-// TODO: move this to helpers.
-const addNoteIdsToSkill = (noteIds, skillId, oldEval) => {
-  const skillIndex = R.findIndex(R.propEq('id', skillId), oldEval.skills);
-  const skillNotesLens = R.lensPath(['skills', skillIndex, 'notes']);
-  return R.set(skillNotesLens, noteIds, oldEval);
-};
 
 describe('evaluations', () => {
   beforeEach(() =>
@@ -141,19 +136,10 @@ describe('evaluations', () => {
     it('retrieves notes and the users that wrote them for an evaluation', () => {
       let noteOneId;
       let noteTwoId;
-
       const skill = 5;
 
-      const createdDate = new Date();
-      const buildNoteForSkill = (skillId, userId, note) => ({ // TODO: may want to replace this with newNote().
-        skillId, userId,
-        note,
-        deleted: false,
-        createdDate,
-      });
-
-      const noteAddedBySubject = buildNoteForSkill(skill, normalUserOneId, 'My evaluation');
-      const noteAddedByAnotherUser = buildNoteForSkill(skill, normalUserTwoId, `Someone else's evaluation`);
+      const noteAddedBySubject = newNote(normalUserOneId, skill, 'My evaluation');
+      const noteAddedByAnotherUser = newNote(normalUserTwoId, skill, `Someone else's evaluation`);
 
       return Promise.all([
         insertNote(noteAddedBySubject),
@@ -179,7 +165,7 @@ describe('evaluations', () => {
           expect(body.notes[noteOneId].userId).to.equal(normalUserOneId);
           expect(body.notes[noteOneId].note).to.equal('My evaluation');
           expect(body.notes[noteOneId].skillId).to.equal(skill);
-          expect(body.notes[noteOneId].createdDate).to.eql(createdDate.toISOString());
+          expect(body.notes[noteOneId]).to.have.property('createdDate');
 
           expect(body.notes[noteTwoId].userId).to.equal(normalUserTwoId);
           expect(body.notes[noteTwoId].note).to.equal(`Someone else's evaluation`);

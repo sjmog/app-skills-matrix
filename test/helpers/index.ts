@@ -14,6 +14,11 @@ const actions: any = database.collection('actions');
 const notes: any = database.collection('notes');
 
 const prepopulateUsers = () => users.remove({}).then(() => users.insertMany(usersData));
+const addNoteIdsToSkill = (noteIds, skillId, oldEval) => {
+  const skillIndex = R.findIndex(R.propEq('id', skillId), oldEval.skills);
+  const skillNotesLens = R.lensPath(['skills', skillIndex, 'notes']);
+  return R.set(skillNotesLens, noteIds, oldEval);
+};
 
 export default {
   prepopulateUsers,
@@ -35,4 +40,5 @@ export default {
   getNotes: (userId, skillId) => notes.find({ userId, skillId }).then(e => e.toArray()).then(R.map(decryptNote)),
   getNoteById: id => notes.findOne({ _id: new ObjectID(id) }),
   insertNote: note => notes.insertOne(encryptNote(note)),
+  addNoteIdsToSkill,
 };
