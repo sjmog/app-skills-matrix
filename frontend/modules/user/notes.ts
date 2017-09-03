@@ -1,6 +1,7 @@
 import { handleActions, createAction } from 'redux-actions';
 import * as R from 'ramda';
 import * as keymirror from 'keymirror';
+import * as moment from 'moment';
 
 import api from '../../api';
 import { actions as evaluationsActions } from './evaluations';
@@ -96,10 +97,29 @@ export default handleActions({
   },
 }, initialState);
 
-export const getNote = (state, noteId) => // TODO: Returns NoteViewModel
-  R.path(['entities', noteId], state) || {};
+export const getNote = (state, noteId) => // TODO: Fix types - returns NoteViewModel
+  R.path(['entities', noteId], state) || null;
 
-// TODO: Write test for this.
+const sortNewestToOldest = notes =>
+  notes.sort((a, b) => {
+    const valid = value => value && R.has('createdDate', value) && moment(value).isValid();
+
+    if (valid(a) && valid(b)) {
+      const dateA = moment(a.createdDate, moment.ISO_8601);
+      const dateB = moment(b.createdDate, moment.ISO_8601);
+      return dateA.isBefore(dateB);
+    }
+  });
+
+export const getSortedNotes = (state, noteIds) => {
+  if (R.is(Array, noteIds) && noteIds.length > 0) {
+    const notes = R.map(id => getNote(state, id), noteIds) as any;
+    return notes ? sortNewestToOldest(notes) : [];
+  }
+
+  return [];
+};
+
 export const getNotesError = (state) => {
   const error = R.prop('error', state);
   return R.isEmpty(error) ? false : error;

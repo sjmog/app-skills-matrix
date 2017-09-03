@@ -101,8 +101,8 @@ export const getSkillUids = ({ entities: { evaluations } }, evalId) =>
 
 /* NOTES SELECTORS */
 
-export const getNote = ({ entities: { notes } }, noteId) =>
-  fromNotes.getNote(notes, noteId);
+export const getSortedNotes = ({ entities: { notes } }, noteIds) =>
+  fromNotes.getSortedNotes(notes, noteIds);
 
 export const getNotesError = ({ entities: { notes } }) =>
   fromNotes.getNotesError(notes);

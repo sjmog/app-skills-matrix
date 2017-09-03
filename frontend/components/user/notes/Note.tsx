@@ -8,8 +8,6 @@ import { actionCreators } from '../../../modules/user/notes';
 
 type NoteProps = {
   evaluationId: string,
-  skillId: number,
-  noteId: string,
   note: NoteViewModel,
   noteActions: typeof actionCreators,
   skillUid: string,
@@ -17,15 +15,15 @@ type NoteProps = {
   author: UserDetailsViewModel,
 };
 
-const Note = ({ noteId, evaluationId, skillId, skillUid, author, note, noteActions, loggedInUserId }: NoteProps) => {
-  if (!note.userId || !note.note || !note.userId) {
+const Note = ({ evaluationId, skillUid, author, note, noteActions, loggedInUserId }: NoteProps) => {
+  if (!note) {
     return (
       <Media>
         <Media.Left>
           <Glyphicon className="note__glyph" glyph="exclamation-sign"/>
         </Media.Left>
         <Media.Body>
-          <p><strong>{`Unable to display note (ID: ${noteId})`}</strong></p>
+          <p><strong>{'Unable to display note'}</strong></p>
         </Media.Body>
       </Media>
     );
@@ -51,7 +49,9 @@ const Note = ({ noteId, evaluationId, skillId, skillUid, author, note, noteActio
       <Media.Right>
         {
           note.userId === loggedInUserId
-            ? <button className="remove" onClick={() => noteActions.deleteNote(evaluationId, skillId, skillUid, note.id)}>
+            ? <button
+                className="remove"
+                onClick={() => noteActions.deleteNote(evaluationId, note.skillId, skillUid, note.id)}>
                 <Glyphicon glyph="remove"/>
               </button>
             : false
@@ -62,16 +62,14 @@ const Note = ({ noteId, evaluationId, skillId, skillUid, author, note, noteActio
 };
 
 export default connect(
-  (state, { noteId }) => {
-    const note = selectors.getNote(state, noteId) as any; // TODO: Fix types.
+  (state, { note }) => {
+    const userId = note && note.userId;
 
     return {
-      note,
-      author: selectors.getUser(state, note.userId),
+      author: selectors.getUser(state, userId),
       loggedInUserId: selectors.getLoggedInUserId(state),
     };
   },
   dispatch => ({
     noteActions: bindActionCreators(actionCreators, dispatch),
-  }),
-)(Note);
+  }))(Note);

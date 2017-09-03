@@ -14,7 +14,7 @@ type NotesProps = {
   skillId: string,
   noteActions: typeof actionCreators,
   error?: string,
-  noteIds: string[],
+  sortedNotes: NoteViewModel[],
   evaluationId: string,
 };
 
@@ -39,7 +39,7 @@ class Notes extends React.Component<NotesProps, any>{
   }
 
   render() {
-    const { evaluationId, skillId, skillUid, noteIds, error } = this.props;
+    const { evaluationId, skillUid, sortedNotes, error } = this.props;
 
     return (
       <div className="notes">
@@ -60,14 +60,14 @@ class Notes extends React.Component<NotesProps, any>{
           </Button>
         </Form>
         {
-          noteIds
-          ? noteIds.map(noteId =>
+          sortedNotes && sortedNotes.length
+          ? sortedNotes.map(note =>
               <Note
-                key={noteId}
+                key={note && note.id}
+                note={note}
                 evaluationId={evaluationId}
-                skillId={skillId}
                 skillUid={skillUid}
-                noteId={noteId} />)
+              />)
           : false
       }
       </div>
@@ -76,10 +76,14 @@ class Notes extends React.Component<NotesProps, any>{
 }
 
 export default connect(
-  (state, { skillUid }) => ({
-    noteIds: selectors.getNotesForSkill(state, skillUid),
-    error: selectors.getNotesError(state),
-  }),
+  (state, { skillUid }) => {
+    const noteIds = selectors.getNotesForSkill(state, skillUid);
+
+    return {
+      sortedNotes: selectors.getSortedNotes(state, noteIds),
+      error: selectors.getNotesError(state),
+    };
+  },
   dispatch => ({
     noteActions: bindActionCreators(actionCreators, dispatch),
   }),
