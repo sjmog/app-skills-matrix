@@ -96,9 +96,9 @@ export const initialState = {
 export default handleActions({
   [actions.setAsCurrentEvaluation]: (state, action) => {
     const { evaluation, skills } = action.payload;
-    const skillGroups = R.path(['skillGroups'], evaluation);
-    const levels = R.path(['template', 'levels'], evaluation);
-    const categories = R.path(['template', 'categories'], evaluation);
+    const skillGroups:SkillGroup[] = R.path(['skillGroups'], evaluation);
+    const levels:string[] = R.path(['template', 'levels'], evaluation);
+    const categories:string[] = R.path(['template', 'categories'], evaluation);
 
     const paginatedView = constructPaginatedView(skills, skillGroups, levels, categories);
     const currentSkill = getFirstUnevaluatedSkill(paginatedView, skills);

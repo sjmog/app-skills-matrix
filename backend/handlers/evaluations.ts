@@ -40,7 +40,7 @@ const addActions = (user: User, skill, evaluation, newStatus: string) => {
   return Promise.all(fns);
 };
 
-// TODO: Fix types - why does PromiseLike work?
+// TODO: Fix types - why does PromiseLike work? Can we define what the rejection obj looks like?
 const authorize = (evalUserId, reqUser, notAuthorizedMsg): PromiseLike<void> => {
   if (reqUser.isAdmin() || reqUser.id === evalUserId) {
     return Promise.resolve();
@@ -53,26 +53,25 @@ const authorize = (evalUserId, reqUser, notAuthorizedMsg): PromiseLike<void> => 
         : Promise.reject({ status: 403, data: notAuthorizedMsg })));
 };
 
-// TODO: Fix types.
-const buildAggregateEvalViewModel = (evaluation, retrievedNotes, retrievedUsers, reqUser) => {
-  const augment = viewModel => ({
+const hydrateEvalViewModel = (evaluation, retrievedNotes, retrievedUsers, reqUser): PromiseLike<HydratedEvaluationViewModel> => {
+  const hydrate = viewModel => ({
     ...viewModel,
     users: retrievedUsers.normalizedViewModel(),
     notes: retrievedNotes.normalizedViewModel(),
   });
 
   if (reqUser.id === evaluation.user.id) {
-    return augment(evaluation.subjectEvaluationViewModel());
+    return Promise.resolve(hydrate(evaluation.subjectEvaluationViewModel()));
   }
 
   return users.getUserById(evaluation.user.id)
     .then(({ mentorId }) => {
       if (reqUser.id === mentorId) {
-        return augment(evaluation.mentorEvaluationViewModel());
+        return hydrate(evaluation.mentorEvaluationViewModel());
       }
 
       if (reqUser.isAdmin()) {
-        return augment(evaluation.adminEvaluationViewModel());
+        return hydrate(evaluation.adminEvaluationViewModel());
       }
     });
 };
@@ -98,7 +97,7 @@ const handlerFunctions = Object.freeze({
               .then(notes.getNotes)
               .then(retrievedNotes =>
                 users.getUsersById(retrievedNotes.getUserIds())
-                  .then(userIds => buildAggregateEvalViewModel(evaluation, retrievedNotes, userIds, user)))
+                  .then(userIds => hydrateEvalViewModel(evaluation, retrievedNotes, userIds, user)))
               .then(viewModel => res.status(200).json(viewModel));
           })
           .catch(err =>
@@ -288,7 +287,8 @@ const handlerFunctions = Object.freeze({
                 evaluations.updateEvaluation(evaluation.addSkillNote(skillId, note.id))
                   .then(() => res.status(200).json(note.viewModel())));
           })
-          .catch(next);
+          .catch(err =>
+            (err.status && err.data) ? res.status(err.status).json(err.data) : next(err));
       },
     },
     deleteNote: {

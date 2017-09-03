@@ -81,20 +81,20 @@ export default handleActions({
   },
   [noteActions.addNoteSuccess]: (state, action) => {
     const { skillUid } = action.payload;
-    const skill = R.path(['entities', skillUid], state);
+    const skill: UnhydratedEvaluationSkill = R.path(['entities', skillUid], state);
 
     if (!skill) return state;
 
     const noteId = R.path(['payload', 'note', 'id'], action) ;
     const notes = noteId
-      ? R.concat([noteId], R.path(['entities', skillUid, 'notes'], state) || [])
+      ? R.concat([noteId], skill.notes || [])
       : R.path(['entities', skillUid, 'notes'], state);
 
     return R.set(getSkillNoteLens(skillUid), notes, state);
   },
   [noteActions.deleteNoteSuccess]: (state, action) => {
     const { skillUid, noteId } = action.payload;
-    const skill:UnhydratedEvaluationSkill = R.path(['entities', skillUid], state);
+    const skill: UnhydratedEvaluationSkill = R.path(['entities', skillUid], state);
 
     if (!skill || !noteId) return state;
 
@@ -103,16 +103,18 @@ export default handleActions({
   },
 }, initialState);
 
-export const getSkill = (state, skillUid) =>
+export const getSkill = (state, skillUid): UnhydratedEvaluationSkill =>
   R.path(['entities', skillUid], state);
 
+// TODO: Fix type
 export const getSkillError = (state, skillUid) =>
   R.path(['errors', skillUid], state);
 
-export const getSkillStatus = (state, skillUid) =>
+export const getSkillStatus = (state, skillUid): string =>
   R.path(['entities', skillUid, 'status'], state);
 
-export const getErringSkills = (state, skillUids) => {
+// TODO: Fix type - UnhydratedEvaluationSkill[]
+export const getErringSkills = (state, skillUids: string[]) => {
   const skillOfInterest = skillUid => R.contains(skillUid, skillUids);
   const name = skillUid => R.prop('name', getSkill(state, skillUid));
 

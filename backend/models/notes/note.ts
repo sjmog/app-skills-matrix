@@ -8,7 +8,7 @@ export type Note = {
 };
 
 export default ({ _id, userId, skillId, note, createdDate, deleted }: DatabaseObject & UnhydratedNote): Note => Object.freeze({
-  id: _id.toString(),
+  id: String(_id),
   userId,
   viewModel() {
     return ({
@@ -31,7 +31,7 @@ export default ({ _id, userId, skillId, note, createdDate, deleted }: DatabaseOb
   },
 });
 
-export const newNote = (userId: string, skillId: number, note: string) => ({
+export const newNote = (userId: string, skillId: number, note: string): UnhydratedNote => ({
   skillId,
   userId,
   note,

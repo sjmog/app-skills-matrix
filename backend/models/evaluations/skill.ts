@@ -35,7 +35,7 @@ export default ({ id, name, criteria, type, questions, status, notes }: Unhydrat
     return status.current === SKILL_STATUS.ATTAINED ? SKILL_STATUS.ATTAINED : null;
   },
   notes() {
-    return Array.isArray(notes) ? notes : [];
+    return R.is(Array, notes) ? notes : [];
   },
   feedbackData() {
     return ({ id, name, criteria, type, questions, status });

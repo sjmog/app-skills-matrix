@@ -38,7 +38,7 @@ export const actions = {
   noteError,
 };
 
-function addNote(evaluationId, skillId, skillUid, note) {
+function addNote(evaluationId: string, skillId: number, skillUid: string, note: string) {
   return dispatch =>
     api.addNote(evaluationId, skillId, note)
       .then(persistedNote => dispatch(addNoteSuccess(skillUid, persistedNote)))
@@ -52,7 +52,7 @@ function addNote(evaluationId, skillId, skillUid, note) {
       });
 }
 
-function deleteNote(evaluationId, skillId, skillUid, noteId) {
+function deleteNote(evaluationId:string, skillId: number, skillUid: string, noteId: string) {
   return dispatch =>
     api.deleteNote(evaluationId, skillId, noteId)
       .then(() => dispatch(deleteNoteSuccess(skillUid, noteId)))
@@ -97,7 +97,7 @@ export default handleActions({
   },
 }, initialState);
 
-export const getNote = (state, noteId) => // TODO: Fix types - returns NoteViewModel
+export const getNote = (state, noteId: string): NoteViewModel =>
   R.path(['entities', noteId], state) || null;
 
 const sortNewestToOldest = notes =>
@@ -111,7 +111,7 @@ const sortNewestToOldest = notes =>
     }
   });
 
-export const getSortedNotes = (state, noteIds) => {
+export const getSortedNotes = (state, noteIds: string[]): NoteViewModel[] => {
   if (R.is(Array, noteIds) && noteIds.length > 0) {
     const notes = R.map(id => getNote(state, id), noteIds) as any;
     return notes ? sortNewestToOldest(notes) : [];
@@ -120,7 +120,7 @@ export const getSortedNotes = (state, noteIds) => {
   return [];
 };
 
-export const getNotesError = (state) => {
-  const error = R.prop('error', state);
-  return R.isEmpty(error) ? false : error;
+export const getNotesError = (state): string => {
+  const error:string = R.prop('error', state);
+  return R.isEmpty(error) ? '' : error;
 };

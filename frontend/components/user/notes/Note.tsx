@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as moment from 'moment';
 import { Media, Glyphicon } from 'react-bootstrap';
+
 import * as selectors from '../../../modules/user';
 import { actionCreators } from '../../../modules/user/notes';
 

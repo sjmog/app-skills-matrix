@@ -1,7 +1,7 @@
 import user from './user';
 
 export type Users = {
-  normalizedViewModel: () => any, // TODO: Object where the value of each key is a user view model
+  normalizedViewModel: () => { [id: string]: UserDetailsViewModel },
 };
 
 const normalize = arr =>

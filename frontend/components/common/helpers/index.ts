@@ -1,9 +1,7 @@
 import * as R from 'ramda';
 import { SKILL_STATUS } from '../../../modules/user/evaluations';
 
-const skillColour = (level: string, category: string, skillGroups: NormalizedSkillGroups) =>
-  R.find((group: UnhydratedSkillGroup) => (group.level === level && group.category === category), R.values(skillGroups));
-const skillColour = (currentStatus, previousStatus, prefix) => {
+const skillColour = (currentStatus: string, previousStatus: string, prefix: string): string => {
   if (currentStatus === SKILL_STATUS.ATTAINED && previousStatus !== SKILL_STATUS.ATTAINED) {
     return `${prefix}--newly-attained`;
   } else if (currentStatus === SKILL_STATUS.ATTAINED) {

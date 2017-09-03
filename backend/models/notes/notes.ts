@@ -3,7 +3,7 @@ import * as R from 'ramda';
 
 export type Notes = {
   getUserIds: () => string[],
-  normalizedViewModel: () => any, // TODO: Object where the value of each key is a note view model
+  normalizedViewModel: () => { [id: string]: NoteViewModel },
 };
 
 const normalize = arr =>

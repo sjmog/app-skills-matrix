@@ -148,26 +148,6 @@ describe('Skills reducer', () => {
       expect(reducer(state, action).entities).to.eql({ SKILL_ID: { a: 'A', notes: ['note_1'] } });
     });
 
-    it('adds new note to the front of an existing list of notes', () => {
-      const state = {
-        entities: {
-          SKILL_ID: {
-            notes: ['note_1'],
-          },
-        },
-      };
-
-      const action = {
-        type: noteActionTypes.ADD_NOTE_SUCCESS,
-        payload: {
-          skillUid: 'SKILL_ID',
-          note: { id: 'note_2' },
-        },
-      };
-
-      expect(reducer(state, action).entities).to.eql({ SKILL_ID: { notes: ['note_2', 'note_1'] } });
-    });
-
     it('does not add a note if there is no associated skill entity', () => {
       const state = {
         entities: {
@@ -297,7 +277,7 @@ describe('Skills reducer', () => {
       expect(reducer(state, action).entities).to.eql({ SKILL_ID: { notes: ['note_1'] } });
     });
 
-    it('leaves existing notes alone no id is provided', () => {
+    it('leaves existing notes alone no note id is provided', () => {
       const state = {
         entities: {
           SKILL_ID: {

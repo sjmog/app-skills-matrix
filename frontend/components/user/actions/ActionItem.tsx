@@ -22,7 +22,7 @@ class ActionItem extends React.Component<ActionItemProps> {
             : false
         }
         <CopyToClipboard text={name}>
-          <button className={'btn btn-default btn-copy'}/>
+          <button className="btn btn-default btn-copy" />
         </CopyToClipboard>
       </ListGroupItem>
     );

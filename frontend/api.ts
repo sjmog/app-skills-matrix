@@ -59,7 +59,7 @@ export default ({
       .then(getData)
       .catch(handleError);
   },
-  retrieveEvaluation(evaluationId): Promise<any> { // TODO: Fix types - this will now include users & notes
+  retrieveEvaluation(evaluationId): Promise<HydratedEvaluationViewModel> {
     return axios.get(`/skillz/evaluations/${evaluationId}`)
       .then(getData)
       .catch(handleError);

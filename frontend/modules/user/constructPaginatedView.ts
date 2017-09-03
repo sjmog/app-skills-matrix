@@ -36,8 +36,8 @@ const orderCategories = categories =>
 
 const category = skillGroup => skillGroup.category;
 
-// TODO: This should be paginatedEvaluationSkill[]
-export default (skills, skillGroups, levels, categories) =>
+// TODO: Fix types - should be PaginatedEvaluationSkill[]
+export default (skills: UnhydratedEvaluationSkill[], skillGroups: SkillGroup[], levels: string[], categories: string[]) =>
   R.compose(
     R.flatten,
     R.map(hydrateSkillsWithStaticData(skills)),

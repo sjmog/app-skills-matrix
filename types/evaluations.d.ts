@@ -21,6 +21,11 @@ type EvaluationViewModel = {
   createdDate: Date,
 };
 
+type HydratedEvaluationViewModel = EvaluationViewModel & {
+  notes: { [id: string]: NoteViewModel },
+  users: { [id: string]: UserDetailsViewModel },
+};
+
 type UnhydratedEvaluationSkill = {
   id: number,
   name: string,

@@ -2,6 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Form, FormGroup, FormControl, Button, Alert } from 'react-bootstrap';
+
 import * as selectors from '../../../modules/user';
 import { actionCreators } from '../../../modules/user/notes';
 
@@ -11,7 +12,7 @@ import './notes.scss';
 
 type NotesProps = {
   skillUid: string,
-  skillId: string,
+  skillId: number,
   noteActions: typeof actionCreators,
   error?: string,
   sortedNotes: NoteViewModel[],

@@ -1,12 +1,12 @@
 import * as React from 'react';
 
 import { getSkillGroup } from '../../common/helpers/index';
-import SkillGroup from './SkillGroup';
+import SkillGroupComponent from './SkillGroup';
 
 type LevelProps = {
   categories: string[],
   levelName: string,
-  skillGroups: any, // TODO: This needs to be SkillGroup[] without conflicting with the component name.
+  skillGroups: SkillGroup[],
   viewSkillDetails: (skillUid: string) => void,
 };
 
@@ -17,7 +17,7 @@ const Level = ({ categories, levelName, skillGroups, viewSkillDetails }: LevelPr
       {
         categories.map(
           categoryName => (
-            <SkillGroup
+            <SkillGroupComponent
               key={categoryName}
               skillGroup={getSkillGroup(levelName, categoryName, skillGroups)}
               viewSkillDetails={viewSkillDetails}

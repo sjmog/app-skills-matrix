@@ -8,17 +8,16 @@ import SkillBody from './SkillBody';
 import Notes from '../../notes/Notes';
 import '../evaluation.scss';
 
-// todo: fix types
 type SkillProps = {
   evaluationId: string,
   level: string,
-  skill: any, // TODO: This is UnhydratedEvaluationSkill & skillUid
+  skill: PaginatedEvaluationSkill,
   skillStatus: {
     current: string,
     previous: string,
   },
   isLastSkill: boolean,
-  updateSkillStatus: (skillId: number, status: string, skillUid: string) => Promise<void>,
+  updateSkillStatus: (skillId: number, status: string, skillUid: string) => void,
   nextUnevaluatedSkill: () => void,
 };
 

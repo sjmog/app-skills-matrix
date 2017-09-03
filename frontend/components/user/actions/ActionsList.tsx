@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { ListGroup } from 'react-bootstrap';
 import ActionItem from './ActionItem';
-import '../../common/actionList.scss';
+
+import './actionList.scss';
 
 type ActionsListProps = {
   actionSkillUids: string[],
