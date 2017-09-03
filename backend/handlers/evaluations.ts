@@ -40,6 +40,7 @@ const addActions = (user: User, skill, evaluation, newStatus: string) => {
   return Promise.all(fns);
 };
 
+// TODO: Fix types - why does PromiseLike work?
 const authorize = (evalUserId, reqUser, notAuthorizedMsg): PromiseLike<void> => {
   if (reqUser.isAdmin() || reqUser.id === evalUserId) {
     return Promise.resolve();
@@ -52,7 +53,7 @@ const authorize = (evalUserId, reqUser, notAuthorizedMsg): PromiseLike<void> => 
         : Promise.reject({ status: 403, data: notAuthorizedMsg })));
 };
 
-// TODO: Add interface.
+// TODO: Fix types.
 const buildAggregateEvalViewModel = (evaluation, retrievedNotes, retrievedUsers, reqUser) => {
   const augment = viewModel => ({
     ...viewModel,

@@ -36,6 +36,7 @@ const orderCategories = categories =>
 
 const category = skillGroup => skillGroup.category;
 
+// TODO: This should be paginatedEvaluationSkill[]
 export default (skills, skillGroups, levels, categories) =>
   R.compose(
     R.flatten,

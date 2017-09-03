@@ -11,36 +11,28 @@ import EvaluationHeader from './EvaluationHeader';
 import NavMatrix from './NavMatrix/NavMatrix';
 import Skill from './Skill';
 
-// TODO: fix types
-type Skill = {
-  skillUid: number,
-  skillGroupId: number,
-  level: string,
-  category: string,
-};
-
 type EvaluationProps = {
   evaluationId: string,
   view: string,
   levels: string[],
   categories: string[],
-  skillGroups?: any,
+  skillGroups: SkillGroup[],
   status: string,
   updateSkillStatus: (skillId: number) => Promise<void>,
   initialisedEvaluation?: string,
-  currentSkill: Skill,
-  currentSkillUid?: number,
+  currentSkill: PaginatedEvaluationSkill,
+  currentSkillUid?: string,
   currentSkillStatus: {
     current: string,
     previous: string,
   },
   firstCategory: string,
   lastCategory: string,
-  firstSkill: Skill,
-  lastSkill: Skill,
+  firstSkill: PaginatedEvaluationSkill,
+  lastSkill: PaginatedEvaluationSkill,
   erringSkills: string[],
-  uiActions: any,
-  evalActions: any,
+  uiActions: typeof uiActionCreators,
+  evalActions: typeof evaluationActionCreators,
 };
 
 const skillErrors = erringSkills => (
@@ -70,8 +62,8 @@ class Evaluation extends React.Component<EvaluationProps, any> {
   }
 
   componentWillUnmount() {
-    const { evaluationId, uiActions } = this.props;
-    uiActions.terminateEvaluation(evaluationId);
+    const { uiActions } = this.props;
+    uiActions.terminateEvaluation();
   }
 
   nextCategory() {

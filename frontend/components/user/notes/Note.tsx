@@ -7,13 +7,17 @@ import * as selectors from '../../../modules/user';
 import { actionCreators } from '../../../modules/user/notes';
 
 type NoteProps = {
+  evaluationId: string,
+  skillId: number,
+  noteId: string,
   note: NoteViewModel,
+  noteActions: typeof actionCreators,
   skillUid: string,
   loggedInUserId: string,
   author: UserDetailsViewModel,
 };
 
-const Note = ({ noteId, evaluationId, skillId, skillUid, author, note, noteActions, loggedInUserId }) => {
+const Note = ({ noteId, evaluationId, skillId, skillUid, author, note, noteActions, loggedInUserId }: NoteProps) => {
   if (!note.userId || !note.note || !note.userId) {
     return (
       <Media>
@@ -38,7 +42,8 @@ const Note = ({ noteId, evaluationId, skillId, skillUid, author, note, noteActio
       </Media.Left>
       <Media.Body>
         <p>
-          <strong>{`${author.name || author.username || 'Unknown user'}`}</strong>{' '}<i>{moment(note.date).format('ll')}</i>
+          <strong>{`${author.name || author.username || 'Unknown user'}`}</strong>{' '}
+          <i>{moment(note.createdDate).format('ll')}</i>
           <br/>
           {note.note}
         </p>
@@ -46,10 +51,9 @@ const Note = ({ noteId, evaluationId, skillId, skillUid, author, note, noteActio
       <Media.Right>
         {
           note.userId === loggedInUserId
-            ?
-            <button className="remove" onClick={() => noteActions.deleteNote(evaluationId, skillId, skillUid, note.id)}>
-              <Glyphicon glyph="remove"/>
-            </button>
+            ? <button className="remove" onClick={() => noteActions.deleteNote(evaluationId, skillId, skillUid, note.id)}>
+                <Glyphicon glyph="remove"/>
+              </button>
             : false
         }
       </Media.Right>
@@ -59,7 +63,7 @@ const Note = ({ noteId, evaluationId, skillId, skillUid, author, note, noteActio
 
 export default connect(
   (state, { noteId }) => {
-    const note = selectors.getNote(state, noteId) as any; // TODO: Fix this.
+    const note = selectors.getNote(state, noteId) as any; // TODO: Fix types.
 
     return {
       note,

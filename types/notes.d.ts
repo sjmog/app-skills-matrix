@@ -7,6 +7,7 @@ type UnhydratedNote = {
 };
 
 type NoteViewModel = {
+  id: string,
   note: string,
   userId: string,
   skillId: string

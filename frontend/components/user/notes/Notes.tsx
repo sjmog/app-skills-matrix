@@ -12,7 +12,7 @@ import './notes.scss';
 type NotesProps = {
   skillUid: string,
   skillId: string,
-  noteActions: any, // TODO: something like "typeof evaluationsActionCreators"
+  noteActions: typeof actionCreators,
   error?: string,
   noteIds: string[],
   evaluationId: string,
@@ -48,7 +48,11 @@ class Notes extends React.Component<NotesProps, any>{
         <Form onSubmit={this.handleSubmit}>
           <FormGroup controlId="noteTextarea">
             {' '}
-            <FormControl componentClass="textarea" value={this.state.value} onChange={this.handleChange} />
+            <FormControl
+              componentClass="textarea"
+              value={this.state.value}
+              onChange={this.handleChange}
+            />
           </FormGroup>
           {' '}
           <Button disabled={this.state.value.length === 0} type="submit">
