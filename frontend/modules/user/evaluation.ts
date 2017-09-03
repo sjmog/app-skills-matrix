@@ -96,7 +96,7 @@ export const initialState = {
 export default handleActions({
   [actions.setAsCurrentEvaluation]: (state, action) => {
     const { evaluation, skills } = action.payload;
-    const skillGroups:SkillGroup[] = R.path(['skillGroups'], evaluation);
+    const skillGroups:UnhydratedSkillGroup[] = R.path(['skillGroups'], evaluation);
     const levels:string[] = R.path(['template', 'levels'], evaluation);
     const categories:string[] = R.path(['template', 'categories'], evaluation);
 

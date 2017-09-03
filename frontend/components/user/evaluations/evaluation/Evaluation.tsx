@@ -16,7 +16,7 @@ type EvaluationProps = {
   view: string,
   levels: string[],
   categories: string[],
-  skillGroups: SkillGroup[],
+  skillGroups: NormalizedSkillGroups,
   status: string,
   updateSkillStatus: (skillId: number) => Promise<void>,
   initialisedEvaluation?: string,

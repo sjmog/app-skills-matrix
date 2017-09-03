@@ -6,7 +6,7 @@ import NavMatrixSkillGroup from './NavMatrixSkillGroup';
 type NavMatrixLevelProps = {
   categories: string[],
   levelName: string,
-  skillGroups: SkillGroup[],
+  skillGroups: NormalizedSkillGroups,
 };
 
 const NavMatrixLevel = ({ categories, levelName, skillGroups }: NavMatrixLevelProps) =>

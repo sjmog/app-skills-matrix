@@ -25,7 +25,7 @@ type EvaluationPageComponentProps = {
   status?: string,
   levels?: string[],
   categories?: string[],
-  skillGroups: SkillGroup[],
+  skillGroups: UnhydratedSkillGroup[],
   view: string,
   error?: { message?: string },
   params: {

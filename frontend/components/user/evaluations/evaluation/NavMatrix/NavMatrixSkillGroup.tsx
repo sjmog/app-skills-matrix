@@ -4,7 +4,7 @@ import * as R from 'ramda';
 import NavMatrixSkill from './NavMatrixSkill';
 
 type NavMatrixSkillGroupProps = {
-  skillGroup: SkillGroup,
+  skillGroup: UnhydratedSkillGroup,
   category: string,
 };
 

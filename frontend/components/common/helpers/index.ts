@@ -15,9 +15,9 @@ const skillColour = (currentStatus: string, previousStatus: string, prefix: stri
   return `${prefix}--not-attained`;
 };
 
-const getSkillGroup = (level: string, category: string, skillGroups: SkillGroup[]) =>
+const getSkillGroup = (level: string, category: string, skillGroups: NormalizedSkillGroups) =>
   R.find(
-    (skillGroup: SkillGroup) => (skillGroup.level === level && skillGroup.category === category),
+    (skillGroup: UnhydratedSkillGroup) => (skillGroup.level === level && skillGroup.category === category),
     R.values(skillGroups),
   );
 

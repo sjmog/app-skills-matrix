@@ -9,7 +9,7 @@ import './nav-matrix.scss';
 type NavMatrixProps = {
   categories: string[],
   levels: string[],
-  skillGroups: SkillGroup[],
+  skillGroups: NormalizedSkillGroups,
 };
 
 const NavMatrix = ({ categories, levels, skillGroups }: NavMatrixProps) => (

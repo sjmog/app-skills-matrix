@@ -6,7 +6,7 @@ import database from '../../database';
 import note, { Note, newNote } from './note';
 import notes, { Notes } from './notes';
 
-const collection = database.collection('notes');
+const collection: any = database.collection('notes');
 
 export default {
   addNote(user, skillId, noteText): PromiseLike<Note> {

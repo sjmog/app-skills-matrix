@@ -16,6 +16,7 @@ export const SUBJECT_CAN_ONLY_UPDATE_NEW_EVALUATION = () => ({ message: 'You can
 export const MENTOR_REVIEW_COMPLETE = () => ({ message: 'This evaluation has been reviewed and is now complete.' });
 export const MENTOR_CAN_ONLY_UPDATE_AFTER_SELF_EVALUATION = () => ({ message: 'You can\'t update this evaluation until your mentee has completed their self-evaluation.' });
 export const ONLY_USER_AND_MENTOR_CAN_SEE_ACTIONS = () => ({ message: 'You can\'t see actions for another user unless you are their mentor.' });
+export const INVALID_LEVEL_OR_CATEGORY = (level, category, templateId) => ({ message: `Level '${level}' or Category '${category}' not found in tempate '${templateId}'` });
 export const USER_NOT_ADMIN = () => ({ message: 'You must be an admin user to make this request' });
 export const MUST_BE_NOTE_AUTHOR = () => ({ message: 'Only the author of a note can delete it' });
 export const NOTE_NOT_FOUND = () => ({ message: 'Note not found' });
