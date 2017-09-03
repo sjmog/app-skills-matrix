@@ -60,9 +60,7 @@ class ActionPageComponent extends React.Component<ActionPageComponentProps, any>
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.params.evaluationId !== nextProps.params.evaluationId) {
-      loadEvaluation(nextProps);
-    }
+    loadEvaluation(nextProps);
   }
 
   viewSkillDetails(skillUid) {

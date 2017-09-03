@@ -134,11 +134,10 @@ export const getNotesForSkill = (state, skillUid): string[] =>
 export const hasNotes = (state, skillUid): boolean =>
   R.length(notesForSkill(skillUid, state)) > 0;
 
-// TODO: Fix types - function that returns a function
 const hasStatus = status =>
   (skill): boolean => R.path(['status', 'current'], skill) === status;
 
-// TODO: Fix types - can we specify the shape of state?
+// TODO: Fix type - can we specify the shape of state?
 export const getSkillsWithCurrentStatus = (state, status: string, skillUids: string[]): string[] => {
   if (!R.is(Array, skillUids) || skillUids.length === 0) {
     return [];

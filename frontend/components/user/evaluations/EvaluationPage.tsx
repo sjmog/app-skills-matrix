@@ -21,14 +21,13 @@ import './evaluation.scss';
 const { SUBJECT, MENTOR, ADMIN } = EVALUATION_VIEW;
 const { NEW, SELF_EVALUATION_COMPLETE } = EVALUATION_STATUS;
 
-// todo fix types
 type EvaluationPageComponentProps = {
   status?: string,
   levels?: string[],
   categories?: string[],
-  skillGroups: any,
+  skillGroups: SkillGroup[],
   view: string,
-  error: any,
+  error?: { message?: string },
   params: {
     evaluationId: string,
   },
@@ -55,9 +54,7 @@ class EvaluationPageComponent extends React.Component<EvaluationPageComponentPro
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.params.evaluationId !== nextProps.params.evaluationId) {
-      loadEvaluation(nextProps);
-    }
+    loadEvaluation(nextProps);
   }
 
   updateSkillStatus(skillId, newSkillStatus, skillUid) {

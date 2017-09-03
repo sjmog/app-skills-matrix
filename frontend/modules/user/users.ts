@@ -12,6 +12,6 @@ export default handleActions({
   [evaluationsActions.retrieveEvaluationSuccess]: handleEvaluationRetrieved('users'),
 }, initialState);
 
-// TODO: Fix types - UserDetailsViewModel
+// TODO: Fix type - UserDetailsViewModel
 export const getUser = (state, userId) =>
   R.path(['entities', userId], state) || {};
