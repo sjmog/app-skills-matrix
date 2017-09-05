@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Button, ControlLabel, Form, FormControl, FormGroup, Glyphicon, InputGroup, Panel, Row } from 'react-bootstrap';
+import { ControlLabel, Form, FormControl, FormGroup, Row } from 'react-bootstrap';
 import { actions } from '../../../modules/admin/matrices';
-import SaveEntityForm from './SaveEntityForm';
+import EditableList from './EditableList';
 
 type NewTemplateComponentProps = {
   actions: typeof actions,
@@ -16,8 +16,6 @@ const FieldGroup = ({ id, label = '', ...props }) =>
     {label && <ControlLabel>{label}</ControlLabel>}
     <FormControl name={id} {...props} />
   </FormGroup>);
-
-const moveItem = (arr, fromIndex, toIndex) => arr.splice(toIndex, 0, arr.splice(fromIndex, 1)[0]);
 
 class NewTemplateComponent extends React.Component<NewTemplateComponentProps, { template: UnhydratedTemplate }> {
   constructor(props) {
@@ -33,46 +31,12 @@ class NewTemplateComponent extends React.Component<NewTemplateComponentProps, { 
       },
     };
     this.updateTemplateState = this.updateTemplateState.bind(this);
-    this.updateCategory = this.updateCategory.bind(this);
-    this.addCategory = this.addCategory.bind(this);
-    this.moveCategoryUp = this.moveCategoryUp.bind(this);
-    this.moveCategoryDown = this.moveCategoryDown.bind(this);
   }
 
   updateTemplateState(e) {
     const field = e.target.name;
     const template = this.state.template;
     template[field] = e.target.value;
-    return this.setState({ template });
-  }
-
-  updateCategory(newValue, index) {
-    const template = this.state.template;
-    template.categories[index] = newValue;
-    return this.setState({ template });
-  }
-
-  removeCategory(index) {
-    const template = this.state.template;
-    template.categories.splice(index, 1);
-    return this.setState({ template });
-  }
-
-  moveCategoryUp(index) {
-    const template = this.state.template;
-    moveItem(template.categories, index, index - 1);
-    return this.setState({ template });
-  }
-
-  moveCategoryDown(index) {
-    const template = this.state.template;
-    moveItem(template.categories, index, index + 1);
-    return this.setState({ template });
-  }
-
-  addCategory() {
-    const template = this.state.template;
-    template.categories.push('');
     return this.setState({ template });
   }
 
@@ -98,45 +62,21 @@ class NewTemplateComponent extends React.Component<NewTemplateComponentProps, { 
               onChange={this.updateTemplateState}
               placeholder="name"
             />
-
-            <Panel header={<h3>Categories</h3>}>
-              {template.categories ?
-                template.categories.map((c, index) =>
-                  (<FormGroup controlId={`category_${index}`}>
-                    <InputGroup>
-                      <FormControl name={`category_${index}`}
-                                   key={`category_${index}`}
-                                   type="text"
-                                   value={c}
-                                   onChange={(e: any) => this.updateCategory(e.target.value, index)}
-                                   placeholder="Category"
-                      />
-                      <InputGroup.Button>
-                        <Button onClick={() => this.moveCategoryUp(index)}>
-                          <Glyphicon glyph="arrow-up" />
-                        </Button>
-                      </InputGroup.Button>
-                      <InputGroup.Button>
-                        <Button onClick={() => this.moveCategoryDown(index)}>
-                          <Glyphicon glyph="arrow-down" />
-                        </Button>
-                      </InputGroup.Button>
-                      <InputGroup.Button>
-                        <Button onClick={() => this.removeCategory(index)}>
-                          <Glyphicon glyph="minus" />
-                        </Button>
-                      </InputGroup.Button>
-                    </InputGroup>
-                  </FormGroup>)) :
-                false}
-              <Button bsStyle="primary" onClick={this.addCategory}>
-                <Glyphicon glyph="plus" /></Button>
-            </Panel>
-
+            <EditableList
+              title="Categories"
+              placeholder="Category"
+              array={template.categories || []}
+              onUpdate={categories => this.updateTemplateState({ target: { name: 'categories', value: categories } })}
+            />
+            <EditableList
+              title="Levels"
+              placeholder="Level"
+              array={template.levels || []}
+              onUpdate={levels => this.updateTemplateState({ target: { name: 'levels', value: levels } })}
+            />
           </Form>
         </Row>
-      </div>
-    );
+      </div>);
   }
 }
 
