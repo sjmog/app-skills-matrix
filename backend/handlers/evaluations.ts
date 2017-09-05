@@ -40,8 +40,7 @@ const addActions = (user: User, skill, evaluation, newStatus: string) => {
   return Promise.all(fns);
 };
 
-// TODO: Fix types - why does PromiseLike work? Can we define what the rejection obj looks like?
-const authorize = (evalUserId, reqUser, notAuthorizedMsg): PromiseLike<void> => {
+const authorize = (evalUserId, reqUser, notAuthorizedMsg): Promise<void> => {
   if (reqUser.isAdmin() || reqUser.id === evalUserId) {
     return Promise.resolve();
   }
@@ -53,7 +52,7 @@ const authorize = (evalUserId, reqUser, notAuthorizedMsg): PromiseLike<void> => 
         : Promise.reject({ status: 403, data: notAuthorizedMsg })));
 };
 
-const hydrateEvalViewModel = (evaluation, retrievedNotes, retrievedUsers, reqUser): PromiseLike<HydratedEvaluationViewModel> => {
+const hydrateEvalViewModel = (evaluation, retrievedNotes, retrievedUsers, reqUser): Promise<HydratedEvaluationViewModel> => {
   const hydrate = viewModel => ({
     ...viewModel,
     users: retrievedUsers.normalizedViewModel(),

@@ -1,5 +1,6 @@
 import { ObjectID } from 'mongodb';
 import * as R from 'ramda';
+import * as Promise from 'bluebird';
 
 import { encrypt, decrypt } from './encryption';
 import database from '../../database';
@@ -9,12 +10,12 @@ import notes, { Notes } from './notes';
 const collection: any = database.collection('notes');
 
 export default {
-  addNote(user, skillId, noteText): PromiseLike<Note> {
+  addNote(user, skillId, noteText): Promise<Note> {
     return collection.insertOne(encrypt(newNote(user.id, skillId, noteText)))
       .then(({ insertedId }) => collection.findOne({ _id: new ObjectID(insertedId) }))
       .then(res => (res ? note(decrypt(res)) : null));
   },
-  getNotes(noteIds = []): PromiseLike<Notes> {
+  getNotes(noteIds = []): Promise<Notes> {
     return collection.find({ _id: { $in: R.map(i => new ObjectID(i), noteIds) } })
       .then(res => res.toArray())
       .then(R.map(decrypt))
