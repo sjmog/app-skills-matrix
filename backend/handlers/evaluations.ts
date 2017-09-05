@@ -5,10 +5,14 @@ import createHandler from './createHandler';
 import { ensureLoggedIn } from '../middlewares/auth';
 
 import evaluations from '../models/evaluations/index';
+import { Evaluation } from '../models/evaluations/evaluation';
 import users from '../models/users/index';
 import { User } from '../models/users/user';
+import { Users } from '../models/users/users';
 import actions from '../models/actions/index';
 import notes from '../models/notes';
+import { Notes } from '../models/notes/notes';
+
 
 import sendMail from '../services/email/index';
 
@@ -40,7 +44,7 @@ const addActions = (user: User, skill, evaluation, newStatus: string) => {
   return Promise.all(fns);
 };
 
-const authorize = (evalUserId, reqUser, notAuthorizedMsg): Promise<void> => {
+const authorize = (evalUserId: string, reqUser: User, notAuthorizedMsg: string): Promise<void> => {
   if (reqUser.isAdmin() || reqUser.id === evalUserId) {
     return Promise.resolve();
   }
@@ -52,25 +56,25 @@ const authorize = (evalUserId, reqUser, notAuthorizedMsg): Promise<void> => {
         : Promise.reject({ status: 403, data: notAuthorizedMsg })));
 };
 
-const hydrateEvalViewModel = (evaluation, retrievedNotes, retrievedUsers, reqUser): Promise<HydratedEvaluationViewModel> => {
-  const hydrate = viewModel => ({
+const buildAggregateViewModel = (evaluation: Evaluation, retrievedNotes: Notes, retrievedUsers: Users, reqUser: User): Promise<HydratedEvaluationViewModel> => {
+  const augment = viewModel => ({
     ...viewModel,
     users: retrievedUsers.normalizedViewModel(),
     notes: retrievedNotes.normalizedViewModel(),
   });
 
   if (reqUser.id === evaluation.user.id) {
-    return Promise.resolve(hydrate(evaluation.subjectEvaluationViewModel()));
+    return Promise.resolve(augment(evaluation.subjectEvaluationViewModel()));
   }
 
   return users.getUserById(evaluation.user.id)
     .then(({ mentorId }) => {
       if (reqUser.id === mentorId) {
-        return hydrate(evaluation.mentorEvaluationViewModel());
+        return augment(evaluation.mentorEvaluationViewModel());
       }
 
       if (reqUser.isAdmin()) {
-        return hydrate(evaluation.adminEvaluationViewModel());
+        return augment(evaluation.adminEvaluationViewModel());
       }
     });
 };
@@ -96,7 +100,7 @@ const handlerFunctions = Object.freeze({
               .then(notes.getNotes)
               .then(retrievedNotes =>
                 users.getUsersById(retrievedNotes.getUserIds())
-                  .then(userIds => hydrateEvalViewModel(evaluation, retrievedNotes, userIds, user)))
+                  .then(retrievedUsers => buildAggregateViewModel(evaluation, retrievedNotes, retrievedUsers, user)))
               .then(viewModel => res.status(200).json(viewModel));
           })
           .catch(err =>
@@ -281,7 +285,7 @@ const handlerFunctions = Object.freeze({
             }
 
             return authorize(evaluation.user.id, user, NOT_AUTHORIZED_TO_ADD_NOTE)
-              .then(() => notes.addNote(user, skillId, noteText))
+              .then(() => notes.addNote(user.id, skillId, noteText))
               .then(note =>
                 evaluations.updateEvaluation(evaluation.addSkillNote(skillId, note.id))
                   .then(() => res.status(200).json(note.viewModel())));

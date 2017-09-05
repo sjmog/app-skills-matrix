@@ -71,7 +71,7 @@ export default ({ id, name, criteria, type, questions, status, notes }: Unhydrat
       notes: R.is(Array, notes) ? [].concat(notes, newNoteId) : [newNoteId],
     };
   },
-  deleteNote(noteId :string) {
+  deleteNote(noteId: string) {
     return {
       id,
       name,

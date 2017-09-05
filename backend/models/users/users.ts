@@ -1,17 +1,16 @@
-import user from './user';
+import user, { UnhyrdatedUser } from './user';
+import { DatabaseObject } from '../../database';
 
 export type Users = {
   normalizedViewModel: () => { [id: string]: UserDetailsViewModel },
 };
 
-const normalize = arr =>
-  arr.reduce((acc, n) =>
-    Object.assign({}, acc, { [user(n).id]: user(n).userDetailsViewModel() }), {});
+const normalize = (arr: [UnhyrdatedUser & DatabaseObject]) =>
+  arr.reduce((acc, u) =>
+    Object.assign({}, acc, { [user(u).id]: user(u).userDetailsViewModel() }), {});
 
-export default (usersArray) => {
-  return Object.freeze({
-    normalizedViewModel() {
-      return normalize(usersArray);
-    },
-  });
-};
+export default (usersArray: [UnhyrdatedUser & DatabaseObject]) => Object.freeze({
+  normalizedViewModel() {
+    return normalize(usersArray);
+  },
+});
