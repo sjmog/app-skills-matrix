@@ -32,9 +32,6 @@ class SaveTemplateComponent extends React.Component<SaveTemplateComponentProps, 
   render() {
     return (
       <div>
-        <Row>
-          <h2 className="header">New template</h2>
-        </Row>
         <SaveEntityForm
           entityName="template"
           entity={this.state.template}

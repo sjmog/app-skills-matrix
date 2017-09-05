@@ -2,15 +2,6 @@
 import { Skill } from './skill';
 import * as R from 'ramda';
 
-type UnhydratedTemplate = {
-  id: string,
-  name: string,
-  version: number,
-  categories: string[],
-  levels: string[],
-  skillGroups: UnhydratedSkillGroup[],
-};
-
 export type EvaluationTemplate = { id: string, name: string, version: number, categories: string[], levels: string[] };
 
 export type Template = {
