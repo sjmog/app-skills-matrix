@@ -3,19 +3,19 @@ import * as R from 'ramda';
 
 export default (state = {}) => state; /* portion of state never requires updating */
 
-export const getLoggedInUsername = (state): string =>
+export const getLoggedInUsername = state =>
   R.path(['userDetails', 'username'], state);
 
-export const getLoggedInUserId = (state): string =>
+export const getLoggedInUserId = state =>
   R.path(['userDetails', 'id'], state);
 
-const getUrl = (keyName, state): string => {
+const getUrl = (keyName: string, state) => {
   const url: string = R.path(['evaluations', 0, keyName], state);
   return R.is(String, url) ? url : null;
 };
 
-export const getFeedbackUrlForLatestEval = (state): string =>
+export const getFeedbackUrlForLatestEval = state =>
   getUrl('feedbackUrl', state);
 
-export const getObjectivesUrlForLatestEval = (state): string  =>
+export const getObjectivesUrlForLatestEval = state =>
   getUrl('objectivesUrl', state);

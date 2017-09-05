@@ -180,7 +180,7 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
         status,
       };
     },
-    addSkillNote(skillId, noteId) {
+    addSkillNote(skillId: number, noteId: string) {
       return {
         id: _id,
         user,
@@ -191,7 +191,7 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
         status,
       };
     },
-    deleteSkillNote(skillId, noteId) {
+    deleteSkillNote(skillId: number, noteId: string) {
       return {
         id: _id,
         user,

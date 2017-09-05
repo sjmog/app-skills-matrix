@@ -7,11 +7,12 @@ export type Notes = {
   normalizedViewModel: () => { [id: string]: NoteViewModel },
 };
 
-const normalize = (arr: [UnhydratedNote & DatabaseObject]) =>
+const normalize = arr =>
   arr.reduce((acc, n) =>
     Object.assign({}, acc, { [note(n).id]: note(n).viewModel() }), {});
 
-export default (notesArray: [UnhydratedNote & DatabaseObject]) => Object.freeze({
+// TODO: Fix types
+export default notesArray => Object.freeze({
   getUserIds() {
     return R.map(R.prop('userId'), notesArray);
   },

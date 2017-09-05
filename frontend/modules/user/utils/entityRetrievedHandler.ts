@@ -1,8 +1,8 @@
 import * as R from 'ramda';
 import * as isPlainObject from 'is-plain-object';
 
-export default entity =>
-  (state, action) => {
+export default (entity: string) =>
+  (state, action: { payload: object }) => {
     const notes = R.path(['payload', entity], action);
 
     if (!isPlainObject(notes)) return state;

@@ -97,7 +97,7 @@ export default handleActions({
   },
 }, initialState);
 
-export const getNote = (state, noteId: string): NoteViewModel =>
+export const getNote = (state, noteId: string) =>
   R.path(['entities', noteId], state) || null;
 
 const sortNewestToOldest = notes =>
@@ -111,7 +111,7 @@ const sortNewestToOldest = notes =>
     }
   });
 
-export const getSortedNotes = (state, noteIds: string[]): NoteViewModel[] => {
+export const getSortedNotes = (state, noteIds: string[]) => {
   if (R.is(Array, noteIds) && noteIds.length > 0) {
     const notes = R.map(id => getNote(state, id), noteIds) as any;
     return notes ? sortNewestToOldest(notes) : [];
@@ -120,7 +120,7 @@ export const getSortedNotes = (state, noteIds: string[]): NoteViewModel[] => {
   return [];
 };
 
-export const getNotesError = (state): string => {
+export const getNotesError = (state) => {
   const error:string = R.prop('error', state);
   return R.isEmpty(error) ? '' : error;
 };

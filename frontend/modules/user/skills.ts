@@ -59,7 +59,7 @@ const initialState = {
 };
 
 const errorsLens = R.lensPath(['errors']);
-const getSkillNoteLens = skillUid => R.lensPath(['entities', skillUid, 'notes']);
+const getSkillNoteLens = (skillUid: string) => R.lensPath(['entities', skillUid, 'notes']);
 
 export default handleActions({
   [evaluationsActions.retrieveEvaluationSuccess]: handleEvaluationRetrieved('skills'),
@@ -103,17 +103,15 @@ export default handleActions({
   },
 }, initialState);
 
-export const getSkill = (state, skillUid): UnhydratedEvaluationSkill =>
+export const getSkill = (state, skillUid: string): UnhydratedEvaluationSkill =>
   R.path(['entities', skillUid], state);
 
-// TODO: Fix type
-export const getSkillError = (state, skillUid) =>
+export const getSkillError = (state, skillUid: string) =>
   R.path(['errors', skillUid], state);
 
-export const getSkillStatus = (state, skillUid): string =>
+export const getSkillStatus = (state, skillUid: string) =>
   R.path(['entities', skillUid, 'status'], state);
 
-// TODO: Fix type - UnhydratedEvaluationSkill[]
 export const getErringSkills = (state, skillUids: string[]) => {
   const skillOfInterest = skillUid => R.contains(skillUid, skillUids);
   const name = skillUid => R.prop('name', getSkill(state, skillUid));
@@ -128,17 +126,16 @@ export const getErringSkills = (state, skillUids: string[]) => {
 
 const notesForSkill = (skillUid: string, state): string[] => R.path(['entities', skillUid, 'notes'], state);
 
-export const getNotesForSkill = (state, skillUid): string[] =>
+export const getNotesForSkill = (state, skillUid: string) =>
   notesForSkill(skillUid, state) || [];
 
-export const hasNotes = (state, skillUid): boolean =>
+export const hasNotes = (state, skillUid: string) =>
   R.length(notesForSkill(skillUid, state)) > 0;
 
-const hasStatus = status =>
+const hasStatus = (status: string) =>
   (skill): boolean => R.path(['status', 'current'], skill) === status;
 
-// TODO: Fix type - can we specify the shape of state?
-export const getSkillsWithCurrentStatus = (state, status: string, skillUids: string[]): string[] => {
+export const getSkillsWithCurrentStatus = (state, status: string, skillUids: string[]) => {
   if (!R.is(Array, skillUids) || skillUids.length === 0) {
     return [];
   }
