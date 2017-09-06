@@ -26,7 +26,8 @@ class SaveTemplateComponent extends React.Component<SaveTemplateComponentProps, 
 
   saveTemplate(e) {
     e.preventDefault();
-    this.props.actions.addTemplate(this.state.template);
+    // TODO: handle error (Need to decide if this feature is even valuable to maintain)
+    this.props.actions.addTemplate(JSON.parse(this.state.template));
   }
 
   render() {

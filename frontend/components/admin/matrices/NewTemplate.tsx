@@ -1,7 +1,8 @@
 import * as React from 'react';
+import * as R from 'ramda';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { ControlLabel, Form, FormControl, FormGroup, Row } from 'react-bootstrap';
+import { Button, ControlLabel, Form, FormControl, FormGroup, Row } from 'react-bootstrap';
 import { actions } from '../../../modules/admin/matrices';
 import EditableList from './EditableList';
 
@@ -31,6 +32,7 @@ class NewTemplateComponent extends React.Component<NewTemplateComponentProps, { 
       },
     };
     this.updateTemplateState = this.updateTemplateState.bind(this);
+    this.onAddTemplate = this.onAddTemplate.bind(this);
   }
 
   updateTemplateState(e) {
@@ -40,12 +42,30 @@ class NewTemplateComponent extends React.Component<NewTemplateComponentProps, { 
     return this.setState({ template });
   }
 
+  onAddTemplate(e) {
+    e.preventDefault();
+    const skillGroups: UnhydratedSkillGroup[] = [];
+    const template = this.state.template;
+    R.forEach((category) => {
+      R.forEach((level) => {
+        skillGroups.push({
+          category,
+          level,
+          skills: [],
+        });
+      }, template.levels);
+    }, template.categories);
+    template.skillGroups = skillGroups;
+    this.props.actions.addTemplate(template);
+    // TODO: Error handling & clearing the form
+  }
+
   render() {
     const { template } = this.state;
     return (
       <div>
         <Row>
-          <Form>
+          <Form onSubmit={this.onAddTemplate}>
             <FieldGroup
               id="id"
               type="text"
@@ -74,6 +94,7 @@ class NewTemplateComponent extends React.Component<NewTemplateComponentProps, { 
               array={template.levels || []}
               onUpdate={levels => this.updateTemplateState({ target: { name: 'levels', value: levels } })}
             />
+            <Button bsStyle="primary" type="submit">Add Template</Button>
           </Form>
         </Row>
       </div>);

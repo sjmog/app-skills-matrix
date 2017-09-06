@@ -29,4 +29,6 @@ type UnhydratedEvaluationSkill = {
   status: { current: string | null, previous: string | null },
 };
 
+type EvaluationSkillGroup = UnhydratedSkillGroup & { id: number };
+
 type EvaluationUser = { name: string, id: string, email: string };

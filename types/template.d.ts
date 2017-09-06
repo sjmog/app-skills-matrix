@@ -12,7 +12,7 @@ type UnhydratedTemplateSkill = {
 };
 
 type UnhydratedSkillGroup = {
-  id: number,
+  id?: number,
   category: string,
   level: string,
   skills: number[],

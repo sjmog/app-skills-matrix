@@ -27,7 +27,7 @@ type UnhydratedEvaluation = {
   user: EvaluationUser,
   createdDate: Date,
   template: EvaluationTemplate,
-  skillGroups: UnhydratedSkillGroup[],
+  skillGroups: EvaluationSkillGroup[],
   skills: UnhydratedEvaluationSkill[],
   status: string,
 };
@@ -79,7 +79,7 @@ const arrayToKeyedObject = <T extends { id: string | number }>(evaluationId: str
 
 const uniqueId = (evaluationId, id) => `${evaluationId}_${id}`;
 
-const makeSkillsUnique = (evaluationId, skillGroups: UnhydratedSkillGroup[]) =>
+const makeSkillsUnique = (evaluationId, skillGroups: EvaluationSkillGroup[]) =>
   R.map(skillGroup => Object.assign({},
     skillGroup,
     { skills: R.map(skillId => uniqueId(evaluationId, skillId), R.prop('skills', skillGroup)) }), skillGroups);
