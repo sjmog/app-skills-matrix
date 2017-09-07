@@ -106,10 +106,10 @@ export default handleActions({
 export const getSkill = (state, skillUid: string): UnhydratedEvaluationSkill =>
   R.path(['entities', skillUid], state);
 
-export const getSkillError = (state, skillUid: string) =>
+export const getSkillError = (state, skillUid) =>
   R.path(['errors', skillUid], state);
 
-export const getSkillStatus = (state, skillUid: string) =>
+export const getSkillStatus = (state, skillUid) =>
   R.path(['entities', skillUid, 'status'], state);
 
 export const getErringSkills = (state, skillUids: string[]) => {
@@ -126,16 +126,16 @@ export const getErringSkills = (state, skillUids: string[]) => {
 
 const notesForSkill = (skillUid: string, state): string[] => R.path(['entities', skillUid, 'notes'], state);
 
-export const getNotesForSkill = (state, skillUid: string) =>
+export const getNotesForSkill = (state, skillUid: string): string[] =>
   notesForSkill(skillUid, state) || [];
 
-export const hasNotes = (state, skillUid: string) =>
+export const hasNotes = (state, skillUid: string): boolean =>
   R.length(notesForSkill(skillUid, state)) > 0;
 
 const hasStatus = (status: string) =>
   (skill): boolean => R.path(['status', 'current'], skill) === status;
 
-export const getSkillsWithCurrentStatus = (state, status: string, skillUids: string[]) => {
+export const getSkillsWithCurrentStatus = (state, status: string, skillUids: string[]): string[] => {
   if (!R.is(Array, skillUids) || skillUids.length === 0) {
     return [];
   }

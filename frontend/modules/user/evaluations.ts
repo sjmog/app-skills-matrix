@@ -130,7 +130,7 @@ export const getEvaluationStatus = (state, evalId) =>
 export const getSkillGroups = (state, evalId) =>
   R.path(['entities', evalId, 'skillGroups'], state);
 
-export const getSkillUids = (state, evalId) =>
+export const getSkillUids = (state, evalId: string): string[] =>
   R.path(['entities', evalId, 'skillUids'], state);
 
 export const getLevels = (state, evalId) =>

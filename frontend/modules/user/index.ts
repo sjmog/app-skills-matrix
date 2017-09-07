@@ -43,25 +43,25 @@ export const getLastSkill = ({ evaluation }) =>
 
 /* SKILLS SELECTORS */
 
-export const getSkillStatus = ({ entities: { skills } }, skillUid) =>
+export const getSkillStatus = ({ entities: { skills } }, skillUid: string) =>
   fromSkills.getSkillStatus(skills, skillUid);
 
-export const getSkill = ({ entities: { skills } }, skillUid) =>
+export const getSkill = ({ entities: { skills } }, skillUid: string) =>
   fromSkills.getSkill(skills, skillUid);
 
-export const getErringSkills = ({ entities: { skills } }, skillUids) =>
+export const getErringSkills = ({ entities: { skills } }, skillUids: string[]) =>
   fromSkills.getErringSkills(skills, skillUids);
 
-export const getSkillError = ({ entities: { skills } }, skillUid) =>
+export const getSkillError = ({ entities: { skills } }, skillUid: string) =>
   fromSkills.getSkillError(skills, skillUid);
 
-export const getNotesForSkill = ({ entities: { skills } }, skillUid) =>
+export const getNotesForSkill = ({ entities: { skills } }, skillUid: string) =>
   fromSkills.getNotesForSkill(skills, skillUid);
 
-export const hasNotes = ({ entities: { skills } }, skillUid) =>
+export const hasNotes = ({ entities: { skills } }, skillUid: string) =>
   fromSkills.hasNotes(skills, skillUid);
 
-export const getSkillsWithCurrentStatus = ({ entities: { skills } }, status, skillUids) =>
+export const getSkillsWithCurrentStatus = ({ entities: { skills } }, status, skillUids: string[]) =>
   fromSkills.getSkillsWithCurrentStatus(skills, status, skillUids);
 
 /* EVALUATIONS SELECTORS */
@@ -96,12 +96,12 @@ export const getCategories = ({ entities: { evaluations } }, evalId) =>
 export const getError = ({ entities: { evaluations } }, evalId) =>
   fromEvaluations.getError(evaluations, evalId);
 
-export const getSkillUids = ({ entities: { evaluations } }, evalId) =>
+export const getSkillUids = ({ entities: { evaluations } }, evalId: string) =>
   fromEvaluations.getSkillUids(evaluations, evalId);
 
 /* NOTES SELECTORS */
 
-export const getSortedNotes = ({ entities: { notes } }, noteIds) =>
+export const getSortedNotes = ({ entities: { notes } }, noteIds: string[]) =>
   fromNotes.getSortedNotes(notes, noteIds);
 
 export const getNotesError = ({ entities: { notes } }) =>
@@ -109,5 +109,5 @@ export const getNotesError = ({ entities: { notes } }) =>
 
 /* USERS SELECTORS */
 
-export const getUser = ({ entities: { users } }, userId) =>
+export const getUser = ({ entities: { users } }, userId: string) =>
   fromUsers.getUser(users, userId);

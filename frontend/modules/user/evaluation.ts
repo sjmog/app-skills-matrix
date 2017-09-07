@@ -155,7 +155,7 @@ export const getCurrentEvaluation = evaluation =>
 export const getCurrentSkill = evaluation =>
   R.path(['currentSkill'], evaluation);
 
-export const getCurrentSkillUid = evaluation =>
+export const getCurrentSkillUid = (evaluation): string =>
   R.path(['currentSkill', 'skillUid'], evaluation);
 
 export const getLastCategory = evaluation =>

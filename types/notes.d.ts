@@ -13,3 +13,5 @@ type NoteViewModel = {
   skillId: number,
   createdDate: string,
 };
+
+type NormalizedNotes = { [id: string]: NoteViewModel };

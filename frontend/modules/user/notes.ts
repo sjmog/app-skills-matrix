@@ -14,6 +14,11 @@ export const actionTypes = keymirror({
   DELETE_NOTE_SUCCESS: null,
 });
 
+type NotesState = {
+  entities: NormalizedNotes,
+  error: string,
+};
+
 const addNoteSuccess = createAction(
   actionTypes.ADD_NOTE_SUCCESS,
   (skillUid, note) => ({ skillUid, note }),
@@ -80,24 +85,24 @@ const getNoteLens = id => R.lensPath(['entities', id]);
 
 export default handleActions({
   [evaluationsActions.retrieveEvaluationSuccess]: handleEvaluationRetrieved('notes'),
-  [addNoteSuccess]: (state, action) => {
+  [addNoteSuccess]: (state: NotesState, action) => {
     const noteId = R.path(['payload', 'note', 'id'], action);
     return R.set(getNoteLens(noteId), R.path(['payload', 'note'], action), state);
   },
-  [noteError]: (state, action) => {
+  [noteError]: (state: NotesState, action) => {
     return R.merge(state, { error: action.payload });
   },
-  [clearError]: (state) => {
+  [clearError]: (state: NotesState) => {
     return R.merge(state, { error: null });
   },
-  [deleteNoteSuccess]: (state, action) => {
+  [deleteNoteSuccess]: (state: NotesState, action) => {
     const noteId = R.path(['action', 'payload', 'noteId'], action);
     const entities = R.omit([action.payload], state.entities);
     return R.merge(state, { entities });
   },
 }, initialState);
 
-export const getNote = (state, noteId: string) =>
+export const getNote = (state, noteId: string): NoteViewModel =>
   R.path(['entities', noteId], state) || null;
 
 const sortNewestToOldest = notes =>
@@ -111,16 +116,16 @@ const sortNewestToOldest = notes =>
     }
   });
 
-export const getSortedNotes = (state, noteIds: string[]) => {
+export const getSortedNotes = (state: NotesState, noteIds: string[]): NoteViewModel[] => {
   if (R.is(Array, noteIds) && noteIds.length > 0) {
-    const notes = R.map(id => getNote(state, id), noteIds) as any;
+    const notes = R.map(id => getNote(state, id), noteIds);
     return notes ? sortNewestToOldest(notes) : [];
   }
 
   return [];
 };
 
-export const getNotesError = (state) => {
+export const getNotesError = (state: NotesState): string => {
   const error:string = R.prop('error', state);
   return R.isEmpty(error) ? '' : error;
 };
