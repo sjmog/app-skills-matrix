@@ -30,7 +30,7 @@ describe('Evaluation reducer', () => {
       };
 
       const newState = reducer(state, action);
-      expect(newState.evaluationId).to.equal(fixtureEvaluation._id);
+      expect(newState.evaluationId).to.equal(fixtureEvaluation._id.toString());
     });
 
     it('sets paginated view of skills in evaluation that are sorted by category and level', () => {

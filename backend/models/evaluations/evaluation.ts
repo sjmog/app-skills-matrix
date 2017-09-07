@@ -97,7 +97,7 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
     evaluationUrl: `/evaluations/${_id}`,
     feedbackUrl: `/user/${user.id}/evaluations/${_id}/feedback`,
     objectivesUrl: `/user/${user.id}/evaluations/${_id}/objectives`,
-    id: _id,
+    id: _id.toString(),
     usersName: user.name,
     status,
     templateName: template.name,
@@ -106,7 +106,7 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
   const viewModelSkills = arrayToUniquelyKeyedObject(_id, skills);
 
   const viewModel = {
-    id: _id,
+    id: _id.toString(),
     subject: user,
     status,
     template,
@@ -167,7 +167,7 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
     },
     updateSkill(skillId, newSkillStatus) {
       return {
-        id: _id,
+        id: _id.toString(),
         user,
         createdDate,
         template,
@@ -181,7 +181,7 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
     },
     selfEvaluationComplete() {
       return {
-        id: _id,
+        id: _id.toString(),
         user,
         createdDate,
         template,
@@ -195,7 +195,7 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
     },
     mentorReviewComplete() {
       return {
-        id: _id,
+        id: _id.toString(),
         user,
         createdDate,
         template,
