@@ -1,9 +1,10 @@
 import * as React from 'react';
-import { Grid, Row } from 'react-bootstrap';
+import { Accordion, Grid, Panel, Row } from 'react-bootstrap';
 import { connect } from 'react-redux';
 
 import { SaveTemplate } from './SaveTemplate';
 import { SaveSkill } from './SaveSkill';
+import { NewTemplate } from './NewTemplate';
 import TemplateList from './TemplateList';
 
 type ManageMatricesPageComponentProps = {
@@ -17,8 +18,17 @@ export const ManageMatricesPageComponent = ({ templates }: ManageMatricesPageCom
       <TemplateList
         templates={templates}
       />
-      <SaveTemplate />
-      <SaveSkill />
+      <Accordion>
+        <Panel header="New Template" eventKey="1">
+          <NewTemplate />
+        </Panel>
+        <Panel header="Import Template" eventKey="2">
+          <SaveTemplate />
+        </Panel>
+        <Panel header="Import Skills" eventKey="3">
+          <SaveSkill />
+        </Panel>
+      </Accordion>
     </Grid>
   );
 

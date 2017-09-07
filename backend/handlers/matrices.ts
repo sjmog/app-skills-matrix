@@ -11,14 +11,14 @@ const { templates, skills } = matrices;
 const handlerFunctions = Object.freeze({
     templates: {
       save: (req, res, next) => {
-        Promise.try(() => JSON.parse(req.body.template))
-          .then(template =>
-            templates.getById(template.id)
-              .then(retrievedTemplate =>
-                (retrievedTemplate
-                  ? templates.updateTemplate(retrievedTemplate, template)
-                  : templates.addTemplate(template)))
-              .then(t => res.status(201).json(t.viewModel())))
+        // TODO - validation eh?
+        const template = req.body.template;
+        Promise.try(() => templates.getById(template.id))
+          .then(retrievedTemplate =>
+            (retrievedTemplate
+              ? templates.updateTemplate(retrievedTemplate, template)
+              : templates.addTemplate(template)))
+          .then(t => res.status(201).json(t.viewModel()))
           .catch(next);
       },
       retrieve: (req, res, next) => {

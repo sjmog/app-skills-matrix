@@ -2,15 +2,6 @@
 import { Skill } from './skill';
 import * as R from 'ramda';
 
-type UnhydratedTemplate = {
-  id: string,
-  name: string,
-  version: number,
-  categories: string[],
-  levels: string[],
-  skillGroups: UnhydratedSkillGroup[],
-};
-
 export type EvaluationTemplate = { id: string, name: string, version: number, categories: string[], levels: string[] };
 
 export type Template = {
@@ -20,7 +11,7 @@ export type Template = {
   normalizedViewModel: () => NormalizedTemplateViewModel,
   evaluationData: () => EvaluationTemplate,
   userDetailsViewModel: () => { name: string },
-  createSkillGroups: (skills: Skill[]) => { skills: UnhydratedEvaluationSkill[], skillGroups: UnhydratedSkillGroup[] },
+  createSkillGroups: (skills: Skill[]) => { skills: UnhydratedEvaluationSkill[], skillGroups: EvaluationSkillGroup[] },
   addSkill: (level: string, category: string, skillId: number) => Template,
   replaceSkill: (level: string, category: string, oldId: number, newId: number) => Template,
   removeSkill: (level: string, category: string, skillId: number) => Template,

@@ -70,7 +70,7 @@ describe('matrices', () => {
     it('permits saving of new templates by admin users', () =>
       request(app)
         .post(`${prefix}/templates`)
-        .send({ action: 'save', template: JSON.stringify(sampleTemplate) })
+        .send({ action: 'save', template: sampleTemplate })
         .set('Cookie', `${cookieName}=${adminToken}`)
         .expect(201)
         .then(() => templates.findOne({ id: 'eng-nodejs' }))
@@ -86,7 +86,7 @@ describe('matrices', () => {
             .post(`${prefix}/templates`)
             .send({
               action: 'save',
-              template: JSON.stringify(Object.assign({}, sampleTemplate, { name: 'new name', skillGroups: [] })),
+              template: Object.assign({}, sampleTemplate, { name: 'new name', skillGroups: [] }),
             })
             .set('Cookie', `${cookieName}=${adminToken}`)
             .expect(201))

@@ -45,9 +45,6 @@ class SaveSkillComponent extends React.Component<SaveSkillComponentProps, { skil
   render() {
     return (
       <div>
-        <Row>
-          <h2 className="header">New skill(s)</h2>
-        </Row>
         <SaveEntityForm
           entityName="skill"
           entity={this.state.skill}
