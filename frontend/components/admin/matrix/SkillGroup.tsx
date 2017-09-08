@@ -47,7 +47,7 @@ class SkillGroup extends React.Component<SkillGroupProps, { existingSkillId: num
         <Form inline>
           <Button bsStyle="primary" onClick={() => onAddSkill(skillGroup.level, skillGroup.category, this.state.existingSkillId)}>
             New Skill</Button>
-          <FormGroup controlId="formInlineName">
+          <FormGroup>
             <FormControl
               id={`${skillGroup.level}${skillGroup.category}`}
               type="text"

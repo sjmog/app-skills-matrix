@@ -37,7 +37,7 @@ type EditableListProps = {
 
 const EditableList = ({ title, placeholder, array, onUpdate }: EditableListProps) => (<Panel header={<h3>{title}</h3>}>
     {array.map((c, index) =>
-      (<FormGroup controlId={`${placeholder}_${index}`} key={`${placeholder}_${index}`}>
+      (<FormGroup key={`${placeholder}_${index}`}>
         <InputGroup>
           <FormControl name={`${placeholder}_${index}`}
                        type="text"

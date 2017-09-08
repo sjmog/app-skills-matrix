@@ -21,7 +21,7 @@ type SkillDetailsModalProps = {
 };
 
 const FieldGroup = ({ id, label = '', ...props }) =>
-  (<FormGroup controlId={id}>
+  (<FormGroup>
     {label && <ControlLabel>{label}</ControlLabel>}
     <FormControl name={id} {...props} />
   </FormGroup>);
@@ -130,7 +130,7 @@ class SkillDetailsModal extends React.Component<SkillDetailsModalProps, { skill:
                 onChange={this.updateSkillState}
                 placeholder="criteria"
               />
-              <FormGroup controlId="type">
+              <FormGroup>
                 <ControlLabel>Type</ControlLabel>
                 <FormControl
                   componentClass="select"
@@ -147,7 +147,7 @@ class SkillDetailsModal extends React.Component<SkillDetailsModalProps, { skill:
               <Panel header={<h3>Questions</h3>}>
                 {skill.questions ?
                   skill.questions.map((q, index) =>
-                    (<FormGroup controlId={`question_${index}`}>
+                    (<FormGroup key={`question_${index}`}>
                       <InputGroup>
                         <FormControl name={`question_${index}`}
                                      key={`question_${index}`}

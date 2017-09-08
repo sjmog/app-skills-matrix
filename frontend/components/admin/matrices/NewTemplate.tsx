@@ -13,7 +13,7 @@ type NewTemplateComponentProps = {
 };
 
 const FieldGroup = ({ id, label = '', ...props }) =>
-  (<FormGroup controlId={id}>
+  (<FormGroup>
     {label && <ControlLabel>{label}</ControlLabel>}
     <FormControl name={id} {...props} />
   </FormGroup>);
