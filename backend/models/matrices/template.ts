@@ -68,6 +68,8 @@ const template = ({ id, name, version, categories, levels, skillGroups }: Unhydr
   },
   replaceSkill(level, category, oldId, newId) {
     const skillGroup = getSkillGroup(level, category, skillGroups);
+    // need to handle a nasty little bug I put in (sorry future me)
+    skillGroup.skills = skillGroup.skills.map(s => parseInt(s as any, 10));
     skillGroup.skills.push(newId);
     skillGroup.skills.splice(skillGroup.skills.indexOf(oldId), 1);
     return template({ id, name, version, categories, levels, skillGroups });
