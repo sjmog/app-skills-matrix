@@ -1,61 +1,56 @@
 import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as R from 'ramda';
 import { Grid, Col, Row, Alert } from 'react-bootstrap';
 
 import * as selectors from '../../../../modules/user';
-import { actionCreators as evaluationActionCreators, EVALUATION_VIEW, EVALUATION_STATUS } from '../../../../modules/user/evaluations';
+import { actionCreators as evaluationActionCreators } from '../../../../modules/user/evaluations';
 import { actionCreators as uiActionCreators } from '../../../../modules/user/evaluation';
 
 import EvaluationHeader from './EvaluationHeader';
-import Matrix from '../../matrix/Matrix';
+import NavMatrix from './NavMatrix/NavMatrix';
 import Skill from './Skill';
-
-const { SUBJECT, MENTOR, ADMIN } = EVALUATION_VIEW;
-const { NEW, SELF_EVALUATION_COMPLETE } = EVALUATION_STATUS;
-
-// TODO: fix types
-type Skill = {
-  skillUid: number,
-  skillGroupId: number,
-  level: string,
-  category: string,
-};
 
 type EvaluationProps = {
   evaluationId: string,
   view: string,
   levels: string[],
-  skillGroups?: any,
+  categories: string[],
+  skillGroups: NormalizedSkillGroups,
   status: string,
   updateSkillStatus: (skillId: number) => Promise<void>,
   initialisedEvaluation?: string,
-  currentSkill: Skill,
-  currentSkillUid?: number,
+  currentSkill: PaginatedEvaluationSkill,
+  currentSkillUid?: string,
   currentSkillStatus: {
     current: string,
     previous: string,
   },
   firstCategory: string,
   lastCategory: string,
-  firstSkill: Skill,
-  lastSkill: Skill,
+  firstSkill: PaginatedEvaluationSkill,
+  lastSkill: PaginatedEvaluationSkill,
   erringSkills: string[],
-  uiActions: any,
-  evalActions: any,
+  uiActions: typeof uiActionCreators,
+  evalActions: typeof evaluationActionCreators,
 };
+
+const skillErrors = erringSkills => (
+  <Row>
+    {
+      erringSkills.map(name =>
+        (<Alert bsStyle="danger" key={name}>{`There was a problem updating a skill: ${name}`}</Alert>))
+    }
+  </Row>
+);
 
 class Evaluation extends React.Component<EvaluationProps, any> {
   constructor(props) {
     super(props);
 
-    this.nextSkill = this.nextSkill.bind(this);
-    this.prevSkill = this.prevSkill.bind(this);
     this.nextCategory = this.nextCategory.bind(this);
-    this.previousCategory = this.previousCategory.bind(this);
     this.evaluationComplete = this.evaluationComplete.bind(this);
-    this.postUpdateNavigation = this.postUpdateNavigation.bind(this);
+    this.nextUnevaluatedSkill = this.nextUnevaluatedSkill.bind(this);
   }
 
   componentDidMount() {
@@ -67,18 +62,8 @@ class Evaluation extends React.Component<EvaluationProps, any> {
   }
 
   componentWillUnmount() {
-    const { evaluationId, uiActions } = this.props;
-    uiActions.terminateEvaluation(evaluationId);
-  }
-
-  nextSkill() {
     const { uiActions } = this.props;
-    uiActions.nextSkill();
-  }
-
-  prevSkill() {
-    const { uiActions } = this.props;
-    uiActions.prevSkill();
+    uiActions.terminateEvaluation();
   }
 
   nextCategory() {
@@ -86,17 +71,12 @@ class Evaluation extends React.Component<EvaluationProps, any> {
     uiActions.nextCategory(evaluationId);
   }
 
-  previousCategory() {
-    const { uiActions, evaluationId } = this.props;
-    uiActions.previousCategory(evaluationId);
-  }
-
   evaluationComplete() {
     const { evalActions, evaluationId } = this.props;
     evalActions.evaluationComplete(evaluationId);
   }
 
-  postUpdateNavigation() {
+  nextUnevaluatedSkill() {
     const { uiActions, evaluationId } = this.props;
     uiActions.nextUnevaluatedSkill(evaluationId);
   }
@@ -104,19 +84,16 @@ class Evaluation extends React.Component<EvaluationProps, any> {
   render() {
     const {
       levels,
+      categories,
       skillGroups,
-      view,
-      status,
       initialisedEvaluation,
       updateSkillStatus,
       currentSkill,
       currentSkillUid,
       currentSkillStatus,
       lastSkill,
-      firstSkill,
       evaluationId,
       lastCategory,
-      firstCategory,
       erringSkills,
     } = this.props;
 
@@ -125,51 +102,33 @@ class Evaluation extends React.Component<EvaluationProps, any> {
     }
     return (
       <Grid>
-        { erringSkills
-          ? <Row>
-            {
-              erringSkills.map(name =>
-                (<Alert bsStyle="danger" key={name}>{`There was a problem updating a skill: ${name}`}</Alert>))
-            }
-          </Row>
-          : false
-        }
+        {erringSkills && erringSkills.length > 0 ? skillErrors(erringSkills) : false}
         <Row>
           <EvaluationHeader
             evaluationId={evaluationId}
             currentCategory={currentSkill.category}
-            isFirstCategory={currentSkill.category === firstCategory}
             isLastCategory={currentSkill.category === lastCategory}
             nextCategory={this.nextCategory}
-            previousCategory={this.previousCategory}
             evaluationComplete={this.evaluationComplete}
           />
         </Row>
         <Row>
-          <Col md={7} className="evaluation-panel">
+          <Col md={8} className="evaluation-panel">
             <Skill
+              evaluationId={evaluationId}
               level={currentSkill.level}
               skill={currentSkill}
               skillStatus={currentSkillStatus}
               updateSkillStatus={updateSkillStatus}
-              nextSkill={this.nextSkill}
-              prevSkill={this.prevSkill}
-              isFirstSkill={currentSkillUid === firstSkill.skillUid}
+              nextUnevaluatedSkill={this.nextUnevaluatedSkill}
               isLastSkill={currentSkillUid === lastSkill.skillUid}
-              postUpdateNavigation={this.postUpdateNavigation}
             />
           </Col>
-          <Col md={5} className="evaluation-panel evaluation-panel--right">
-            <Matrix
-              categories={[].concat(currentSkill.category)}
-              levels={R.slice(levels.indexOf(currentSkill.level), Infinity, levels)}
+          <Col md={4} className="evaluation-panel evaluation-panel--right">
+            <NavMatrix
+              categories={categories}
+              levels={levels}
               skillGroups={skillGroups}
-              updateSkillStatus={updateSkillStatus}
-              canUpdateSkillStatus={
-                view === ADMIN
-                || (view === SUBJECT && status === NEW)
-                || (view === MENTOR && status === SELF_EVALUATION_COMPLETE)
-              }
             />
           </Col>
         </Row>
@@ -190,12 +149,10 @@ export default connect(
       currentSkill,
       currentSkillUid,
       currentSkillStatus: selectors.getSkillStatus(state, currentSkillUid),
-      firstCategory: selectors.getFirstCategory(state),
-      lastCategory: selectors.getLastCategory(state),
-      firstSkill: selectors.getFirstSkill(state),
       lastSkill: selectors.getLastSkill(state),
+      lastCategory: selectors.getLastCategory(state),
       erringSkills: selectors.getErringSkills(state, skillUidsForEvaluation),
-      skillGroups: selectors.getSkillGroupsWithReversedSkills(state, evaluationId),
+      skillGroups: selectors.getSkillGroups(state, evaluationId),
     });
   },
   dispatch => ({

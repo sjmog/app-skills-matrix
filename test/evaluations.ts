@@ -10,6 +10,7 @@ import actionsFixture from './fixtures/actions';
 import { STATUS } from '../backend/models/evaluations/evaluation';
 import auth from '../backend/models/auth';
 import helpers from './helpers';
+import { newNote } from '../backend/models/notes/note';
 
 const { sign, cookieName } = auth;
 
@@ -28,6 +29,8 @@ const {
   getAllActions,
   skillStatus,
   insertAction,
+  insertNote,
+  addNoteIdsToSkill,
 } = helpers;
 
 const { NEW, SELF_EVALUATION_COMPLETE, MENTOR_REVIEW_COMPLETE } = STATUS;
@@ -42,10 +45,15 @@ let normalUserOneId;
 let normalUserTwoId;
 
 let evaluationId;
+let noteId;
 
 describe('evaluations', () => {
   beforeEach(() =>
     clearDb()
+      .then(() => {
+        evaluationId = null;
+        noteId = null;
+      })
       .then(() => prepopulateUsers())
       .then(() => insertTemplate(templateData[0]))
       .then(() => skillsFixture.map(insertSkill))
@@ -82,6 +90,8 @@ describe('evaluations', () => {
           expect(body.skills[`${evaluationId}_1`]).to.not.be.undefined;
           expect(body.skillUids).to.be.an('array').that.includes(`${evaluationId}_1`);
           expect(body.view).to.equal('SUBJECT');
+          expect(body.notes).to.eql({});
+          expect(body.users).to.eql({});
         }));
 
     it('allows a mentor to view the evaluation of their mentee', () =>
@@ -101,6 +111,8 @@ describe('evaluations', () => {
               expect(body.skillGroups[1]).to.not.be.undefined;
               expect(body.skills[`${evaluationId}_1`]).to.not.be.undefined;
               expect(body.view).to.equal('MENTOR');
+              expect(body.notes).to.eql({});
+              expect(body.users).to.eql({});
             })));
 
     it('allows an admin user to view all evaluations', () =>
@@ -119,7 +131,53 @@ describe('evaluations', () => {
               expect(body.skillGroups[1]).to.not.be.undefined;
               expect(body.skills[`${evaluationId}_1`]).to.not.be.undefined;
               expect(body.view).to.equal('ADMIN');
+              expect(body.notes).to.eql({});
+              expect(body.users).to.eql({});
             })));
+
+    it('retrieves notes and the users that wrote them for an evaluation', () => {
+      let noteOneId;
+      let noteTwoId;
+      const skill = 5;
+
+      const noteAddedBySubject = newNote(normalUserOneId, skill, 'My evaluation');
+      const noteAddedByAnotherUser = newNote(normalUserTwoId, skill, `Someone else's evaluation`);
+
+      return Promise.all([
+        insertNote(noteAddedBySubject),
+        insertNote(noteAddedByAnotherUser),
+      ])
+        .then(([{ insertedId: insertedNoteOneId }, { insertedId: insertedNoteTwoId }]) => {
+          noteOneId = String(insertedNoteOneId);
+          noteTwoId = String(insertedNoteTwoId);
+        })
+        .then(() => addNoteIdsToSkill([noteOneId, noteTwoId], skill, evaluation))
+        .then(evalWithNotes => insertEvaluation(evalWithNotes, normalUserOneId))
+        .then(({ insertedId }) => {
+          evaluationId = insertedId;
+        })
+        .then(() =>
+          request(app)
+            .get(`${prefix}/evaluations/${evaluationId}`)
+            .set('Cookie', `${cookieName}=${normalUserOneToken}`)
+            .expect(200))
+        .then(({ body }) => {
+          expect(body.skills[`${evaluationId}_${skill}`].notes).to.eql([noteOneId, noteTwoId]);
+
+          expect(body.notes[noteOneId].userId).to.equal(normalUserOneId);
+          expect(body.notes[noteOneId].note).to.equal('My evaluation');
+          expect(body.notes[noteOneId].skillId).to.equal(skill);
+          expect(body.notes[noteOneId]).to.have.property('createdDate');
+
+          expect(body.notes[noteTwoId].userId).to.equal(normalUserTwoId);
+          expect(body.notes[noteTwoId].note).to.equal(`Someone else's evaluation`);
+
+          expect(body.users[normalUserOneId].username).to.equal('magic');
+          expect(body.users[normalUserOneId].avatarUrl).to.equal('https://www.tes.com/logo.svg');
+
+          expect(body.users[normalUserTwoId].username).to.equal('dragon-riders');
+        });
+    });
 
     it('sets evaluation view to subject if user is subject and admin', () =>
       insertEvaluation(evaluation, adminUserId)

@@ -4,7 +4,12 @@ import { connect } from 'react-redux';
 import { Grid, Row, Alert, Col } from 'react-bootstrap';
 
 import * as selectors from '../../../modules/user';
-import { actionCreators as evaluationsActionCreators, EVALUATION_VIEW, EVALUATION_STATUS, EVALUATION_FETCH_STATUS } from '../../../modules/user/evaluations';
+import {
+  actionCreators as evaluationsActionCreators,
+  EVALUATION_VIEW,
+  EVALUATION_STATUS,
+  EVALUATION_FETCH_STATUS,
+} from '../../../modules/user/evaluations';
 import { actionCreators as skillsActionCreators } from '../../../modules/user/skills';
 
 import Evaluation from './evaluation/Evaluation';
@@ -16,20 +21,25 @@ import './evaluation.scss';
 const { SUBJECT, MENTOR, ADMIN } = EVALUATION_VIEW;
 const { NEW, SELF_EVALUATION_COMPLETE } = EVALUATION_STATUS;
 
-// todo fix types
 type EvaluationPageComponentProps = {
   status?: string,
   levels?: string[],
   categories?: string[],
-  skillGroups: any,
+  skillGroups: UnhydratedSkillGroup[],
   view: string,
-  error: any,
+  error?: { message?: string },
   params: {
     evaluationId: string,
   },
   fetchStatus: boolean,
   evalActions: typeof evaluationsActionCreators,
   skillActions: typeof skillsActionCreators,
+};
+
+const loadEvaluation = ({ params: { evaluationId }, fetchStatus, evalActions }) => {
+  if (!fetchStatus) {
+    evalActions.retrieveEvaluation(evaluationId);
+  }
 };
 
 class EvaluationPageComponent extends React.Component<EvaluationPageComponentProps, any> {
@@ -40,11 +50,11 @@ class EvaluationPageComponent extends React.Component<EvaluationPageComponentPro
   }
 
   componentDidMount() {
-    const { params: { evaluationId }, fetchStatus, evalActions } = this.props;
+    loadEvaluation(this.props);
+  }
 
-    if (!fetchStatus) {
-      evalActions.retrieveEvaluation(evaluationId);
-    }
+  componentWillReceiveProps(nextProps) {
+    loadEvaluation(nextProps);
   }
 
   updateSkillStatus(skillId, newSkillStatus, skillUid) {
@@ -75,6 +85,7 @@ class EvaluationPageComponent extends React.Component<EvaluationPageComponentPro
         <Evaluation
           evaluationId={evaluationId}
           view={view}
+          categories={categories}
           levels={levels}
           status={status}
           updateSkillStatus={this.updateSkillStatus}
@@ -101,6 +112,7 @@ class EvaluationPageComponent extends React.Component<EvaluationPageComponentPro
           <Row>
             <Col md={20}>
               <Matrix
+                evaluationId={evaluationId}
                 categories={categories}
                 levels={levels}
                 skillGroups={skillGroups}

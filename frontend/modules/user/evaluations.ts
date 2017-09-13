@@ -1,7 +1,6 @@
 import { handleActions, createAction } from 'redux-actions';
 import * as keymirror from 'keymirror';
 import * as R from 'ramda';
-
 import api from '../../api';
 
 export const EVALUATION_VIEW = keymirror({
@@ -116,6 +115,9 @@ export const getSubjectName = (state, evalId) =>
 export const getEvaluationName = (state, evalId) =>
   R.path(['entities', evalId, 'template', 'name'], state);
 
+export const getEvaluationDate = (state, evalId: string) =>
+  R.path(['entities', evalId, 'createdDate'], state);
+
 export const getEvaluationFetchStatus = (state, evalId) =>
   R.path(['fetchStatus', evalId], state);
 
@@ -128,7 +130,7 @@ export const getEvaluationStatus = (state, evalId) =>
 export const getSkillGroups = (state, evalId) =>
   R.path(['entities', evalId, 'skillGroups'], state);
 
-export const getSkillUids = (state, evalId) =>
+export const getSkillUids = (state, evalId: string): string[] =>
   R.path(['entities', evalId, 'skillUids'], state);
 
 export const getLevels = (state, evalId) =>
@@ -139,10 +141,3 @@ export const getCategories = (state, evalId) =>
 
 export const getError = (state, evalId) =>
   R.path(['errors', evalId], state);
-
-export const getSkillGroupsWithReversedSkills = (state, evalId) => {
-  const reverseSkills = skillGroup =>
-    Object.assign({}, skillGroup, { skills: R.reverse(skillGroup.skills) });
-
-  return R.map(reverseSkills)(getSkillGroups(state, evalId) as any);
-};

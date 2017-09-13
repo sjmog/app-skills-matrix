@@ -1,5 +1,6 @@
 import * as authom from 'authom';
 import { Application } from 'express';
+import * as Promise from 'bluebird';
 
 import auth from '../models/auth';
 import users from '../models/users/index';

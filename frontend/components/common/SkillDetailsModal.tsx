@@ -2,11 +2,13 @@ import * as React from 'react';
 import { Modal, Button, Alert } from 'react-bootstrap';
 import { connect } from 'react-redux';
 
-import { SKILL_STATUS } from '../../../modules/user/evaluations';
-import * as selectors from '../../../modules/user/index';
-import SkillActions from '../../common/SkillActions';
+import { SKILL_STATUS } from '../../modules/user/evaluations';
+import * as selectors from '../../modules/user/index';
+import SkillActions from './SkillActions';
+import Notes from '../user/notes/Notes';
 
 type SkillDetailsModalProps = {
+  evaluationId: string,
   skillUid: string,
   showModal: boolean,
   onClose: () => void,
@@ -16,7 +18,7 @@ type SkillDetailsModalProps = {
   canUpdateSkillStatus: boolean,
 };
 
-const SkillDetailsModal = ({ skillUid, skill, error, showModal, onClose, updateSkillStatus, canUpdateSkillStatus }: SkillDetailsModalProps) => (
+const SkillDetailsModal = ({ evaluationId, skillUid, skill, error, showModal, onClose, updateSkillStatus, canUpdateSkillStatus }: SkillDetailsModalProps) => (
   <div>
     <Modal show={showModal} onHide={onClose}>
       <Modal.Header closeButton>
@@ -25,20 +27,17 @@ const SkillDetailsModal = ({ skillUid, skill, error, showModal, onClose, updateS
       <Modal.Body>
         { skill
           ? <div>
-            <dl>
-              <dt>id</dt>
-              <dd>{skill.id}</dd>
-              <dt>name</dt>
-              <dd>{skill.name}</dd>
-              <dt>criteria</dt>
-              <dd>{skill.criteria ? skill.criteria : '-'}</dd>
-              <dt>type</dt>
-              <dd>{skill.type ? skill.type : '-'}</dd>
-              <dt>questions</dt>
-              <dd>
-                {skill.questions ? <ul>{skill.questions.map(({ title }) => <li key={title}>{title}</li>)}</ul> : '-'}
-              </dd>
-            </dl>
+                <h4>Name</h4>
+                <p>{skill.name}</p>
+                <h4>Criteria</h4>
+                <p>{skill.criteria ? skill.criteria : '-'}</p>
+                <h4>Questions</h4>
+                <div>
+                  {skill.questions && skill.questions.length > 0
+                    ? <ul>{skill.questions.map(({ title }) => <li key={title}>{title}</li>)}</ul>
+                    : <p>-</p>
+                  }
+                </div>
             {
               canUpdateSkillStatus
                 ? <SkillActions
@@ -51,6 +50,11 @@ const SkillDetailsModal = ({ skillUid, skill, error, showModal, onClose, updateS
                 : false
             }
             { error ? <Alert bsStyle="danger">Something went wrong: {error}</Alert> : false }
+            <Notes
+              skillUid={skillUid}
+              skillId={skill.id}
+              evaluationId={evaluationId}
+            />
           </div>
           : null
         }

@@ -2,28 +2,15 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import * as ReactTooltip from 'react-tooltip';
 
-import { SKILL_STATUS } from '../../../modules/user/evaluations';
 import * as selectors from '../../../modules/user/index';
+import { skillColour }  from '../../common/helpers';
 
 type SkillProps = {
   skillUid: string,
-  skill: any,
+  skill: UnhydratedEvaluationSkill,
   viewSkillDetails: (skillUid: string) => void,
   isBeingEvaluated: boolean,
-};
-
-const skillColour = (currentStatus, previousStatus) => {
-  if (currentStatus === SKILL_STATUS.ATTAINED && previousStatus !== SKILL_STATUS.ATTAINED) {
-    return 'skill--newly-attained';
-  } else if (currentStatus === SKILL_STATUS.ATTAINED) {
-    return 'skill--attained';
-  } else if (currentStatus === SKILL_STATUS.FEEDBACK) {
-    return 'skill--feedback';
-  } else if (currentStatus === SKILL_STATUS.OBJECTIVE) {
-    return 'skill--objective';
-  }
-
-  return '';
+  hasNotes: boolean,
 };
 
 const skillState = (status) => {
@@ -43,8 +30,8 @@ const skillState = (status) => {
   }
 };
 
-const Skill = ({ skillUid, skill, viewSkillDetails, isBeingEvaluated }: SkillProps) => {
-  const statusClass = skill.status ? skillColour(skill.status.current, skill.status.previous) : '';
+const Skill = ({ skillUid, skill, viewSkillDetails, isBeingEvaluated, hasNotes }: SkillProps) => {
+  const statusClass = skill.status ? skillColour(skill.status.current, skill.status.previous, 'skill') : '';
   const beingEvaluatedClass = isBeingEvaluated ? 'skill--current' : false;
 
   const currentStateStatus = skillState(skill.status.current);
@@ -52,6 +39,14 @@ const Skill = ({ skillUid, skill, viewSkillDetails, isBeingEvaluated }: SkillPro
 
   return (
     <div aria-hidden role="button" className={`skill--card ${statusClass} ${beingEvaluatedClass} previous--${skill.status.previous}`} onClick={() => viewSkillDetails(skillUid)}>
+      {
+        hasNotes
+          ? <div className={'skill-card--notes'}>
+              <span data-tip data-for={`skill-${skillUid}-notes`} className={`state--icon--notes`} />
+              <ReactTooltip place="top" id={`skill-${skillUid}-notes`} type="dark" effect="solid">Skill has notes</ReactTooltip>
+            </div>
+          : false
+      }
       {skill.name}
       <div className={'skill-card--state'}>
         <span data-tip data-for={`skill-${skillUid}-previous`} className={`state--icon--${skill.status.previous}`} />
@@ -67,4 +62,5 @@ const Skill = ({ skillUid, skill, viewSkillDetails, isBeingEvaluated }: SkillPro
 export default connect((state, { skillUid }) => ({
   skill: selectors.getSkill(state, skillUid),
   isBeingEvaluated: selectors.getCurrentSkillUid(state) === skillUid,
+  hasNotes: selectors.hasNotes(state, skillUid),
 }))(Skill);

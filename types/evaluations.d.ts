@@ -18,6 +18,12 @@ type EvaluationViewModel = {
   skillGroups: { [id: string]: UnhydratedSkillGroup },
   skills: { [id: string]: UnhydratedEvaluationSkill },
   view: string,
+  createdDate: Date,
+};
+
+type HydratedEvaluationViewModel = EvaluationViewModel & {
+  notes: { [id: string]: NoteViewModel },
+  users: { [id: string]: UserDetailsViewModel },
 };
 
 type UnhydratedEvaluationSkill = {
@@ -27,8 +33,12 @@ type UnhydratedEvaluationSkill = {
   criteria: string,
   questions: { title: string }[],
   status: { current: string | null, previous: string | null },
+  notes?: string[],
 };
 
 type EvaluationSkillGroup = UnhydratedSkillGroup & { id: number };
 
 type EvaluationUser = { name: string, id: string, email: string };
+
+type PaginatedEvaluationSkill =
+  UnhydratedEvaluationSkill & { skillUid: string, level: string, category: string, skillGroupId: number };

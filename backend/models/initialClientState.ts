@@ -58,6 +58,13 @@ export const clientState = (user: User): Promise<ClientState> =>
       getMenteeEvaluations(user.id),
     ]).then(([mentor, template, evaluations, menteeEvaluations]) =>
       ({
+        entities: {
+          users: {
+            entities: {
+              [user.id]: user.userDetailsViewModel(),
+            },
+          },
+        },
         user: {
           userDetails: user ? user.userDetailsViewModel() : null,
           mentorDetails: mentor ? mentor.userDetailsViewModel() : null,

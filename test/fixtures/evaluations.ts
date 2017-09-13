@@ -334,6 +334,7 @@ export default [
           previous: null,
           current: 'ATTAINED',
         },
+        notes: ['noteId_1', 'noteId_2'],
       },
       {
         id: 2,
@@ -353,6 +354,7 @@ export default [
           previous: null,
           current: 'FEEDBACK',
         },
+        notes: [],
       },
       {
         id: 3,
@@ -490,6 +492,7 @@ export default [
           previous: 'FEEDBACK',
           current: null,
         },
+        notes: [],
       },
       {
         id: 4,
@@ -506,6 +509,7 @@ export default [
           previous: null,
           current: null,
         },
+        notes: [],
       },
       {
         id: 1,
@@ -525,6 +529,7 @@ export default [
           previous: 'ATTAINED',
           current: 'ATTAINED',
         },
+        notes: ['noteId_1', 'noteId_2'],
       },
       {
         id: 3,
@@ -541,6 +546,7 @@ export default [
           previous: 'OBJECTIVE',
           current: null,
         },
+        notes: [],
       },
       {
         id: 7,

@@ -64,14 +64,17 @@ export type Evaluation = {
   newEvaluationEmail: () => Email,
   feedbackData: () => EvaluationFeedback,
   getSelfEvaluationCompleteEmail: (user: User) => Email,
-  findSkill: (skillId: string) => Skill | null,
-  updateSkill: (skillId: string, status: string) => EvaluationUpdate,
+  findSkill: (skillId: number) => Skill | null,
+  updateSkill: (skillId: number, status: string) => EvaluationUpdate,
+  addSkillNote: (skillId: number, note: string) => EvaluationUpdate,
+  deleteSkillNote: (skillId: number, note: string) => EvaluationUpdate;
   isNewEvaluation: () => boolean,
   selfEvaluationComplete: () => EvaluationUpdate,
   selfEvaluationCompleted: () => boolean,
   mentorReviewComplete: () => EvaluationUpdate,
   mentorReviewCompleted: () => boolean,
   mergePreviousEvaluation: (previousEvaluation: Evaluation) => Evaluation,
+  getNoteIds: () => string[];
 };
 
 const arrayToKeyedObject = <T extends { id: string | number }>(evaluationId: string, arr: T[]) =>
@@ -95,8 +98,8 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
   const metadata = {
     createdDate,
     evaluationUrl: `/evaluations/${_id}`,
-    feedbackUrl: `/user/${user.id}/evaluations/${_id}/feedback`,
-    objectivesUrl: `/user/${user.id}/evaluations/${_id}/objectives`,
+    feedbackUrl: `/evaluations/${_id}/feedback`,
+    objectivesUrl: `/evaluations/${_id}/objectives`,
     id: _id.toString(),
     usersName: user.name,
     status,
@@ -113,6 +116,7 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
     skills: viewModelSkills,
     skillUids: R.keys(viewModelSkills),
     skillGroups: arrayToKeyedObject(_id.toString(), makeSkillsUnique(_id, skillGroups)),
+    createdDate,
   };
 
   return Object.freeze({
@@ -176,6 +180,28 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
         status,
       };
     },
+    addSkillNote(skillId: number, noteId: string) {
+      return {
+        id: _id,
+        user,
+        createdDate,
+        template,
+        skillGroups,
+        skills: skills.map(s => (s.id === skillId ? skill(s).addNote(noteId) : s)),
+        status,
+      };
+    },
+    deleteSkillNote(skillId: number, noteId: string) {
+      return {
+        id: _id,
+        user,
+        createdDate,
+        template,
+        skillGroups,
+        skills: skills.map(s => (s.id === skillId ? skill(s).deleteNote(noteId) : s)),
+        status,
+      };
+    },
     isNewEvaluation() {
       return status === STATUS.NEW;
     },
@@ -213,11 +239,13 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
         if (!previousSkill) {
           return Object.assign({}, skillToUpdate, { status: { previous: null, current: null } });
         }
+
         return Object.assign({}, skillToUpdate, {
           status: {
             previous: previousSkill.currentStatus(),
             current: previousSkill.statusForNextEvaluation(),
           },
+          notes: previousSkill.notes(),
         });
       };
       const updatedSkills = previousEvaluation ? R.map(updateSkill, skills) : skills;
@@ -230,6 +258,10 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
         skills: updatedSkills,
         status: STATUS.NEW,
       });
+    },
+    getNoteIds() {
+      const notes = R.map(R.prop('notes'), skills);
+      return R.flatten(R.reject(R.isNil, notes));
     },
   });
 };

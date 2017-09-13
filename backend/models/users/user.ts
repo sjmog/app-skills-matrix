@@ -5,7 +5,7 @@ type ErrorResponse = {
   message: string,
 };
 
-type UnhyrdatedUser = {
+export type UnhyrdatedUser = {
   _id: string,
   name: string,
   email: string,

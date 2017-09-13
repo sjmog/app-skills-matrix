@@ -36,7 +36,7 @@ const orderCategories = categories =>
 
 const category = skillGroup => skillGroup.category;
 
-export default (skills, skillGroups, levels, categories) =>
+export default (skills: UnhydratedEvaluationSkill[], skillGroups: UnhydratedSkillGroup[], levels: string[], categories: string[]): PaginatedEvaluationSkill[] =>
   R.compose(
     R.flatten,
     R.map(hydrateSkillsWithStaticData(skills)),
@@ -44,4 +44,4 @@ export default (skills, skillGroups, levels, categories) =>
     R.map(sortSkillGroupsByInverseLevel(levels)),
     R.groupBy(category) as any,
     R.values,
-  )(skillGroups);
+  )(skillGroups) as any;

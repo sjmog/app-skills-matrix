@@ -6,7 +6,7 @@ import SkillGroup from './SkillGroup';
 type LevelProps = {
   categories: string[],
   levelName: string,
-  skillGroups: any,
+  skillGroups: NormalizedSkillGroups,
   viewSkillDetails: (skillUid: string) => void,
 };
 

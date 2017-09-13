@@ -3,15 +3,22 @@ import * as R from 'ramda';
 
 import usersData from '../fixtures/users';
 import database from '../../backend/database';
-import { encrypt, decrypt } from '../../backend/models/evaluations/encryption';
+import { encrypt as encryptSkills, decrypt as decryptSkills } from '../../backend/models/evaluations/encryption';
+import { decrypt as decryptNote, encrypt as encryptNote } from '../../backend/models/notes/encryption';
 
 const users: any = database.collection('users');
 const templates: any = database.collection('templates');
 const skills: any = database.collection('skills');
 const evaluations: any = database.collection('evaluations');
 const actions: any = database.collection('actions');
+const notes: any = database.collection('notes');
 
 const prepopulateUsers = () => users.remove({}).then(() => users.insertMany(usersData));
+const addNoteIdsToSkill = (noteIds, skillId, oldEval) => {
+  const skillIndex = R.findIndex(R.propEq('id', skillId), oldEval.skills);
+  const skillNotesLens = R.lensPath(['skills', skillIndex, 'notes']);
+  return R.set(skillNotesLens, noteIds, oldEval);
+};
 
 export default {
   prepopulateUsers,
@@ -23,11 +30,16 @@ export default {
   skills,
   insertSkill: skill => skills.insertOne(Object.assign({}, skill)),
   evaluations,
-  insertEvaluation: (evaluation, userId) => evaluations.insertOne(encrypt(Object.assign({}, evaluation, { user: { id: String(userId) } }))),
-  getEvaluation: evaluationId => evaluations.findOne({ _id: new ObjectID(evaluationId) }).then(decrypt),
-  getEvaluations: () => evaluations.find({}).then(e => e.toArray()).then(R.map(decrypt)),
+  insertEvaluation: (evaluation, userId) => evaluations.insertOne(encryptSkills(Object.assign({}, evaluation, { user: { id: String(userId) } }))),
+  getEvaluation: evaluationId => evaluations.findOne({ _id: new ObjectID(evaluationId) }).then(decryptSkills),
+  getEvaluations: () => evaluations.find({}).then(e => e.toArray()).then(R.map(decryptSkills)),
   getAllActions: () => actions.find({}).then(e => e.toArray()),
   insertAction: userId => action => actions.insertOne(Object.assign({}, action, { user: { id: String(userId) } })),
-  clearDb: () => Promise.all([users.remove({}), templates.remove({}), skills.remove({}), evaluations.remove({}), actions.remove({})]),
+  clearDb: () => Promise.all([users.remove({}), templates.remove({}), skills.remove({}), evaluations.remove({}), actions.remove({}), notes.remove({})]),
   skillStatus: (skillList: { id: string }[], skillId) => R.prop('status', R.find(skill => skill.id === skillId, skillList)),
+  getSkillNotes: (skillList: {id: string}[], skillId) => R.prop('notes', R.find(skill => skill.id === skillId, skillList)),
+  getNotes: (userId, skillId) => notes.find({ userId, skillId }).then(e => e.toArray()).then(R.map(decryptNote)),
+  getNoteById: id => notes.findOne({ _id: new ObjectID(id) }),
+  insertNote: note => notes.insertOne(encryptNote(note)),
+  addNoteIdsToSkill,
 };

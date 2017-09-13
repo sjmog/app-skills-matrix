@@ -7,16 +7,16 @@ import './skill-actions.scss';
 
 const statusIcon = (currentStatus, previousStatus) => {
   if (currentStatus === SKILL_STATUS.ATTAINED && previousStatus !== SKILL_STATUS.ATTAINED) {
-    return <Glyphicon className="pull-right skill-status-icon skill-status-icon--newly-attained" glyph="ok-sign" />;
+    return <Glyphicon className="skill-status-icon skill-status-icon--newly-attained" glyph="ok-sign" />;
   } else if (currentStatus === SKILL_STATUS.ATTAINED) {
-    return <Glyphicon className="pull-right skill-status-icon skill-status-icon--attained" glyph="ok-sign" />;
+    return <Glyphicon className="skill-status-icon skill-status-icon--attained" glyph="ok-sign" />;
   } else if (currentStatus === SKILL_STATUS.FEEDBACK) {
-    return <Glyphicon className="pull-right skill-status-icon skill-status-icon--feedback" glyph="question-sign" />;
+    return <Glyphicon className="skill-status-icon skill-status-icon--feedback" glyph="question-sign" />;
   } else if (currentStatus === SKILL_STATUS.OBJECTIVE) {
-    return <Glyphicon className="pull-right skill-status-icon skill-status-icon--objective" glyph="exclamation-sign" />;
+    return <Glyphicon className="skill-status-icon skill-status-icon--objective" glyph="screenshot" />;
   }
 
-  return <Glyphicon className="pull-right skill-status-icon skill-status-icon--not-attained" glyph="remove-sign" />;
+  return <Glyphicon className="skill-status-icon skill-status-icon--not-attained" glyph="remove-sign" />;
 };
 
 type SkillActionsProps = {
@@ -36,7 +36,6 @@ const SkillActions = ({ skillStatus, onAttained, onNotAttained, onFeedbackReques
       <Button
         active={skillStatus.current === SKILL_STATUS.ATTAINED}
         bsStyle="default"
-        bsSize="large"
         onClick={onAttained}
       >
         {'Attained'}
@@ -44,7 +43,6 @@ const SkillActions = ({ skillStatus, onAttained, onNotAttained, onFeedbackReques
       <Button
         active={skillStatus.current === SKILL_STATUS.NOT_ATTAINED}
         bsStyle="default"
-        bsSize="large"
         onClick={onNotAttained}
       >
         {'Not attained'}
@@ -52,7 +50,6 @@ const SkillActions = ({ skillStatus, onAttained, onNotAttained, onFeedbackReques
       <Button
         active={skillStatus.current === SKILL_STATUS.FEEDBACK}
         bsStyle="default"
-        bsSize="large"
         onClick={onFeedbackRequest}
       >
         {'Feedback'}
@@ -60,7 +57,6 @@ const SkillActions = ({ skillStatus, onAttained, onNotAttained, onFeedbackReques
       <Button
         active={skillStatus.current === SKILL_STATUS.OBJECTIVE}
         bsStyle="default"
-        bsSize="large"
         onClick={onSetObjective}
       >
         {'Objective'}

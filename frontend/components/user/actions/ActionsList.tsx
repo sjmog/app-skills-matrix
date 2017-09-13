@@ -1,40 +1,21 @@
 import * as React from 'react';
-import { ListGroup, ListGroupItem } from 'react-bootstrap';
-import * as moment from 'moment';
-import * as CopyToClipboard from 'react-copy-to-clipboard';
+import { ListGroup } from 'react-bootstrap';
+import ActionItem from './ActionItem';
+
 import './actionList.scss';
 
 type ActionsListProps = {
-  actions: any,
+  actionSkillUids: string[],
   viewSkillDetails?: (skill: any) => void,
 };
 
-const ActionsList = ({ actions, viewSkillDetails }: ActionsListProps) =>
-  (
-    <div>
-      {
-        actions.map(
-          ({ createdDate, actions }) =>
-            (<div key={createdDate}>
-              <h2>{moment(createdDate).format('MMM Do YYYY')}</h2>
-              <ListGroup>
-                {
-                  actions.map(({ skill }) =>
-                    (<ListGroupItem key={skill.name}>
-                      {skill.name}
-                      {viewSkillDetails ? (
-                        <button className={'btn btn-default btn-modal'} onClick={() => viewSkillDetails(skill)}>Details</button>) : ''}
-                      <CopyToClipboard text={skill.name}>
-                        <button className={'btn btn-default btn-copy'} />
-                      </CopyToClipboard>
-                    </ListGroupItem>),
-                  )
-                }
-              </ListGroup>
-            </div>),
-        )
-      }
-    </div>
-  );
+const ActionsList = ({ actionSkillUids, viewSkillDetails }: ActionsListProps) => (
+  <ListGroup>
+    {
+      actionSkillUids.map(skillUid =>
+        <ActionItem key={skillUid} skillUid={skillUid} viewSkillDetails={viewSkillDetails} />)
+    }
+  </ListGroup>
+);
 
 export default ActionsList;

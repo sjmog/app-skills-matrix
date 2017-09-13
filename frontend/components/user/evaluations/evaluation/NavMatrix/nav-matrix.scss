@@ -1,0 +1,44 @@
+@import '../../../../common/variables';
+
+.nav_matrix__skill-group {
+  padding: 0 !important;
+}
+
+.nav_matrix__table {
+  background-color: transparent;
+}
+
+.nav_matrix__skill {
+  height: 15px;
+  width: 15px;
+  padding: 0;
+  border: 1px solid white;
+}
+
+.nav_matrix__skill:hover {
+  border: 4px solid #bddffc;
+}
+
+.nav_matrix__skill--selected {
+  border: 4px solid #337ab7;
+}
+
+.nav_matrix__skill--newly-attained {
+  background-color: $newly-attained;
+}
+
+.nav_matrix__skill--attained {
+  background-color: $attained;
+}
+
+.nav_matrix__skill--feedback {
+  background-color: $feedback;
+}
+
+.nav_matrix__skill--objective {
+  background-color: $objective;
+}
+
+.nav_matrix__skill--not-attained {
+  background-color: #f9f9f9;
+}

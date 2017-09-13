@@ -1,8 +1,8 @@
 import { expect } from 'chai';
+import * as R from 'ramda';
 import evaluationModel from '../../../../../../backend/models/evaluations/evaluation';
 import evaluations from '../../../../../fixtures/evaluations';
-import * as R from 'ramda';
-import reducer, { actionTypes, initialValues } from '../../../../../../frontend/modules/user/evaluation';
+import reducer, { actionTypes, initialState } from '../../../../../../frontend/modules/user/evaluation';
 import { ObjectID } from 'bson';
 
 const fixtureEvaluation = Object.assign({}, evaluations[0], { _id: new ObjectID() });
@@ -12,18 +12,9 @@ const evaluation = evaluationViewModel;
 const skills = R.prop('skills', evaluationViewModel);
 
 describe('Evaluation reducer', () => {
-  describe('INIT', () => {
-    it('sets the initial state', () => {
-      const state = undefined;
-      const action = { type: 'INIT' };
-
-      expect(reducer(state, action)).to.eql(initialValues);
-    });
-  });
-
   describe('SET_AS_CURRENT_EVALUATION', () => {
     it('sets the ID of the evaluation', () => {
-      const state = initialValues;
+      const state = initialState;
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
         payload: { evaluation, skills },
@@ -34,7 +25,7 @@ describe('Evaluation reducer', () => {
     });
 
     it('sets paginated view of skills in evaluation that are sorted by category and level', () => {
-      const state = initialValues;
+      const state = initialState;
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
         payload: { evaluation, skills },
@@ -114,7 +105,7 @@ describe('Evaluation reducer', () => {
     });
 
     it('sets current skill to be the first that is unevaluated', () => {
-      const state = initialValues;
+      const state = initialState;
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
         payload: { evaluation, skills },
@@ -129,7 +120,7 @@ describe('Evaluation reducer', () => {
     });
 
     it('sets current skill to be the last when all have been evaluated', () => {
-      const state = initialValues;
+      const state = initialState;
 
       const setStatusToAttained = skill => Object.assign({}, skill, { status: { current: 'ATTAINED' } });
       const evaluatedSkills = R.map(setStatusToAttained, skills);
@@ -148,7 +139,7 @@ describe('Evaluation reducer', () => {
     });
 
     it('sets first skill', () => {
-      const state = initialValues;
+      const state = initialState;
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
         payload: { evaluation, skills },
@@ -162,7 +153,7 @@ describe('Evaluation reducer', () => {
     });
 
     it('sets last skill', () => {
-      const state = initialValues;
+      const state = initialState;
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
         payload: { evaluation, skills },
@@ -177,7 +168,7 @@ describe('Evaluation reducer', () => {
     });
 
     it('sets first category', () => {
-      const state = initialValues;
+      const state = initialState;
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
         payload: { evaluation, skills },
@@ -188,7 +179,7 @@ describe('Evaluation reducer', () => {
     });
 
     it('sets last category', () => {
-      const state = initialValues;
+      const state = initialState;
       const action = {
         type: actionTypes.SET_AS_CURRENT_EVALUATION,
         payload: { evaluation, skills },
@@ -196,59 +187,6 @@ describe('Evaluation reducer', () => {
 
       const newState = reducer(state, action);
       expect(newState.lastCategory).to.equal('Dragon Slaying');
-    });
-  });
-
-  describe('NEXT_SKILL', () => {
-    it('sets current skill to be the next skill in the paginated view', () => {
-      const state = {
-        paginatedView: [{ skillUid: 1 }, { skillUid: 0 }, { skillUid: 2 }],
-        currentSkill: { skillUid: 1 },
-        lastSkill: { skillUid: 2 },
-      };
-      const action = { type: actionTypes.NEXT_SKILL };
-
-      const newState = reducer(state, action);
-      expect(newState.currentSkill).to.eql({ skillUid: 0 });
-    });
-
-    it('does not update current skill when current is the last skill', () => {
-      const state = {
-        paginatedView: [{ skillUid: 1 }, { skillUid: 0 }, { skillUid: 2 }],
-        currentSkill: { skillUid: 2 },
-        lastSkill: { skillUid: 2 },
-      };
-      const action = { type: actionTypes.NEXT_SKILL };
-
-      const newState = reducer(state, action);
-      expect(newState.currentSkill).to.eql({ skillUid: 2 });
-    });
-  });
-
-  describe('PREVIOUS_SKILL', () => {
-    it('sets current skill to be the previous skill in the paginated view', () => {
-      const state = {
-        paginatedView: [{ skillUid: 1 }, { skillUid: 0 }, { skillUid: 2 }],
-        currentSkill: { skillUid: 0 },
-        firstSkill: { skillUid: 1 },
-      };
-      const action = { type: actionTypes.PREVIOUS_SKILL };
-
-      const newState = reducer(state, action);
-      expect(newState.currentSkill).to.eql({ skillUid: 1 });
-    });
-
-    it('does not update current skill when current is the first skill', () => {
-      const state = {
-        paginatedView: [{ skillUid: 1 }, { skillUid: 0 }, { skillUid: 2 }],
-        currentSkill: { skillUid: 1 },
-        firstSkill: { skillUid: 1 },
-      };
-
-      const action = { type: actionTypes.PREVIOUS_SKILL };
-
-      const newState = reducer(state, action);
-      expect(newState.currentSkill).to.eql({ skillUid: 1 });
     });
   });
 
@@ -480,118 +418,6 @@ describe('Evaluation reducer', () => {
 
       const action = {
         type: actionTypes.NEXT_CATEGORY,
-        payload: {
-          0: {
-            id: 0,
-            status: {
-              current: 'ATTAINED',
-              previous: null,
-            },
-          },
-        },
-      };
-
-      const newState = reducer(state, action);
-      expect(newState.currentSkill).to.eql({ skillUid: 0, category: 'Magicness' });
-    });
-  });
-
-  describe('PREVIOUS_CATEGORY', () => {
-    it('sets current skill to the first unevaluated skill in the previous category', () => {
-      const state = {
-        paginatedView: [
-          { skillUid: 0, category: 'Magicness' },
-          { skillUid: 1, category: 'Magicness' },
-          { skillUid: 2, category: 'Dragon Flight' },
-        ],
-        currentSkill: { skillUid: 2, category: 'Dragon Flight' },
-        firstCategory: 'Magicness',
-      };
-
-      const action = {
-        type: actionTypes.PREVIOUS_CATEGORY,
-        payload: {
-          0: {
-            id: 0,
-            status: {
-              current: null,
-              previous: null,
-            },
-          },
-          1: {
-            id: 1,
-            status: {
-              current: 'ATTAINED',
-              previous: null,
-            },
-          },
-          2: {
-            id: 2,
-            status: {
-              current: null,
-              previous: null,
-            },
-          },
-        },
-      };
-
-      const newState = reducer(state, action);
-      expect(newState.currentSkill).to.eql({ skillUid: 0, category: 'Magicness' });
-    });
-
-    it('sets current skill to last skill in the previous category when all skills have been evaluated', () => {
-      const state = {
-        paginatedView: [
-          { skillUid: 0, category: 'Magicness' },
-          { skillUid: 1, category: 'Magicness' },
-          { skillUid: 2, category: 'Dragon Flight' },
-        ],
-        currentSkill: { skillUid: 2, category: 'Dragon Flight' },
-        firstCategory: 'Magicness',
-      };
-
-      const action = {
-        type: actionTypes.PREVIOUS_CATEGORY,
-        payload: {
-          0: {
-            id: 0,
-            status: {
-              current: 'ATTAINED',
-              previous: null,
-            },
-          },
-          1: {
-            id: 1,
-            status: {
-              current: 'ATTAINED',
-              previous: null,
-            },
-          },
-          2: {
-            id: 2,
-            status: {
-              current: null,
-              previous: null,
-            },
-          },
-        },
-      };
-
-      const newState = reducer(state, action);
-      expect(newState.currentSkill).to.eql({ skillUid: 1, category: 'Magicness' });
-    });
-
-    it('does not update current skill when current is in the first category', () => {
-      const state = {
-        paginatedView: [
-          { skillUid: 0, category: 'Magicness' },
-        ],
-        currentSkill: { skillUid: 0, category: 'Magicness' },
-        firstCategory: 'Magicness',
-      };
-
-      const action = {
-        type: actionTypes.PREVIOUS_CATEGORY,
         payload: {
           0: {
             id: 0,

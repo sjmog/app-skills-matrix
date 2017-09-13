@@ -1,7 +1,10 @@
- import { ObjectID } from 'mongodb';
+import { ObjectID } from 'mongodb';
+import * as R from 'ramda';
+import * as Promise from 'bluebird';
 
 import database from '../../database';
 import user, { newUser, User } from './user';
+import users, { Users } from './users';
 
 const collection: any = database.collection('users');
 
@@ -27,6 +30,9 @@ export default {
     .then(res => (res ? user(res) : null)),
   getUserById: (id: string): Promise<User> => collection.findOne({ _id: new ObjectID(id) })
     .then(res => (res ? user(res) : null)),
+  getUsersById: (ids: string[]) : Promise<Users> => collection.find({ _id: { $in: R.map(i => new ObjectID(i), ids) } })
+     .then(res => res.toArray())
+     .then(users),
   updateUser: (original: { id: string }, updates: any) => collection.updateOne({ _id: new ObjectID(original.id) }, { $set: updates })
     .then(() => collection.findOne({ _id: new ObjectID(original.id) }))
     .then(res => (res ? user(res) : null)),

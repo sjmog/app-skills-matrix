@@ -3,16 +3,26 @@ import user, * as fromUser from './user';
 import evaluation, * as fromEvaluation from './evaluation';
 import evaluations, * as fromEvaluations from './evaluations';
 import skills, * as fromSkills from './skills';
-import actions, * as fromActions from './actions';
+import notes, * as fromNotes from './notes';
+import users, * as fromUsers from './users';
 
-const entities = combineReducers({ evaluations, skills });
+const entities = combineReducers({ evaluations, skills, notes, users });
 
-export default combineReducers({ user, entities, actions, evaluation });
+export default combineReducers({ user, entities, evaluation });
 
 /* USER SELECTORS */
 
-export const getUsername = ({ user }) =>
-  fromUser.getUsername(user);
+export const getLoggedInUsername = ({ user }) =>
+  fromUser.getLoggedInUsername(user);
+
+export const getLoggedInUserId = ({ user }) =>
+  fromUser.getLoggedInUserId(user);
+
+export const getFeedbackUrlForLatestEval = ({ user }) =>
+  fromUser.getFeedbackUrlForLatestEval(user);
+
+export const getObjectivesUrlForLatestEval = ({ user }) =>
+  fromUser.getObjectivesUrlForLatestEval(user);
 
 /* EVALUATION SELECTORS */
 
@@ -25,32 +35,34 @@ export const getCurrentSkill = ({ evaluation }) =>
 export const getCurrentSkillUid = ({ evaluation }) =>
   fromEvaluation.getCurrentSkillUid(evaluation);
 
-export const getFirstCategory = ({ evaluation }) =>
-  fromEvaluation.getFirstCategory(evaluation);
-
 export const getLastCategory = ({ evaluation }) =>
   fromEvaluation.getLastCategory(evaluation);
-
-export const getFirstSkill = ({ evaluation }) =>
-  fromEvaluation.getFirstSkill(evaluation);
 
 export const getLastSkill = ({ evaluation }) =>
   fromEvaluation.getLastSkill(evaluation);
 
-
 /* SKILLS SELECTORS */
 
-export const getSkillStatus = ({ entities: { skills } }, skillUid) =>
+export const getSkillStatus = ({ entities: { skills } }, skillUid: string) =>
   fromSkills.getSkillStatus(skills, skillUid);
 
-export const getSkill = ({ entities: { skills } }, skillUid) =>
+export const getSkill = ({ entities: { skills } }, skillUid: string) =>
   fromSkills.getSkill(skills, skillUid);
 
-export const getErringSkills = ({ entities: { skills } }, skillUids) =>
+export const getErringSkills = ({ entities: { skills } }, skillUids: string[]) =>
   fromSkills.getErringSkills(skills, skillUids);
 
-export const getSkillError = ({ entities: { skills } }, skillUid) =>
+export const getSkillError = ({ entities: { skills } }, skillUid: string) =>
   fromSkills.getSkillError(skills, skillUid);
+
+export const getNotesForSkill = ({ entities: { skills } }, skillUid: string) =>
+  fromSkills.getNotesForSkill(skills, skillUid);
+
+export const hasNotes = ({ entities: { skills } }, skillUid: string) =>
+  fromSkills.hasNotes(skills, skillUid);
+
+export const getSkillsWithCurrentStatus = ({ entities: { skills } }, status, skillUids: string[]) =>
+  fromSkills.getSkillsWithCurrentStatus(skills, status, skillUids);
 
 /* EVALUATIONS SELECTORS */
 
@@ -59,6 +71,9 @@ export const getSubjectName = ({ entities: { evaluations } }, evalId) =>
 
 export const getEvaluationName = ({ entities: { evaluations } }, evalId) =>
   fromEvaluations.getEvaluationName(evaluations, evalId);
+
+export const getEvaluationDate = ({ entities: { evaluations } }, evalId) =>
+  fromEvaluations.getEvaluationDate(evaluations, evalId);
 
 export const getEvaluationFetchStatus = ({ entities: { evaluations } }, category) =>
   fromEvaluations.getEvaluationFetchStatus(evaluations, category);
@@ -81,28 +96,18 @@ export const getCategories = ({ entities: { evaluations } }, evalId) =>
 export const getError = ({ entities: { evaluations } }, evalId) =>
   fromEvaluations.getError(evaluations, evalId);
 
-export const getSkillGroupsWithReversedSkills = ({ entities: { evaluations } }, evalId) =>
-  fromEvaluations.getSkillGroupsWithReversedSkills(evaluations, evalId);
-
-export const getSkillUids = ({ entities: { evaluations } }, evalId) =>
+export const getSkillUids = ({ entities: { evaluations } }, evalId: string) =>
   fromEvaluations.getSkillUids(evaluations, evalId);
 
-/* ACTIONS SELECTORS */
+/* NOTES SELECTORS */
 
-export const getFeedbackForEvaluation = ({ actions }, evaluationId) =>
-  fromActions.getFeedbackForEvaluation(actions, evaluationId);
+export const getSortedNotes = ({ entities: { notes } }, noteIds: string[]) =>
+  fromNotes.getSortedNotes(notes, noteIds);
 
-export const getFeedbackRetrievedStatus = ({ actions }) =>
-  fromActions.getFeedbackRetrievedStatus(actions);
+export const getNotesError = ({ entities: { notes } }) =>
+  fromNotes.getNotesError(notes);
 
-export const getFeedbackError = ({ actions }) =>
-  fromActions.getFeedbackError(actions);
+/* USERS SELECTORS */
 
-export const geObjectivesForEvaluation = ({ actions }, evaluationId) =>
-  fromActions.geObjectivesForEvaluation(actions, evaluationId);
-
-export const getObjectivesRetrievedStatus = ({ actions }) =>
-  fromActions.getObjectivesRetrievedStatus(actions);
-
-export const getObjectivesError = ({ actions }) =>
-  fromActions.getObjectivesError(actions);
+export const getUser = ({ entities: { users } }, userId: string) =>
+  fromUsers.getUser(users, userId);

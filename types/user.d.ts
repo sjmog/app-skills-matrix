@@ -8,3 +8,5 @@ type UserDetailsViewModel = {
   templateId: string,
 };
 
+type NormalizedUsers = { [id: string]: UserDetailsViewModel };
+
