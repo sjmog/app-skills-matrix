@@ -11,7 +11,7 @@ type NoteViewModel = {
   note: string,
   userId: string,
   skillId: number,
-  createdDate: string,
+  createdDate: Date,
 };
 
 type NormalizedNotes = { [id: string]: NoteViewModel };

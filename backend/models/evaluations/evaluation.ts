@@ -182,7 +182,7 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
     },
     addSkillNote(skillId: number, noteId: string) {
       return {
-        id: _id,
+        id: _id.toString(),
         user,
         createdDate,
         template,
@@ -193,7 +193,7 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
     },
     deleteSkillNote(skillId: number, noteId: string) {
       return {
-        id: _id,
+        id: _id.toString(),
         user,
         createdDate,
         template,
