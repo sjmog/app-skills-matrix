@@ -10,6 +10,7 @@ export const EVALUATION_VIEW = keymirror({
 });
 
 export const SKILL_STATUS = keymirror({
+  NEW: null,
   ATTAINED: null,
   NOT_ATTAINED: null,
   FEEDBACK: null,

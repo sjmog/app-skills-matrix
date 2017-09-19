@@ -67,6 +67,10 @@ dd {
   background-color: $objective;
 }
 
+.skill--new {
+  background-color: $new;
+}
+
 .skill--not-attained {
   background-color: white;
 }
@@ -130,6 +134,11 @@ dd {
   font-family: 'Glyphicons Halflings';
 }
 .state--icon--FEEDBACK::before {
+  content: '\e085';
+  font-family: 'Glyphicons Halflings';
+}
+
+.state--icon--NEW::before {
   content: '\e085';
   font-family: 'Glyphicons Halflings';
 }

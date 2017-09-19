@@ -27,30 +27,33 @@ const Skill = ({ evaluationId, skill, skillStatus, updateSkillStatus, nextUneval
   return (
     <div>
       <Panel key={skillUid}>
+        {skillStatus.previous === SKILL_STATUS.NEW ?
+          <p>Note: This skill is new since your last evaluation.</p>
+          : null}
         <h4 className="skill-header__title">{name}</h4>
         <SkillBody
           criteria={criteria}
           questions={questions}
         />
-          <SkillActions
-            skillStatus={skillStatus}
-            onAttained={() => updateSkillStatus(id, SKILL_STATUS.ATTAINED, skillUid)}
-            onNotAttained={() => updateSkillStatus(id, SKILL_STATUS.NOT_ATTAINED, skillUid)}
-            onFeedbackRequest={() => updateSkillStatus(id, SKILL_STATUS.FEEDBACK, skillUid)}
-            onSetObjective={() => updateSkillStatus(id, SKILL_STATUS.OBJECTIVE, skillUid)}
-          />
-          <ButtonGroup className="skill__next-skill">
-            <Button
-              bsStyle="primary"
-              disabled={isLastSkill || !skillStatus.current}
-              onClick={() => nextUnevaluatedSkill()}
-            >
-              <strong>Next</strong>
-              {' '}
-              <Glyphicon glyph="chevron-right"/>
-            </Button>
-          </ButtonGroup>
-        <Notes evaluationId={evaluationId} skillId={id} skillUid={skillUid}/>
+        <SkillActions
+          skillStatus={skillStatus}
+          onAttained={() => updateSkillStatus(id, SKILL_STATUS.ATTAINED, skillUid)}
+          onNotAttained={() => updateSkillStatus(id, SKILL_STATUS.NOT_ATTAINED, skillUid)}
+          onFeedbackRequest={() => updateSkillStatus(id, SKILL_STATUS.FEEDBACK, skillUid)}
+          onSetObjective={() => updateSkillStatus(id, SKILL_STATUS.OBJECTIVE, skillUid)}
+        />
+        <ButtonGroup className="skill__next-skill">
+          <Button
+            bsStyle="primary"
+            disabled={isLastSkill || !skillStatus.current}
+            onClick={() => nextUnevaluatedSkill()}
+          >
+            <strong>Next</strong>
+            {' '}
+            <Glyphicon glyph="chevron-right" />
+          </Button>
+        </ButtonGroup>
+        <Notes evaluationId={evaluationId} skillId={id} skillUid={skillUid} />
       </Panel>
     </div>
   );

@@ -4,7 +4,7 @@ import * as R from 'ramda';
 import { DatabaseObject } from '../../database';
 import { Email } from '../../services/email';
 import { User } from '../users/user';
-import skill, { Skill } from './skill';
+import skill, { Skill, SKILL_STATUS } from './skill';
 import { Skill as TemplateSkill } from '../matrices/skill';
 import { EvaluationTemplate, Template } from '../matrices/template';
 import { ObjectID } from 'mongodb';
@@ -237,7 +237,7 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
       const updateSkill = (skillToUpdate) => {
         const previousSkill = previousEvaluation.findSkill(skillToUpdate.id);
         if (!previousSkill) {
-          return Object.assign({}, skillToUpdate, { status: { previous: null, current: null } });
+          return Object.assign({}, skillToUpdate, { status: { previous: SKILL_STATUS.NEW, current: null } });
         }
 
         return Object.assign({}, skillToUpdate, {

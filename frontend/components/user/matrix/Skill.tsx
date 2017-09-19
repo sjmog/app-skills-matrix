@@ -4,6 +4,7 @@ import * as ReactTooltip from 'react-tooltip';
 
 import * as selectors from '../../../modules/user/index';
 import { skillColour }  from '../../common/helpers';
+import { SKILL_STATUS } from '../../../modules/user/evaluations';
 
 type SkillProps = {
   skillUid: string,
@@ -17,13 +18,13 @@ const skillState = (status) => {
   const currentStatus = !status ? 'NOT_ATTAINED' : status;
 
   switch (currentStatus) {
-    case 'NOT_ATTAINED':
+    case SKILL_STATUS.NOT_ATTAINED:
       return ['not-attained', 'not attained'];
-    case 'ATTAINED':
+    case SKILL_STATUS.ATTAINED:
       return ['attained', 'attained'];
-    case 'FEEDBACK':
+    case SKILL_STATUS.FEEDBACK:
       return ['feedback', 'requires feedback'];
-    case 'OBJECTIVE':
+    case SKILL_STATUS.OBJECTIVE:
       return ['objective', 'current objective'];
     default:
       return ['not-attained', 'not attained'];

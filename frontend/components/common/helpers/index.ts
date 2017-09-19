@@ -2,7 +2,10 @@ import * as R from 'ramda';
 import { SKILL_STATUS } from '../../../modules/user/evaluations';
 
 const skillColour = (currentStatus: string, previousStatus: string, prefix: string): string => {
-  if (currentStatus === SKILL_STATUS.ATTAINED && previousStatus !== SKILL_STATUS.ATTAINED) {
+
+  if (currentStatus === SKILL_STATUS.ATTAINED && previousStatus === SKILL_STATUS.NEW) {
+    return `${prefix}--new`;
+  } else if (currentStatus === SKILL_STATUS.ATTAINED && previousStatus !== SKILL_STATUS.ATTAINED) {
     return `${prefix}--newly-attained`;
   } else if (currentStatus === SKILL_STATUS.ATTAINED) {
     return `${prefix}--attained`;
