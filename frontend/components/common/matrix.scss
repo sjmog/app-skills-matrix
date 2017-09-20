@@ -67,10 +67,6 @@ dd {
   background-color: $objective;
 }
 
-.skill--new {
-  background-color: $new;
-}
-
 .skill--not-attained {
   background-color: white;
 }
@@ -121,12 +117,12 @@ dd {
   font-family: 'Glyphicons Halflings';
 }
 .state--icon--ATTAINED::before {
-  content: '\e006';
+  content: '\e084';
   font-family: 'Glyphicons Halflings';
 }
 .state--icon--null::before,
 .state--icon--NOT_ATTAINED::before {
-  content: '\e014';
+  content: '\e083';
   font-family: 'Glyphicons Halflings';
 }
 .state--icon--OBJECTIVE::before {
@@ -139,7 +135,7 @@ dd {
 }
 
 .state--icon--NEW::before {
-  content: '\e085';
+  content: '\e006';
   font-family: 'Glyphicons Halflings';
 }
 
