@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { Label, Col, ButtonToolbar, ButtonGroup, Button, Glyphicon } from 'react-bootstrap';
+import { default as AnimateOnChange } from 'react-animate-on-change';
+import { Label, Col, ButtonToolbar, ButtonGroup, Button, Glyphicon, Tooltip, OverlayTrigger } from 'react-bootstrap';
 
 import '../evaluation.scss';
 
@@ -11,11 +12,30 @@ type CategoryPageHeaderProps = {
   evaluationComplete: (evaluationId: string) => void,
 };
 
+const newCategoryTooltip = (
+  <Tooltip id="newCategoryTooltip">
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
+    aliqua.
+    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+  </Tooltip>
+);
+
 class CategoryPageHeader extends React.Component<CategoryPageHeaderProps, any> {
   constructor(props) {
     super(props);
-    this.state = { isLoading: false };
+    this.state = {
+      isLoading: false,
+      newCategory: false,
+    };
     this.handleEvalCompleteClick = this.handleEvalCompleteClick.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.currentCategory !== nextProps.currentCategory) {
+      this.setState({ newCategory: true });
+    } else {
+      this.setState({ newCategory: false });
+    }
   }
 
   handleEvalCompleteClick() {
@@ -32,7 +52,16 @@ class CategoryPageHeader extends React.Component<CategoryPageHeaderProps, any> {
     return (
       <div>
         <Col md={8} className="evaluation-header">
-          <h3 className="evaluation-header__category-label"><Label bsStyle="primary">{currentCategory}</Label></h3>
+          <OverlayTrigger trigger={['hover', 'focus']} placement="right" overlay={newCategoryTooltip}>
+            <span>
+            <AnimateOnChange
+              baseClassName="evaluation-header__category-label"
+              animationClassName="evaluation-header__category-label--stretch"
+              animate={this.state.newCategory}>
+              {currentCategory}
+            </AnimateOnChange>
+            </span>
+          </OverlayTrigger>
           <ButtonToolbar className="pull-right">
             <ButtonGroup>
               <Button
