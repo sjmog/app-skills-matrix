@@ -71,6 +71,10 @@ dd {
   background-color: white;
 }
 
+.skill--new {
+  background-color: white;
+}
+
 .skillGroupContainer {
   display: flex;
   flex-direction: column;
@@ -117,12 +121,12 @@ dd {
   font-family: 'Glyphicons Halflings';
 }
 .state--icon--ATTAINED::before {
-  content: '\e006';
+  content: '\e084';
   font-family: 'Glyphicons Halflings';
 }
 .state--icon--null::before,
 .state--icon--NOT_ATTAINED::before {
-  content: '\e014';
+  content: '\e083';
   font-family: 'Glyphicons Halflings';
 }
 .state--icon--OBJECTIVE::before {
@@ -131,6 +135,11 @@ dd {
 }
 .state--icon--FEEDBACK::before {
   content: '\e085';
+  font-family: 'Glyphicons Halflings';
+}
+
+.state--icon--NEW::before {
+  content: '\e006';
   font-family: 'Glyphicons Halflings';
 }
 

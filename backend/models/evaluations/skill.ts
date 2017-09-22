@@ -2,6 +2,7 @@ import * as keymirror from 'keymirror';
 import * as R from 'ramda';
 
 export const SKILL_STATUS = keymirror({
+  NEW: null,
   ATTAINED: null,
   NOT_ATTAINED: null,
   FEEDBACK: null,

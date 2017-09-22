@@ -458,7 +458,7 @@ export default [
         version: 1,
         questions: [],
         status: {
-          previous: null,
+          previous: 'NEW',
           current: null,
         },
       },
@@ -470,7 +470,7 @@ export default [
         version: 1,
         questions: [],
         status: {
-          previous: null,
+          previous: 'NEW',
           current: null,
         },
       },
@@ -556,7 +556,7 @@ export default [
         version: 1,
         questions: [],
         status: {
-          previous: null,
+          previous: 'NEW',
           current: null,
         },
       },
@@ -568,7 +568,7 @@ export default [
         version: 1,
         questions: [],
         status: {
-          previous: null,
+          previous: 'NEW',
           current: null,
         },
       },
@@ -580,7 +580,7 @@ export default [
         version: 1,
         questions: [],
         status: {
-          previous: null,
+          previous: 'NEW',
           current: null,
         },
       },
@@ -592,7 +592,7 @@ export default [
         version: 1,
         questions: [],
         status: {
-          previous: null,
+          previous: 'NEW',
           current: null,
         },
       },
@@ -604,7 +604,7 @@ export default [
         version: 1,
         questions: [],
         status: {
-          previous: null,
+          previous: 'NEW',
           current: null,
         },
       },
@@ -616,7 +616,7 @@ export default [
         version: 1,
         questions: [],
         status: {
-          previous: null,
+          previous: 'NEW',
           current: null,
         },
       },

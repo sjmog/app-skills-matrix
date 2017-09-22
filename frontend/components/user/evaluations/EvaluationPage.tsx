@@ -108,6 +108,7 @@ class EvaluationPageComponent extends React.Component<EvaluationPageComponentPro
             <p className="skill--legend skill--objective state--icon--OBJECTIVE">Objective</p>
             <p className="skill--legend skill--feedback state--icon--FEEDBACK">Feedback</p>
             <p className="skill--legend skill--not-attained state--icon--NOT_ATTAINED">Not attained</p>
+            <p className="skill--legend skill--new state--icon--NEW">New skill</p>
           </Row>
           <Row>
             <Col md={20}>
