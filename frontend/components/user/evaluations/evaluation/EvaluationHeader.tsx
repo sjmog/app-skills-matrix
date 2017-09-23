@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { Label, Col, ButtonToolbar, ButtonGroup, Button, Glyphicon } from 'react-bootstrap';
+import { default as AnimateOnChange } from 'react-animate-on-change';
+import { Label, Col, ButtonToolbar, ButtonGroup, Button, Glyphicon, Tooltip, OverlayTrigger } from 'react-bootstrap';
 
 import '../evaluation.scss';
 
@@ -14,8 +15,19 @@ type CategoryPageHeaderProps = {
 class CategoryPageHeader extends React.Component<CategoryPageHeaderProps, any> {
   constructor(props) {
     super(props);
-    this.state = { isLoading: false };
+    this.state = {
+      isLoading: false,
+      newCategory: false,
+    };
     this.handleEvalCompleteClick = this.handleEvalCompleteClick.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.currentCategory !== nextProps.currentCategory) {
+      this.setState({ newCategory: true });
+    } else {
+      this.setState({ newCategory: false });
+    }
   }
 
   handleEvalCompleteClick() {
@@ -32,7 +44,12 @@ class CategoryPageHeader extends React.Component<CategoryPageHeaderProps, any> {
     return (
       <div>
         <Col md={8} className="evaluation-header">
-          <h3 className="evaluation-header__category-label"><Label bsStyle="primary">{currentCategory}</Label></h3>
+          <AnimateOnChange
+            baseClassName="evaluation-header__category-label"
+            animationClassName="evaluation-header__category-label--stretch"
+            animate={this.state.newCategory}>
+            {currentCategory}
+          </AnimateOnChange>
           <ButtonToolbar className="pull-right">
             <ButtonGroup>
               <Button
