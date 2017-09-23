@@ -106,7 +106,7 @@ export default handleActions({
 }, initialState);
 
 export const getSubjectName = (state, evalId) =>
-  R.path(['entities', evalId, 'subject', 'name'], state);
+  R.path(['entities', evalId, 'subject', 'name'], state) || 'Unnamed user';
 
 export const getEvaluationName = (state, evalId) =>
   R.path(['entities', evalId, 'template', 'name'], state);

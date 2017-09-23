@@ -4,9 +4,9 @@ type EvaluationMetadataViewModel = {
   feedbackUrl: string,
   objectivesUrl: string,
   id: string,
-  usersName: string,
+  subject: EvaluationUser,
   status: string,
-  templateName: string,
+  template: TemplateViewModel,
   view: string,
 };
 
