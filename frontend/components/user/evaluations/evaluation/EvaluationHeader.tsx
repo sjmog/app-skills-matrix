@@ -12,14 +12,6 @@ type CategoryPageHeaderProps = {
   evaluationComplete: (evaluationId: string) => void,
 };
 
-const newCategoryTooltip = (
-  <Tooltip id="newCategoryTooltip">
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
-    aliqua.
-    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-  </Tooltip>
-);
-
 class CategoryPageHeader extends React.Component<CategoryPageHeaderProps, any> {
   constructor(props) {
     super(props);
@@ -52,16 +44,12 @@ class CategoryPageHeader extends React.Component<CategoryPageHeaderProps, any> {
     return (
       <div>
         <Col md={8} className="evaluation-header">
-          <OverlayTrigger trigger={['hover', 'focus']} placement="right" overlay={newCategoryTooltip}>
-            <span>
-            <AnimateOnChange
-              baseClassName="evaluation-header__category-label"
-              animationClassName="evaluation-header__category-label--stretch"
-              animate={this.state.newCategory}>
-              {currentCategory}
-            </AnimateOnChange>
-            </span>
-          </OverlayTrigger>
+          <AnimateOnChange
+            baseClassName="evaluation-header__category-label"
+            animationClassName="evaluation-header__category-label--stretch"
+            animate={this.state.newCategory}>
+            {currentCategory}
+          </AnimateOnChange>
           <ButtonToolbar className="pull-right">
             <ButtonGroup>
               <Button
