@@ -13,7 +13,6 @@ import actions from '../models/actions/index';
 import notes from '../models/notes';
 import { Notes } from '../models/notes/notes';
 
-
 import sendMail from '../services/email/index';
 import {
   NOT_AUTHORIZED_TO_ADD_NOTE,
