@@ -353,7 +353,7 @@ describe('evaluations', () => {
               status: 'ATTAINED',
             })
             .set('Cookie', `${cookieName}=${normalUserOneToken}`)
-            .expect(403)));
+            .expect(400)));
 
     it('prevents updates by the subject of an evaluation if the status is unknown', () =>
       insertEvaluation(Object.assign({}, evaluation, { status: 'FOO_BAR' }), normalUserOneId)
@@ -370,7 +370,7 @@ describe('evaluations', () => {
               status: 'ATTAINED',
             })
             .set('Cookie', `${cookieName}=${normalUserOneToken}`)
-            .expect(403)));
+            .expect(400)));
 
     it('prevents updates by the subject of the evaluation if the evaluation has been reviewed by their mentor', () =>
       insertEvaluation(Object.assign({}, evaluation, { status: MENTOR_REVIEW_COMPLETE }), normalUserOneId)
@@ -387,7 +387,7 @@ describe('evaluations', () => {
               status: 'ATTAINED',
             })
             .set('Cookie', `${cookieName}=${normalUserOneToken}`)
-            .expect(403)));
+            .expect(400)));
 
     it('prevents a user that is not the subject, from updating a skill', () =>
       insertEvaluation(evaluation, normalUserOneId)

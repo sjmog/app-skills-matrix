@@ -100,33 +100,28 @@ const handlerFunctions = Object.freeze({
     subjectUpdateSkillStatus: {
       middleware: [
         ensureLoggedIn,
+        getRequestedEvaluation,
+        getUserPermissions,
       ],
       handle: (req, res, next) => {
-        const { evaluationId } = req.params;
         const { skillId, status } = req.body;
-        const { user } = res.locals;
+        const { user, permissions, requestedEvaluation } = res.locals;
 
-        Promise.try(() => evaluations.getEvaluationById(evaluationId))
-          .then((evaluation) => {
-            if (!evaluation) {
-              return res.status(404).json(EVALUATION_NOT_FOUND());
-            }
+        const skill = requestedEvaluation.findSkill(skillId);
+        if (!skill) {
+          return res.status(400).json(SKILL_NOT_FOUND());
+        }
 
-            if (user.id !== evaluation.user.id) {
-              return res.status(403).json(NOT_AUTHORIZED_TO_UPDATE_SKILL_STATUS());
-            }
+        // TODO: this needs to be moved into requestedEvaluation.updateSkill(...)
+        // will do this once I'm done the rest of the permission model
+        if (!requestedEvaluation.isNewEvaluation()) {
+          return res.status(400).json(SUBJECT_CAN_ONLY_UPDATE_NEW_EVALUATION());
+        }
 
-            const skill = evaluation.findSkill(skillId);
-            if (!skill) {
-              return res.status(400).json(SKILL_NOT_FOUND());
-            }
-
-            return evaluation.isNewEvaluation()
-              ? evaluations.updateEvaluation(evaluation.updateSkill(skillId, status))
-                .then(() => addActions(user, skill, evaluation, status))
-                .then(() => res.sendStatus(204))
-              : res.status(403).json(SUBJECT_CAN_ONLY_UPDATE_NEW_EVALUATION());
-          })
+        permissions.updateSkill()
+          .then(() => evaluations.updateEvaluation(requestedEvaluation.updateSkill(skillId, status)))
+          .then(() => addActions(user, skill, requestedEvaluation, status))
+          .then(() => res.sendStatus(204))
           .catch(next);
       },
     },

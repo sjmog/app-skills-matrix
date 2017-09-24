@@ -1,5 +1,6 @@
-import { User } from './user';
 import * as Promise from 'bluebird';
+import { User } from './user';
+
 import {
   NOT_AUTHORIZED_TO_VIEW_EVALUATION,
   ONLY_USER_AND_MENTOR_CAN_SEE_ACTIONS,
@@ -8,6 +9,7 @@ import {
 export type Permissions = {
   viewActions: () => Promise<void>,
   viewEvaluation: () => Promise<void>,
+  updateSkill: () => Promise<void>,
 };
 
 const permissionError = (error: ErrorMessage) => Promise.reject({ status: 403, data: error });
@@ -20,6 +22,7 @@ const permissions = (loggedInUser: User, requestedUser: User): Permissions => {
   return {
     viewActions: () => (isAdmin || isMentor || isUser) ? Promise.resolve() : permissionError(ONLY_USER_AND_MENTOR_CAN_SEE_ACTIONS()),
     viewEvaluation: () => (isAdmin || isMentor || isUser) ? Promise.resolve() : permissionError(NOT_AUTHORIZED_TO_VIEW_EVALUATION()),
+    updateSkill: () => (isAdmin || isMentor || isUser) ? Promise.resolve() : permissionError(NOT_AUTHORIZED_TO_VIEW_EVALUATION()),
   };
 };
 
