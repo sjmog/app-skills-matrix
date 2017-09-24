@@ -487,7 +487,7 @@ describe('evaluations', () => {
               status: 'ATTAINED',
             })
             .set('Cookie', `${cookieName}=${normalUserTwoToken}`)
-            .expect(403)));
+            .expect(400)));
 
 
     it('prevents updates by a mentor if they have already completed their review of an evaluation', () =>
@@ -506,7 +506,7 @@ describe('evaluations', () => {
               status: 'ATTAINED',
             })
             .set('Cookie', `${cookieName}=${normalUserTwoToken}`)
-            .expect(403)));
+            .expect(400)));
 
     it('prevents updates by a mentor if the evaluation has not been completed by their mentee', () =>
       insertEvaluation(Object.assign({}, evaluation, { status: NEW }), normalUserOneId)
@@ -524,7 +524,7 @@ describe('evaluations', () => {
               status: 'ATTAINED',
             })
             .set('Cookie', `${cookieName}=${normalUserTwoToken}`)
-            .expect(403)));
+            .expect(400)));
 
     it('prevents a user that is not the subject, nor the mentor of the subject, from updating a skill', () =>
       insertEvaluation(evaluation, normalUserOneId)
@@ -541,7 +541,7 @@ describe('evaluations', () => {
               status: 'ATTAINED',
             })
             .set('Cookie', `${cookieName}=${normalUserTwoToken}`)
-            .expect(403)));
+            .expect(400)));
 
     it('returns not found if an attempt is made to update an evaluation that does not exist', () =>
       request(app)
