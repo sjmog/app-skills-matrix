@@ -19,11 +19,16 @@ export type Permissions = {
 
 const permissionError = (error: ErrorMessage) => Promise.reject({ status: 403, data: error });
 
-const permissions = (loggedInUser: User, requestedUser: User): Permissions => {
+/**
+ * Provide permissions for various requests
+ * @param {User} loggedInUser the user that made the request
+ * @param {User} requestUser the user who is the subject of the request (typically either the requestedUser or the evaluationUser)
+ */
+const permissions = (loggedInUser: User, requestUser: User): Permissions => {
   const loggedIn = Boolean(loggedInUser);
   const isAdmin = loggedIn && loggedInUser.isAdmin();
-  const isMentor = loggedIn && loggedInUser.id === requestedUser.mentorId;
-  const isUser = loggedIn && loggedInUser.id === requestedUser.id;
+  const isMentor = loggedIn && loggedInUser.id === requestUser.mentorId;
+  const isUser = loggedIn && loggedInUser.id === requestUser.id;
   return {
     viewActions: () => (isAdmin || isMentor || isUser) ? Promise.resolve() : permissionError(ONLY_USER_AND_MENTOR_CAN_SEE_ACTIONS()),
     viewEvaluation: () => (isAdmin || isMentor || isUser) ? Promise.resolve() : permissionError(NOT_AUTHORIZED_TO_VIEW_EVALUATION()),

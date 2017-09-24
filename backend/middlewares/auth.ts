@@ -51,11 +51,11 @@ export const getRequestedEvaluation = (req, res, next) =>
     : next());
 
 export const getUserPermissions = (req, res, next) => {
-  const requestedUser = res.locals.evaluationUser;
+  const requestedUser = res.locals.requestedUser;
+  const evaluationUser = res.locals.evaluationUser;
   const loggedInUser = res.locals.user;
-  if (requestedUser) {
-    res.locals.permissions = permissions(loggedInUser, requestedUser);
-  }
+  // either requestedUser OR evaluationUser will exist; doesn't make sense for both to be requested at the same time.
+  res.locals.permissions = permissions(loggedInUser, requestedUser || evaluationUser);
   next();
 };
 

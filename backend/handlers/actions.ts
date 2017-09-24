@@ -1,6 +1,6 @@
 import { Response, Request, NextFunction } from 'express';
 
-import createHandler from './createHandler';
+import createHandler, { Locals } from './createHandler';
 
 import actions from '../models/actions/index';
 
@@ -9,7 +9,7 @@ const handlerFunctions = Object.freeze({
     find: (req: Request, res: Response, next: NextFunction) => {
       const { evaluationId, type } = req.query;
       const { userId } = req.params;
-      const { permissions } = res.locals;
+      const { permissions } = <Locals>res.locals;
 
       permissions.viewActions()
         .then(() => actions.find(userId, evaluationId, type))
