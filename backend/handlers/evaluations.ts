@@ -18,11 +18,9 @@ import {
   NOT_AUTHORIZED_TO_ADD_NOTE,
   EVALUATION_NOT_FOUND,
   SKILL_NOT_FOUND,
-  NOT_AUTHORIZED_TO_UPDATE_SKILL_STATUS,
   SUBJECT_CAN_ONLY_UPDATE_NEW_EVALUATION,
   MENTOR_REVIEW_COMPLETE,
   MENTOR_CAN_ONLY_UPDATE_AFTER_SELF_EVALUATION,
-  USER_NOT_ADMIN,
   MUST_BE_NOTE_AUTHOR,
   NOTE_NOT_FOUND,
   NOT_AUTHORIZED_TO_MARK_EVAL_AS_COMPLETE,
@@ -133,7 +131,7 @@ const handlerFunctions = Object.freeze({
         ],
         handle: (req, res, next) => {
           const { skillId, status } = req.body;
-          const { requestedUser, permissions, requestedEvaluation } = res.locals;
+          const { evaluationUser, permissions, requestedEvaluation } = res.locals;
 
 
           const skill = requestedEvaluation.findSkill(skillId);
@@ -149,7 +147,7 @@ const handlerFunctions = Object.freeze({
 
           permissions.updateSkill()
             .then(() => evaluations.updateEvaluation(requestedEvaluation.updateSkill(skillId, status)))
-            .then(() => addActions(requestedUser, skill, requestedEvaluation, status))
+            .then(() => addActions(evaluationUser, skill, requestedEvaluation, status))
             .then(() => res.sendStatus(204))
             .catch(next);
         },
@@ -163,7 +161,7 @@ const handlerFunctions = Object.freeze({
         handle:
           (req, res, next) => {
             const { skillId, status } = req.body;
-            const { requestedUser, permissions, requestedEvaluation } = res.locals;
+            const { evaluationUser, permissions, requestedEvaluation } = res.locals;
 
             const skill = requestedEvaluation.findSkill(skillId);
             if (!skill) {
@@ -172,7 +170,7 @@ const handlerFunctions = Object.freeze({
 
             return permissions.admin()
               .then(() => evaluations.updateEvaluation(requestedEvaluation.updateSkill(skillId, status)))
-              .then(() => addActions(requestedUser, skill, requestedEvaluation, status))
+              .then(() => addActions(evaluationUser, skill, requestedEvaluation, status))
               .then(() => res.sendStatus(204))
               .catch(next);
           },

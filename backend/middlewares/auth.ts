@@ -43,7 +43,7 @@ export const getRequestedEvaluation = (req, res, next) =>
       })
       .then((user) => {
         if (user) {
-          res.locals.requestedUser = user;
+          res.locals.evaluationUser = user;
           next();
         }
       })
