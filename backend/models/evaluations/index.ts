@@ -14,7 +14,7 @@ export default {
       .then(({ insertedId }) => evaluationsCollection.findOne({ _id: new ObjectID(insertedId) }))
       .then(res => (res ? evaluation(decrypt(res)) : null));
   },
-  getEvaluationById(id: string) {
+  getEvaluationById(id: string): Promise<Evaluation> {
     return evaluationsCollection.findOne({ _id: new ObjectID(id) })
       .then(res => (res ? evaluation(decrypt(res)) : null));
   },

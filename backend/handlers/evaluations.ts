@@ -2,7 +2,7 @@ import * as Promise from 'bluebird';
 import * as validate from 'express-validation';
 import * as Joi from 'joi';
 import createHandler from './createHandler';
-import { ensureLoggedIn } from '../middlewares/auth';
+import { ensureLoggedIn, getRequestedEvaluation, getUserPermissions } from '../middlewares/auth';
 
 import evaluations from '../models/evaluations/index';
 import { Evaluation } from '../models/evaluations/evaluation';
@@ -25,7 +25,6 @@ import {
   USER_NOT_ADMIN,
   MUST_BE_NOTE_AUTHOR,
   NOTE_NOT_FOUND,
-  NOT_AUTHORIZED_TO_VIEW_EVALUATION,
   NOT_AUTHORIZED_TO_MARK_EVAL_AS_COMPLETE,
 } from './errors';
 
@@ -82,27 +81,20 @@ const handlerFunctions = Object.freeze({
     retrieve: {
       middleware: [
         ensureLoggedIn,
+        getRequestedEvaluation,
+        getUserPermissions,
       ],
       handle: (req, res, next) => {
-        const { evaluationId } = req.params;
-        const { user } = res.locals;
+        const { user, permissions, requestedEvaluation } = res.locals;
 
-        Promise.try(() => evaluations.getEvaluationById(evaluationId))
-          .then((evaluation) => {
-            if (!evaluation) {
-              throw ({ status: 404, data: EVALUATION_NOT_FOUND() });
-            }
-
-            return authorize(evaluation.user.id, user, NOT_AUTHORIZED_TO_VIEW_EVALUATION())
-              .then(() => evaluation.getNoteIds())
-              .then(notes.getNotes)
-              .then(retrievedNotes =>
-                users.getUsersById(retrievedNotes.getUserIds())
-                  .then(retrievedUsers => buildAggregateViewModel(evaluation, retrievedNotes, retrievedUsers, user)))
-              .then(viewModel => res.status(200).json(viewModel));
-          })
-          .catch(err =>
-            (err.status && err.data) ? res.status(err.status).json(err.data) : next(err));
+        return permissions.viewEvaluation()
+          .then(requestedEvaluation.getNoteIds)
+          .then(notes.getNotes)
+          .then(retrievedNotes =>
+            users.getUsersById(retrievedNotes.getUserIds())
+              .then(retrievedUsers => buildAggregateViewModel(requestedEvaluation, retrievedNotes, retrievedUsers, user)))
+          .then(viewModel => res.status(200).json(viewModel))
+          .catch(next);
       },
     },
     subjectUpdateSkillStatus: {
