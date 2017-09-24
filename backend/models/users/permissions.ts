@@ -2,6 +2,7 @@ import * as Promise from 'bluebird';
 import { User } from './user';
 
 import {
+  NOT_AUTHORIZED_TO_ADD_NOTE,
   NOT_AUTHORIZED_TO_MARK_EVAL_AS_COMPLETE,
   NOT_AUTHORIZED_TO_UPDATE_SKILL_STATUS,
   NOT_AUTHORIZED_TO_VIEW_EVALUATION,
@@ -15,6 +16,7 @@ export type Permissions = {
   updateSkill: () => Promise<void>,
   admin: () => Promise<void>,
   completeEvaluation: () => Promise<void>,
+  addNote: () => Promise<void>,
 };
 
 const permissionError = (error: ErrorMessage) => Promise.reject({ status: 403, data: error });
@@ -35,6 +37,7 @@ const permissions = (loggedInUser: User, requestUser: User): Permissions => {
     updateSkill: () => (isMentor || isUser) ? Promise.resolve() : permissionError(NOT_AUTHORIZED_TO_UPDATE_SKILL_STATUS()),
     admin: () => isAdmin ? Promise.resolve() : permissionError(USER_NOT_ADMIN()),
     completeEvaluation: () => (isMentor || isUser) ? Promise.resolve() : permissionError(NOT_AUTHORIZED_TO_MARK_EVAL_AS_COMPLETE()),
+    addNote: () => (isAdmin || isMentor || isUser) ? Promise.resolve() : permissionError(NOT_AUTHORIZED_TO_ADD_NOTE()),
   };
 };
 

@@ -15,15 +15,12 @@ import { Notes } from '../models/notes/notes';
 
 import sendMail from '../services/email/index';
 import {
-  NOT_AUTHORIZED_TO_ADD_NOTE,
-  EVALUATION_NOT_FOUND,
   SKILL_NOT_FOUND,
   SUBJECT_CAN_ONLY_UPDATE_NEW_EVALUATION,
   MENTOR_REVIEW_COMPLETE,
   MENTOR_CAN_ONLY_UPDATE_AFTER_SELF_EVALUATION,
   MUST_BE_NOTE_AUTHOR,
   NOTE_NOT_FOUND,
-  NOT_AUTHORIZED_TO_MARK_EVAL_AS_COMPLETE,
 } from './errors';
 
 const addActions = (user: User, skill, evaluation, newStatus: string) => {
@@ -37,18 +34,6 @@ const addActions = (user: User, skill, evaluation, newStatus: string) => {
     fns.push(actions.removeAction(actionToRemove, user.id, skill.id, evaluation.id));
   }
   return Promise.all(fns);
-};
-
-const authorize = (evalUserId: string, reqUser: User, notAuthorizedMsg: ErrorMessage): Promise<void> => {
-  if (reqUser.isAdmin() || reqUser.id === evalUserId) {
-    return Promise.resolve();
-  }
-
-  return users.getUserById(evalUserId)
-    .then(({ mentorId }) => (
-      reqUser.id === mentorId
-        ? Promise.resolve()
-        : Promise.reject({ status: 403, data: notAuthorizedMsg })));
 };
 
 const buildAggregateViewModel = (evaluation: Evaluation, retrievedNotes: Notes, retrievedUsers: Users, reqUser: User, evaluationUser: User): Promise<HydratedEvaluationViewModel> => {
@@ -211,6 +196,8 @@ const handlerFunctions = Object.freeze({
     addNote: {
       middleware: [
         ensureLoggedIn,
+        getRequestedEvaluation,
+        getUserPermissions,
         validate({
           params: {
             evaluationId: Joi.string().required(),
@@ -223,35 +210,26 @@ const handlerFunctions = Object.freeze({
       ],
       handle:
         (req, res, next) => {
-          const { evaluationId } = req.params;
           const { skillId, note: noteText } = req.body;
-          const { user } = res.locals;
+          const { user, requestedEvaluation, permissions } = <Locals>res.locals;
 
-          Promise.try(() => evaluations.getEvaluationById(evaluationId))
-            .then((evaluation) => {
+          const skill = requestedEvaluation.findSkill(skillId);
+          if (!skill) {
+            return res.status(400).json(SKILL_NOT_FOUND());
+          }
 
-              if (!evaluation) {
-                return res.status(404).json(EVALUATION_NOT_FOUND());
-              }
-
-              const skill = evaluation.findSkill(skillId);
-              if (!skill) {
-                return res.status(400).json(SKILL_NOT_FOUND());
-              }
-
-              return authorize(evaluation.user.id, user, NOT_AUTHORIZED_TO_ADD_NOTE())
-                .then(() => notes.addNote(user.id, skillId, noteText))
-                .then(note =>
-                  evaluations.updateEvaluation(evaluation.addSkillNote(skillId, note.id))
-                    .then(() => res.status(200).json(note.viewModel())));
-            })
-            .catch(err =>
-              (err.status && err.data) ? res.status(err.status).json(err.data) : next(err));
+          permissions.addNote()
+            .then(() => notes.addNote(user.id, skillId, noteText))
+            .then(note =>
+              evaluations.updateEvaluation(requestedEvaluation.addSkillNote(skillId, note.id))
+                .then(() => res.status(200).json(note.viewModel())))
+            .catch(next);
         },
     },
     deleteNote: {
       middleware: [
         ensureLoggedIn,
+        getRequestedEvaluation,
         validate({
           params: {
             evaluationId: Joi.string().required(),
@@ -264,33 +242,26 @@ const handlerFunctions = Object.freeze({
       ],
       handle:
         (req, res, next) => {
-          const { evaluationId } = req.params;
           const { skillId, noteId } = req.body;
-          const { user } = res.locals;
+          const { user, requestedEvaluation } = <Locals>res.locals;
 
           Promise.try(() => notes.getNote(noteId))
             .then((note) => {
               if (!note) {
-                return res.status(404).json(NOTE_NOT_FOUND());
+                return res.status(400).json(NOTE_NOT_FOUND());
               }
 
+              // not part of the permission model - could do, but it adds complexity that might not be worth it
               if (note.userId !== user.id) {
                 return res.status(403).json(MUST_BE_NOTE_AUTHOR());
               }
 
-              return evaluations.getEvaluationById(evaluationId)
-                .then((evaluation) => {
-                  if (!evaluation) {
-                    throw ({ status: 404, data: EVALUATION_NOT_FOUND() });
-                  }
+              const skill = requestedEvaluation.findSkill(skillId);
+              if (!skill) {
+                throw ({ status: 400, data: SKILL_NOT_FOUND() });
+              }
 
-                  const skill = evaluation.findSkill(skillId);
-                  if (!skill) {
-                    throw ({ status: 404, data: SKILL_NOT_FOUND() });
-                  }
-
-                  return evaluations.updateEvaluation(evaluation.deleteSkillNote(skillId, noteId));
-                })
+              return evaluations.updateEvaluation(requestedEvaluation.deleteSkillNote(skillId, noteId))
                 .then(() => notes.updateNote(note.setDeletedFlag()))
                 .then(() => res.sendStatus(204));
             })

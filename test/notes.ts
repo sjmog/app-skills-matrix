@@ -443,13 +443,17 @@ describe('Notes', () => {
           .expect(401));
 
       it('returns a bad request when an invalid request is made', () =>
-        request(app)
-          .post(`${prefix}/evaluations/${new ObjectID()}`)
-          .send({ action: 'deleteNote', invalid: 'data' })
-          .set('Cookie', `${cookieName}=${normalUserOneToken}`)
-          .expect(400));
+        insertEvaluation(evaluation, normalUserOneId)
+          .then(({ insertedId }) => {
+            evaluationId = insertedId;
+          })
+          .then(() => request(app)
+            .post(`${prefix}/evaluations/${evaluationId}`)
+            .send({ action: 'deleteNote', invalid: 'data' })
+            .set('Cookie', `${cookieName}=${normalUserOneToken}`)
+            .expect(400)));
 
-      it('returns not found when a note does not exist', () => {
+      it('returns bad request when a note does not exist', () => {
         const idOfNoteMissingFromDb = new ObjectID();
         return insertEvaluation(addNoteIdsToSkill([idOfNoteMissingFromDb], 5, evaluation), normalUserOneId)
           .then(({ insertedId }) => {
@@ -460,10 +464,10 @@ describe('Notes', () => {
               .post(`${prefix}/evaluations/${evaluationId}`)
               .send(validNoteDeletion(5, idOfNoteMissingFromDb))
               .set('Cookie', `${cookieName}=${normalUserOneToken}`)
-              .expect(404));
+              .expect(400));
       });
 
-      it('returns not found when a skill does not exist', () =>
+      it('returns bad request when a skill does not exist', () =>
         insertNote({ note: 'This is a note', skillId: 101010101, userId: normalUserOneId })
           .then(({ insertedId }) => {
             noteId = insertedId;
@@ -477,7 +481,7 @@ describe('Notes', () => {
               .post(`${prefix}/evaluations/${evaluationId}`)
               .send(validNoteDeletion(101010101, noteId))
               .set('Cookie', `${cookieName}=${normalUserOneToken}`)
-              .expect(404)));
+              .expect(400)));
     });
   });
 });
