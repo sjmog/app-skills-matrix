@@ -15,8 +15,8 @@ import { Notes } from '../models/notes/notes';
 
 
 import sendMail from '../services/email/index';
-
-const {
+import {
+  NOT_AUTHORIZED_TO_ADD_NOTE,
   EVALUATION_NOT_FOUND,
   SKILL_NOT_FOUND,
   NOT_AUTHORIZED_TO_UPDATE_SKILL_STATUS,
@@ -27,9 +27,8 @@ const {
   MUST_BE_NOTE_AUTHOR,
   NOTE_NOT_FOUND,
   NOT_AUTHORIZED_TO_VIEW_EVALUATION,
-  NOT_AUTHORIZED_TO_ADD_NOTE,
   NOT_AUTHORIZED_TO_MARK_EVAL_AS_COMPLETE,
-} = require('./errors');
+} from './errors';
 
 const addActions = (user: User, skill, evaluation, newStatus: string) => {
   const actionToAdd = skill.addAction(newStatus);
@@ -44,7 +43,7 @@ const addActions = (user: User, skill, evaluation, newStatus: string) => {
   return Promise.all(fns);
 };
 
-const authorize = (evalUserId: string, reqUser: User, notAuthorizedMsg: string): Promise<void> => {
+const authorize = (evalUserId: string, reqUser: User, notAuthorizedMsg: ErrorMessage): Promise<void> => {
   if (reqUser.isAdmin() || reqUser.id === evalUserId) {
     return Promise.resolve();
   }
@@ -284,7 +283,7 @@ const handlerFunctions = Object.freeze({
               return res.status(400).json(SKILL_NOT_FOUND());
             }
 
-            return authorize(evaluation.user.id, user, NOT_AUTHORIZED_TO_ADD_NOTE)
+            return authorize(evaluation.user.id, user, NOT_AUTHORIZED_TO_ADD_NOTE())
               .then(() => notes.addNote(user.id, skillId, noteText))
               .then(note =>
                 evaluations.updateEvaluation(evaluation.addSkillNote(skillId, note.id))
