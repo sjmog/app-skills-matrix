@@ -175,46 +175,35 @@ const handlerFunctions = Object.freeze({
     complete: {
       middleware: [
         ensureLoggedIn,
+        getRequestedEvaluation,
+        getUserPermissions,
       ],
       handle:
         (req, res, next) => {
-          const { evaluationId } = req.params;
-          const { user } = res.locals;
+          const { user, requestedEvaluation, evaluationUser, permissions } = <Locals>res.locals;
 
-          Promise.try(() => evaluations.getEvaluationById(evaluationId))
-            .then((evaluation) => {
-              if (!evaluation) {
-                return res.status(404).json(EVALUATION_NOT_FOUND());
+          if (requestedEvaluation.mentorReviewCompleted()) {
+            return res.status(400).json(MENTOR_REVIEW_COMPLETE());
+          }
+
+          permissions.completeEvaluation()
+            .then(() => {
+              if (user.id === evaluationUser.id) {
+                const completedApplication = requestedEvaluation.selfEvaluationComplete();
+                // TODO: See above todo
+                return requestedEvaluation.isNewEvaluation()
+                  ? Promise.all([evaluations.updateEvaluation(completedApplication), users.getUserById(evaluationUser.mentorId)])
+                    .then(([updatedEvaluation, mentor]) => {
+                      sendMail(updatedEvaluation.getSelfEvaluationCompleteEmail(mentor));
+                      res.status(200).json(updatedEvaluation.subjectMetadataViewModel());
+                    })
+                  : res.status(400).json(SUBJECT_CAN_ONLY_UPDATE_NEW_EVALUATION());
               }
 
-              if (evaluation.mentorReviewCompleted()) {
-                return res.status(403).json(MENTOR_REVIEW_COMPLETE());
-              }
-
-              return users.getUserById(evaluation.user.id)
-                .then(({ mentorId }) => {
-                  if (user.id === evaluation.user.id) {
-                    const completedApplication = evaluation.selfEvaluationComplete();
-                    // TODO: @charlie - the isNewEvaluation logic should not be leaking out of evaluation.
-                    // If you can't update the evaluation then don't let selfEvaluationComplete return successfully.
-                    return evaluation.isNewEvaluation()
-                      ? Promise.all([evaluations.updateEvaluation(completedApplication), users.getUserById(mentorId)])
-                        .then(([updatedEvaluation, mentor]) => {
-                          sendMail(updatedEvaluation.getSelfEvaluationCompleteEmail(mentor));
-                          res.status(200).json(updatedEvaluation.subjectMetadataViewModel());
-                        })
-                      : res.status(403).json(SUBJECT_CAN_ONLY_UPDATE_NEW_EVALUATION());
-                  }
-
-                  if (user.id !== mentorId) {
-                    return res.status(403).json(NOT_AUTHORIZED_TO_MARK_EVAL_AS_COMPLETE());
-                  }
-
-                  return evaluation.selfEvaluationCompleted()
-                    ? evaluations.updateEvaluation(evaluation.mentorReviewComplete())
-                      .then(updatedEvaluation => res.status(200).json({ status: updatedEvaluation.status }))
-                    : res.status(403).json(MENTOR_CAN_ONLY_UPDATE_AFTER_SELF_EVALUATION());
-                });
+              return requestedEvaluation.selfEvaluationCompleted()
+                ? evaluations.updateEvaluation(requestedEvaluation.mentorReviewComplete())
+                  .then(updatedEvaluation => res.status(200).json({ status: updatedEvaluation.status }))
+                : res.status(400).json(MENTOR_CAN_ONLY_UPDATE_AFTER_SELF_EVALUATION());
             })
             .catch(next);
         },

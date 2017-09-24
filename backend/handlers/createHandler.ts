@@ -6,10 +6,10 @@ import { Evaluation } from '../models/evaluations/evaluation';
 import { Permissions } from '../models/users/permissions';
 
 export type Locals = {
-  evaluationUser: User,
-  requestedEvaluation: Evaluation,
-  user: User,
-  permissions: Permissions,
+  evaluationUser?: User,
+  requestedEvaluation?: Evaluation,
+  user?: User,
+  permissions?: Permissions,
 };
 
 const defaultHandler = {

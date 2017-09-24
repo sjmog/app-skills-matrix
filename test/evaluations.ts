@@ -759,7 +759,7 @@ describe('evaluations', () => {
             .post(`${prefix}/evaluations/${evaluationId}`)
             .send({ action: 'complete' })
             .set('Cookie', `${cookieName}=${normalUserOneToken}`)
-            .expect(403)));
+            .expect(400)));
 
     it('prevents the subject of an evaluation from completing their evaluation if the status is unknown', () =>
       insertEvaluation(Object.assign({}, evaluation, { status: 'FOO_BAR' }), normalUserOneId)
@@ -771,7 +771,7 @@ describe('evaluations', () => {
             .post(`${prefix}/evaluations/${evaluationId}`)
             .send({ action: 'complete' })
             .set('Cookie', `${cookieName}=${normalUserOneToken}`)
-            .expect(403)));
+            .expect(400)));
 
     it('prevents a mentor from completing a review for an evaluation if the status is unknown', () =>
       insertEvaluation(Object.assign({}, evaluation, { status: 'FOO_BAR' }), normalUserOneId)
@@ -784,7 +784,7 @@ describe('evaluations', () => {
             .post(`${prefix}/evaluations/${evaluationId}`)
             .send({ action: 'complete' })
             .set('Cookie', `${cookieName}=${normalUserTwoToken}`)
-            .expect(403)));
+            .expect(400)));
 
     it('prevents the subject of an evaluation from completing their evaluation after a mentor review', () =>
       insertEvaluation(Object.assign({}, evaluation, { status: MENTOR_REVIEW_COMPLETE }), normalUserOneId)
@@ -796,7 +796,7 @@ describe('evaluations', () => {
             .post(`${prefix}/evaluations/${evaluationId}`)
             .send({ action: 'complete' })
             .set('Cookie', `${cookieName}=${normalUserOneToken}`)
-            .expect(403)));
+            .expect(400)));
 
     it('prevents a mentor from completing a review for an evaluation they have alraedy reviewed', () =>
       insertEvaluation(Object.assign({}, evaluation, { status: MENTOR_REVIEW_COMPLETE }), normalUserOneId)
@@ -809,7 +809,7 @@ describe('evaluations', () => {
             .post(`${prefix}/evaluations/${evaluationId}`)
             .send({ action: 'complete' })
             .set('Cookie', `${cookieName}=${normalUserTwoToken}`)
-            .expect(403)));
+            .expect(400)));
 
     it('prevents mentor from completing a review of an evaluation before their mentee has self-evaluated', () =>
       insertEvaluation(Object.assign({}, evaluation, { status: NEW }), normalUserOneId)
@@ -822,7 +822,7 @@ describe('evaluations', () => {
             .post(`${prefix}/evaluations/${evaluationId}`)
             .send({ action: 'complete' })
             .set('Cookie', `${cookieName}=${normalUserTwoToken}`)
-            .expect(403)));
+            .expect(400)));
 
     it('prevents a user that is not the subject of the evaluation, nor the subjects mentor, from completing an evaluation', () =>
       insertEvaluation(evaluation, normalUserOneId)

@@ -51,7 +51,7 @@ export const getRequestedEvaluation = (req, res, next) =>
     : next());
 
 export const getUserPermissions = (req, res, next) => {
-  const requestedUser = res.locals.requestedUser;
+  const requestedUser = res.locals.evaluationUser;
   const loggedInUser = res.locals.user;
   if (requestedUser) {
     res.locals.permissions = permissions(loggedInUser, requestedUser);
