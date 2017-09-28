@@ -43,7 +43,7 @@ export default [
         id: 6,
         name: 'Has successfully slayed a dragon',
         criteria: 'You have slayed at least one dragon',
-        type: 'skill',
+        type: 'behaviour',
         version: 1,
         questions: [],
         status: {
@@ -388,6 +388,18 @@ export default [
           current: null,
         },
       },
+      {
+        id: 6,
+        name: 'Has successfully slayed a dragon',
+        criteria: 'You have slayed at least one dragon',
+        type: 'behaviour',
+        version: 1,
+        questions: [],
+        status: {
+          previous: null,
+          current: 'ATTAINED',
+        },
+      },
     ],
     skillGroups: [
       {
@@ -420,6 +432,7 @@ export default [
         category: 'Magicness',
         skills: [
           4,
+          6,
         ],
       },
     ],
@@ -466,11 +479,12 @@ export default [
         id: 6,
         name: 'Has successfully slayed a dragon',
         criteria: 'You have slayed at least one dragon',
-        type: 'skill',
+        type: 'behaviour',
         version: 1,
         questions: [],
+        notes: [],
         status: {
-          previous: 'NEW',
+          previous: 'ATTAINED',
           current: null,
         },
       },

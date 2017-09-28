@@ -21,7 +21,7 @@ type EvaluationProps = {
   updateSkillStatus: (skillId: number) => Promise<void>,
   initialisedEvaluation?: string,
   currentSkill: PaginatedEvaluationSkill,
-  currentSkillUid?: string,
+  currentSkillUid?: number,
   currentSkillStatus: {
     current: string,
     previous: string,

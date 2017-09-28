@@ -41,4 +41,4 @@ type EvaluationSkillGroup = UnhydratedSkillGroup & { id: number };
 type EvaluationUser = { name: string, id: string, email: string };
 
 type PaginatedEvaluationSkill =
-  UnhydratedEvaluationSkill & { skillUid: string, level: string, category: string, skillGroupId: number };
+  UnhydratedEvaluationSkill & { skillUid: number, level: string, category: string, skillGroupId: number };
