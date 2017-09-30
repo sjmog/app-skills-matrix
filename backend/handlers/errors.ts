@@ -11,7 +11,6 @@ export const NOT_AUTHORIZED_TO_ADD_NOTE = () => ({ message: 'Only the person bei
 export const NOT_AUTHORIZED_TO_UPDATE_SKILL_STATUS = () => ({ message: 'You do not have permission to update the status of this skill' });
 export const NOT_AUTHORIZED_TO_MARK_EVAL_AS_COMPLETE = () => ({ message: 'You do not have permission to mark this evaluation as complete' });
 export const MUST_BE_LOGGED_IN = () => ({ message: 'You are not logged in' });
-export const MUST_BE_LOGGED_IN_FOR_REQUEST = () => ({ message: 'You must be logged in for this request to be fulfilled' });
 export const SUBJECT_CAN_ONLY_UPDATE_NEW_EVALUATION = () => ({ message: 'You can\'t make any changes to this evaluation.' });
 export const MENTOR_REVIEW_COMPLETE = () => ({ message: 'This evaluation has been reviewed and is now complete.' });
 export const MENTOR_CAN_ONLY_UPDATE_AFTER_SELF_EVALUATION = () => ({ message: 'You can\'t update this evaluation until your mentee has completed their self-evaluation.' });
