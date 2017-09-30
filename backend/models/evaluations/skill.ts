@@ -33,7 +33,7 @@ export default ({ id, name, criteria, type, questions, status, notes }: Unhydrat
     return status.current;
   },
   statusForNextEvaluation() {
-    return status.current === SKILL_STATUS.ATTAINED ? SKILL_STATUS.ATTAINED : null;
+    return type !== 'behaviour' && status.current === SKILL_STATUS.ATTAINED ? SKILL_STATUS.ATTAINED : null;
   },
   notes() {
     return R.is(Array, notes) ? notes : [];

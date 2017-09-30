@@ -134,7 +134,7 @@ class SkillDetailsModal extends React.Component<SkillDetailsModalProps, { skill:
                 <ControlLabel>Type</ControlLabel>
                 <FormControl
                   componentClass="select"
-                  placeholder="type"
+                  name="type"
                   onChange={this.updateSkillState}
                   defaultValue={skill.type}
                 >

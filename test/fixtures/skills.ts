@@ -69,7 +69,7 @@ export default [
     id: 6,
     name: 'Has successfully slayed a dragon',
     criteria: 'You have slayed at least one dragon',
-    type: 'skill',
+    type: 'behaviour',
     version: 1,
     questions: [],
     status: {

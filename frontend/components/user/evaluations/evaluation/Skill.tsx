@@ -18,11 +18,18 @@ type SkillProps = {
     previous: string,
   },
   isLastSkill: boolean,
-  updateSkillStatus: (skillId: number, status: string, skillUid: string) => void,
+  updateSkillStatus: (skillId: number, status: string, skillUid: number) => void,
   nextUnevaluatedSkill: () => void,
 };
 
+const labelWithTooltip = (text, tooltip) => (
+  <OverlayTrigger placement="bottom" overlay={tooltip}>
+    <Label bsStyle="info">{text}</Label>
+  </OverlayTrigger>
+);
+
 const newSkillTooltip = (<Tooltip>This skill has been added since your last evaluation</Tooltip>);
+const behaviourToolTip = (<Tooltip>This is a behaviour and needs to be re-evaluated every evaluation</Tooltip>);
 
 class Skill extends React.Component<SkillProps, any> {
   constructor(props) {
@@ -49,13 +56,11 @@ class Skill extends React.Component<SkillProps, any> {
         animationClassName="skill--fadeIn"
         animate={this.state.fadeIn}>
         <Panel key={skillUid}>
+
+            {skillStatus.previous === SKILL_STATUS.NEW ? labelWithTooltip('New skill', newSkillTooltip) : false}
+            {skill.type === 'behaviour' ? labelWithTooltip('Behaviour', behaviourToolTip) : false}
           <h4 className="skill-header__title">
-            {
-              skillStatus.previous === SKILL_STATUS.NEW
-                ? <OverlayTrigger placement="bottom" overlay={newSkillTooltip}><Label bsStyle="info">New skill</Label></OverlayTrigger>
-                : null
-            }
-            {`  ${name}`}
+            {`${name}`}
           </h4>
           <SkillBody
             criteria={criteria}
@@ -76,10 +81,10 @@ class Skill extends React.Component<SkillProps, any> {
             >
               <strong>Next</strong>
               {' '}
-              <Glyphicon glyph="chevron-right"/>
+              <Glyphicon glyph="chevron-right" />
             </Button>
           </ButtonGroup>
-          <Notes evaluationId={evaluationId} skillId={id} skillUid={skillUid}/>
+          <Notes evaluationId={evaluationId} skillId={id} skillUid={skillUid} />
         </Panel>
       </AnimateOnChange>
     );

@@ -1,10 +1,10 @@
 import * as R from 'ramda';
 
-const hydrateSkillsWithStaticData = skills =>
-  ({ id: skillGroupId, level, category, skills: skillsInSkillGroup }) =>
+const hydrateSkillsWithStaticData = (skills: UnhydratedEvaluationSkill[]) =>
+  ({ id: skillGroupId, level, category, skills: skillsInSkillGroup }): PaginatedEvaluationSkill[] =>
     R.map(
       (skillUid: number) => {
-        const { id, name, criteria, questions } = skills[skillUid];
+        const { id, name, criteria, questions, type, status } = skills[skillUid];
 
         return ({
           skillUid,
@@ -12,6 +12,8 @@ const hydrateSkillsWithStaticData = skills =>
           name,
           criteria,
           questions,
+          type,
+          status,
           skillGroupId,
           level,
           category,
