@@ -4,7 +4,7 @@ import './users.scss';
 
 type AddUserFormProps = {
   error: { message: string },
-  newUser: { name: string, email: string, username: string },
+  newUser: { name?: string, email?: string, username?: string },
   updateNewUserState: (e: any) => void, // TODO: figure out type
   onAddUser: (e: any) => void, // TODO: figure out type
 };

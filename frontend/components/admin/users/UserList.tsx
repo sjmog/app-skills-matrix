@@ -54,8 +54,20 @@ function userDetailsRow(user, isSelected, onUserSelectionChange, makeSelectMento
   );
 }
 
-// TODO: add types
-class UserList extends React.Component<any, any> {
+type UserListProps = {
+  users: UserWithEvaluations[],
+  templates: TemplateViewModel[],
+  selectedUsers: string[],
+  onUserSelectionChange: (e: any, user: UserWithEvaluations) => void,
+  onSelectMentor: (e: any, user: UserWithEvaluations) => void,
+  onSelectTemplate: (e: any, user: UserWithEvaluations) => void,
+};
+
+type UserListState = {
+  showModal: boolean,
+};
+
+class UserList extends React.Component<UserListProps, any> {
   constructor(props) {
     super(props);
     this.state = {
@@ -83,7 +95,9 @@ class UserList extends React.Component<any, any> {
   render() {
     const { users, templates, selectedUsers, onUserSelectionChange, onSelectMentor, onSelectTemplate } = this.props;
     const makeSelectTemplateComponent = R.curry(selectTemplate)(templates, onSelectTemplate);
-    const makeSelectMentorComponent = R.curry(selectMentor)(users, onSelectMentor);
+    const sortedUsers = R.sortBy<UserDetailsViewModel>(R.prop('name'), users);
+
+    const makeSelectMentorComponent = R.curry(selectMentor)(sortedUsers, onSelectMentor);
 
     return (
       <div>
@@ -100,7 +114,7 @@ class UserList extends React.Component<any, any> {
           </tr>
           </thead>
           <tbody>
-          {users.map(user => userDetailsRow(user, R.contains(user.id, selectedUsers), onUserSelectionChange, makeSelectMentorComponent, makeSelectTemplateComponent, this.viewUserEvaluations))}
+          {sortedUsers.map(user => userDetailsRow(user, R.contains(user.id, selectedUsers), onUserSelectionChange, makeSelectMentorComponent, makeSelectTemplateComponent, this.viewUserEvaluations))}
           </tbody>
         </Table>
         <UserEvaluationsModal

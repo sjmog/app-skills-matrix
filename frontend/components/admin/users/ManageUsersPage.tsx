@@ -7,8 +7,20 @@ import { actions } from '../../../modules/admin/users';
 import AddUserForm from './AddUserForm';
 import UserList from './UserList';
 
-// TODO add prop types
-class ManageUsersPageComponent extends React.Component<any, any> {
+type ManageUsersPageComponentProps = {
+  actions: typeof actions,
+  success: boolean,
+  error: ErrorMessage,
+  users: { users: UserWithEvaluations[], newEvaluations: (EvaluationViewModel & { success: boolean, message: string })[] },
+  matrices: { templates: TemplateViewModel[] },
+};
+
+type ManageUsersPageComponentState = {
+  selectedUsers: string[],
+  newUser: { name?: string, email?: string, username?: string },
+};
+
+class ManageUsersPageComponent extends React.Component<ManageUsersPageComponentProps, ManageUsersPageComponentState> {
   constructor(props) {
     super(props);
     this.state = {
@@ -43,7 +55,7 @@ class ManageUsersPageComponent extends React.Component<any, any> {
     this.setState({ selectedUsers: [] });
   }
 
-  onUserSelectionChange(e, user) {
+  onUserSelectionChange(e: any, user: UserWithEvaluations) {
     const checked = e.target.checked;
     let selectedUsers;
     if (checked) {
