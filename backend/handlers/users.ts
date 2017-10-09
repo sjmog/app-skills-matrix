@@ -6,7 +6,12 @@ import { newEvaluation, Evaluation } from '../models/evaluations/evaluation';
 import evaluations from '../models/evaluations/index';
 import createHandler from './createHandler';
 import sendMail from '../services/email/index';
-import { USER_EXISTS, MUST_BE_ADMIN, USER_NOT_FOUND, TEMPLATE_NOT_FOUND, USER_HAS_NO_TEMPLATE, USER_HAS_NO_MENTOR } from './errors';
+import {
+  USER_EXISTS,
+  TEMPLATE_NOT_FOUND,
+  USER_HAS_NO_TEMPLATE,
+  USER_HAS_NO_MENTOR,
+} from './errors';
 
 const { templates, skills } = matrices;
 
@@ -26,40 +31,36 @@ const handlerFunctions = Object.freeze({
   },
   user: {
     selectMentor: (req, res, next) => {
-      const { user } = res.locals;
-      if (!user || !user.isAdmin()) {
-        return res.status(403).json(MUST_BE_ADMIN());
+      const { requestedUser } = res.locals;
+      const changes = requestedUser.setMentor(req.body.mentorId);
+      if (changes.error) {
+        return res.status(400).json(changes);
       }
-      Promise.try(() => users.getUserById(req.params.userId))
-        .then((userToUpdate) => {
-          if (!userToUpdate) {
-            return res.status(404).json(USER_NOT_FOUND());
-          }
-          const changes = userToUpdate.setMentor(req.body.mentorId);
-          if (changes.error) {
-            return res.status(400).json(changes);
-          }
-          return users.updateUser(userToUpdate, changes)
-            .then(updatedUser => res.status(200).json(updatedUser.manageUserViewModel()));
-        })
+      return users.updateUser(requestedUser, changes)
+        .then(updatedUser => res.status(200).json(updatedUser.manageUserViewModel()))
+        .catch(next);
+    },
+    selectLineManager: (req, res, next) => {
+      const { requestedUser } = res.locals;
+      const changes = requestedUser.setLineManager(req.body.lineManagerId);
+      if (changes.error) {
+        return res.status(400).json(changes);
+      }
+      return users.updateUser(requestedUser, changes)
+        .then(updatedUser => res.status(200).json(updatedUser.manageUserViewModel()))
         .catch(next);
     },
     selectTemplate: (req, res, next) => {
-      const { user } = res.locals;
-      if (!user || !user.isAdmin()) {
-        return res.status(403).json(MUST_BE_ADMIN());
-      }
-      Promise.all([users.getUserById(req.params.userId), templates.getById(req.body.templateId)])
-        .then(([userToUpdate, template]) => {
-          if (!userToUpdate) {
-            return res.status(404).json(USER_NOT_FOUND());
-          }
+      const { requestedUser } = res.locals;
+
+      Promise.try(() => templates.getById(req.body.templateId))
+        .then((template) => {
           if (!template) {
             return res.status(400).json(TEMPLATE_NOT_FOUND());
           }
 
-          const changes = userToUpdate.setTemplate(req.body.templateId);
-          return users.updateUser(userToUpdate, changes)
+          const changes = requestedUser.setTemplate(req.body.templateId);
+          return users.updateUser(requestedUser, changes)
             .then(updatedUser => res.status(200).json(updatedUser.manageUserViewModel()));
         })
         .catch(next);
@@ -67,28 +68,24 @@ const handlerFunctions = Object.freeze({
   },
   evaluations: {
     create: (req, res, next) => {
-      Promise.try(() => users.getUserById(req.params.userId))
-        .then((user) => {
-          if (!user) {
-            return res.status(404).json(USER_NOT_FOUND());
-          }
-          if (!user.hasTemplate) {
-            return res.status(400).json(USER_HAS_NO_TEMPLATE(user.manageUserViewModel().name));
-          }
-          if (!user.hasMentor) {
-            return res.status(400).json(USER_HAS_NO_MENTOR(user.manageUserViewModel().name));
-          }
+      const { requestedUser } = res.locals;
 
-          return Promise.all([templates.getById(user.templateId), skills.getAll(), evaluations.getLatestByUserId(user.id)])
-            .then(([template, allSkills, latestEvaluation]) => {
-              const userEvaluation = newEvaluation(template, user, allSkills);
-              const mergedEvaluation = userEvaluation.mergePreviousEvaluation(latestEvaluation);
-              return evaluations.addEvaluation(mergedEvaluation);
-            })
-            .then((newEval: Evaluation) => {
-              sendMail(newEval.newEvaluationEmail());
-              res.status(201).json(newEval.adminEvaluationViewModel());
-            });
+      if (!requestedUser.hasTemplate) {
+        return res.status(400).json(USER_HAS_NO_TEMPLATE(requestedUser.manageUserViewModel().name));
+      }
+      if (!requestedUser.hasMentor) {
+        return res.status(400).json(USER_HAS_NO_MENTOR(requestedUser.manageUserViewModel().name));
+      }
+
+      return Promise.all([templates.getById(requestedUser.templateId), skills.getAll(), evaluations.getLatestByUserId(requestedUser.id)])
+        .then(([template, allSkills, latestEvaluation]) => {
+          const userEvaluation = newEvaluation(template, requestedUser, allSkills);
+          const mergedEvaluation = userEvaluation.mergePreviousEvaluation(latestEvaluation);
+          return evaluations.addEvaluation(mergedEvaluation);
+        })
+        .then((newEval: Evaluation) => {
+          sendMail(newEval.newEvaluationEmail());
+          res.status(201).json(newEval.adminEvaluationViewModel());
         })
         .catch(next);
     },

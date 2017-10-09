@@ -34,7 +34,8 @@ export type User = {
   evaluationData: () => { id: string, name: string, email: string },
   hasTemplate: boolean,
   hasMentor: boolean,
-  setMentor: (newMentorId: string) => ErrorResponse | { mentorId: string, modifiedDate: Date, error: boolean },
+  setMentor: (newMentorId: string) => ErrorResponse | { mentorId: string, modifiedDate: Date },
+  setLineManager: (newLineManagerId: string) => ErrorResponse | { lineManagerId: string, modifiedDate: Date },
   setTemplate: (newTemplateId: string) => { templateId: string, modifiedDate: Date },
   toString: () => string,
 };
@@ -71,7 +72,14 @@ const user = ({ _id, name, email, username, templateId, mentorId, avatarUrl }: U
       return { error: true, message: `User '${newMentorId}' can not mentor themselves` };
     }
 
-    return { mentorId: newMentorId, modifiedDate: new Date(), error: false };
+    return { mentorId: newMentorId, modifiedDate: new Date() };
+  },
+  setLineManager(newLineManagerId: string) {
+    if (newLineManagerId === _id.toString()) {
+      return { error: true, message: `User '${newLineManagerId}' can not manage themselves` };
+    }
+
+    return { lineManagerId: newLineManagerId, modifiedDate: new Date() };
   },
   setTemplate(newTemplateId: string) {
     return { templateId: newTemplateId, modifiedDate: new Date() };

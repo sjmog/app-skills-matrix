@@ -77,7 +77,7 @@ describe('userEvaluations', () => {
         desc: 'not authorized',
         token: normalUserOneToken,
         body: { action: 'create' },
-        userId: normalUserOneToken,
+        userId: normalUserOneId,
         expect: 403,
       }),
       () => ({
@@ -91,7 +91,7 @@ describe('userEvaluations', () => {
         desc: 'bad action',
         token: adminToken,
         body: { action: 'foo' },
-        userId: normalUserOneToken,
+        userId: normalUserOneId,
         expect: 400,
       }),
       () => ({

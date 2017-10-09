@@ -1,6 +1,8 @@
 export const USER_EXISTS = email => ({ message: `User with email '${email}' already exists` });
 export const MUST_BE_ADMIN = () => ({ message: 'Must be an admin to perform action' });
 export const USER_NOT_FOUND = () => ({ message: 'User not found' });
+export const INVALID_USER_ID = (userId) => ({ message: `UserId '${userId}' is not valid` });
+export const INVALID_EVALUATION_ID = (evaluationId) => ({ message: `EvaluationId '${evaluationId}' is not valid` });
 export const TEMPLATE_NOT_FOUND = () => ({ message: 'Template not found' });
 export const USER_HAS_NO_TEMPLATE = username => ({ message: `User '${username}' has not had a template selected` });
 export const USER_HAS_NO_MENTOR = username => ({ message: `User '${username}' has not had a mentor selected` });
