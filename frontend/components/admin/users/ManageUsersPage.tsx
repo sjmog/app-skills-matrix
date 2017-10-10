@@ -34,6 +34,7 @@ class ManageUsersPageComponent extends React.Component<ManageUsersPageComponentP
     this.componentDidMount = this.componentDidMount.bind(this);
     this.onSelectMentor = this.onSelectMentor.bind(this);
     this.onSelectTemplate = this.onSelectTemplate.bind(this);
+    this.onSelectLineManager = this.onSelectLineManager.bind(this);
     this.onUserSelectionChange = this.onUserSelectionChange.bind(this);
     this.onStartEvaluation = this.onStartEvaluation.bind(this);
   }
@@ -70,6 +71,11 @@ class ManageUsersPageComponent extends React.Component<ManageUsersPageComponentP
   onSelectMentor(e, user) {
     e.preventDefault();
     this.props.actions.selectMentor(e.target.value, user);
+  }
+
+  onSelectLineManager(e, user) {
+    e.preventDefault();
+    this.props.actions.selectLineManager(e.target.value, user);
   }
 
   onSelectTemplate(e, user) {
@@ -118,6 +124,7 @@ class ManageUsersPageComponent extends React.Component<ManageUsersPageComponentP
             templates={this.props.matrices.templates}
             onSelectMentor={this.onSelectMentor}
             onSelectTemplate={this.onSelectTemplate}
+            onSelectLineManager={this.onSelectLineManager}
             onUserSelectionChange={this.onUserSelectionChange}
           />
         </Row>

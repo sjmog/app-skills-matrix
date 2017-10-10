@@ -76,6 +76,9 @@ const handlerFunctions = Object.freeze({
       if (!requestedUser.hasMentor) {
         return res.status(400).json(USER_HAS_NO_MENTOR(requestedUser.manageUserViewModel().name));
       }
+      if (!requestedUser.hasLineManager) {
+        return res.status(400).json(USER_HAS_NO_MENTOR(requestedUser.manageUserViewModel().name));
+      }
 
       return Promise.all([templates.getById(requestedUser.templateId), skills.getAll(), evaluations.getLatestByUserId(requestedUser.id)])
         .then(([template, allSkills, latestEvaluation]) => {

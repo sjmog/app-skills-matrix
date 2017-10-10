@@ -7,9 +7,9 @@ type UserEvaluationsModalProps = {
   showModal: boolean
   onClose: (e: any) => void,
   user: {
-    name: string,
-    username: string,
-    evaluations: EvaluationMetadataViewModel[],
+    name?: string,
+    username?: string,
+    evaluations?: EvaluationMetadataViewModel[],
   },
 };
 

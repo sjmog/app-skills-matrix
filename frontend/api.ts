@@ -14,6 +14,11 @@ export default ({
       .then(getData)
       .catch(handleError);
   },
+  selectLineManager(lineManagerId: string, userId: string): Promise<UserDetailsViewModel> {
+    return axios.post(`/skillz/users/${userId}`, { action: 'selectLineManager', lineManagerId })
+      .then(getData)
+      .catch(handleError);
+  },
   selectTemplate(templateId: string, userId: string): Promise<UserDetailsViewModel> {
     return axios.post(`/skillz/users/${userId}`, { action: 'selectTemplate', templateId })
       .then(getData)

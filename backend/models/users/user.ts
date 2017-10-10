@@ -12,6 +12,7 @@ export type UnhyrdatedUser = {
   username: string,
   templateId: string,
   mentorId: string,
+  lineManagerId: string,
   avatarUrl: string,
 };
 
@@ -25,6 +26,7 @@ export type User = {
   templateId: string,
   username: string,
   mentorId: string,
+  lineManagerId: string,
   email: string,
   isAdmin: () => boolean,
   manageUserViewModel: () => UserDetailsViewModel, // TODO: combine these
@@ -34,24 +36,26 @@ export type User = {
   evaluationData: () => { id: string, name: string, email: string },
   hasTemplate: boolean,
   hasMentor: boolean,
+  hasLineManager: boolean,
   setMentor: (newMentorId: string) => ErrorResponse | { mentorId: string, modifiedDate: Date },
   setLineManager: (newLineManagerId: string) => ErrorResponse | { lineManagerId: string, modifiedDate: Date },
   setTemplate: (newTemplateId: string) => { templateId: string, modifiedDate: Date },
   toString: () => string,
 };
 
-const user = ({ _id, name, email, username, templateId, mentorId, avatarUrl }: UnhyrdatedUser): User => ({
+const user = ({ _id, name, email, username, templateId, mentorId, lineManagerId, avatarUrl }: UnhyrdatedUser): User => ({
   id: _id.toString(),
   name,
   username,
   templateId,
   mentorId,
+  lineManagerId,
   email,
   isAdmin(): boolean {
     return auth.isAdmin(email);
   },
   manageUserViewModel() {
-    return ({ id: _id.toString(), username, name, avatarUrl, email, mentorId, templateId });
+    return ({ id: _id.toString(), username, name, avatarUrl, email, mentorId, lineManagerId, templateId });
   },
   feedbackData() {
     return ({ id: _id.toString(), name: name || username, mentorId });
@@ -63,10 +67,11 @@ const user = ({ _id, name, email, username, templateId, mentorId, avatarUrl }: U
     return ({ id: _id.toString(), name: name || username, email });
   },
   userDetailsViewModel() {
-    return ({ id: _id.toString(), name, username, avatarUrl, email, mentorId, templateId });
+    return ({ id: _id.toString(), name, username, avatarUrl, email, mentorId, lineManagerId, templateId });
   },
   hasTemplate: Boolean(templateId),
   hasMentor: Boolean(mentorId),
+  hasLineManager: Boolean(lineManagerId),
   setMentor(newMentorId: string) {
     if (newMentorId === _id.toString()) {
       return { error: true, message: `User '${newMentorId}' can not mentor themselves` };

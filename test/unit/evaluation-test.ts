@@ -11,7 +11,7 @@ import fixtureTemplates from '../fixtures/templates';
 
 const [expectedInitialEvaluation, completedEvaluation, expectedMergedEvaluation] = fixtureEvaluations;
 
-const testUser = user({ _id: 'user_id', name: 'Jake', username: 'Jake', email: 'jake@hello.com', mentorId: '123', templateId: '123', avatarUrl: 'abc' });
+const testUser = user({ _id: 'user_id', name: 'Jake', username: 'Jake', email: 'jake@hello.com', mentorId: '123', lineManagerId: '123', templateId: '123', avatarUrl: 'abc' });
 const testTemplate = template(fixtureTemplates[0] as any);
 const testSkills = skills(fixtureSkills);
 
