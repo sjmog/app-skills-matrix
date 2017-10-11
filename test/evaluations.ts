@@ -236,8 +236,8 @@ describe('evaluations', () => {
           .expect(test().expect)));
   });
 
-  describe('POST /evaluations/:evaluationId { action: subjectUpdateSkillStatus }', () => {
-    it('allows a user to update the status of a skill for a new evaluation', () =>
+  describe('POST /evaluations/:evaluationId { action: updateSkillStatus }', () => {
+    it('allows the subject to update the status of a skill for a new evaluation', () =>
       insertEvaluation(evaluation, normalUserOneId)
         .then(({ insertedId }) => {
           evaluationId = insertedId;
@@ -246,7 +246,7 @@ describe('evaluations', () => {
           request(app)
             .post(`${prefix}/evaluations/${evaluationId}`)
             .send({
-              action: 'subjectUpdateSkillStatus',
+              action: 'updateSkillStatus',
               skillGroupId: 0,
               skillId: 5,
               status: 'ATTAINED',
@@ -267,7 +267,7 @@ describe('evaluations', () => {
           request(app)
             .post(`${prefix}/evaluations/${evaluationId}`)
             .send({
-              action: 'subjectUpdateSkillStatus',
+              action: 'updateSkillStatus',
               skillGroupId: 0,
               skillId: 1,
               status: 'FEEDBACK',
@@ -291,7 +291,7 @@ describe('evaluations', () => {
           request(app)
             .post(`${prefix}/evaluations/${evaluationId}`)
             .send({
-              action: 'subjectUpdateSkillStatus',
+              action: 'updateSkillStatus',
               skillGroupId: 0,
               skillId: 1,
               status: 'OBJECTIVE',
@@ -315,7 +315,7 @@ describe('evaluations', () => {
           request(app)
             .post(`${prefix}/evaluations/${evaluationId}`)
             .send({
-              action: 'subjectUpdateSkillStatus',
+              action: 'updateSkillStatus',
               skillGroupId: 0,
               skillId: 1,
               status: 'FEEDBACK',
@@ -326,7 +326,7 @@ describe('evaluations', () => {
           request(app)
             .post(`${prefix}/evaluations/${evaluationId}`)
             .send({
-              action: 'subjectUpdateSkillStatus',
+              action: 'updateSkillStatus',
               skillGroupId: 0,
               skillId: 1,
               status: 'ATTAINED',
@@ -347,7 +347,7 @@ describe('evaluations', () => {
           request(app)
             .post(`${prefix}/evaluations/${evaluationId}`)
             .send({
-              action: 'subjectUpdateSkillStatus',
+              action: 'updateSkillStatus',
               skillGroupId: 0,
               skillId: 1,
               status: 'ATTAINED',
@@ -364,7 +364,7 @@ describe('evaluations', () => {
           request(app)
             .post(`${prefix}/evaluations/${evaluationId}`)
             .send({
-              action: 'subjectUpdateSkillStatus',
+              action: 'updateSkillStatus',
               skillGroupId: 0,
               skillId: 1,
               status: 'ATTAINED',
@@ -381,7 +381,7 @@ describe('evaluations', () => {
           request(app)
             .post(`${prefix}/evaluations/${evaluationId}`)
             .send({
-              action: 'subjectUpdateSkillStatus',
+              action: 'updateSkillStatus',
               skillGroupId: 0,
               skillId: 1,
               status: 'ATTAINED',
@@ -398,7 +398,7 @@ describe('evaluations', () => {
           request(app)
             .post(`${prefix}/evaluations/${evaluationId}`)
             .send({
-              action: 'subjectUpdateSkillStatus',
+              action: 'updateSkillStatus',
               skillGroupId: 0,
               skillId: 1,
               status: 'ATTAINED',
@@ -410,16 +410,14 @@ describe('evaluations', () => {
       request(app)
         .post(`${prefix}/evaluations/noMatchingId`)
         .send({
-          action: 'subjectUpdateSkillStatus',
+          action: 'updateSkillStatus',
           skillGroupId: 0,
           skillId: 1,
           status: 'ATTAINED',
         })
         .set('Cookie', `${cookieName}=${normalUserOneToken}`)
         .expect(404));
-  });
 
-  describe('POST /evaluations/:evaluationId { action: mentorUpdateSkillStatus }', () => {
     it('allows a mentor to update a skill for their mentee if they have already self-evaluated', () =>
       insertEvaluation(Object.assign({}, evaluation, { status: SELF_EVALUATION_COMPLETE }), normalUserOneId)
         .then(({ insertedId }) => {
@@ -430,7 +428,7 @@ describe('evaluations', () => {
           request(app)
             .post(`${prefix}/evaluations/${evaluationId}`)
             .send({
-              action: 'mentorUpdateSkillStatus',
+              action: 'updateSkillStatus',
               skillGroupId: 0,
               skillId: 5,
               status: 'ATTAINED',
@@ -442,35 +440,6 @@ describe('evaluations', () => {
           expect(skillStatus(evalSkills, 5)).to.deep.equal({ previous: null, current: 'ATTAINED' });
         }));
 
-    it('adds action when status of a skill is updated to an action (FEEDBACK/OBJECTIVE)', () =>
-      insertEvaluation(Object.assign({}, evaluation, { status: SELF_EVALUATION_COMPLETE }), normalUserOneId)
-        .then(({ insertedId }) => {
-          evaluationId = insertedId.toString();
-        })
-        .then(() => assignMentor(normalUserOneId, normalUserTwoId))
-        .then(() =>
-          request(app)
-            .post(`${prefix}/evaluations/${evaluationId}`)
-            .send({
-              action: 'mentorUpdateSkillStatus',
-              skillGroupId: 0,
-              skillId: 1,
-              status: 'FEEDBACK',
-            })
-            .set('Cookie', `${cookieName}=${normalUserTwoToken}`)
-            .expect(204))
-        .then(() => getAllActions())
-        .then(([firstAction]) => {
-          expect(firstAction).to.not.be.undefined;
-          expect(firstAction.type).to.equal('FEEDBACK');
-          expect(firstAction.evaluation.id).to.equal(evaluationId);
-          expect(firstAction.skill.id).to.equal(1);
-          expect(firstAction.user.id).to.equal(normalUserOneId);
-          expect(firstAction.user.name).to.equal('User Magic');
-          expect(firstAction.user.mentorId).to.equal(normalUserTwoId);
-        }));
-
-
     it('prevents updates by a mentor if the status of an evaluation is unknown', () =>
       insertEvaluation(Object.assign({}, evaluation, { status: 'FOO_BAR' }), normalUserOneId)
         .then(({ insertedId }) => {
@@ -481,7 +450,7 @@ describe('evaluations', () => {
           request(app)
             .post(`${prefix}/evaluations/${evaluationId}`)
             .send({
-              action: 'mentorUpdateSkillStatus',
+              action: 'updateSkillStatus',
               skillGroupId: 0,
               skillId: 1,
               status: 'ATTAINED',
@@ -500,7 +469,7 @@ describe('evaluations', () => {
           request(app)
             .post(`${prefix}/evaluations/${evaluationId}`)
             .send({
-              action: 'mentorUpdateSkillStatus',
+              action: 'updateSkillStatus',
               skillGroupId: 0,
               skillId: 1,
               status: 'ATTAINED',
@@ -518,7 +487,7 @@ describe('evaluations', () => {
           request(app)
             .post(`${prefix}/evaluations/${evaluationId}`)
             .send({
-              action: 'mentorUpdateSkillStatus',
+              action: 'updateSkillStatus',
               skillGroupId: 0,
               skillId: 1,
               status: 'ATTAINED',
@@ -535,7 +504,7 @@ describe('evaluations', () => {
           request(app)
             .post(`${prefix}/evaluations/${evaluationId}`)
             .send({
-              action: 'mentorUpdateSkillStatus',
+              action: 'updateSkillStatus',
               skillGroupId: 0,
               skillId: 1,
               status: 'ATTAINED',
@@ -547,7 +516,7 @@ describe('evaluations', () => {
       request(app)
         .post(`${prefix}/evaluations/noMatchingId`)
         .send({
-          action: 'mentorUpdateSkillStatus',
+          action: 'updateSkillStatus',
           skillGroupId: 0,
           skillId: 1,
           status: 'ATTAINED',

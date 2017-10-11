@@ -33,14 +33,10 @@ function updateSkillStatus(evaluationView, evaluationId, skillId, status, skillU
   return (dispatch) => {
     let updateSkillFn;
 
-    if (evaluationView === EVALUATION_VIEW.MENTOR) {
-      updateSkillFn = api.mentorUpdateSkillStatus;
-    } else if (evaluationView === EVALUATION_VIEW.SUBJECT) {
-      updateSkillFn = api.subjectUpdateSkillStatus;
-    } else if (evaluationView === EVALUATION_VIEW.ADMIN) {
+    if (evaluationView === EVALUATION_VIEW.ADMIN) {
       updateSkillFn = api.adminUpdateSkillStatus;
     } else {
-      updateSkillFn = () => Promise.reject(new Error('Unknown user role'));
+      updateSkillFn = api.updateSkillStatus;
     }
 
     return updateSkillFn(evaluationId, skillId, status)

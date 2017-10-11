@@ -69,12 +69,8 @@ export default ({
       .then(getData)
       .catch(handleError);
   },
-  subjectUpdateSkillStatus(evaluationId: string, skillId: string, status): Promise<any> {
-    return axios.post(`/skillz/evaluations/${evaluationId}`, { action: 'subjectUpdateSkillStatus', skillId, status })
-      .catch(handleError);
-  },
-  mentorUpdateSkillStatus(evaluationId, skillId, status): Promise<any> {
-    return axios.post(`/skillz/evaluations/${evaluationId}`, { action: 'mentorUpdateSkillStatus', skillId, status })
+  updateSkillStatus(evaluationId: string, skillId: string, status): Promise<any> {
+    return axios.post(`/skillz/evaluations/${evaluationId}`, { action: 'updateSkillStatus', skillId, status })
       .catch(handleError);
   },
   adminUpdateSkillStatus(evaluationId, skillId, status): Promise<any> {

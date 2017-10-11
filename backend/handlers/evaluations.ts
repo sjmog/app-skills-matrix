@@ -74,34 +74,7 @@ const handlerFunctions = Object.freeze({
           .catch(next);
       },
     },
-    subjectUpdateSkillStatus: {
-      middleware: [
-        ensureLoggedIn,
-        getRequestedEvaluation,
-        getUserPermissions,
-      ],
-      handle: (req, res, next) => {
-        const { skillId, status } = req.body;
-        const { user, permissions, requestedEvaluation } = <Locals>res.locals;
-
-        const skill = requestedEvaluation.findSkill(skillId);
-        if (!skill) {
-          return res.status(400).json(SKILL_NOT_FOUND());
-        }
-
-        const changes = requestedEvaluation.updateSkill(skillId, status, permissions.isOwner, permissions.isMentor, permissions.isLineManager);
-        if (changes.error) {
-          return res.status(400).json(changes);
-        }
-
-        permissions.updateSkill()
-          .then(() => evaluations.updateEvaluation(<EvaluationUpdate>changes))
-          .then(() => addActions(user, skill, requestedEvaluation, status))
-          .then(() => res.sendStatus(204))
-          .catch(next);
-      },
-    },
-    mentorUpdateSkillStatus: {
+    updateSkillStatus: {
       middleware: [
         ensureLoggedIn,
         getRequestedEvaluation,
