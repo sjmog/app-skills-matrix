@@ -1,4 +1,3 @@
-/* eslint-disable no-prototype-builtins */
 import * as R from 'ramda';
 
 import { User } from '../models/users/user';
