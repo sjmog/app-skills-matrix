@@ -5,7 +5,7 @@ import createHandler, { Locals } from './createHandler';
 import { ensureLoggedIn, getRequestedEvaluation, getUserPermissions } from '../middlewares/auth';
 
 import evaluations from '../models/evaluations/index';
-import { Evaluation } from '../models/evaluations/evaluation';
+import { Evaluation, EvaluationUpdate } from '../models/evaluations/evaluation';
 import users from '../models/users/index';
 import { User } from '../models/users/user';
 import { Users } from '../models/users/users';
@@ -16,9 +16,6 @@ import { Notes } from '../models/notes/notes';
 import sendMail from '../services/email/index';
 import {
   SKILL_NOT_FOUND,
-  SUBJECT_CAN_ONLY_UPDATE_NEW_EVALUATION,
-  MENTOR_REVIEW_COMPLETE,
-  MENTOR_CAN_ONLY_UPDATE_AFTER_SELF_EVALUATION,
   MUST_BE_NOTE_AUTHOR,
   NOTE_NOT_FOUND,
 } from './errors';
@@ -92,14 +89,13 @@ const handlerFunctions = Object.freeze({
           return res.status(400).json(SKILL_NOT_FOUND());
         }
 
-        // TODO: this needs to be moved into requestedEvaluation.updateSkill(...)
-        // will do this once I'm done the rest of the permission model
-        if (!requestedEvaluation.isNewEvaluation()) {
-          return res.status(400).json(SUBJECT_CAN_ONLY_UPDATE_NEW_EVALUATION());
+        const changes = requestedEvaluation.updateSkill(skillId, status, permissions.isOwner, permissions.isMentor, permissions.isLineManager);
+        if (changes.error) {
+          return res.status(400).json(changes);
         }
 
         permissions.updateSkill()
-          .then(() => evaluations.updateEvaluation(requestedEvaluation.updateSkill(skillId, status)))
+          .then(() => evaluations.updateEvaluation(<EvaluationUpdate>changes))
           .then(() => addActions(user, skill, requestedEvaluation, status))
           .then(() => res.sendStatus(204))
           .catch(next);
@@ -121,14 +117,13 @@ const handlerFunctions = Object.freeze({
           return res.status(400).json(SKILL_NOT_FOUND());
         }
 
-        // TODO: this needs to be moved into requestedEvaluation.updateSkill(...)
-        // will do this once I'm done the rest of the permission model
-        if (!requestedEvaluation.selfEvaluationCompleted()) {
-          return res.status(400).json(MENTOR_CAN_ONLY_UPDATE_AFTER_SELF_EVALUATION());
+        const changes = requestedEvaluation.updateSkill(skillId, status, permissions.isOwner, permissions.isMentor, permissions.isLineManager);
+        if (changes.error) {
+          return res.status(400).json(changes);
         }
 
         permissions.updateSkill()
-          .then(() => evaluations.updateEvaluation(requestedEvaluation.updateSkill(skillId, status)))
+          .then(() => evaluations.updateEvaluation(<EvaluationUpdate>changes))
           .then(() => addActions(evaluationUser, skill, requestedEvaluation, status))
           .then(() => res.sendStatus(204))
           .catch(next);
@@ -150,8 +145,10 @@ const handlerFunctions = Object.freeze({
             return res.status(400).json(SKILL_NOT_FOUND());
           }
 
+          // naughty admins
+          const updatedEvaluation = requestedEvaluation.updateSkill(skillId, status, true, true, true);
           return permissions.admin()
-            .then(() => evaluations.updateEvaluation(requestedEvaluation.updateSkill(skillId, status)))
+            .then(() => evaluations.updateEvaluation(<EvaluationUpdate>updatedEvaluation))
             .then(() => addActions(evaluationUser, skill, requestedEvaluation, status))
             .then(() => res.sendStatus(204))
             .catch(next);
@@ -165,30 +162,25 @@ const handlerFunctions = Object.freeze({
       ],
       handle:
         (req, res, next) => {
-          const { user, requestedEvaluation, evaluationUser, permissions } = <Locals>res.locals;
-
-          if (requestedEvaluation.mentorReviewCompleted()) {
-            return res.status(400).json(MENTOR_REVIEW_COMPLETE());
-          }
+          const { requestedEvaluation, evaluationUser, permissions } = <Locals>res.locals;
 
           permissions.completeEvaluation()
             .then(() => {
-              if (user.id === evaluationUser.id) {
-                const completedApplication = requestedEvaluation.selfEvaluationComplete();
-                // TODO: See above todo
-                return requestedEvaluation.isNewEvaluation()
-                  ? Promise.all([evaluations.updateEvaluation(completedApplication), users.getUserById(evaluationUser.mentorId)])
-                    .then(([updatedEvaluation, mentor]) => {
-                      sendMail(updatedEvaluation.getSelfEvaluationCompleteEmail(mentor));
-                      res.status(200).json(updatedEvaluation.subjectMetadataViewModel());
-                    })
-                  : res.status(400).json(SUBJECT_CAN_ONLY_UPDATE_NEW_EVALUATION());
+              const changes = requestedEvaluation.moveToNextStatus(permissions.isOwner, permissions.isMentor, permissions.isLineManager);
+              if (changes.error) {
+                return res.status(400).json(changes);
               }
 
-              return requestedEvaluation.selfEvaluationCompleted()
-                ? evaluations.updateEvaluation(requestedEvaluation.mentorReviewComplete())
-                  .then(updatedEvaluation => res.status(200).json({ status: updatedEvaluation.status }))
-                : res.status(400).json(MENTOR_CAN_ONLY_UPDATE_AFTER_SELF_EVALUATION());
+              if (permissions.isOwner) {
+                return Promise.all([evaluations.updateEvaluation(<EvaluationUpdate>changes), users.getUserById(evaluationUser.mentorId)])
+                  .then(([updatedEvaluation, mentor]) => {
+                    sendMail(updatedEvaluation.getSelfEvaluationCompleteEmail(mentor));
+                    res.status(200).json(updatedEvaluation.subjectMetadataViewModel());
+                  });
+              }
+
+              return evaluations.updateEvaluation(<EvaluationUpdate>changes)
+                .then(updatedEvaluation => res.status(200).json({ status: updatedEvaluation.status }));
             })
             .catch(next);
         },

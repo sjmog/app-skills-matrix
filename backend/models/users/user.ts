@@ -1,10 +1,5 @@
 import auth from '../auth';
 
-type ErrorResponse = {
-  error: boolean,
-  message: string,
-};
-
 export type UnhyrdatedUser = {
   _id: string,
   name: string,
@@ -37,8 +32,8 @@ export type User = {
   hasTemplate: boolean,
   hasMentor: boolean,
   hasLineManager: boolean,
-  setMentor: (newMentorId: string) => ErrorResponse | { mentorId: string, modifiedDate: Date },
-  setLineManager: (newLineManagerId: string) => ErrorResponse | { lineManagerId: string, modifiedDate: Date },
+  setMentor: (newMentorId: string) => ErrorMessage | { mentorId: string, modifiedDate: Date },
+  setLineManager: (newLineManagerId: string) => ErrorMessage | { lineManagerId: string, modifiedDate: Date },
   setTemplate: (newTemplateId: string) => { templateId: string, modifiedDate: Date },
   toString: () => string,
 };

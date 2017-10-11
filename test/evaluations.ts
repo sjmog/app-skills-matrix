@@ -404,7 +404,7 @@ describe('evaluations', () => {
               status: 'ATTAINED',
             })
             .set('Cookie', `${cookieName}=${normalUserTwoToken}`)
-            .expect(403)));
+            .expect(400)));
 
     it('returns not found if an attempt is made to update an evaluation that does not exist', () =>
       request(app)

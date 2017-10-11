@@ -15,6 +15,7 @@ export const STATUS = keymirror({
   NEW: null,
   SELF_EVALUATION_COMPLETE: null,
   MENTOR_REVIEW_COMPLETE: null,
+  COMPLETE: null,
 });
 
 const VIEW = keymirror({
@@ -40,6 +41,7 @@ export type EvaluationUpdate = {
   skillGroups: UnhydratedSkillGroup[],
   skills: UnhydratedEvaluationSkill[],
   status: string,
+  error?: boolean,
 };
 
 export type EvaluationFeedback = {
@@ -65,15 +67,11 @@ export type Evaluation = {
   feedbackData: () => EvaluationFeedback,
   getSelfEvaluationCompleteEmail: (user: User) => Email,
   findSkill: (skillId: number) => Skill | null,
-  updateSkill: (skillId: number, status: string) => EvaluationUpdate,
+  updateSkill: (skillId: number, status: string, isOwner: boolean, isMentor: boolean, isLineManager: boolean) => ErrorMessage | EvaluationUpdate,
   addSkillNote: (skillId: number, note: string) => EvaluationUpdate,
   deleteSkillNote: (skillId: number, note: string) => EvaluationUpdate;
-  isNewEvaluation: () => boolean,
-  selfEvaluationComplete: () => EvaluationUpdate,
-  selfEvaluationCompleted: () => boolean,
-  mentorReviewComplete: () => EvaluationUpdate,
-  mentorReviewCompleted: () => boolean,
   mergePreviousEvaluation: (previousEvaluation: Evaluation) => Evaluation,
+  moveToNextStatus: (isOwner: boolean, isMentor: boolean, isLineManager: boolean) => ErrorMessage | EvaluationUpdate,
   getNoteIds: () => string[];
 };
 
@@ -169,8 +167,8 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
       const val = R.find(s => skillId === s.id, skills);
       return val ? skill(val) : null;
     },
-    updateSkill(skillId, newSkillStatus) {
-      return {
+    updateSkill(skillId, newSkillStatus, isOwner, isMentor, isLineManager) {
+      const updateSkill = () => ({
         id: _id.toString(),
         user,
         createdDate,
@@ -178,7 +176,18 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
         skillGroups,
         skills: skills.map(s => (s.id === skillId ? skill(s).updateStatus(newSkillStatus) : s)),
         status,
-      };
+      });
+
+      if (isOwner && status === STATUS.NEW) {
+        return updateSkill();
+      }
+      if (isMentor && status === STATUS.SELF_EVALUATION_COMPLETE) {
+        return updateSkill();
+      }
+      if (isLineManager && status === STATUS.MENTOR_REVIEW_COMPLETE) {
+        return updateSkill();
+      }
+      return { error: true, message: `User does not have permission to move from ${status}` };
     },
     addSkillNote(skillId: number, noteId: string) {
       return {
@@ -202,36 +211,26 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
         status,
       };
     },
-    isNewEvaluation() {
-      return status === STATUS.NEW;
-    },
-    selfEvaluationComplete() {
-      return {
+    moveToNextStatus(isOwner, isMentor, isLineManager) {
+      const nextStatus = newStatus => ({
         id: _id.toString(),
         user,
         createdDate,
         template,
         skillGroups,
         skills,
-        status: STATUS.SELF_EVALUATION_COMPLETE,
-      };
-    },
-    selfEvaluationCompleted() {
-      return status === STATUS.SELF_EVALUATION_COMPLETE;
-    },
-    mentorReviewComplete() {
-      return {
-        id: _id.toString(),
-        user,
-        createdDate,
-        template,
-        skillGroups,
-        skills,
-        status: STATUS.MENTOR_REVIEW_COMPLETE,
-      };
-    },
-    mentorReviewCompleted() {
-      return status === STATUS.MENTOR_REVIEW_COMPLETE;
+        status: newStatus,
+      });
+      if (isOwner && status === STATUS.NEW) {
+        return nextStatus(STATUS.SELF_EVALUATION_COMPLETE);
+      }
+      if (isMentor && status === STATUS.SELF_EVALUATION_COMPLETE) {
+        return nextStatus(STATUS.MENTOR_REVIEW_COMPLETE);
+      }
+      if (isLineManager && status === STATUS.MENTOR_REVIEW_COMPLETE) {
+        return nextStatus(STATUS.COMPLETE);
+      }
+      return { error: true, message: `User does not have permission to move from ${status}` };
     },
     mergePreviousEvaluation(previousEvaluation) {
       const updateSkill = (skillToUpdate) => {
