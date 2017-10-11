@@ -20,6 +20,7 @@ const {
   prepopulateUsers,
   users,
   assignMentor,
+  assignLineManager,
   evaluations,
   insertTemplate,
   clearDb,
@@ -33,7 +34,7 @@ const {
   addNoteIdsToSkill,
 } = helpers;
 
-const { NEW, SELF_EVALUATION_COMPLETE, MENTOR_REVIEW_COMPLETE } = STATUS;
+const { NEW, SELF_EVALUATION_COMPLETE, MENTOR_REVIEW_COMPLETE, COMPLETE } = STATUS;
 
 const prefix = '/skillz';
 
@@ -635,7 +636,7 @@ describe('evaluations', () => {
       request(app)
         .post(`${prefix}/evaluations/noMatchingId`)
         .send({
-          action: 'mentorUpdateSkillStatus',
+          action: 'updateSkillStatus',
           skillGroupId: 0,
           skillId: 1,
           status: 'ATTAINED',
@@ -704,6 +705,7 @@ describe('evaluations', () => {
           evaluationId = insertedId;
         })
         .then(() => assignMentor(normalUserOneId, normalUserTwoId))
+        .then(() => assignLineManager(normalUserOneId, adminUserId))
         .then(() =>
           request(app)
             .post(`${prefix}/evaluations/${evaluationId}`)
@@ -711,11 +713,52 @@ describe('evaluations', () => {
             .set('Cookie', `${cookieName}=${normalUserTwoToken}`)
             .expect(200))
         .then(({ body }) => {
-          expect(body).to.deep.equal({ status: MENTOR_REVIEW_COMPLETE });
+          expect(body.status).to.equal(MENTOR_REVIEW_COMPLETE);
         })
         .then(() => evaluations.findOne({ _id: evaluationId }))
         .then((completedApplication) => {
           expect(completedApplication.status).to.equal(MENTOR_REVIEW_COMPLETE);
+        }));
+
+    it('allows a lineManager to complete a review of an evaluation for their report', () =>
+      insertEvaluation(Object.assign({}, evaluation, { status: MENTOR_REVIEW_COMPLETE }), normalUserOneId)
+        .then(({ insertedId }) => {
+          evaluationId = insertedId;
+        })
+        .then(() => assignLineManager(normalUserOneId, normalUserTwoId))
+        .then(() =>
+          request(app)
+            .post(`${prefix}/evaluations/${evaluationId}`)
+            .send({ action: 'complete' })
+            .set('Cookie', `${cookieName}=${normalUserTwoToken}`)
+            .expect(200))
+        .then(({ body }) => {
+          expect(body.status).to.equal(COMPLETE);
+        })
+        .then(() => evaluations.findOne({ _id: evaluationId }))
+        .then((completedApplication) => {
+          expect(completedApplication.status).to.equal(COMPLETE);
+        }));
+
+    it('allows a user who is both a lineManager and a mentor to directly complete a review', () =>
+      insertEvaluation(Object.assign({}, evaluation, { status: SELF_EVALUATION_COMPLETE }), normalUserOneId)
+        .then(({ insertedId }) => {
+          evaluationId = insertedId;
+        })
+        .then(() => assignLineManager(normalUserOneId, normalUserTwoId))
+        .then(() => assignMentor(normalUserOneId, normalUserTwoId))
+        .then(() =>
+          request(app)
+            .post(`${prefix}/evaluations/${evaluationId}`)
+            .send({ action: 'complete' })
+            .set('Cookie', `${cookieName}=${normalUserTwoToken}`)
+            .expect(200))
+        .then(({ body }) => {
+          expect(body.status).to.equal(COMPLETE);
+        })
+        .then(() => evaluations.findOne({ _id: evaluationId }))
+        .then((completedApplication) => {
+          expect(completedApplication.status).to.equal(COMPLETE);
         }));
 
     it('prevents the subject of an evaluation from completing their evaluation if it is not new', () =>

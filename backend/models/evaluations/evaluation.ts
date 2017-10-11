@@ -21,6 +21,8 @@ export const STATUS = keymirror({
 const VIEW = keymirror({
   SUBJECT: null,
   MENTOR: null,
+  LINE_MANAGER: null,
+  LINE_MANAGER_AND_MENTOR: null,
   ADMIN: null,
 });
 
@@ -59,13 +61,18 @@ export type Evaluation = {
   dataModel: () => UnhydratedEvaluation,
   subjectMetadataViewModel: () => EvaluationMetadataViewModel,
   mentorMetadataViewModel: () => EvaluationMetadataViewModel,
+  lineManagerMetadataViewModel: () => EvaluationMetadataViewModel,
+  lineManagerAndMentorMetadataViewModel: () => EvaluationMetadataViewModel,
   adminMetadataViewModel: () => EvaluationMetadataViewModel,
   subjectEvaluationViewModel: () => EvaluationViewModel,
   mentorEvaluationViewModel: () => EvaluationViewModel,
+  lineManagerEvaluationViewModel: () => EvaluationViewModel,
+  lineManagerAndMentorEvaluationViewModel: () => EvaluationViewModel,
   adminEvaluationViewModel: () => EvaluationViewModel,
   newEvaluationEmail: () => Email,
   feedbackData: () => EvaluationFeedback,
   getSelfEvaluationCompleteEmail: (user: User) => Email,
+  getMentorReviewCompleteEmail: (user: User) => Email,
   findSkill: (skillId: number) => Skill | null,
   updateSkill: (skillId: number, status: string, isOwner: boolean, isMentor: boolean, isLineManager: boolean) => ErrorMessage | EvaluationUpdate,
   addSkillNote: (skillId: number, note: string) => EvaluationUpdate,
@@ -133,15 +140,26 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
     mentorMetadataViewModel() {
       return Object.assign({}, metadata, { view: VIEW.MENTOR });
     },
+    lineManagerMetadataViewModel() {
+      return Object.assign({}, metadata, { view: VIEW.LINE_MANAGER });
+    },
+    lineManagerAndMentorMetadataViewModel() {
+      return Object.assign({}, metadata, { view: VIEW.LINE_MANAGER_AND_MENTOR });
+    },
     adminMetadataViewModel() {
       return Object.assign({}, metadata, { view: VIEW.ADMIN });
-
     },
     subjectEvaluationViewModel() {
       return Object.assign({}, viewModel, { view: VIEW.SUBJECT });
     },
     mentorEvaluationViewModel() {
       return Object.assign({}, viewModel, { view: VIEW.MENTOR });
+    },
+    lineManagerAndMentorEvaluationViewModel() {
+      return Object.assign({}, viewModel, { view: VIEW.LINE_MANAGER_AND_MENTOR });
+    },
+    lineManagerEvaluationViewModel() {
+      return Object.assign({}, viewModel, { view: VIEW.LINE_MANAGER });
     },
     adminEvaluationViewModel() {
       return Object.assign({}, viewModel, { view: VIEW.ADMIN });
@@ -160,6 +178,13 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
       return {
         recipients: mentor.email,
         subject: `${user.name} has completed their self evaluation`,
+        body: `Please book a meeting with them and and visit ${`${HOST}/#/evaluations/${_id}`} to review their evaluation.`,
+      };
+    },
+    getMentorReviewCompleteEmail(lineManager) {
+      return {
+        recipients: lineManager.email,
+        subject: `${user.name} has completed their mentor review`,
         body: `Please book a meeting with them and and visit ${`${HOST}/#/evaluations/${_id}`} to review their evaluation.`,
       };
     },
@@ -223,6 +248,9 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
       });
       if (isOwner && status === STATUS.NEW) {
         return nextStatus(STATUS.SELF_EVALUATION_COMPLETE);
+      }
+      if (isMentor && isLineManager && status !== STATUS.NEW && status !== STATUS.COMPLETE) {
+        return nextStatus(STATUS.COMPLETE);
       }
       if (isMentor && status === STATUS.SELF_EVALUATION_COMPLETE) {
         return nextStatus(STATUS.MENTOR_REVIEW_COMPLETE);

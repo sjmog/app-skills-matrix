@@ -18,14 +18,21 @@ const getSubjectEvaluations = id =>
   getEvaluations(id)
     .then(evaluations => evaluations.map(evaluation => evaluation.subjectMetadataViewModel()));
 
-const getMenteeEvaluations = mentorId =>
+const getMenteeEvaluations = userId =>
   Promise.map(
-    userCollection.getByMentorId(mentorId),
-    ({ id, name, username }) =>
+    userCollection.getByMentorId(userId),
+    ({ id, name, username, lineManagerId }) =>
       getEvaluations(id)
-        .then(evaluations => evaluations.map(evaluation => evaluation.mentorMetadataViewModel()))
+        .then(evaluations => evaluations.map(evaluation => userId === lineManagerId ? evaluation.lineManagerAndMentorMetadataViewModel() : evaluation.mentorMetadataViewModel()))
         .then(evaluations => ({ name: name || username, evaluations })));
 
+const getReportsEvaluations = userId =>
+  Promise.map(
+    userCollection.getByLineManagerId(userId),
+    ({ id, name, username, mentorId }) =>
+      getEvaluations(id)
+        .then(evaluations => evaluations.map(evaluation => userId === mentorId ? evaluation.lineManagerAndMentorMetadataViewModel() : evaluation.lineManagerMetadataViewModel()))
+        .then(evaluations => ({ name: name || username, evaluations })));
 
 const augmentWithEvaluations = (users): Promise<UserWithEvaluations[]> =>
   Promise.map(
@@ -56,7 +63,8 @@ export const clientState = (user: User): Promise<ClientState> =>
       templates.getById(user.templateId),
       getSubjectEvaluations(user.id),
       getMenteeEvaluations(user.id),
-    ]).then(([mentor, template, evaluations, menteeEvaluations]) =>
+      getReportsEvaluations(user.id),
+    ]).then(([mentor, template, evaluations, menteeEvaluations, reportsEvaluations]) =>
       ({
         entities: {
           users: {
@@ -71,6 +79,7 @@ export const clientState = (user: User): Promise<ClientState> =>
           template: template ? template.viewModel() : null,
           evaluations,
           menteeEvaluations,
+          reportsEvaluations,
         },
       }))
     : Promise.resolve({ user: {} }));

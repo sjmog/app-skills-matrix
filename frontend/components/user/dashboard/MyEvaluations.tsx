@@ -7,7 +7,7 @@ type EvaluationsProps = {
   evaluations: any[],
 };
 
-const Evaluations = ({ evaluations }: EvaluationsProps) => (
+const MyEvaluations = ({ evaluations }: EvaluationsProps) => (
   <div>
     <Col xs={12} md={12}>
       <h2>My Evaluations</h2>
@@ -16,4 +16,4 @@ const Evaluations = ({ evaluations }: EvaluationsProps) => (
   </div>
 );
 
-export default Evaluations;
+export default MyEvaluations;

@@ -71,6 +71,7 @@ describe('initial client state', () => {
           expect(user).to.eql({
             evaluations: [],
             menteeEvaluations: [],
+            reportsEvaluations: [],
             mentorDetails: null,
             template: {
               id: 'eng-nodejs',

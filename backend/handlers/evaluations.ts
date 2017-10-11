@@ -44,8 +44,17 @@ const buildAggregateViewModel = (evaluation: Evaluation, retrievedNotes: Notes, 
     return augment(evaluation.subjectEvaluationViewModel());
   }
 
+  // NOTE: this must be first or bad things happen
+  if (reqUser.id === evaluationUser.mentorId && reqUser.id === evaluationUser.lineManagerId) {
+    return augment(evaluation.lineManagerAndMentorEvaluationViewModel());
+  }
+
   if (reqUser.id === evaluationUser.mentorId) {
     return augment(evaluation.mentorEvaluationViewModel());
+  }
+
+  if (reqUser.id === evaluationUser.lineManagerId) {
+    return augment(evaluation.lineManagerEvaluationViewModel());
   }
 
   if (reqUser.isAdmin()) {
@@ -144,16 +153,30 @@ const handlerFunctions = Object.freeze({
                 return res.status(400).json(changes);
               }
 
-              if (permissions.isOwner) {
-                return Promise.all([evaluations.updateEvaluation(<EvaluationUpdate>changes), users.getUserById(evaluationUser.mentorId)])
-                  .then(([updatedEvaluation, mentor]) => {
-                    sendMail(updatedEvaluation.getSelfEvaluationCompleteEmail(mentor));
-                    res.status(200).json(updatedEvaluation.subjectMetadataViewModel());
-                  });
-              }
+              return Promise.all([
+                evaluations.updateEvaluation(<EvaluationUpdate>changes),
+                users.getUserById(evaluationUser.mentorId),
+                users.getUserById(evaluationUser.lineManagerId),
+              ]).then(([updatedEvaluation, mentor, lineManager]) => {
+                if (permissions.isOwner) {
+                  sendMail(updatedEvaluation.getSelfEvaluationCompleteEmail(mentor))
+                    .catch(console.error);
+                  return res.status(200).json(updatedEvaluation.subjectMetadataViewModel());
+                }
 
-              return evaluations.updateEvaluation(<EvaluationUpdate>changes)
-                .then(updatedEvaluation => res.status(200).json({ status: updatedEvaluation.status }));
+                if (permissions.isMentor && permissions.isLineManager) {
+                  return res.status(200).json(updatedEvaluation.lineManagerMetadataViewModel());
+                }
+
+                if (permissions.isMentor) {
+                  sendMail(updatedEvaluation.getMentorReviewCompleteEmail(lineManager))
+                    .catch(console.error);
+                  return res.status(200).json(updatedEvaluation.mentorMetadataViewModel());
+                }
+                if (permissions.isLineManager) {
+                  return res.status(200).json(updatedEvaluation.lineManagerMetadataViewModel());
+                }
+              });
             })
             .catch(next);
         },

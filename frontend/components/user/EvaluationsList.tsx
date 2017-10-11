@@ -7,15 +7,23 @@ import EvalutionStatusLabel from '../common/EvaluationStatusLabel';
 import { EVALUATION_VIEW, EVALUATION_STATUS } from '../../modules/user/evaluations';
 import './evaluationsList.scss';
 
-const { MENTOR, SUBJECT } = EVALUATION_VIEW;
-const { NEW, SELF_EVALUATION_COMPLETE } = EVALUATION_STATUS;
+const { MENTOR, SUBJECT, LINE_MANAGER, LINE_MANAGER_AND_MENTOR } = EVALUATION_VIEW;
+const { NEW, SELF_EVALUATION_COMPLETE, MENTOR_REVIEW_COMPLETE } = EVALUATION_STATUS;
 
 const evaluationBtn = (status, view) => {
   if (status === NEW && view === SUBJECT) {
     return <Button bsStyle="primary">Evaluate</Button>;
   }
 
+  if ((status === MENTOR_REVIEW_COMPLETE || status === SELF_EVALUATION_COMPLETE) && view === LINE_MANAGER_AND_MENTOR) {
+    return <Button bsStyle="primary">Review</Button>;
+  }
+
   if (status === SELF_EVALUATION_COMPLETE && view === MENTOR) {
+    return <Button bsStyle="primary">Review</Button>;
+  }
+
+  if (status === MENTOR_REVIEW_COMPLETE && view === LINE_MANAGER) {
     return <Button bsStyle="primary">Review</Button>;
   }
 

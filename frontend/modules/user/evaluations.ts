@@ -6,6 +6,8 @@ import api from '../../api';
 export const EVALUATION_VIEW = keymirror({
   MENTOR: null,
   SUBJECT: null,
+  LINE_MANAGER: null,
+  LINE_MANAGER_AND_MENTOR: null,
   ADMIN: null,
 });
 
@@ -20,6 +22,7 @@ export const SKILL_STATUS = keymirror({
 export const EVALUATION_STATUS = keymirror({
   MENTOR_REVIEW_COMPLETE: null,
   SELF_EVALUATION_COMPLETE: null,
+  COMPLETE: null,
   NEW: null,
 });
 

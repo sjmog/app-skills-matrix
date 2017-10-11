@@ -18,8 +18,8 @@ import Matrix from '../matrix/Matrix';
 
 import './evaluation.scss';
 
-const { SUBJECT, MENTOR, ADMIN } = EVALUATION_VIEW;
-const { NEW, SELF_EVALUATION_COMPLETE } = EVALUATION_STATUS;
+const { SUBJECT, MENTOR, ADMIN, LINE_MANAGER, LINE_MANAGER_AND_MENTOR } = EVALUATION_VIEW;
+const { NEW, SELF_EVALUATION_COMPLETE, MENTOR_REVIEW_COMPLETE } = EVALUATION_STATUS;
 
 type EvaluationPageComponentProps = {
   status?: string,
@@ -122,6 +122,8 @@ class EvaluationPageComponent extends React.Component<EvaluationPageComponentPro
                   view === ADMIN
                   || (view === SUBJECT && status === NEW)
                   || (view === MENTOR && status === SELF_EVALUATION_COMPLETE)
+                  || (view === LINE_MANAGER && status === MENTOR_REVIEW_COMPLETE)
+                  || (view === LINE_MANAGER_AND_MENTOR && (status === MENTOR_REVIEW_COMPLETE || status === SELF_EVALUATION_COMPLETE))
                 }
               />
             </Col>

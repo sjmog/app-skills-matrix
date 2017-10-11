@@ -42,4 +42,7 @@ export default {
   getByMentorId: (id: string) => collection.find({ mentorId: id })
     .then(res => res.toArray())
     .then(res => res.map(doc => user(doc))),
+  getByLineManagerId: (id: string) => collection.find({ lineManagerId: id })
+    .then(res => res.toArray())
+    .then(res => res.map(doc => user(doc))),
 };
