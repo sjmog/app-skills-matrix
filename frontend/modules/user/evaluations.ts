@@ -1,4 +1,4 @@
-import { handleActions, createAction } from 'redux-actions';
+import { createAction, handleActions } from 'redux-actions';
 import * as keymirror from 'keymirror';
 import * as R from 'ramda';
 import api from '../../api';
@@ -9,14 +9,6 @@ export const EVALUATION_VIEW = keymirror({
   LINE_MANAGER: null,
   LINE_MANAGER_AND_MENTOR: null,
   ADMIN: null,
-});
-
-export const SKILL_STATUS = keymirror({
-  NEW: null,
-  ATTAINED: null,
-  NOT_ATTAINED: null,
-  FEEDBACK: null,
-  OBJECTIVE: null,
 });
 
 export const EVALUATION_STATUS = keymirror({

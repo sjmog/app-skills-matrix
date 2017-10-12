@@ -1,5 +1,7 @@
 import { expect } from 'chai';
-import { getErringSkills, getSkillsWithCurrentStatus } from '../../../../../../frontend/modules/user/skills';
+import { getErringSkills, getSkillsWithCurrentStatus, getSkillNames } from '../../../../../../frontend/modules/user/skills';
+
+const getSkillNamesLenient = getSkillNames as any;
 
 describe('Skills selectors', () => {
   describe('getErringSkills', () => {
@@ -129,6 +131,78 @@ describe('Skills selectors', () => {
       };
 
       expect(getSkillsWithCurrentStatus(state, 'A', ['SKILL_ID_1', 'SKILL_ID_2', 'SKILL_ID_3'])).to.eql(['SKILL_ID_3']);
+    });
+  });
+
+  describe('getSkillNames', () => {
+    it('returns a list of skill names', () => {
+      const state = {
+        entities: {
+          SKILL_ID_1: { name: 'One' },
+          SKILL_ID_2: { name: 'Two' },
+        },
+      };
+
+      expect(getSkillNames(state, ['SKILL_ID_1', 'SKILL_ID_2'])).to.eql(['One', 'Two']);
+    });
+
+    it('returns a default name when a skill is malformed', () => {
+      const state = {
+        entities: {
+          SKILL_ID_1: { name: 'One' },
+          SKILL_ID_2: { no: 'name' },
+        },
+      };
+
+      expect(getSkillNamesLenient(state, ['SKILL_ID_1', 'SKILL_ID_2'])).to.eql(['One', 'Malformed skill: SKILL_ID_2']);
+    });
+
+    it('returns a missing skill message when a skill is not present', () => {
+      const state = {
+        entities: {
+          SKILL_ID_1: { name: 'One' },
+        },
+      };
+
+      expect(getSkillNamesLenient(state, ['SKILL_ID_2'])).to.eql(['Unable to find skill details: SKILL_ID_2']);
+    });
+
+    it('returns a missing skill message when there is no entities property', () => {
+      const state = {
+        notEntities: true,
+      };
+
+      expect(getSkillNamesLenient(state, ['SKILL_ID_1'])).to.eql(['Unable to find skill details: SKILL_ID_1']);
+    });
+
+    it('returns a missing skill message when the entities value is malformed', () => {
+      const state = {
+        entities: ['INVALID'],
+      };
+
+      expect(getSkillNamesLenient(state, ['SKILL_ID_1'])).to.eql(['Unable to find skill details: SKILL_ID_1']);
+    });
+
+    it('returns null when the skillUids arg is invalid', () => {
+      const state = {
+        entities: {
+          SKILL_ID_1: { name: 'One' },
+          SKILL_ID_2: { name: 'Two' },
+        },
+      };
+
+      expect(getSkillNamesLenient(state, 'INVALID')).to.eql(null);
+    });
+
+    it('returns an empty array when the list of skillUids is empty', () => {
+      const state = {
+        entities: {
+          SKILL_ID_1: { name: 'One' },
+          SKILL_ID_2: { name: 'Two' },
+        },
+      };
+
+      expect(getSkillNamesLenient(state, [])).to.eql([]);
     });
   });
 });

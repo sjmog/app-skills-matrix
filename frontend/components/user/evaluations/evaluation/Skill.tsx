@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Panel, ButtonGroup, Button, Glyphicon, Label, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { default as AnimateOnChange } from 'react-animate-on-change';
 
-import { SKILL_STATUS } from '../../../../modules/user/evaluations';
+import { SKILL_STATUS } from '../../../../modules/user/skills';
 
 import SkillActions from '../../../common/SkillActions';
 import SkillBody from './SkillBody';

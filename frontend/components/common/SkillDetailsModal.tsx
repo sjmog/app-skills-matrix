@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Modal, Button, Alert } from 'react-bootstrap';
 import { connect } from 'react-redux';
 
-import { SKILL_STATUS } from '../../modules/user/evaluations';
+import { SKILL_STATUS } from '../../modules/user/skills';
 import * as selectors from '../../modules/user/index';
 import SkillActions from './SkillActions';
 import Notes from '../user/notes/Notes';
