@@ -3,7 +3,7 @@ import { Label } from 'react-bootstrap';
 
 import { EVALUATION_STATUS } from '../../modules/user/evaluations';
 
-const { NEW, SELF_EVALUATION_COMPLETE, MENTOR_REVIEW_COMPLETE } = EVALUATION_STATUS;
+const { NEW, SELF_EVALUATION_COMPLETE, MENTOR_REVIEW_COMPLETE, COMPLETE } = EVALUATION_STATUS;
 
 type EvaluationStatusLabelProps = {
   status: string,
@@ -17,8 +17,10 @@ const EvaluationStatusLabel = ({ status }: EvaluationStatusLabelProps) => {
       return (<h4><Label bsStyle="info">Self evaluation complete</Label></h4>);
     case MENTOR_REVIEW_COMPLETE:
       return (<h4><Label bsStyle="success">Mentor review complete</Label></h4>);
+    case COMPLETE:
+      return (<h4><Label bsStyle="success">Complete</Label></h4>);
     default:
-      return (<h4><Label bsStyle="success">Mentor review complete</Label></h4>);
+      return (<h4><Label bsStyle="success">You shouldn't see this</Label></h4>);
   }
 };
 

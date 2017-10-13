@@ -19,5 +19,6 @@ type ClientState = {
     mentorDetails?: UserDetailsViewModel,
     evaluations?: EvaluationMetadataViewModel[],
     menteeEvaluations?: EvaluationMetadataViewModel[],
+    reportsEvaluations?: EvaluationMetadataViewModel[],
   },
 };

@@ -24,6 +24,7 @@ export default {
   prepopulateUsers,
   users,
   assignMentor: (userId, mentorId) => users.update({ _id: new ObjectID(userId) }, { $set: { mentorId: String(mentorId) } }),
+  assignLineManager: (userId, lineManagerId) => users.update({ _id: new ObjectID(userId) }, { $set: { lineManagerId: String(lineManagerId) } }),
   templates,
   insertTemplate: template => templates.insertOne(Object.assign({}, template)),
   assignTemplate: (userId, templateId) => users.update({ _id: new ObjectID(userId) }, { $set: { templateId: String(templateId) } }),

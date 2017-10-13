@@ -4,6 +4,7 @@ import evaluationsHandler from '../handlers/evaluations';
 
 const { evaluation, evaluations } = <any>evaluationsHandler;
 
+// FIXME: if you pass in a bad action this will 500
 const middleware = (req, res, next) =>
   compose(...evaluation[req.body.action].middleware)(req, res, next);
 

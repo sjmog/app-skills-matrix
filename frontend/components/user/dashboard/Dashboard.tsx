@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import { Grid, Row } from 'react-bootstrap';
 
 import UserDetails from './UserDetails';
-import Evaluations from './Evaluations';
-import MenteeEvaluations from './MenteeEvaluations';
+import MyEvaluations from './MyEvaluations';
+import EvaluationTable from './EvaluationTable';
 
 // TODO: fix types
 type DashboardProps = {
@@ -13,9 +13,10 @@ type DashboardProps = {
   template: any,
   evaluations: any[],
   menteeEvaluations: any[],
+  reportsEvaluations: any[],
 };
 
-const Dashboard = ({ userDetails, mentorDetails, template, evaluations, menteeEvaluations }: DashboardProps) => (
+const Dashboard = ({ userDetails, mentorDetails, template, evaluations, menteeEvaluations, reportsEvaluations }: DashboardProps) => (
   <Grid>
     {
       userDetails
@@ -28,13 +29,20 @@ const Dashboard = ({ userDetails, mentorDetails, template, evaluations, menteeEv
             />
           </Row>
           <Row>
-            <Evaluations
+            <MyEvaluations
               evaluations={evaluations}
             />
           </Row>
           <Row>
-            <MenteeEvaluations
-              menteeEvaluations={menteeEvaluations}
+            <EvaluationTable
+              evaluations={menteeEvaluations}
+              title="Mentee Evaluations"
+            />
+          </Row>
+          <Row>
+            <EvaluationTable
+              evaluations={reportsEvaluations}
+              title=""
             />
           </Row>
         </div>

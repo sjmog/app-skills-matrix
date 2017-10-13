@@ -124,6 +124,56 @@ describe('users', () => {
           .expect(test().expect)));
   });
 
+  describe('POST /users/:userId { action: selectLineManager }', () => {
+    it('should let admin select a lineManager', () =>
+      request(app)
+        .post(`${prefix}/users/${normalUserId}`)
+        .send({ lineManagerId: adminUserId, action: 'selectLineManager' })
+        .set('Cookie', `${cookieName}=${adminToken}`)
+        .expect(200)
+        .then(() => users.findOne({ _id: new ObjectID(normalUserId) }))
+        .then((updatedUser) => {
+          expect(updatedUser.lineManagerId).to.equal(adminUserId.toString());
+        }));
+
+    [
+      () => ({
+        desc: 'not authorized',
+        token: normalUserToken,
+        body: { lineManagerId: adminUserId, action: 'selectLineManager' },
+        userId: normalUserId,
+        expect: 403,
+      }),
+      () => ({
+        desc: 'no user',
+        token: adminToken,
+        body: { lineManagerId: adminUserId, action: 'selectLineManager' },
+        userId: '58a237c185b8790720deb924',
+        expect: 404,
+      }),
+      () => ({
+        desc: 'bad action',
+        token: adminToken,
+        body: { lineManagerId: adminUserId, action: 'foo' },
+        userId: normalUserId,
+        expect: 400,
+      }),
+      () => ({
+        desc: 'can not mentor themselves',
+        token: adminToken,
+        body: { lineManagerId: normalUserId, action: 'selectLineManager' },
+        userId: normalUserId,
+        expect: 400,
+      }),
+    ].forEach(test =>
+      it(`should handle error cases '${test().desc}'`, () =>
+        request(app)
+          .post(`${prefix}/users/${test().userId}`)
+          .send(test().body)
+          .set('Cookie', `${cookieName}=${test().token}`)
+          .expect(test().expect)));
+  });
+
   describe('POST /users/:userId { action: selectTemplate }', () => {
     it('should let admin select a template for a user', () =>
       insertTemplate(sampleTemplate)

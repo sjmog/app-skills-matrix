@@ -9,27 +9,56 @@ import PageHeader from '../../common/PageHeader';
 
 import './evaluation.scss';
 
-const { MENTOR, SUBJECT, ADMIN } = EVALUATION_VIEW;
+const { MENTOR, SUBJECT, ADMIN, LINE_MANAGER, LINE_MANAGER_AND_MENTOR } = EVALUATION_VIEW;
 const { NEW, SELF_EVALUATION_COMPLETE, MENTOR_REVIEW_COMPLETE } = EVALUATION_STATUS;
 
-const alertText = (view, status) => {
-  let text;
+const subjectText = {
+  NEW: 'You should self-evaluate.',
+  SELF_EVALUATION_COMPLETE: 'You have completed your self-evaluation.',
+  MENTOR_REVIEW_COMPLETE: 'Your evaluation is complete.',
+  COMPLETE: 'Your evaluation is complete.',
+};
 
-  if (view === MENTOR && status === NEW) {
-    text = 'You can\'t review this evaluation until your mentee has completed their self-evaluation.';
-  } else if (view === MENTOR && status === SELF_EVALUATION_COMPLETE) {
-    text = 'Please review this evaluation.';
-  } else if (view === MENTOR && status === MENTOR_REVIEW_COMPLETE) {
-    text = 'You have reviewed this evaluation.';
-  } else if (view === SUBJECT && status === SELF_EVALUATION_COMPLETE) {
-    text = 'You have completed your self-evaluation.';
-  } else if (view === SUBJECT && status === MENTOR_REVIEW_COMPLETE) {
-    text = 'Your evaluation is complete.';
-  } else {
-    text = false;
+const mentorText = {
+  NEW: 'You can\'t review this evaluation until your mentee has completed their self-evaluation.',
+  SELF_EVALUATION_COMPLETE: 'Please review this evaluation.',
+  MENTOR_REVIEW_COMPLETE: 'This evaluation is waiting for your mentee to review with their manager.',
+  COMPLETE: 'This evaluation is complete.',
+};
+
+const lineManagerText = {
+  NEW: 'You can\'t review this evaluation until your report has completed their self-evaluation',
+  SELF_EVALUATION_COMPLETE: 'You can\'t review this evaluation until your report has completed their self-evaluation.',
+  MENTOR_REVIEW_COMPLETE: 'Please review this evaluation.',
+  COMPLETE: 'This evaluation is complete.',
+};
+
+const lineManagerAndMentorText = {
+  NEW: 'You can\'t review this evaluation until your report has completed their self-evaluation',
+  SELF_EVALUATION_COMPLETE: 'Please review this evaluation.',
+  MENTOR_REVIEW_COMPLETE: 'Please review this evaluation.',
+  COMPLETE: false,
+};
+
+
+const alertText = (view, status) => {
+  if (view === MENTOR) {
+    return mentorText[status];
   }
 
-  return text;
+  if (view === SUBJECT) {
+    return subjectText[status];
+  }
+
+  if (view === LINE_MANAGER) {
+    return lineManagerText[status];
+  }
+
+  if (view === LINE_MANAGER_AND_MENTOR) {
+    return lineManagerAndMentorText[status];
+  }
+
+  return false;
 };
 
 // TODO fix types
@@ -55,6 +84,20 @@ class EvaluationPageHeader extends React.Component<EvaluationPageHeaderProps, an
   render() {
     const { view, evaluationName, subjectName, status } = this.props;
 
+    if (view === LINE_MANAGER_AND_MENTOR) {
+      return (
+        <Row>
+          <PageHeader
+            alertText={alertText(view, status)}
+            title={subjectName}
+            btnOnClick={this.evaluationComplete}
+            btnDisabled={status !== SELF_EVALUATION_COMPLETE && status !== MENTOR_REVIEW_COMPLETE}
+            btnText="Complete Evaluation"
+          />
+        </Row>
+      );
+    }
+
     if (view === MENTOR) {
       return (
         <Row>
@@ -64,6 +107,20 @@ class EvaluationPageHeader extends React.Component<EvaluationPageHeaderProps, an
             btnOnClick={this.evaluationComplete}
             btnDisabled={status !== SELF_EVALUATION_COMPLETE}
             btnText="Review complete"
+          />
+        </Row>
+      );
+    }
+
+    if (view === LINE_MANAGER) {
+      return (
+        <Row>
+          <PageHeader
+            alertText={alertText(view, status)}
+            title={subjectName}
+            btnOnClick={this.evaluationComplete}
+            btnDisabled={status !== MENTOR_REVIEW_COMPLETE}
+            btnText="Complete Evaluation"
           />
         </Row>
       );

@@ -15,11 +15,14 @@ export const STATUS = keymirror({
   NEW: null,
   SELF_EVALUATION_COMPLETE: null,
   MENTOR_REVIEW_COMPLETE: null,
+  COMPLETE: null,
 });
 
 const VIEW = keymirror({
   SUBJECT: null,
   MENTOR: null,
+  LINE_MANAGER: null,
+  LINE_MANAGER_AND_MENTOR: null,
   ADMIN: null,
 });
 
@@ -40,6 +43,7 @@ export type EvaluationUpdate = {
   skillGroups: UnhydratedSkillGroup[],
   skills: UnhydratedEvaluationSkill[],
   status: string,
+  error?: boolean,
 };
 
 export type EvaluationFeedback = {
@@ -57,23 +61,24 @@ export type Evaluation = {
   dataModel: () => UnhydratedEvaluation,
   subjectMetadataViewModel: () => EvaluationMetadataViewModel,
   mentorMetadataViewModel: () => EvaluationMetadataViewModel,
+  lineManagerMetadataViewModel: () => EvaluationMetadataViewModel,
+  lineManagerAndMentorMetadataViewModel: () => EvaluationMetadataViewModel,
   adminMetadataViewModel: () => EvaluationMetadataViewModel,
   subjectEvaluationViewModel: () => EvaluationViewModel,
   mentorEvaluationViewModel: () => EvaluationViewModel,
+  lineManagerEvaluationViewModel: () => EvaluationViewModel,
+  lineManagerAndMentorEvaluationViewModel: () => EvaluationViewModel,
   adminEvaluationViewModel: () => EvaluationViewModel,
   newEvaluationEmail: () => Email,
   feedbackData: () => EvaluationFeedback,
   getSelfEvaluationCompleteEmail: (user: User) => Email,
+  getMentorReviewCompleteEmail: (user: User) => Email,
   findSkill: (skillId: number) => Skill | null,
-  updateSkill: (skillId: number, status: string) => EvaluationUpdate,
+  updateSkill: (skillId: number, status: string, isSubject: boolean, isMentor: boolean, isLineManager: boolean) => ErrorMessage | EvaluationUpdate,
   addSkillNote: (skillId: number, note: string) => EvaluationUpdate,
   deleteSkillNote: (skillId: number, note: string) => EvaluationUpdate;
-  isNewEvaluation: () => boolean,
-  selfEvaluationComplete: () => EvaluationUpdate,
-  selfEvaluationCompleted: () => boolean,
-  mentorReviewComplete: () => EvaluationUpdate,
-  mentorReviewCompleted: () => boolean,
   mergePreviousEvaluation: (previousEvaluation: Evaluation) => Evaluation,
+  moveToNextStatus: (isSubject: boolean, isMentor: boolean, isLineManager: boolean) => ErrorMessage | EvaluationUpdate,
   getNoteIds: () => string[];
 };
 
@@ -135,15 +140,26 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
     mentorMetadataViewModel() {
       return Object.assign({}, metadata, { view: VIEW.MENTOR });
     },
+    lineManagerMetadataViewModel() {
+      return Object.assign({}, metadata, { view: VIEW.LINE_MANAGER });
+    },
+    lineManagerAndMentorMetadataViewModel() {
+      return Object.assign({}, metadata, { view: VIEW.LINE_MANAGER_AND_MENTOR });
+    },
     adminMetadataViewModel() {
       return Object.assign({}, metadata, { view: VIEW.ADMIN });
-
     },
     subjectEvaluationViewModel() {
       return Object.assign({}, viewModel, { view: VIEW.SUBJECT });
     },
     mentorEvaluationViewModel() {
       return Object.assign({}, viewModel, { view: VIEW.MENTOR });
+    },
+    lineManagerAndMentorEvaluationViewModel() {
+      return Object.assign({}, viewModel, { view: VIEW.LINE_MANAGER_AND_MENTOR });
+    },
+    lineManagerEvaluationViewModel() {
+      return Object.assign({}, viewModel, { view: VIEW.LINE_MANAGER });
     },
     adminEvaluationViewModel() {
       return Object.assign({}, viewModel, { view: VIEW.ADMIN });
@@ -165,12 +181,19 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
         body: `Please book a meeting with them and and visit ${`${HOST}/#/evaluations/${_id}`} to review their evaluation.`,
       };
     },
+    getMentorReviewCompleteEmail(lineManager) {
+      return {
+        recipients: lineManager.email,
+        subject: `${user.name} has completed their mentor review`,
+        body: `Please book a meeting with them and and visit ${`${HOST}/#/evaluations/${_id}`} to review their evaluation.`,
+      };
+    },
     findSkill(skillId) {
       const val = R.find(s => skillId === s.id, skills);
       return val ? skill(val) : null;
     },
-    updateSkill(skillId, newSkillStatus) {
-      return {
+    updateSkill(skillId, newSkillStatus, isSubject, isMentor, isLineManager) {
+      const updateSkill = () => ({
         id: _id.toString(),
         user,
         createdDate,
@@ -178,7 +201,18 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
         skillGroups,
         skills: skills.map(s => (s.id === skillId ? skill(s).updateStatus(newSkillStatus) : s)),
         status,
-      };
+      });
+
+      if (isSubject && status === STATUS.NEW) {
+        return updateSkill();
+      }
+      if (isMentor && status === STATUS.SELF_EVALUATION_COMPLETE) {
+        return updateSkill();
+      }
+      if (isLineManager && status === STATUS.MENTOR_REVIEW_COMPLETE) {
+        return updateSkill();
+      }
+      return { error: true, message: `User does not have permission to move from ${status}` };
     },
     addSkillNote(skillId: number, noteId: string) {
       return {
@@ -202,36 +236,29 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
         status,
       };
     },
-    isNewEvaluation() {
-      return status === STATUS.NEW;
-    },
-    selfEvaluationComplete() {
-      return {
+    moveToNextStatus(isSubject, isMentor, isLineManager) {
+      const nextStatus = newStatus => ({
         id: _id.toString(),
         user,
         createdDate,
         template,
         skillGroups,
         skills,
-        status: STATUS.SELF_EVALUATION_COMPLETE,
-      };
-    },
-    selfEvaluationCompleted() {
-      return status === STATUS.SELF_EVALUATION_COMPLETE;
-    },
-    mentorReviewComplete() {
-      return {
-        id: _id.toString(),
-        user,
-        createdDate,
-        template,
-        skillGroups,
-        skills,
-        status: STATUS.MENTOR_REVIEW_COMPLETE,
-      };
-    },
-    mentorReviewCompleted() {
-      return status === STATUS.MENTOR_REVIEW_COMPLETE;
+        status: newStatus,
+      });
+      if (isSubject && status === STATUS.NEW) {
+        return nextStatus(STATUS.SELF_EVALUATION_COMPLETE);
+      }
+      if (isMentor && isLineManager && status !== STATUS.NEW && status !== STATUS.COMPLETE) {
+        return nextStatus(STATUS.COMPLETE);
+      }
+      if (isMentor && status === STATUS.SELF_EVALUATION_COMPLETE) {
+        return nextStatus(STATUS.MENTOR_REVIEW_COMPLETE);
+      }
+      if (isLineManager && status === STATUS.MENTOR_REVIEW_COMPLETE) {
+        return nextStatus(STATUS.COMPLETE);
+      }
+      return { error: true, message: `User does not have permission to move from ${status}` };
     },
     mergePreviousEvaluation(previousEvaluation) {
       const updateSkill = (skillToUpdate) => {

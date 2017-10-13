@@ -14,6 +14,11 @@ export default ({
       .then(getData)
       .catch(handleError);
   },
+  selectLineManager(lineManagerId: string, userId: string): Promise<UserDetailsViewModel> {
+    return axios.post(`/skillz/users/${userId}`, { action: 'selectLineManager', lineManagerId })
+      .then(getData)
+      .catch(handleError);
+  },
   selectTemplate(templateId: string, userId: string): Promise<UserDetailsViewModel> {
     return axios.post(`/skillz/users/${userId}`, { action: 'selectTemplate', templateId })
       .then(getData)
@@ -64,12 +69,8 @@ export default ({
       .then(getData)
       .catch(handleError);
   },
-  subjectUpdateSkillStatus(evaluationId: string, skillId: string, status): Promise<any> {
-    return axios.post(`/skillz/evaluations/${evaluationId}`, { action: 'subjectUpdateSkillStatus', skillId, status })
-      .catch(handleError);
-  },
-  mentorUpdateSkillStatus(evaluationId, skillId, status): Promise<any> {
-    return axios.post(`/skillz/evaluations/${evaluationId}`, { action: 'mentorUpdateSkillStatus', skillId, status })
+  updateSkillStatus(evaluationId: string, skillId: string, status): Promise<any> {
+    return axios.post(`/skillz/evaluations/${evaluationId}`, { action: 'updateSkillStatus', skillId, status })
       .catch(handleError);
   },
   adminUpdateSkillStatus(evaluationId, skillId, status): Promise<any> {

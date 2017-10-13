@@ -6,7 +6,7 @@ import {
   NOT_AUTHORIZED_TO_MARK_EVAL_AS_COMPLETE,
   NOT_AUTHORIZED_TO_UPDATE_SKILL_STATUS,
   NOT_AUTHORIZED_TO_VIEW_EVALUATION,
-  ONLY_USER_AND_MENTOR_CAN_SEE_ACTIONS,
+  ONLY_USER_MENTOR_AND_LINE_MANAGER_CAN_SEE_ACTIONS,
   USER_NOT_ADMIN,
 } from '../../handlers/errors';
 
@@ -17,6 +17,9 @@ export type Permissions = {
   admin: () => Promise<void>,
   completeEvaluation: () => Promise<void>,
   addNote: () => Promise<void>,
+  isMentor: boolean,
+  isSubject: boolean,
+  isLineManager: boolean,
 };
 
 const permissionError = (error: ErrorMessage) => Promise.reject({ status: 403, data: error });
@@ -30,14 +33,18 @@ const permissions = (loggedInUser: User, requestUser: User): Permissions => {
   const loggedIn = Boolean(loggedInUser);
   const isAdmin = loggedIn && loggedInUser.isAdmin();
   const isMentor = loggedIn && loggedInUser.id === requestUser.mentorId;
+  const isLineManager = loggedIn && loggedInUser.id === requestUser.lineManagerId;
   const isUser = loggedIn && loggedInUser.id === requestUser.id;
   return {
-    viewActions: () => (isAdmin || isMentor || isUser) ? Promise.resolve() : permissionError(ONLY_USER_AND_MENTOR_CAN_SEE_ACTIONS()),
-    viewEvaluation: () => (isAdmin || isMentor || isUser) ? Promise.resolve() : permissionError(NOT_AUTHORIZED_TO_VIEW_EVALUATION()),
-    updateSkill: () => (isMentor || isUser) ? Promise.resolve() : permissionError(NOT_AUTHORIZED_TO_UPDATE_SKILL_STATUS()),
+    viewActions: () => (isAdmin || isMentor || isUser || isLineManager) ? Promise.resolve() : permissionError(ONLY_USER_MENTOR_AND_LINE_MANAGER_CAN_SEE_ACTIONS()),
+    viewEvaluation: () => (isAdmin || isMentor || isUser || isLineManager) ? Promise.resolve() : permissionError(NOT_AUTHORIZED_TO_VIEW_EVALUATION()),
+    updateSkill: () => (isMentor || isUser  || isLineManager) ? Promise.resolve() : permissionError(NOT_AUTHORIZED_TO_UPDATE_SKILL_STATUS()),
     admin: () => isAdmin ? Promise.resolve() : permissionError(USER_NOT_ADMIN()),
-    completeEvaluation: () => (isMentor || isUser) ? Promise.resolve() : permissionError(NOT_AUTHORIZED_TO_MARK_EVAL_AS_COMPLETE()),
-    addNote: () => (isAdmin || isMentor || isUser) ? Promise.resolve() : permissionError(NOT_AUTHORIZED_TO_ADD_NOTE()),
+    completeEvaluation: () => (isMentor || isUser || isLineManager) ? Promise.resolve() : permissionError(NOT_AUTHORIZED_TO_MARK_EVAL_AS_COMPLETE()),
+    addNote: () => (isAdmin || isMentor || isUser || isLineManager) ? Promise.resolve() : permissionError(NOT_AUTHORIZED_TO_ADD_NOTE()),
+    isMentor,
+    isSubject: isUser,
+    isLineManager,
   };
 };
 

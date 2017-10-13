@@ -3,17 +3,18 @@ import { Col, ListGroup, Accordion, Panel } from 'react-bootstrap';
 
 import EvaluationsList from './../EvaluationsList';
 
-type MenteeEvaluationsProps = {
-  menteeEvaluations: any[],
+type EvaluationsTableProps = {
+  evaluations: any[],
+  title: string,
 };
 
-const MenteeEvaluations = ({ menteeEvaluations }: MenteeEvaluationsProps) => (
+const EvaluationTable = ({ evaluations, title }: EvaluationsTableProps) => (
   <div>
     {
-      menteeEvaluations.length ? <Col xs={12} md={12}>
-        <h2>Mentee Evaluations</h2>
+      evaluations.length ? <Col xs={12} md={12}>
+        <h2>{title}</h2>
         {
-          menteeEvaluations.map(
+          evaluations.map(
             ({ name, evaluations }, index) => (
               <Accordion key={index}>
                 <Panel header={name} eventKey={index}>
@@ -30,4 +31,4 @@ const MenteeEvaluations = ({ menteeEvaluations }: MenteeEvaluationsProps) => (
   </div>
 );
 
-export default MenteeEvaluations;
+export default EvaluationTable;

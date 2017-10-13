@@ -5,6 +5,7 @@ type UserDetailsViewModel = {
   avatarUrl: string,
   email: string,
   mentorId: string,
+  lineManagerId: string,
   templateId: string,
 };
 

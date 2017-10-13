@@ -9,7 +9,7 @@ import skillsFixture from './fixtures/skills';
 import evaluationFixture from './fixtures/evaluations';
 
 const { sign, cookieName } = auth;
-const { prepopulateUsers, users, insertTemplate, clearDb, insertSkill, insertEvaluation, assignMentor, getEvaluations, skillStatus } = helpers;
+const { prepopulateUsers, users, insertTemplate, clearDb, insertSkill, insertEvaluation, assignMentor, assignLineManager, getEvaluations, skillStatus } = helpers;
 const [, completedEvaluation] = evaluationFixture;
 
 const prefix = '/skillz';
@@ -39,7 +39,8 @@ describe('userEvaluations', () => {
             normalUserTwoId = normalUserTwo._id;
             adminUserId = adminUser._id;
           }))
-      .then(() => assignMentor(normalUserOneId, normalUserTwoId)));
+      .then(() => assignMentor(normalUserOneId, normalUserTwoId))
+      .then(() => assignLineManager(normalUserOneId, normalUserTwoId)));
 
   describe('POST /users/:userId/evaluations', () => {
     it('allows admin user to create an evaluation for a user', () =>
@@ -77,7 +78,7 @@ describe('userEvaluations', () => {
         desc: 'not authorized',
         token: normalUserOneToken,
         body: { action: 'create' },
-        userId: normalUserOneToken,
+        userId: normalUserOneId,
         expect: 403,
       }),
       () => ({
@@ -91,7 +92,7 @@ describe('userEvaluations', () => {
         desc: 'bad action',
         token: adminToken,
         body: { action: 'foo' },
-        userId: normalUserOneToken,
+        userId: normalUserOneId,
         expect: 400,
       }),
       () => ({

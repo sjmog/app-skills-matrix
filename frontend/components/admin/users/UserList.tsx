@@ -21,6 +21,21 @@ const selectMentor = (users, onSelectMentor, user) => (
   </FormGroup>
 );
 
+const selectLineManager = (users, onSelectLineManager, user) => (
+  <FormGroup controlId="selectLineManager">
+    <FormControl
+      componentClass="select"
+      placeholder="choose line manager"
+      value={user.lineManagerId || 'default'}
+      onChange={e => onSelectLineManager(e, user)}
+    >
+      <option disabled value="default">Select...</option>
+      {users.filter(u => u.email !== user.email).map(user =>
+        <option key={user.id} value={user.id}>{user.name || user.username}</option>)}
+    </FormControl>
+  </FormGroup>
+);
+
 const selectTemplate = (templates, onSelectTemplate, user) => (
   <FormGroup controlId="selectMentor">
     <FormControl
@@ -35,7 +50,7 @@ const selectTemplate = (templates, onSelectTemplate, user) => (
   </FormGroup>
 );
 
-function userDetailsRow(user, isSelected, onUserSelectionChange, makeSelectMentorComponent, makeSelectTemplateComponent, viewUserEvaluations) {
+function userDetailsRow(user, isSelected, onUserSelectionChange, makeSelectMentorComponent, makeSelectTemplateComponent, makeSelectLineManagerComponent, viewUserEvaluations) {
   const { id, name, email, username } = user;
   return (
     <tr key={id}>
@@ -50,12 +65,27 @@ function userDetailsRow(user, isSelected, onUserSelectionChange, makeSelectMento
       </td>
       <td>{makeSelectMentorComponent(user)}</td>
       <td>{makeSelectTemplateComponent(user)}</td>
+      <td>{makeSelectLineManagerComponent(user)}</td>
     </tr>
   );
 }
 
-// TODO: add types
-class UserList extends React.Component<any, any> {
+type UserListProps = {
+  users: UserWithEvaluations[],
+  templates: TemplateViewModel[],
+  selectedUsers: string[],
+  onUserSelectionChange: (e: any, user: UserWithEvaluations) => void,
+  onSelectMentor: (e: any, user: UserWithEvaluations) => void,
+  onSelectLineManager: (e: any, user: UserWithEvaluations) => void,
+  onSelectTemplate: (e: any, user: UserWithEvaluations) => void,
+};
+
+type UserListState = {
+  showModal: boolean,
+  currentUser?: UserDetailsViewModel,
+};
+
+class UserList extends React.Component<UserListProps, UserListState> {
   constructor(props) {
     super(props);
     this.state = {
@@ -81,9 +111,12 @@ class UserList extends React.Component<any, any> {
   }
 
   render() {
-    const { users, templates, selectedUsers, onUserSelectionChange, onSelectMentor, onSelectTemplate } = this.props;
+    const { users, templates, selectedUsers, onUserSelectionChange, onSelectMentor, onSelectLineManager, onSelectTemplate } = this.props;
     const makeSelectTemplateComponent = R.curry(selectTemplate)(templates, onSelectTemplate);
-    const makeSelectMentorComponent = R.curry(selectMentor)(users, onSelectMentor);
+    const sortedUsers = R.sortBy<UserDetailsViewModel>(R.prop('name'), users);
+
+    const makeSelectMentorComponent = R.curry(selectMentor)(sortedUsers, onSelectMentor);
+    const makeSelectLineManagerComponent = R.curry(selectLineManager)(sortedUsers, onSelectLineManager);
 
     return (
       <div>
@@ -95,12 +128,21 @@ class UserList extends React.Component<any, any> {
             <th>Username</th>
             <th>Email</th>
             <th>Evaluations</th>
-            <th>Select Mentor</th>
-            <th>Select Template</th>
+            <th>Mentor</th>
+            <th>Template</th>
+            <th>Line Manager</th>
           </tr>
           </thead>
           <tbody>
-          {users.map(user => userDetailsRow(user, R.contains(user.id, selectedUsers), onUserSelectionChange, makeSelectMentorComponent, makeSelectTemplateComponent, this.viewUserEvaluations))}
+          {sortedUsers.map(user =>
+            userDetailsRow(
+              user,
+              R.contains(user.id, selectedUsers),
+              onUserSelectionChange,
+              makeSelectMentorComponent,
+              makeSelectTemplateComponent,
+              makeSelectLineManagerComponent,
+              this.viewUserEvaluations))}
           </tbody>
         </Table>
         <UserEvaluationsModal
@@ -112,6 +154,5 @@ class UserList extends React.Component<any, any> {
     );
   }
 }
-
 
 export default UserList;

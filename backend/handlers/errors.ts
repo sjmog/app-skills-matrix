@@ -1,6 +1,8 @@
 export const USER_EXISTS = email => ({ message: `User with email '${email}' already exists` });
 export const MUST_BE_ADMIN = () => ({ message: 'Must be an admin to perform action' });
 export const USER_NOT_FOUND = () => ({ message: 'User not found' });
+export const INVALID_USER_ID = (userId) => ({ message: `UserId '${userId}' is not valid` });
+export const INVALID_EVALUATION_ID = (evaluationId) => ({ message: `EvaluationId '${evaluationId}' is not valid` });
 export const TEMPLATE_NOT_FOUND = () => ({ message: 'Template not found' });
 export const USER_HAS_NO_TEMPLATE = username => ({ message: `User '${username}' has not had a template selected` });
 export const USER_HAS_NO_MENTOR = username => ({ message: `User '${username}' has not had a mentor selected` });
@@ -11,10 +13,7 @@ export const NOT_AUTHORIZED_TO_ADD_NOTE = () => ({ message: 'Only the person bei
 export const NOT_AUTHORIZED_TO_UPDATE_SKILL_STATUS = () => ({ message: 'You do not have permission to update the status of this skill' });
 export const NOT_AUTHORIZED_TO_MARK_EVAL_AS_COMPLETE = () => ({ message: 'You do not have permission to mark this evaluation as complete' });
 export const MUST_BE_LOGGED_IN = () => ({ message: 'You are not logged in' });
-export const SUBJECT_CAN_ONLY_UPDATE_NEW_EVALUATION = () => ({ message: 'You can\'t make any changes to this evaluation.' });
-export const MENTOR_REVIEW_COMPLETE = () => ({ message: 'This evaluation has been reviewed and is now complete.' });
-export const MENTOR_CAN_ONLY_UPDATE_AFTER_SELF_EVALUATION = () => ({ message: 'You can\'t update this evaluation until your mentee has completed their self-evaluation.' });
-export const ONLY_USER_AND_MENTOR_CAN_SEE_ACTIONS = () => ({ message: 'You can\'t see actions for another user unless you are their mentor.' });
+export const ONLY_USER_MENTOR_AND_LINE_MANAGER_CAN_SEE_ACTIONS = () => ({ message: 'You can\'t see actions for another user unless you are their mentor.' });
 export const INVALID_LEVEL_OR_CATEGORY = (level, category, templateId) => ({ message: `Level '${level}' or Category '${category}' not found in tempate '${templateId}'` });
 export const USER_NOT_ADMIN = () => ({ message: 'You must be an admin user to make this request' });
 export const MUST_BE_NOTE_AUTHOR = () => ({ message: 'Only the author of a note can delete it' });
