@@ -165,7 +165,7 @@ const handlerFunctions = Object.freeze({
                 }
 
                 if (permissions.isMentor && permissions.isLineManager) {
-                  return res.status(200).json(updatedEvaluation.lineManagerMetadataViewModel());
+                  return res.status(200).json(updatedEvaluation.lineManagerAndMentorMetadataViewModel());
                 }
 
                 if (permissions.isMentor) {

@@ -87,7 +87,8 @@ const handlerFunctions = Object.freeze({
           return evaluations.addEvaluation(mergedEvaluation);
         })
         .then((newEval: Evaluation) => {
-          sendMail(newEval.newEvaluationEmail());
+          sendMail(newEval.newEvaluationEmail())
+            .catch(console.error);
           res.status(201).json(newEval.adminEvaluationViewModel());
         })
         .catch(next);
