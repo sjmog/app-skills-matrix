@@ -73,6 +73,7 @@ describe('initial client state', () => {
             menteeEvaluations: [],
             reportsEvaluations: [],
             mentorDetails: null,
+            lineManagerDetails: null,
             template: {
               id: 'eng-nodejs',
               name: 'Node JS Dev',
