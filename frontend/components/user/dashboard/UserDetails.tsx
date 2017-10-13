@@ -3,12 +3,13 @@ import { Row, Col, Image } from 'react-bootstrap';
 import './userDetails.scss';
 
 type UserDetailsProps = {
-  user: any,
-  mentor: any,
-  template: any,
+  user: UserDetailsViewModel,
+  mentor: UserDetailsViewModel,
+  lineManager: UserDetailsViewModel,
+  template: TemplateViewModel,
 };
 
-const UserDetails = ({ user, mentor, template }: UserDetailsProps) =>
+const UserDetails = ({ user, mentor, template, lineManager }: UserDetailsProps) =>
   (
     <Col xs={12} md={12}>
       <h2>My Details</h2>
@@ -26,6 +27,8 @@ const UserDetails = ({ user, mentor, template }: UserDetailsProps) =>
             <dd>{user.email || 'n/a'}</dd>
             <dt>Mentor</dt>
             <dd>{mentor ? mentor.name || mentor.username : 'No Mentor Selected'}</dd>
+            <dt>LineManager</dt>
+            <dd>{lineManager ? lineManager.name || lineManager.username : 'No Line Manager Selected'}</dd>
             <dt>Type</dt>
             <dd>{template ? template.name : 'No Type Selected'}</dd>
           </dl>

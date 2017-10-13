@@ -6,17 +6,9 @@ import UserDetails from './UserDetails';
 import MyEvaluations from './MyEvaluations';
 import EvaluationTable from './EvaluationTable';
 
-// TODO: fix types
-type DashboardProps = {
-  userDetails: any,
-  mentorDetails: any,
-  template: any,
-  evaluations: any[],
-  menteeEvaluations: any[],
-  reportsEvaluations: any[],
-};
+type DashboardProps = UserInitialState;
 
-const Dashboard = ({ userDetails, mentorDetails, template, evaluations, menteeEvaluations, reportsEvaluations }: DashboardProps) => (
+const Dashboard = ({ userDetails, mentorDetails, lineManagerDetails, template, evaluations, menteeEvaluations, reportsEvaluations }: DashboardProps) => (
   <Grid>
     {
       userDetails
@@ -25,6 +17,7 @@ const Dashboard = ({ userDetails, mentorDetails, template, evaluations, menteeEv
             <UserDetails
               user={userDetails}
               mentor={mentorDetails}
+              lineManager={lineManagerDetails}
               template={template}
             />
           </Row>

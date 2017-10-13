@@ -58,13 +58,14 @@ export const adminClientState = (): Promise<AdminClientState> =>
           })));
 
 export const clientState = (user: User): Promise<ClientState> =>
-  (user ? Promise.all([
+  (user ? (<any>Promise.all([ // <any> because the bluebird type definition only has 5 generics.  Are we doing too much?
       userCollection.getUserById(user.mentorId),
+      userCollection.getUserById(user.lineManagerId),
       templates.getById(user.templateId),
       getSubjectEvaluations(user.id),
       getMenteeEvaluations(user.id),
       getReportsEvaluations(user.id),
-    ]).then(([mentor, template, evaluations, menteeEvaluations, reportsEvaluations]) =>
+    ])).then(([mentor, lineManager, template, evaluations, menteeEvaluations, reportsEvaluations]) =>
       ({
         entities: {
           users: {
@@ -76,6 +77,7 @@ export const clientState = (user: User): Promise<ClientState> =>
         user: {
           userDetails: user ? user.userDetailsViewModel() : null,
           mentorDetails: mentor ? mentor.userDetailsViewModel() : null,
+          lineManagerDetails: lineManager ? lineManager.userDetailsViewModel() : null,
           template: template ? template.viewModel() : null,
           evaluations,
           menteeEvaluations,
