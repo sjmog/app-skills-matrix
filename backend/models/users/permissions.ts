@@ -18,7 +18,7 @@ export type Permissions = {
   completeEvaluation: () => Promise<void>,
   addNote: () => Promise<void>,
   isMentor: boolean,
-  isOwner: boolean,
+  isSubject: boolean,
   isLineManager: boolean,
 };
 
@@ -43,7 +43,7 @@ const permissions = (loggedInUser: User, requestUser: User): Permissions => {
     completeEvaluation: () => (isMentor || isUser || isLineManager) ? Promise.resolve() : permissionError(NOT_AUTHORIZED_TO_MARK_EVAL_AS_COMPLETE()),
     addNote: () => (isAdmin || isMentor || isUser || isLineManager) ? Promise.resolve() : permissionError(NOT_AUTHORIZED_TO_ADD_NOTE()),
     isMentor,
-    isOwner: isUser,
+    isSubject: isUser,
     isLineManager,
   };
 };

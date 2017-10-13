@@ -74,11 +74,11 @@ export type Evaluation = {
   getSelfEvaluationCompleteEmail: (user: User) => Email,
   getMentorReviewCompleteEmail: (user: User) => Email,
   findSkill: (skillId: number) => Skill | null,
-  updateSkill: (skillId: number, status: string, isOwner: boolean, isMentor: boolean, isLineManager: boolean) => ErrorMessage | EvaluationUpdate,
+  updateSkill: (skillId: number, status: string, isSubject: boolean, isMentor: boolean, isLineManager: boolean) => ErrorMessage | EvaluationUpdate,
   addSkillNote: (skillId: number, note: string) => EvaluationUpdate,
   deleteSkillNote: (skillId: number, note: string) => EvaluationUpdate;
   mergePreviousEvaluation: (previousEvaluation: Evaluation) => Evaluation,
-  moveToNextStatus: (isOwner: boolean, isMentor: boolean, isLineManager: boolean) => ErrorMessage | EvaluationUpdate,
+  moveToNextStatus: (isSubject: boolean, isMentor: boolean, isLineManager: boolean) => ErrorMessage | EvaluationUpdate,
   getNoteIds: () => string[];
 };
 
@@ -192,7 +192,7 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
       const val = R.find(s => skillId === s.id, skills);
       return val ? skill(val) : null;
     },
-    updateSkill(skillId, newSkillStatus, isOwner, isMentor, isLineManager) {
+    updateSkill(skillId, newSkillStatus, isSubject, isMentor, isLineManager) {
       const updateSkill = () => ({
         id: _id.toString(),
         user,
@@ -203,7 +203,7 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
         status,
       });
 
-      if (isOwner && status === STATUS.NEW) {
+      if (isSubject && status === STATUS.NEW) {
         return updateSkill();
       }
       if (isMentor && status === STATUS.SELF_EVALUATION_COMPLETE) {
@@ -236,7 +236,7 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
         status,
       };
     },
-    moveToNextStatus(isOwner, isMentor, isLineManager) {
+    moveToNextStatus(isSubject, isMentor, isLineManager) {
       const nextStatus = newStatus => ({
         id: _id.toString(),
         user,
@@ -246,7 +246,7 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
         skills,
         status: newStatus,
       });
-      if (isOwner && status === STATUS.NEW) {
+      if (isSubject && status === STATUS.NEW) {
         return nextStatus(STATUS.SELF_EVALUATION_COMPLETE);
       }
       if (isMentor && isLineManager && status !== STATUS.NEW && status !== STATUS.COMPLETE) {

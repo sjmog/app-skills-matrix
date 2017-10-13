@@ -99,7 +99,7 @@ const handlerFunctions = Object.freeze({
           return res.status(400).json(SKILL_NOT_FOUND());
         }
 
-        const changes = requestedEvaluation.updateSkill(skillId, status, permissions.isOwner, permissions.isMentor, permissions.isLineManager);
+        const changes = requestedEvaluation.updateSkill(skillId, status, permissions.isSubject, permissions.isMentor, permissions.isLineManager);
         if (changes.error) {
           return res.status(400).json(changes);
         }
@@ -148,7 +148,7 @@ const handlerFunctions = Object.freeze({
 
           permissions.completeEvaluation()
             .then(() => {
-              const changes = requestedEvaluation.moveToNextStatus(permissions.isOwner, permissions.isMentor, permissions.isLineManager);
+              const changes = requestedEvaluation.moveToNextStatus(permissions.isSubject, permissions.isMentor, permissions.isLineManager);
               if (changes.error) {
                 return res.status(400).json(changes);
               }
@@ -158,7 +158,7 @@ const handlerFunctions = Object.freeze({
                 users.getUserById(evaluationUser.mentorId),
                 users.getUserById(evaluationUser.lineManagerId),
               ]).then(([updatedEvaluation, mentor, lineManager]) => {
-                if (permissions.isOwner) {
+                if (permissions.isSubject) {
                   sendMail(updatedEvaluation.getSelfEvaluationCompleteEmail(mentor))
                     .catch(console.error);
                   return res.status(200).json(updatedEvaluation.subjectMetadataViewModel());
