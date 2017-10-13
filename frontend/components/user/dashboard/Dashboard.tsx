@@ -35,7 +35,7 @@ const Dashboard = ({ userDetails, mentorDetails, lineManagerDetails, template, e
           <Row>
             <EvaluationTable
               evaluations={reportsEvaluations}
-              title=""
+              title="Reports Evaluations"
             />
           </Row>
         </div>
