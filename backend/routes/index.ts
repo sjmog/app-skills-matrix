@@ -4,6 +4,7 @@ import users from './users';
 import matrices from './matrices';
 import evaluations from './evaluations';
 import actions from './actions';
+import tasks from './tasks';
 import clientApp from './clientApp';
 import auth from './auth';
 
@@ -12,6 +13,7 @@ const apiRoutes = [
   matrices,
   evaluations,
   actions,
+  tasks,
 ];
 
 const apiRouter = apiRoutes.reduce((app, route) => route(app), express.Router());
