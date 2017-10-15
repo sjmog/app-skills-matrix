@@ -2,9 +2,12 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Grid, Row } from 'react-bootstrap';
 
+import Tasks from './Tasks';
 import UserDetails from './UserDetails';
 import MyEvaluations from './MyEvaluations';
 import EvaluationTable from './EvaluationTable';
+
+import './dashboard.scss';
 
 type DashboardProps = UserInitialState;
 
@@ -13,6 +16,9 @@ const Dashboard = ({ userDetails, mentorDetails, lineManagerDetails, template, e
     {
       userDetails
         ? <div>
+          <Row>
+            <Tasks userId={userDetails.id} />
+          </Row>
           <Row>
             <UserDetails
               user={userDetails}

@@ -45,7 +45,8 @@ const handlerFunctions = Object.freeze({
       .then(([newEvaluations, menteeEvaluationsForReview, reportEvaluationsForReview]) =>
         buildTasks(newEvaluations, menteeEvaluationsForReview, reportEvaluationsForReview))
       .then(tasks => res.status(200).json({ tasks }))
-      .catch(next);
+     .catch(err =>
+       (err.status && err.data) ? res.status(err.status).json(err.data) : next(err));
   },
 });
 
