@@ -28,7 +28,7 @@ const HeaderComponent = ({ username }: HeaderComponentProps) => (
         {
           username
             ? <Navbar.Text pullRight>{username}</Navbar.Text>
-            : <Navbar.Link href="/auth/github">Log In</Navbar.Link>
+            : <div className="login-link__container"><a className="login-link" href="/auth/github">Log In</a></div>
         }
       </Nav>
     </Navbar.Collapse>

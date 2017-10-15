@@ -123,3 +123,6 @@ export const getTasksLoadingState = ({ entities: { tasks } }) =>
 
 export const getTasksError = ({ entities: { tasks } }) =>
   fromTasks.getTasksError(tasks);
+
+export const getTaskCount = ({ entities: { tasks } }) =>
+  fromTasks.getTaskCount(tasks);

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import {  Panel, ListGroup, ListGroupItem, Badge } from 'react-bootstrap';
+import { Panel, ListGroup, ListGroupItem } from 'react-bootstrap';
 import { actionCreators } from '../../../modules/user/tasks';
 import * as selectors from '../../../modules/user';
 
@@ -27,37 +27,26 @@ class Tasks extends React.Component<TasksProps, any> {
 
     if (error) {
       return (
-        <div>
-          <h3>Tasks</h3>
-          <Panel className="task__panel" header={<h4>Something went wrong</h4>} bsStyle="danger">
-            {error.message || `A problem occurred when loading your tasks.`}
-          </Panel>
-        </div>
+        <Panel className="task__panel" header={<h4>Something went wrong</h4>} bsStyle="danger">
+          {error.message || `A problem occurred when loading your tasks.`}
+        </Panel>
       );
     }
 
     if (loading) {
-      return (
-        <div>
-          <h3>Tasks</h3>
-          <Panel className="task__panel"><ListGroup fill/></Panel>
-        </div>
-      );
+      return <Panel className="task__panel"><ListGroup fill/></Panel>;
     }
 
     return (
-      <div>
-        <h3>Tasks{' '}<Badge className="tasks__count">{tasks.length}</Badge></h3>
-        <Panel className="task__panel">
-          <ListGroup fill>
-            {
-              tasks.length > 0
-                ? tasks.map(t => <ListGroupItem key={t.message + t.link} href={t.link}>{t.message}</ListGroupItem>)
-                : <ListGroupItem key="no_outstanding_tasks">You don't have any outstanding tasks</ListGroupItem>
-            }
-          </ListGroup>
-        </Panel>
-      </div>
+      <Panel className="task__panel">
+        <ListGroup fill>
+          {
+            tasks.length > 0
+              ? tasks.map(t => <ListGroupItem key={t.message + t.link} href={t.link}>{t.message}</ListGroupItem>)
+              : <ListGroupItem key="no_outstanding_tasks">You don't have any outstanding tasks</ListGroupItem>
+          }
+        </ListGroup>
+      </Panel>
     );
   }
 }

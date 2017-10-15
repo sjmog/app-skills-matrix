@@ -2,6 +2,14 @@
   border-radius: 0;
 }
 
-.navbar-link {
-  padding: 15px;
+.login-link__container {
+  padding-top: 15px;
+}
+
+.login-link {
+  color: #d0e1e1;
+}
+
+.login-link:hover {
+  color: white;
 }

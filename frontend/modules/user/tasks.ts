@@ -59,6 +59,9 @@ export default handleActions({
 export const getTasks = (state: TasksState): TaskList[] =>
   R.prop('tasks', state) || [];
 
+export const getTaskCount = (state: TasksState) =>
+  getTasks(state).length;
+
 export const getTasksLoadingState = (state: TasksState): boolean =>
   R.prop('loading', state);
 
