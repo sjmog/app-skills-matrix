@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Grid, Row } from 'react-bootstrap';
+import { Col, Grid, Row } from 'react-bootstrap';
 
 import Tasks from './Tasks';
 import UserDetails from './UserDetails';
@@ -17,7 +17,9 @@ const Dashboard = ({ userDetails, mentorDetails, lineManagerDetails, template, e
       userDetails
         ? <div>
           <Row>
-            <Tasks userId={userDetails.id} />
+            <Col xs={6} md={6}>
+              <Tasks userId={userDetails.id}/>
+            </Col>
           </Row>
           <Row>
             <UserDetails
