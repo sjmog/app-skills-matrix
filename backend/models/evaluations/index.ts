@@ -34,12 +34,8 @@ export default {
       .then(() => evaluationsCollection.findOne({ _id: new ObjectID(updatedEvaluation.id) }))
       .then(res => (res ? evaluation(decrypt(res)) : null));
   },
-  get(userId: string, status: string) {
-    const query = {}; // TODO: Work out a cleaner way to do this.
-    if (userId) {
-      query['user.id'] = userId;
-    }
-
+  get(userId: string, status?: string) {
+    const query = { 'user.id': userId };
     if (status) {
       query['status'] = status;
     }

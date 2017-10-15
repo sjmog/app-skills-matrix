@@ -4,31 +4,47 @@ import * as R from 'ramda';
 
 import createHandler, { Locals } from './createHandler';
 import evaluations from '../models/evaluations';
-import { STATUS } from '../models/evaluations/evaluation';
+import { STATUS, Evaluation } from '../models/evaluations/evaluation';
 import users from '../models/users';
 
-const buildTasks = (newEvaluations, menteeEvaluationsForReview, reportEvaluationsForReview) => {
-  // TODO: fix this up.
-  return R.concat(
-    R.map(e => ({ message: 'Complete your own evaluation', link: `/evaluations/${e.id}`, testId: 'NEW_EVALUATION' }), newEvaluations) || [],
-    R.map(e => ({ message: `Review ${R.path(['user', 'name'], e)}'s evaluation`, link: `/evaluations/${e.id}`, testId: 'REVIEW_MENTEE_EVALUATION' }), menteeEvaluationsForReview) || [],
-  ).concat(R.map(e => ({ message: `Final review of ${R.path(['user', 'name'], e)}'s evaluation`, link: `/evaluations/${e.id}`, testId: 'REVIEW_REPORT_EVALUATION' }), reportEvaluationsForReview) || []);
+const buildTasksList = (ownNewEvaluations: Evaluation[], menteeEvaluationsForReview: Evaluation[], reportEvaluationsForReview: Evaluation[]): TaskList => {
+  const taskDetails = {
+    ownNewEvaluations: (e: Evaluation) => ({
+      message: 'Complete your own evaluation',
+      link: `/evaluations/${e.id}`,
+      testId: 'NEW_EVALUATION',
+    }),
+    menteeEvaluationsForReview: (e: Evaluation) => ({
+      message: `Review ${R.path(['user', 'name'], e)}'s evaluation`,
+      link: `/evaluations/${e.id}`,
+      testId: 'REVIEW_MENTEE_EVALUATION',
+    }),
+    reportEvaluationsForReview: (e: Evaluation) => ({
+      message: `Final review of ${R.path(['user', 'name'], e)}'s evaluation`,
+      link: `/evaluations/${e.id}`,
+      testId: 'REVIEW_REPORT_EVALUATION',
+    }),
+  };
+
+  return [
+    ...R.map(taskDetails.ownNewEvaluations, ownNewEvaluations),
+    ...R.map(taskDetails.menteeEvaluationsForReview, menteeEvaluationsForReview),
+    ...R.map(taskDetails.reportEvaluationsForReview, reportEvaluationsForReview),
+  ];
 };
 
-// TODO: MAY WANT TO INTRODUCE GET MENTEES COULD BE MIDDLEWARE.
-const getMenteeEvaluationsForReview = (userId: string) => {
-  return users.getByMentorId(userId)
-    .then(mentees =>
-      Promise.map(mentees, m => evaluations.get(R.prop('id', m), STATUS.SELF_EVALUATION_COMPLETE)))
-    .then(R.flatten);
-};
+const getEvaluationsWithStatus = (users, status) =>
+  Promise.map(users, u => evaluations.get(R.prop('id', u), status));
 
-const getReportEvaluationsForReview = (userId: string) => {
-  return users.getByLineManagerId(userId)
-    .then(reports =>
-      Promise.map(reports, m => evaluations.get(R.prop('id', m), STATUS.MENTOR_REVIEW_COMPLETE)))
+const getMenteeEvaluationsForReview = (userId: string): Evaluation[] =>
+  users.getByMentorId(userId)
+    .then(mentees => getEvaluationsWithStatus(mentees, STATUS.SELF_EVALUATION_COMPLETE))
     .then(R.flatten);
-};
+
+const getReportEvaluationsForReview = (userId: string): Evaluation[] =>
+  users.getByLineManagerId(userId)
+    .then(reports => getEvaluationsWithStatus(reports, STATUS.MENTOR_REVIEW_COMPLETE))
+    .then(R.flatten);
 
 const handlerFunctions = Object.freeze({
   find: (req: Request, res: Response, next: NextFunction) => {
@@ -41,9 +57,9 @@ const handlerFunctions = Object.freeze({
           evaluations.get(userId, STATUS.NEW),
           getMenteeEvaluationsForReview(userId),
           getReportEvaluationsForReview(userId),
-        ])) // TODO: should there be any knowledge of status here? Probably not.
-      .then(([newEvaluations, menteeEvaluationsForReview, reportEvaluationsForReview]) =>
-        buildTasks(newEvaluations, menteeEvaluationsForReview, reportEvaluationsForReview))
+        ]))
+      .then(([ownNewEvaluations, menteeEvaluationsForReview, reportEvaluationsForReview]) =>
+        buildTasksList(ownNewEvaluations, menteeEvaluationsForReview, reportEvaluationsForReview))
       .then(tasks => res.status(200).json({ tasks }))
      .catch(err =>
        (err.status && err.data) ? res.status(err.status).json(err.data) : next(err));
