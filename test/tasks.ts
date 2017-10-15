@@ -78,10 +78,10 @@ describe('Tasks', () => {
             .expect(200))
         .then(({ body }) => {
 
-          expect(body.tasks).to.be.length(1);
-          expect(body.tasks[0].testId).to.eql('NEW_EVALUATION');
-          expect(body.tasks[0].message).to.be.a('string').with.length.above(1);
-          expect(body.tasks[0].link).to.contain(evaluationId);
+          expect(body).to.be.length(1);
+          expect(body[0].testId).to.eql('NEW_EVALUATION');
+          expect(body[0].message).to.be.a('string').with.length.above(1);
+          expect(body[0].link).to.contain(evaluationId);
         });
     });
 
@@ -91,7 +91,7 @@ describe('Tasks', () => {
         .set('Cookie', `${cookieName}=${userOneToken}`)
         .expect(200)
         .then(({ body }) => {
-          expect(body.tasks).to.eql([]);
+          expect(body).to.eql([]);
         });
     });
 
@@ -109,7 +109,7 @@ describe('Tasks', () => {
             .set('Cookie', `${cookieName}=${userOneToken}`)
             .expect(200))
         .then(({ body }) => {
-          expect(body.tasks).to.eql([]);
+          expect(body).to.eql([]);
         });
     });
 
@@ -150,10 +150,10 @@ describe('Tasks', () => {
             .set('Cookie', `${cookieName}=${userTwoToken}`)
             .expect(200))
         .then(({ body }) => {
-          expect(body.tasks).to.be.length(1);
-          expect(body.tasks[0].testId).to.equal('REVIEW_MENTEE_EVALUATION');
-          expect(body.tasks[0].message).to.contain('USER_NAME');
-          expect(body.tasks[0].link).to.contain(evaluationId);
+          expect(body).to.be.length(1);
+          expect(body[0].testId).to.equal('REVIEW_MENTEE_EVALUATION');
+          expect(body[0].message).to.contain('USER_NAME');
+          expect(body[0].link).to.contain(evaluationId);
         });
     });
 
@@ -168,7 +168,7 @@ describe('Tasks', () => {
             .set('Cookie', `${cookieName}=${userTwoToken}`)
             .expect(200))
         .then(({ body }) => {
-          expect(body.tasks).to.eql([]);
+          expect(body).to.eql([]);
         });
     });
 
@@ -186,10 +186,10 @@ describe('Tasks', () => {
             .set('Cookie', `${cookieName}=${userTwoToken}`)
             .expect(200))
         .then(({ body }) => {
-          expect(body.tasks).to.be.length(1);
-          expect(body.tasks[0].testId).to.contain('REVIEW_REPORT_EVALUATION');
-          expect(body.tasks[0].message).to.contain('USER_NAME');
-          expect(body.tasks[0].link).to.contain(evaluationId);
+          expect(body).to.be.length(1);
+          expect(body[0].testId).to.contain('REVIEW_REPORT_EVALUATION');
+          expect(body[0].message).to.contain('USER_NAME');
+          expect(body[0].link).to.contain(evaluationId);
         });
     });
 
@@ -204,7 +204,7 @@ describe('Tasks', () => {
             .set('Cookie', `${cookieName}=${userTwoToken}`)
             .expect(200))
         .then(({ body }) => {
-          expect(body.tasks).to.eql([]);
+          expect(body).to.eql([]);
         });
     });
 
@@ -225,10 +225,10 @@ describe('Tasks', () => {
             .set('Cookie', `${cookieName}=${userTwoToken}`)
             .expect(200))
         .then(({ body }) => {
-          expect(body.tasks).to.be.length(1);
-          expect(body.tasks[0].testId).to.contain('REVIEW_MENTEE_EVALUATION');
-          expect(body.tasks[0].message).to.contain('USER_NAME');
-          expect(body.tasks[0].link).to.contain(evaluationId);
+          expect(body).to.be.length(1);
+          expect(body[0].testId).to.contain('REVIEW_MENTEE_EVALUATION');
+          expect(body[0].message).to.contain('USER_NAME');
+          expect(body[0].link).to.contain(evaluationId);
         });
     });
 
@@ -246,7 +246,7 @@ describe('Tasks', () => {
             .set('Cookie', `${cookieName}=${userTwoToken}`)
             .expect(200))
         .then(({ body }) => {
-          expect(body.tasks).to.eql([]);
+          expect(body).to.eql([]);
         });
     });
 
@@ -271,12 +271,12 @@ describe('Tasks', () => {
             .set('Cookie', `${cookieName}=${userOneToken}`)
             .expect(200))
         .then(({ body }) => {
-          expect(body.tasks).to.have.length(3);
-          expect(body.tasks[0].testId).to.contain('NEW_EVALUATION');
-          expect(body.tasks[0].message).to.be.a('string').with.length.above(1);
-          expect(body.tasks[0].link).to.contain(evaluationId);
-          expect(body.tasks[1].testId).to.contain('REVIEW_MENTEE_EVALUATION');
-          expect(body.tasks[2].testId).to.contain('REVIEW_REPORT_EVALUATION');
+          expect(body).to.have.length(3);
+          expect(body[0].testId).to.contain('NEW_EVALUATION');
+          expect(body[0].message).to.be.a('string').with.length.above(1);
+          expect(body[0].link).to.contain(evaluationId);
+          expect(body[1].testId).to.contain('REVIEW_MENTEE_EVALUATION');
+          expect(body[2].testId).to.contain('REVIEW_REPORT_EVALUATION');
         });
     });
   });

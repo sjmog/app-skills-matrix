@@ -4,6 +4,12 @@ import * as R from 'ramda';
 
 import api from '../../api';
 
+type TasksState = {
+  tasks: TaskList,
+  loading: boolean,
+  error: null | { message: string },
+};
+
 export const actionTypes = keymirror({
   RETRIEVE_TASKS_SUCCESS: null,
   RETRIEVE_TASKS_FAILURE: null,
@@ -37,27 +43,24 @@ export const actionCreators = {
   resetTasks,
 };
 
-// TODO: type definition of state.
 export const initialState = {
   tasks: [],
   error: null,
   loading: true,
 };
 
-// TODO: may want to add basic reducer tests.
 export default handleActions({
-  [actions.retrieveTasksSuccess]: (state, action) => ({ ...action.payload, error: null, loading: false }),
-  [actions.retrieveTasksFailure]: (state, action) => ({ ...initialState, error: action.payload }),
+  [actions.retrieveTasksSuccess]: (state: TasksState, action) => ({ tasks: action.payload, error: null, loading: false }),
+  [actions.retrieveTasksFailure]: (state: TasksState, action) => ({ tasks: [], error: action.payload, loading: false }),
   [actions.loadingTasks]: () => initialState,
   [actions.resetTasks]: () => initialState,
 }, initialState);
 
-export const getTasks = state =>
-  R.prop('tasks', state);
+export const getTasks = (state: TasksState): TaskList[] =>
+  R.prop('tasks', state) || [];
 
-export const getTasksLoadingState = state =>
+export const getTasksLoadingState = (state: TasksState): boolean =>
   R.prop('loading', state);
 
-export const getTasksError = state =>
+export const getTasksError = (state: TasksState): null | { message?: string } =>
   R.prop('error', state);
-

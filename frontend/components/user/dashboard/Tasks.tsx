@@ -47,7 +47,7 @@ class Tasks extends React.Component<TasksProps, any> {
 
     return (
       <div>
-        <h3>Tasks{' '}<Badge className="tasks__count">{tasks && tasks.length}</Badge></h3>
+        <h3>Tasks{' '}<Badge className="tasks__count">{tasks.length}</Badge></h3>
         <Panel className="task__panel">
           <ListGroup fill>
             {
@@ -64,7 +64,7 @@ class Tasks extends React.Component<TasksProps, any> {
 
 export default connect(
   (state, props) => ({
-    tasks: selectors.getTasks(state), // TODO: This always needs to return an array.
+    tasks: selectors.getTasks(state),
     loading: selectors.getTasksLoadingState(state),
     error: selectors.getTasksError(state),
   }),
