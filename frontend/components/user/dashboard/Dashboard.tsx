@@ -7,18 +7,19 @@ import UserDetails from './UserDetails';
 import EvaluationTable from './EvaluationTable';
 import EvaluationsList from './../EvaluationsList';
 import * as selectors from '../../../modules/user';
+import { gitHubAuth } from '../../common/constants/index';
 
 import './dashboard.scss';
 
 type DashboardProps = UserInitialState & { taskCount: number };
 
-const taskTitle = (taskCount): any => <span>Tasks{' '}<Badge className="tasks__count">{taskCount}</Badge></span>;
+const tasksTabTitle = (taskCount): any => <span>Tasks{' '}<Badge className="tasks__count">{taskCount}</Badge></span>;
 
 const Dashboard = ({ userDetails, mentorDetails, lineManagerDetails, template, evaluations, menteeEvaluations, reportsEvaluations, taskCount }: DashboardProps) => {
   if (!userDetails) {
     return (
       <Grid>
-        <Button bsStyle="primary" bsSize="large" href="/auth/github">Log In</Button>
+        <Button bsStyle="primary" bsSize="large" href={gitHubAuth}>Log In</Button>
       </Grid>
     );
   }
@@ -26,7 +27,7 @@ const Dashboard = ({ userDetails, mentorDetails, lineManagerDetails, template, e
   return (
     <Grid>
       <Tabs defaultActiveKey={1} id="dashboard-tabs">
-        <Tab eventKey={1} title={taskTitle(taskCount)}>
+        <Tab eventKey={1} title={tasksTabTitle(taskCount)}>
           <Row>
             <Col xs={6} md={6}>
               <Tasks userId={userDetails.id}/>

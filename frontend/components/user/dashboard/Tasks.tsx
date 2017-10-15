@@ -13,7 +13,7 @@ type TasksProps = {
   resetTasks: () => void,
 };
 
-class Tasks extends React.Component<TasksProps, any> {
+class Tasks extends React.Component<TasksProps> {
   componentWillUnmount() {
     this.props.resetTasks();
   }
@@ -27,18 +27,18 @@ class Tasks extends React.Component<TasksProps, any> {
 
     if (error) {
       return (
-        <Panel className="task__panel" header={<h4>Something went wrong</h4>} bsStyle="danger">
+        <Panel className="tasks__panel" header={<h4>Something went wrong</h4>} bsStyle="danger">
           {error.message || `A problem occurred when loading your tasks.`}
         </Panel>
       );
     }
 
     if (loading) {
-      return <Panel className="task__panel"><ListGroup fill/></Panel>;
+      return <Panel className="tasks__panel"><ListGroup fill/></Panel>;
     }
 
     return (
-      <Panel className="task__panel">
+      <Panel className="tasks__panel">
         <ListGroup fill>
           {
             tasks.length > 0
@@ -59,6 +59,6 @@ export default connect(
   }),
   dispatch => ({
     retrieveTasks: userId => dispatch(actionCreators.retrieveTasks(userId)),
-    resetTasks: userId => dispatch(actionCreators.resetTasks()),
+    resetTasks: () => dispatch(actionCreators.resetTasks()),
   }),
 )(Tasks);

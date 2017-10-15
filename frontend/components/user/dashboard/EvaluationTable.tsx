@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Col, ListGroup, Accordion, Panel } from 'react-bootstrap';
+import { ListGroup, Accordion, Panel } from 'react-bootstrap';
 
 import EvaluationsList from './../EvaluationsList';
 

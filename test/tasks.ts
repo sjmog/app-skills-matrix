@@ -4,8 +4,6 @@ import * as Promise from 'bluebird';
 import { ObjectID } from 'mongodb';
 
 import app from '../backend/app';
-import templateData from './fixtures/templates';
-import skillsFixture from './fixtures/skills';
 import evaluationsFixture from './fixtures/evaluations';
 import auth from '../backend/models/auth';
 import helpers from './helpers';
@@ -19,9 +17,7 @@ const {
   assignMentor,
   assignLineManager,
   evaluations,
-  insertTemplate,
   clearDb,
-  insertSkill,
   insertEvaluation,
 } = helpers;
 
@@ -41,8 +37,6 @@ describe('Tasks', () => {
   beforeEach(() =>
     clearDb()
       .then(() => prepopulateUsers())
-      .then(() => insertTemplate(templateData[0]))
-      .then(() => skillsFixture.map(insertSkill))
       .then(() =>
         Promise.all([
           users.findOne({ email: 'user@magic.com' }),
@@ -120,7 +114,7 @@ describe('Tasks', () => {
           });
       });
 
-      it(`does not return a task for a mentor that has no mentee evaluations that need reviewing`, () => {
+      it(`does not return a task for a mentor with no mentee evaluations that need reviewing`, () => {
         const newEvaluation = { ...evaluationOne, status: STATUS.NEW };
 
         return assignMentor(userOneId, userTwoId)

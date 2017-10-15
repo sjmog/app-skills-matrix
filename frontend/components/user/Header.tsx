@@ -4,6 +4,7 @@ import { Nav, Navbar, Glyphicon } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
 import * as selectors from '../../modules/user';
+import { gitHubAuth } from '../common/constants/index';
 
 import './header.scss';
 
@@ -28,7 +29,7 @@ const HeaderComponent = ({ username }: HeaderComponentProps) => (
         {
           username
             ? <Navbar.Text pullRight>{username}</Navbar.Text>
-            : <div className="login-link__container"><a className="login-link" href="/auth/github">Log In</a></div>
+            : <div className="login-link__container"><a className="login-link" href={gitHubAuth}>Log In</a></div>
         }
       </Nav>
     </Navbar.Collapse>
