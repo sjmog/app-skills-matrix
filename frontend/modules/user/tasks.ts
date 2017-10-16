@@ -5,7 +5,7 @@ import * as R from 'ramda';
 import api from '../../api';
 
 type TasksState = {
-  tasks: TaskList,
+  tasks: TaskViewModel[],
   loading: boolean,
   error: null | { message: string },
 };
@@ -56,7 +56,7 @@ export default handleActions({
   [actions.resetTasks]: () => initialState,
 }, initialState);
 
-export const getTasks = (state: TasksState): TaskList[] =>
+export const getTasks = (state: TasksState): TaskViewModel[] =>
   R.prop('tasks', state) || [];
 
 export const getTaskCount = (state: TasksState) =>

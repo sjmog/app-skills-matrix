@@ -1,7 +1,5 @@
-type Task = {
+type TaskViewModel = {
   message: string,
   link: string,
   testId: string,
 };
-
-type TaskList = Task[];
