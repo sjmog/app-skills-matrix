@@ -5,7 +5,7 @@ import { actionCreators } from '../../../modules/user/tasks';
 import * as selectors from '../../../modules/user';
 
 type TasksProps = {
-  tasks: TaskList,
+  tasks: TaskViewModel[],
   loading: boolean,
   error?: { message?: string },
   userId: string,

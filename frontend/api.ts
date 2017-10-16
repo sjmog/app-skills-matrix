@@ -92,7 +92,7 @@ export default ({
       .then(getData)
       .catch(handleError);
   },
-  retrieveTasks(userId): Promise<TaskList> {
+  retrieveTasks(userId): Promise<TaskViewModel[]> {
     return axios.get(`/skillz/tasks/${userId}`)
       .then(getData)
       .catch(handleError);
