@@ -6,10 +6,10 @@ import * as moment from 'moment';
 import * as R from 'ramda';
 
 import * as selectors from '../../../modules/user';
+import { SKILL_STATUS } from '../../../modules/user/skills';
 import {
   actionCreators as evaluationsActionCreators,
   EVALUATION_FETCH_STATUS,
-  SKILL_STATUS,
   EVALUATION_VIEW,
 } from '../../../modules/user/evaluations';
 const { SUBJECT } = EVALUATION_VIEW;

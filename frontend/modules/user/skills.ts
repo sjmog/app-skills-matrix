@@ -1,4 +1,4 @@
-import { handleActions, createAction } from 'redux-actions';
+import { createAction, handleActions } from 'redux-actions';
 import * as R from 'ramda';
 import * as keymirror from 'keymirror';
 
@@ -7,6 +7,14 @@ import { actions as noteActions } from './notes';
 import handleEvaluationRetrieved from './utils/entityRetrievedHandler';
 
 import api from '../../api';
+
+export const SKILL_STATUS = keymirror({
+  NEW: null,
+  ATTAINED: null,
+  NOT_ATTAINED: null,
+  FEEDBACK: null,
+  OBJECTIVE: null,
+});
 
 export const EVALUATION_VIEW = keymirror({
   MENTOR: null,
@@ -138,4 +146,16 @@ export const getSkillsWithCurrentStatus = (state, status: string, skillUids: str
 
   const skills = R.pickBy((val, key) => skillUids.indexOf(key) >= 0, R.path(['entities'], state));
   return R.keys(skills).length > 0 ? R.keys(R.pickBy(hasStatus(status), skills)) : [];
+};
+
+const getSkillName = (state, uid) => {
+  const skill = getSkill(state, uid);
+
+  if (!skill) return `Unable to find skill details: ${uid}`;
+  return skill.name || `Malformed skill: ${uid}`;
+};
+
+export const getSkillNames = (state, skillUids: string[]) => {
+  if (!Array.isArray(skillUids)) return null;
+  return R.map(uid => getSkillName(state, uid), skillUids);
 };

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ButtonGroup, Button, Glyphicon } from 'react-bootstrap';
 
-import { SKILL_STATUS } from '../../modules/user/evaluations';
+import { SKILL_STATUS } from '../../modules/user/skills';
 
 import './skill-actions.scss';
 

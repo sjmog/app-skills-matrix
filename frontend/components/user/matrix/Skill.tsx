@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import * as ReactTooltip from 'react-tooltip';
 
 import * as selectors from '../../../modules/user/index';
+import { SKILL_STATUS } from '../../../modules/user/skills';
 import { skillColour }  from '../../common/helpers';
-import { SKILL_STATUS } from '../../../modules/user/evaluations';
 
 type SkillProps = {
   skillUid: string,
