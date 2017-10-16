@@ -8,6 +8,7 @@ import {
   NOT_AUTHORIZED_TO_VIEW_EVALUATION,
   ONLY_USER_MENTOR_AND_LINE_MANAGER_CAN_SEE_ACTIONS,
   USER_NOT_ADMIN,
+  NOT_AUTHORIZED_TO_VIEW_TASKS,
 } from '../../handlers/errors';
 
 export type Permissions = {
@@ -17,6 +18,7 @@ export type Permissions = {
   admin: () => Promise<void>,
   completeEvaluation: () => Promise<void>,
   addNote: () => Promise<void>,
+  viewTasks: () => Promise<void>,
   isMentor: boolean,
   isSubject: boolean,
   isLineManager: boolean,
@@ -42,6 +44,7 @@ const permissions = (loggedInUser: User, requestUser: User): Permissions => {
     admin: () => isAdmin ? Promise.resolve() : permissionError(USER_NOT_ADMIN()),
     completeEvaluation: () => (isMentor || isUser || isLineManager) ? Promise.resolve() : permissionError(NOT_AUTHORIZED_TO_MARK_EVAL_AS_COMPLETE()),
     addNote: () => (isAdmin || isMentor || isUser || isLineManager) ? Promise.resolve() : permissionError(NOT_AUTHORIZED_TO_ADD_NOTE()),
+    viewTasks: () => (isUser) ? Promise.resolve() : permissionError(NOT_AUTHORIZED_TO_VIEW_TASKS()),
     isMentor,
     isSubject: isUser,
     isLineManager,

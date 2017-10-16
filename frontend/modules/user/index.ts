@@ -5,8 +5,9 @@ import evaluations, * as fromEvaluations from './evaluations';
 import skills, * as fromSkills from './skills';
 import notes, * as fromNotes from './notes';
 import users, * as fromUsers from './users';
+import tasks, * as fromTasks from './tasks';
 
-const entities = combineReducers({ evaluations, skills, notes, users });
+const entities = combineReducers({ evaluations, skills, notes, users, tasks });
 
 export default combineReducers({ user, entities, evaluation });
 
@@ -111,3 +112,17 @@ export const getNotesError = ({ entities: { notes } }) =>
 
 export const getUser = ({ entities: { users } }, userId: string) =>
   fromUsers.getUser(users, userId);
+
+/* TASKS SELECTORS */
+
+export const getTasks = ({ entities: { tasks } }) =>
+  fromTasks.getTasks(tasks);
+
+export const getTasksLoadingState = ({ entities: { tasks } }) =>
+  fromTasks.getTasksLoadingState(tasks);
+
+export const getTasksError = ({ entities: { tasks } }) =>
+  fromTasks.getTasksError(tasks);
+
+export const getTaskCount = ({ entities: { tasks } }) =>
+  fromTasks.getTaskCount(tasks);

@@ -18,3 +18,4 @@ export const INVALID_LEVEL_OR_CATEGORY = (level, category, templateId) => ({ mes
 export const USER_NOT_ADMIN = () => ({ message: 'You must be an admin user to make this request' });
 export const MUST_BE_NOTE_AUTHOR = () => ({ message: 'Only the author of a note can delete it' });
 export const NOTE_NOT_FOUND = () => ({ message: 'Note not found' });
+export const NOT_AUTHORIZED_TO_VIEW_TASKS = () => ({ message: `You can't see another user's tasks` });

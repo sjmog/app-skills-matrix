@@ -31,7 +31,7 @@ export default {
   skills,
   insertSkill: skill => skills.insertOne(Object.assign({}, skill)),
   evaluations,
-  insertEvaluation: (evaluation, userId) => evaluations.insertOne(encryptSkills(Object.assign({}, evaluation, { user: { id: String(userId) } }))),
+  insertEvaluation: (evaluation, userId, name?: string) => evaluations.insertOne(encryptSkills(Object.assign({}, evaluation, { user: { id: String(userId), name } }))),
   getEvaluation: evaluationId => evaluations.findOne({ _id: new ObjectID(evaluationId) }).then(decryptSkills),
   getEvaluations: () => evaluations.find({}).then(e => e.toArray()).then(R.map(decryptSkills)),
   getAllActions: () => actions.find({}).then(e => e.toArray()),

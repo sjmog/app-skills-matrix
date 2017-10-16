@@ -34,4 +34,14 @@ export default {
       .then(() => evaluationsCollection.findOne({ _id: new ObjectID(updatedEvaluation.id) }))
       .then(res => (res ? evaluation(decrypt(res)) : null));
   },
+  get(userId: string, status?: string) {
+    const query = { 'user.id': userId };
+    if (status) {
+      query['status'] = status;
+    }
+
+    return evaluationsCollection.find(query)
+      .then(res => res.toArray())
+      .then(res => res.map(e => evaluation(decrypt(e))));
+  },
 };
