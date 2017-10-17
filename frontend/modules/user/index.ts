@@ -124,6 +124,9 @@ export const getTasks = ({ entities: { tasks } }) =>
 export const getTasksLoadingState = ({ entities: { tasks } }) =>
   fromTasks.getTasksLoadingState(tasks);
 
+export const getFetchedState = ({ entities: { tasks } }) =>
+  fromTasks.getFetchedState(tasks);
+
 export const getTasksError = ({ entities: { tasks } }) =>
   fromTasks.getTasksError(tasks);
 
