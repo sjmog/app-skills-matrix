@@ -6,10 +6,13 @@ import skills, * as fromSkills from './skills';
 import notes, * as fromNotes from './notes';
 import users, * as fromUsers from './users';
 import tasks, * as fromTasks from './tasks';
+import menteeEvaluations, * as fromMenteeEvaluations from './ui/menteeEvaluations';
+import reportEvaluations, * as fromReportEvaluations from './ui/reportEvaluations';
 
 const entities = combineReducers({ evaluations, skills, notes, users, tasks });
+const ui = combineReducers({ menteeEvaluations, reportEvaluations });
 
-export default combineReducers({ user, entities, evaluation });
+export default combineReducers({ user, entities, ui, evaluation });
 
 /* USER SELECTORS */
 
@@ -116,6 +119,12 @@ export const getNotesError = ({ entities: { notes } }) =>
 export const getUser = ({ entities: { users } }, userId: string) =>
   fromUsers.getUser(users, userId);
 
+export const getUserName = ({ entities: { users } }, userId: string) =>
+  fromUsers.getUserName(users, userId);
+
+export const getUserEvaluations = ({ entities: { users } }, userId: string) =>
+  fromUsers.getUserEvaluations(users, userId);
+
 /* TASKS SELECTORS */
 
 export const getTasks = ({ entities: { tasks } }) =>
@@ -132,3 +141,11 @@ export const getTasksError = ({ entities: { tasks } }) =>
 
 export const getTaskCount = ({ entities: { tasks } }) =>
   fromTasks.getTaskCount(tasks);
+
+/* DASHBOARD SELECTORS */
+
+export const getSelectedMentee = ({ ui: { menteeEvaluations } }) =>
+  fromMenteeEvaluations.getSelectedUser(menteeEvaluations);
+
+export const getSelectedReport = ({ ui: { reportEvaluations } }) =>
+  fromReportEvaluations.getSelectedUser(reportEvaluations);

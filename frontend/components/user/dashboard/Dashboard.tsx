@@ -5,7 +5,10 @@ import { Button, Col, Grid, Row, Tabs, Tab, Badge } from 'react-bootstrap';
 import Tasks from './Tasks';
 import UserDetails from './UserDetails';
 import EvaluationsList from './EvaluationsList';
+import UserEvaluations from './UserEvaluations';
 import * as selectors from '../../../modules/user';
+import { actionCreators as menteeViewActionCreators } from '../../../modules/user/ui/menteeEvaluations';
+import { actionCreators as reportViewActionCreators } from '../../../modules/user/ui/reportEvaluations';
 import { gitHubAuth } from '../../common/constants/index';
 
 import './dashboard.scss';
@@ -16,14 +19,14 @@ type DashboardProps = {
   lineManagerDetails: UserDetailsViewModel,
   template: TemplateViewModel,
   evaluations: string[],
-  menteeEvaluations: string[],
-  reportsEvaluations: string[],
+  mentees: string[],
+  reports: string[],
   taskCount: number,
 };
 
 const tasksTabTitle = (taskCount): any => <span>Tasks{' '}<Badge className="tasks__count">{taskCount}</Badge></span>;
 
-const Dashboard = ({ userDetails, mentorDetails, lineManagerDetails, template, evaluations, menteeEvaluations, reportsEvaluations, taskCount }: DashboardProps) => {
+const Dashboard = ({ userDetails, mentorDetails, lineManagerDetails, template, evaluations, mentees, reports, taskCount }: DashboardProps) => {
   if (!userDetails) {
     return (
       <Grid>
@@ -51,16 +54,20 @@ const Dashboard = ({ userDetails, mentorDetails, lineManagerDetails, template, e
         </Tab>
         <Tab eventKey={3} title="Mentee evaluations">
           <Row>
-            <Col xs={12} md={12}>
-              <div>Placeholder</div>
-            </Col>
+            <UserEvaluations
+              userIds={mentees}
+              selector={selectors.getSelectedMentee}
+              selectUser={menteeViewActionCreators.selectUser}
+            />
           </Row>
         </Tab>
         <Tab eventKey={4} title="Report evaluations">
           <Row>
-            <Col xs={12} md={12}>
-              <div>Placeholder</div>
-            </Col>
+            <UserEvaluations
+              userIds={reports}
+              selector={selectors.getSelectedReport}
+              selectUser={reportViewActionCreators.selectUser}
+            />
           </Row>
         </Tab>
         <Tab eventKey={5} title="My details">

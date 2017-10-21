@@ -20,7 +20,7 @@ const EvaluationsList = ({ evaluations }: EvaluationsListProps) => (
       </tr>
     </thead>
     <tbody>
-      {evaluations.map(evaluationId => <EvaluationListRow evaluationId={evaluationId} />)}
+      {evaluations.map(evaluationId => <EvaluationListRow key={evaluationId} evaluationId={evaluationId} />)}
     </tbody>
   </Table>
 );
