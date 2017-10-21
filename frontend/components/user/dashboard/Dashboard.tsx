@@ -52,14 +52,14 @@ const Dashboard = ({ userDetails, mentorDetails, lineManagerDetails, template, e
         <Tab eventKey={3} title="Mentee evaluations">
           <Row>
             <Col xs={12} md={12}>
-              <EvaluationsList evaluations={menteeEvaluations} />
+              <div>Placeholder</div>
             </Col>
           </Row>
         </Tab>
         <Tab eventKey={4} title="Report evaluations">
           <Row>
             <Col xs={12} md={12}>
-              <EvaluationsList evaluations={reportsEvaluations} />
+              <div>Placeholder</div>
             </Col>
           </Row>
         </Tab>

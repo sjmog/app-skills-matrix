@@ -11,7 +11,7 @@ import evaluationsFixture from './fixtures/evaluations';
 import { ObjectID } from 'bson';
 
 const { sign, cookieName } = auth;
-const { prepopulateUsers, users, insertTemplate, assignTemplate, clearDb, insertSkill, insertEvaluation, assignMentor } = helpers;
+const { prepopulateUsers, users, insertTemplate, assignTemplate, clearDb, insertSkill, insertEvaluation, assignMentor, assignLineManager } = helpers;
 const [template] = templatesFixture;
 const [evaluation] = evaluationsFixture;
 
@@ -48,30 +48,37 @@ describe('initial client state', () => {
 
   describe('normal user', () => {
     it('returns HTML with a script tag containing initial state', () =>
-      request(app)
-        .get('/')
-        .set('Cookie', `${cookieName}=${normalUserOneToken}`)
-        .expect(200)
+      Promise.all([
+        assignMentor(normalUserTwoId, normalUserOneId),
+        assignLineManager(adminUserId, normalUserOneId),
+      ])
+        .then(() => request(app)
+          .get('/')
+          .set('Cookie', `${cookieName}=${normalUserOneToken}`)
+          .expect(200))
         .then((res) => {
           const { entities, user } = getInitialState(res.text);
 
-          expect(entities.users).to.eql({
-            entities: {
-              [normalUserOneId]: {
-                avatarUrl: 'https://www.tes.com/logo.svg',
-                email: 'user@magic.com',
-                name: 'User Magic',
-                id: normalUserOneId,
-                templateId: 'eng-nodejs',
-                username: 'magic',
-              },
-            },
-          });
+          const userOneEntity = entities.users.entities[normalUserOneId];
+          expect(userOneEntity.avatarUrl).to.equal('https://www.tes.com/logo.svg');
+          expect(userOneEntity.email).to.equal('user@magic.com');
+          expect(userOneEntity.name).to.equal('User Magic');
+          expect(userOneEntity.id).to.equal(normalUserOneId);
+          expect(userOneEntity.templateId).to.equal('eng-nodejs');
+          expect(userOneEntity.username).to.equal('magic');
+
+          const userTwoEntity = entities.users.entities[normalUserTwoId];
+          expect(userTwoEntity.username).to.equal('dragon-riders');
+          expect(userTwoEntity.evaluations).to.eql([]);
+
+          const adminUserEntity = entities.users.entities[adminUserId];
+          expect(adminUserEntity.username).to.equal('dmorgantini');
+          expect(adminUserEntity.evaluations).to.eql([]);
 
           expect(user).to.eql({
             evaluations: [],
-            menteeEvaluations: [],
-            reportsEvaluations: [],
+            mentees: [normalUserTwoId],
+            reports: [adminUserId],
             mentorDetails: null,
             lineManagerDetails: null,
             template: {
@@ -144,21 +151,95 @@ describe('initial client state', () => {
           .expect(200)
           .then((res) => {
             const { user, entities } = getInitialState(res.text);
-            expect(user.menteeEvaluations).to.eql([newMenteeEvaluationId, oldMenteeEvaluationId]);
+
+            expect(user.mentees).to.eql([normalUserTwoId]);
+
+            expect(entities.users.entities[normalUserTwoId].name).to.equal('User Dragon Rider');
+            expect(entities.users.entities[normalUserTwoId].evaluations).to.eql([newMenteeEvaluationId, oldMenteeEvaluationId]);
 
             const newMenteeEvaluationEntity = entities.evaluations.entities[newMenteeEvaluationId];
             const oldMenteeEvaluationEntity = entities.evaluations.entities[oldMenteeEvaluationId];
 
-            expect(newMenteeEvaluationEntity.id).to.equal(String(newMenteeEvaluationId));
+            expect(newMenteeEvaluationEntity.id).to.equal(newMenteeEvaluationId);
             expect(newMenteeEvaluationEntity).to.have.property('createdDate');
             expect(newMenteeEvaluationEntity.status).to.equal('NEW');
             expect(newMenteeEvaluationEntity.template.name).to.equal('Node JS Dev');
-            expect(newMenteeEvaluationEntity.evaluationUrl).to.equal(`/evaluations/${String(newMenteeEvaluationId)}`);
-            expect(newMenteeEvaluationEntity.feedbackUrl).to.equal(`/evaluations/${String(newMenteeEvaluationId)}/feedback`);
-            expect(newMenteeEvaluationEntity.objectivesUrl).to.equal(`/evaluations/${String(newMenteeEvaluationId)}/objectives`);
+            expect(newMenteeEvaluationEntity.evaluationUrl).to.equal(`/evaluations/${newMenteeEvaluationId}`);
+            expect(newMenteeEvaluationEntity.feedbackUrl).to.equal(`/evaluations/${newMenteeEvaluationId}/feedback`);
+            expect(newMenteeEvaluationEntity.objectivesUrl).to.equal(`/evaluations/${newMenteeEvaluationId}/objectives`);
             expect(newMenteeEvaluationEntity.view).to.equal('MENTOR');
 
-            expect(oldMenteeEvaluationEntity.id).to.equal(String(oldMenteeEvaluationId));
+            expect(oldMenteeEvaluationEntity.id).to.equal(oldMenteeEvaluationId);
+          }));
+    });
+
+    it('returns the user details and evaluations for multiple mentees', () => {
+      let mentorEvalOne;
+      let mentorEvalTwo;
+      let reportEval;
+
+      return Promise.all([
+        insertEvaluation({ ...evaluation, _id: new ObjectID() }, normalUserTwoId),
+        insertEvaluation({ ...evaluation, _id: new ObjectID() }, normalUserTwoId),
+        insertEvaluation({ ...evaluation, _id: new ObjectID() }, adminUserId),
+        assignMentor(normalUserTwoId, normalUserOneId),
+        assignMentor(adminUserId, normalUserOneId),
+        assignLineManager(adminUserId, normalUserOneId),
+      ])
+        .then(([{ insertedId: mentorEvalOneId }, { insertedId: mentorEvalTwoId }, { insertedId: reportEvalId }]) => {
+          mentorEvalOne = String(mentorEvalOneId);
+          mentorEvalTwo = String(mentorEvalTwoId);
+          reportEval = String(reportEvalId);
+        })
+        .then(() => request(app)
+          .get('/')
+          .set('Cookie', `${cookieName}=${normalUserOneToken}`)
+          .expect(200)
+          .then((res) => {
+            const { user, entities } = getInitialState(res.text);
+
+            expect(user.mentees).to.have.length(2);
+            expect(user.mentees).to.contain(normalUserTwoId);
+            expect(user.mentees).to.contain(adminUserId);
+
+            expect(user.reports).to.eql([adminUserId]);
+
+            expect(entities.users.entities[normalUserTwoId].name).to.equal('User Dragon Rider');
+            expect(entities.users.entities[adminUserId].name).to.equal('David Morgantini');
+
+            expect(entities.evaluations.entities[mentorEvalOne].subject.id).to.equal(normalUserTwoId);
+            expect(entities.evaluations.entities[mentorEvalOne].view).to.equal('MENTOR');
+
+            expect(entities.evaluations.entities[mentorEvalTwo].subject.id).to.equal(normalUserTwoId);
+            expect(entities.evaluations.entities[mentorEvalTwo].view).to.equal('MENTOR');
+
+            expect(entities.evaluations.entities[reportEval].subject.id).to.equal(adminUserId);
+            expect(entities.evaluations.entities[reportEval].view).to.equal('LINE_MANAGER_AND_MENTOR');
+          }));
+    });
+
+    it('sets the correct view for report evaluations', () => {
+      let reportEval;
+
+      return Promise.all([
+        insertEvaluation({ ...evaluation, _id: new ObjectID() }, adminUserId),
+        assignLineManager(adminUserId, normalUserOneId),
+      ])
+        .then(([{ insertedId: reportEvalId }]) => {
+          reportEval = String(reportEvalId);
+        })
+        .then(() => request(app)
+          .get('/')
+          .set('Cookie', `${cookieName}=${normalUserOneToken}`)
+          .expect(200)
+          .then((res) => {
+            const { user, entities } = getInitialState(res.text);
+
+            expect(user.reports).to.eql([adminUserId]);
+            expect(entities.users.entities[adminUserId].name).to.equal('David Morgantini');
+
+            expect(entities.evaluations.entities[reportEval].subject.id).to.equal(adminUserId);
+            expect(entities.evaluations.entities[reportEval].view).to.equal('LINE_MANAGER');
           }));
     });
 
