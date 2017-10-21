@@ -125,6 +125,9 @@ export const getUserName = ({ entities: { users } }, userId: string) =>
 export const getUserEvaluations = ({ entities: { users } }, userId: string) =>
   fromUsers.getUserEvaluations(users, userId);
 
+export const getSortedUsers = ({ entities: { users } }, userIds: string[]) =>
+  fromUsers.getSortedUsers(users, userIds);
+
 /* TASKS SELECTORS */
 
 export const getTasks = ({ entities: { tasks } }) =>
