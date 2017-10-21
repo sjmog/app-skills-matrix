@@ -2,6 +2,7 @@ import { createAction, handleActions } from 'redux-actions';
 import * as keymirror from 'keymirror';
 import * as R from 'ramda';
 import api from '../../api';
+import { sortNewestToOldest } from '../utils';
 
 export const EVALUATION_VIEW = keymirror({
   MENTOR: null,
@@ -137,3 +138,9 @@ export const getCategories = (state, evalId) =>
 
 export const getError = (state, evalId) =>
   R.path(['errors', evalId], state);
+
+export const getSortedEvaluationsByUserId = (state, userId) => {
+  const allEvaluations = R.values(R.prop('entities', state));
+  const userEvaluations = R.filter(state => R.equals(R.path(['subject', 'id'], state), userId), allEvaluations);
+  return R.map(R.prop('id'), sortNewestToOldest(userEvaluations));
+};

@@ -46,9 +46,9 @@ export default connect(
   (state, { selector, userIds }) => {
     const selectedUserId = selector(state);
 
-    return ({
+     return ({
       selectedUserId,
-      selectedUserEvaluations: selectors.getUserEvaluations(state, selectedUserId),
+      selectedUserEvaluations: selectors.getSortedEvaluationsByUserId(state, selectedUserId),
       users: selectors.getSortedUsers(state, userIds),
     });
   },

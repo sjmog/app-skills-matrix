@@ -19,14 +19,6 @@ export default handleActions({
 export const getUser = (state: UsersState, userId: string): UserDetailsViewModel | {} =>
    R.path(['entities', userId], state) || {};
 
-export const getUserName = (state: UsersState, userId: string): string => {
-  const user = R.path(['entities', userId], state) || {};
-  return R.prop('name', user) || R.prop('username', user) || 'Unnamed user';
-};
-
-export const getUserEvaluations = (state: UsersState, userId: string): string[] =>
-  R.path(['entities', userId, 'evaluations'], state) || [];
-
 export const getSortedUsers = (state: UsersState, userIds: string[]): UserDetailsViewModel[] => {
   if (!Array.isArray(userIds)) {
     return [];

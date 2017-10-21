@@ -47,7 +47,7 @@ const getMenteeData = (userId: string)  =>
             const evaluationIds = R.map(R.prop('id'), evaluations) as string[];
 
             return {
-              users: { ...acc.users, [menteeId]: mentee.userDetailsAndEvaluationsViewModel(evaluationIds) },
+              users: { ...acc.users, [menteeId]: mentee.userDetailsViewModel() },
               evaluations: [...acc.evaluations, ...evaluations],
             };
           });
@@ -68,7 +68,7 @@ const getReportData = (userId: string)  =>
             const evaluationIds = R.map(R.prop('id'), evaluations) as string[];
 
             return {
-              users: { ...acc.users, [reportId]: report.userDetailsAndEvaluationsViewModel(evaluationIds) },
+              users: { ...acc.users, [reportId]: report.userDetailsViewModel() },
               evaluations: [...acc.evaluations, ...evaluations],
             };
           });

@@ -106,6 +106,9 @@ export const getError = ({ entities: { evaluations } }, evalId) =>
 export const getSkillUids = ({ entities: { evaluations } }, evalId: string) =>
   fromEvaluations.getSkillUids(evaluations, evalId);
 
+export const getSortedEvaluationsByUserId = ({ entities: { evaluations } }, userIds: string) =>
+  fromEvaluations.getSortedEvaluationsByUserId(evaluations, userIds);
+
 /* NOTES SELECTORS */
 
 export const getSortedNotes = ({ entities: { notes } }, noteIds: string[]) =>
@@ -118,12 +121,6 @@ export const getNotesError = ({ entities: { notes } }) =>
 
 export const getUser = ({ entities: { users } }, userId: string) =>
   fromUsers.getUser(users, userId);
-
-export const getUserName = ({ entities: { users } }, userId: string) =>
-  fromUsers.getUserName(users, userId);
-
-export const getUserEvaluations = ({ entities: { users } }, userId: string) =>
-  fromUsers.getUserEvaluations(users, userId);
 
 export const getSortedUsers = ({ entities: { users } }, userIds: string[]) =>
   fromUsers.getSortedUsers(users, userIds);

@@ -69,11 +69,9 @@ describe('initial client state', () => {
 
           const userTwoEntity = entities.users.entities[normalUserTwoId];
           expect(userTwoEntity.username).to.equal('dragon-riders');
-          expect(userTwoEntity.evaluations).to.eql([]);
 
           const adminUserEntity = entities.users.entities[adminUserId];
           expect(adminUserEntity.username).to.equal('dmorgantini');
-          expect(adminUserEntity.evaluations).to.eql([]);
 
           expect(user).to.eql({
             evaluations: [],
@@ -153,9 +151,7 @@ describe('initial client state', () => {
             const { user, entities } = getInitialState(res.text);
 
             expect(user.mentees).to.eql([normalUserTwoId]);
-
             expect(entities.users.entities[normalUserTwoId].name).to.equal('User Dragon Rider');
-            expect(entities.users.entities[normalUserTwoId].evaluations).to.eql([newMenteeEvaluationId, oldMenteeEvaluationId]);
 
             const newMenteeEvaluationEntity = entities.evaluations.entities[newMenteeEvaluationId];
             const oldMenteeEvaluationEntity = entities.evaluations.entities[oldMenteeEvaluationId];
