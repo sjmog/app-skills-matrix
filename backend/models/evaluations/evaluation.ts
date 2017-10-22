@@ -106,9 +106,9 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
     feedbackUrl: `/evaluations/${_id}/feedback`,
     objectivesUrl: `/evaluations/${_id}/objectives`,
     id: _id.toString(),
-    usersName: user.name,
+    subject: user,
     status,
-    templateName: template.name,
+    template,
   };
 
   const viewModelSkills = arrayToUniquelyKeyedObject(_id, skills);

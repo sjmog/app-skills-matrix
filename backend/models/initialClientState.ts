@@ -7,6 +7,9 @@ import { User } from './users/user';
 import matrices from './matrices/index';
 import evaluationCollection from './evaluations/index';
 
+const arrayToKeyedObject = <T extends { id: string | number }>(arr: T[]) =>
+  arr.reduce((acc, item) => Object.assign({}, acc, { [item.id]: item }), {});
+
 const sortNewestToOldest = evaluations => evaluations.sort((a, b) => moment(a.createdDate).isBefore(b.createdDate));
 const { templates } = matrices;
 
@@ -18,21 +21,59 @@ const getSubjectEvaluations = id =>
   getEvaluations(id)
     .then(evaluations => evaluations.map(evaluation => evaluation.subjectMetadataViewModel()));
 
-const getMenteeEvaluations = userId =>
-  Promise.map(
-    userCollection.getByMentorId(userId),
-    ({ id, name, username, lineManagerId }) =>
-      getEvaluations(id)
-        .then(evaluations => evaluations.map(evaluation => userId === lineManagerId ? evaluation.lineManagerAndMentorMetadataViewModel() : evaluation.mentorMetadataViewModel()))
-        .then(evaluations => ({ name: name || username, evaluations })));
+const getMentorViewModel = (userId, lineManagerId) =>
+  evaluation =>
+    (userId === lineManagerId
+        ? evaluation.lineManagerAndMentorMetadataViewModel()
+        : evaluation.mentorMetadataViewModel());
 
-const getReportsEvaluations = userId =>
-  Promise.map(
-    userCollection.getByLineManagerId(userId),
-    ({ id, name, username, mentorId }) =>
-      getEvaluations(id)
-        .then(evaluations => evaluations.map(evaluation => userId === mentorId ? evaluation.lineManagerAndMentorMetadataViewModel() : evaluation.lineManagerMetadataViewModel()))
-        .then(evaluations => ({ name: name || username, evaluations })));
+const getLineMangerViewModel = (userId, mentorId) =>
+  evaluation =>
+    (userId === mentorId
+        ? evaluation.lineManagerAndMentorMetadataViewModel()
+        : evaluation.lineManagerMetadataViewModel());
+
+const getMenteeData = (userId: string)  =>
+  userCollection.getByMentorId(userId)
+    .then(mentees => Promise.reduce(
+      mentees,
+      (acc, mentee: User) => {
+        const menteeId = R.prop('id', mentee) as string;
+        const lineManagerId = R.prop('lineManagerId', mentee);
+
+        return getEvaluations(menteeId)
+          .then(R.map(getMentorViewModel(userId, lineManagerId)))
+          .then((evaluations) => {
+            const evaluationIds = R.map(R.prop('id'), evaluations) as string[];
+
+            return {
+              users: { ...acc.users, [menteeId]: mentee.userDetailsViewModel() },
+              evaluations: [...acc.evaluations, ...evaluations],
+            };
+          });
+      },
+      { users: [], evaluations: [] }));
+
+const getReportData = (userId: string)  =>
+  userCollection.getByLineManagerId(userId)
+    .then(mentees => Promise.reduce(
+      mentees,
+      (acc, report: User) => {
+        const reportId = R.prop('id', report) as string;
+        const mentorId = R.prop('mentorId', report);
+
+        return getEvaluations(reportId)
+          .then(R.map(getLineMangerViewModel(userId, mentorId)))
+          .then((evaluations) => {
+            const evaluationIds = R.map(R.prop('id'), evaluations) as string[];
+
+            return {
+              users: { ...acc.users, [reportId]: report.userDetailsViewModel() },
+              evaluations: [...acc.evaluations, ...evaluations],
+            };
+          });
+      },
+      { users: [], evaluations: [] }));
 
 const augmentWithEvaluations = (users): Promise<UserWithEvaluations[]> =>
   Promise.map(
@@ -63,25 +104,29 @@ export const clientState = (user: User): Promise<ClientState> =>
       userCollection.getUserById(user.lineManagerId),
       templates.getById(user.templateId),
       getSubjectEvaluations(user.id),
-      getMenteeEvaluations(user.id),
-      getReportsEvaluations(user.id),
-    ])).then(([mentor, lineManager, template, evaluations, menteeEvaluations, reportsEvaluations]) =>
-      ({
-        entities: {
-          users: {
-            entities: {
-              [user.id]: user.userDetailsViewModel(),
-            },
+      getMenteeData(user.id),
+      getReportData(user.id),
+    ])).then(([mentor, lineManager, template, evaluations, mentee, report]) => ({
+      entities: {
+        users: {
+          entities: {
+            [user.id]: user.userDetailsViewModel(),
+            ...mentee.users,
+            ...report.users,
           },
         },
-        user: {
-          userDetails: user ? user.userDetailsViewModel() : null,
-          mentorDetails: mentor ? mentor.userDetailsViewModel() : null,
-          lineManagerDetails: lineManager ? lineManager.userDetailsViewModel() : null,
-          template: template ? template.viewModel() : null,
-          evaluations,
-          menteeEvaluations,
-          reportsEvaluations,
+        evaluations: {
+          entities: arrayToKeyedObject([...evaluations, ...mentee.evaluations, ...report.evaluations]),
         },
-      }))
+      },
+      user: {
+        userDetails: user ? user.userDetailsViewModel() : null,
+        mentorDetails: mentor ? mentor.userDetailsViewModel() : null,
+        lineManagerDetails: lineManager ? lineManager.userDetailsViewModel() : null,
+        template: template ? template.viewModel() : null,
+        evaluations: R.map(R.prop('id'), evaluations),
+        mentees: R.keys(mentee.users),
+        reports: R.keys(report.users),
+      },
+    }))
     : Promise.resolve({ user: {} }));

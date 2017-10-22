@@ -62,7 +62,16 @@ const user = ({ _id, name, email, username, templateId, mentorId, lineManagerId,
     return ({ id: _id.toString(), name: name || username, email });
   },
   userDetailsViewModel() {
-    return ({ id: _id.toString(), name, username, avatarUrl, email, mentorId, lineManagerId, templateId });
+    return {
+      id: _id.toString(),
+      name,
+      username,
+      avatarUrl,
+      email,
+      mentorId,
+      lineManagerId,
+      templateId,
+    };
   },
   hasTemplate: Boolean(templateId),
   hasMentor: Boolean(mentorId),

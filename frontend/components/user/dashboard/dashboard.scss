@@ -10,3 +10,13 @@
 .tab-content {
   margin-top: 20px;
 }
+
+.selector-list {
+  overflow-x: hidden;
+  max-height: 400px;
+}
+
+.selector-list__btn {
+  text-align: left;
+  padding: 16px;
+}

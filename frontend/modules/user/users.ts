@@ -17,4 +17,17 @@ export default handleActions({
 }, initialState);
 
 export const getUser = (state: UsersState, userId: string): UserDetailsViewModel | {} =>
-  R.path(['entities', userId], state) || {};
+   R.path(['entities', userId], state) || {};
+
+export const getSortedUsers = (state: UsersState, userIds: string[]): UserDetailsViewModel[] => {
+  if (!Array.isArray(userIds)) {
+    return [];
+  }
+
+  const users = R.map(
+    userId =>
+      R.path(['entities', userId], state) || ({ name: 'Missing user', id: userId }),
+    userIds) as UserDetailsViewModel[];
+
+  return R.sortBy(R.prop('name'), users);
+};

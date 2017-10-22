@@ -4,13 +4,13 @@ import * as moment from 'moment';
 
 import EvaluationStatusLabel from '../../common/EvaluationStatusLabel';
 
-import '../../user/evaluationsList.scss';
+import '../../user/dashboard/evaluationsList.scss';
 
 type UserEvaluationsListProps = {
   evaluations: {
     id: string,
     createdDate: Date,
-    templateName: string,
+    template: TemplateViewModel,
     status: string,
     evaluationUrl: string,
     feedbackUrl: string,
@@ -30,10 +30,10 @@ const UserEvaluationsList = ({ evaluations }: UserEvaluationsListProps) => (
     </thead>
     <tbody>
     {
-        evaluations.map(({ id, createdDate, templateName, status, evaluationUrl, feedbackUrl, objectivesUrl }) =>
+        evaluations.map(({ id, createdDate, template, status, evaluationUrl, feedbackUrl, objectivesUrl }) =>
           (<tr key={id}>
             <td>{moment(createdDate).format('D MMM YYYY')}</td>
-            <td>{templateName}</td>
+            <td>{template.name}</td>
             <td>
               <EvaluationStatusLabel status={status} />
             </td>

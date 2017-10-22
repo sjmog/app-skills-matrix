@@ -6,10 +6,13 @@ import skills, * as fromSkills from './skills';
 import notes, * as fromNotes from './notes';
 import users, * as fromUsers from './users';
 import tasks, * as fromTasks from './tasks';
+import menteeEvaluations, * as fromMenteeEvaluations from './ui/menteeEvaluations';
+import reportEvaluations, * as fromReportEvaluations from './ui/reportEvaluations';
 
 const entities = combineReducers({ evaluations, skills, notes, users, tasks });
+const ui = combineReducers({ menteeEvaluations, reportEvaluations });
 
-export default combineReducers({ user, entities, evaluation });
+export default combineReducers({ user, entities, ui, evaluation });
 
 /* USER SELECTORS */
 
@@ -103,6 +106,9 @@ export const getError = ({ entities: { evaluations } }, evalId) =>
 export const getSkillUids = ({ entities: { evaluations } }, evalId: string) =>
   fromEvaluations.getSkillUids(evaluations, evalId);
 
+export const getSortedEvaluationsByUserId = ({ entities: { evaluations } }, userIds: string) =>
+  fromEvaluations.getSortedEvaluationsByUserId(evaluations, userIds);
+
 /* NOTES SELECTORS */
 
 export const getSortedNotes = ({ entities: { notes } }, noteIds: string[]) =>
@@ -115,6 +121,9 @@ export const getNotesError = ({ entities: { notes } }) =>
 
 export const getUser = ({ entities: { users } }, userId: string) =>
   fromUsers.getUser(users, userId);
+
+export const getSortedUsers = ({ entities: { users } }, userIds: string[]) =>
+  fromUsers.getSortedUsers(users, userIds);
 
 /* TASKS SELECTORS */
 
@@ -132,3 +141,13 @@ export const getTasksError = ({ entities: { tasks } }) =>
 
 export const getTaskCount = ({ entities: { tasks } }) =>
   fromTasks.getTaskCount(tasks);
+
+/* MENTEE UI SELECTORS */
+
+export const getSelectedMentee = ({ ui: { menteeEvaluations } }) =>
+  fromMenteeEvaluations.getSelectedUser(menteeEvaluations);
+
+/* REPORT UI SELECTORS */
+
+export const getSelectedReport = ({ ui: { reportEvaluations } }) =>
+  fromReportEvaluations.getSelectedUser(reportEvaluations);

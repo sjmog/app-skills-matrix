@@ -48,7 +48,7 @@ class Tasks extends React.Component<TasksProps> {
         <ListGroup fill>
           {
             tasks.length > 0
-              ? tasks.map(t => <Link to={t.link} className="list-group-item">{t.message}</Link>)
+              ? tasks.map(t => <Link to={t.link} className="list-group-item" key={t.link + t.message}>{t.message}</Link>)
               : <ListGroupItem key="no_outstanding_tasks">You don't have any outstanding tasks</ListGroupItem>
             }
           </ListGroup>
