@@ -142,10 +142,12 @@ export const getTasksError = ({ entities: { tasks } }) =>
 export const getTaskCount = ({ entities: { tasks } }) =>
   fromTasks.getTaskCount(tasks);
 
-/* DASHBOARD SELECTORS */
+/* MENTEE UI SELECTORS */
 
 export const getSelectedMentee = ({ ui: { menteeEvaluations } }) =>
   fromMenteeEvaluations.getSelectedUser(menteeEvaluations);
+
+/* REPORT UI SELECTORS */
 
 export const getSelectedReport = ({ ui: { reportEvaluations } }) =>
   fromReportEvaluations.getSelectedUser(reportEvaluations);

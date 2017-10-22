@@ -13,16 +13,7 @@ import { gitHubAuth } from '../../common/constants/index';
 
 import './dashboard.scss';
 
-type DashboardProps = {
-  userDetails: UserDetailsViewModel,
-  mentorDetails: UserDetailsViewModel,
-  lineManagerDetails: UserDetailsViewModel,
-  template: TemplateViewModel,
-  evaluations: string[],
-  mentees: string[],
-  reports: string[],
-  taskCount: number,
-};
+type DashboardProps = UserInitialState & { taskCount: number };
 
 const tasksTabTitle = (taskCount): any => <span>Tasks{' '}<Badge className="tasks__count">{taskCount}</Badge></span>;
 
@@ -58,15 +49,17 @@ const Dashboard = ({ userDetails, mentorDetails, lineManagerDetails, template, e
               userIds={mentees}
               selector={selectors.getSelectedMentee}
               selectUser={menteeViewActionCreators.selectUser}
+              userType="mentee"
             />
           </Row>
         </Tab>
-        <Tab eventKey={4} title="Report evaluations">
+        <Tab eventKey={4} title="Team member evaluations">
           <Row>
             <UserEvaluations
               userIds={reports}
               selector={selectors.getSelectedReport}
               selectUser={reportViewActionCreators.selectUser}
+              userType="team member"
             />
           </Row>
         </Tab>

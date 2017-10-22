@@ -17,9 +17,9 @@ type UserInitialState = {
   template?: TemplateViewModel,
   mentorDetails?: UserDetailsViewModel,
   lineManagerDetails?: UserDetailsViewModel,
-  evaluations?: EvaluationMetadataViewModel[],
-  menteeEvaluations?: EvaluationMetadataViewModel[],
-  reportsEvaluations?: EvaluationMetadataViewModel[],
+  evaluations: string[],
+  mentees: string[],
+  reports: string[],
 };
 
 type ClientState = {
