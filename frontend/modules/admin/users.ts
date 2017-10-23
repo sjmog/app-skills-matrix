@@ -46,7 +46,13 @@ function selectLineManager(lineManagerId, user) {
 function selectTemplate(templateId, user) {
   return dispatch => api.selectTemplate(templateId, user.id)
     .then(user => dispatch(userUpdateSuccess(user)))
-    .catch(err => dispatch(userUpdateSuccess(err)));
+    .catch(err => dispatch(userUpdateFailure(err)));
+}
+
+function updateUserDetails(userId, updates) {
+  return dispatch => api.updateUserDetails(userId, updates)
+    .then(user => dispatch(userUpdateSuccess(user)))
+    .catch(err => dispatch(userUpdateFailure(err)));
 }
 
 export const actions = {
@@ -55,6 +61,7 @@ export const actions = {
   selectLineManager,
   addUser,
   startEvaluation,
+  updateUserDetails,
 };
 
 const handleUserUpdateSuccess = (state, action) =>
@@ -70,7 +77,7 @@ const handleActionFailure = (state, action) => Object.assign({}, state, { error:
 
 const handleEvaluationEvent = (state, action) => Object.assign({}, state, { newEvaluations: [].concat(state.newEvaluations, action.payload) });
 
-export const reducers = handleActions({
+export default handleActions({
   [addUserSuccess]: (state, action) => Object.assign({}, state, { users: [].concat(state.users, action.payload), success: true, error: null }),
   [addUserFailure]: handleActionFailure,
   [userUpdateSuccess]: handleUserUpdateSuccess,
@@ -78,3 +85,6 @@ export const reducers = handleActions({
   [startEvaluationSuccess]: handleEvaluationEvent,
   [startEvaluationFailure]: handleEvaluationEvent,
 }, { users: [] });
+
+export const getUserManagementError = state =>
+    R.prop('error', state);

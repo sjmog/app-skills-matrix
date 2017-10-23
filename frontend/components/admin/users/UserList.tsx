@@ -1,8 +1,9 @@
 import * as React from 'react';
 import * as R from 'ramda';
-import { Table, FormGroup, FormControl, Checkbox, Button } from 'react-bootstrap';
+import { Table, FormGroup, FormControl, Checkbox, Button, Glyphicon } from 'react-bootstrap';
 
 import UserEvaluationsModal from './UserEvaluationsModal';
+import EditUserModal from './EditUserModal';
 
 import './users.scss';
 
@@ -50,13 +51,20 @@ const selectTemplate = (templates, onSelectTemplate, user) => (
   </FormGroup>
 );
 
-function userDetailsRow(user, isSelected, onUserSelectionChange, makeSelectMentorComponent, makeSelectTemplateComponent, makeSelectLineManagerComponent, viewUserEvaluations) {
+function userDetailsRow(user, isSelected, onUserSelectionChange, makeSelectMentorComponent, makeSelectTemplateComponent, makeSelectLineManagerComponent, viewUserEvaluations, viewEditUserModal) {
   const { id, name, email, username } = user;
   return (
     <tr key={id}>
       <td><Checkbox checked={Boolean(isSelected)} onChange={e => onUserSelectionChange(e, user)} /></td>
+      <td>
+        <Glyphicon
+          glyph="edit"
+          className="edit-icon"
+          onClick={() => viewEditUserModal(user)}
+        />
+      </td>
+      <td>{name || '-' }</td>
       <td>{username}</td>
-      <td>{name}</td>
       <td>{email}</td>
       <td>
         <Button onClick={() => viewUserEvaluations(user)}>
@@ -81,7 +89,8 @@ type UserListProps = {
 };
 
 type UserListState = {
-  showModal: boolean,
+  showEvaluationsModal: boolean,
+  showEditUserModal: boolean
   currentUser?: UserDetailsViewModel,
 };
 
@@ -89,16 +98,26 @@ class UserList extends React.Component<UserListProps, UserListState> {
   constructor(props) {
     super(props);
     this.state = {
-      showModal: false,
+      showEvaluationsModal: false,
+      showEditUserModal: false,
     };
 
     this.viewUserEvaluations = this.viewUserEvaluations.bind(this);
+    this.viewEditUserModal = this.viewEditUserModal.bind(this);
     this.hideUserEvaluations = this.hideUserEvaluations.bind(this);
+    this.hideEditUserModal = this.hideEditUserModal.bind(this);
   }
 
   viewUserEvaluations(user) {
     this.setState({
-      showModal: true,
+      showEvaluationsModal: true,
+      currentUser: user,
+    });
+  }
+
+  viewEditUserModal(user) {
+    this.setState({
+      showEditUserModal: true,
       currentUser: user,
     });
   }
@@ -106,7 +125,14 @@ class UserList extends React.Component<UserListProps, UserListState> {
   hideUserEvaluations() {
     this.setState({
       currentUser: null,
-      showModal: false,
+      showEvaluationsModal: false,
+    });
+  }
+
+  hideEditUserModal() {
+    this.setState({
+      currentUser: null,
+      showEditUserModal: false,
     });
   }
 
@@ -124,6 +150,7 @@ class UserList extends React.Component<UserListProps, UserListState> {
           <thead>
           <tr>
             <th>Select</th>
+            <th>Edit</th>
             <th>Name</th>
             <th>Username</th>
             <th>Email</th>
@@ -142,11 +169,17 @@ class UserList extends React.Component<UserListProps, UserListState> {
               makeSelectMentorComponent,
               makeSelectTemplateComponent,
               makeSelectLineManagerComponent,
-              this.viewUserEvaluations))}
+              this.viewUserEvaluations,
+              this.viewEditUserModal))}
           </tbody>
         </Table>
+        <EditUserModal
+          showModal={this.state.showEditUserModal}
+          onClose={this.hideEditUserModal}
+          user={this.state.currentUser || {}}
+        />
         <UserEvaluationsModal
-          showModal={this.state.showModal}
+          showModal={this.state.showEvaluationsModal}
           onClose={this.hideUserEvaluations}
           user={this.state.currentUser || {}}
         />

@@ -1,16 +1,18 @@
 import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Grid, Row, Button } from 'react-bootstrap';
+import { Grid, Row, Button, Alert } from 'react-bootstrap';
 import * as R from 'ramda';
+
 import { actions } from '../../../modules/admin/users';
 import AddUserForm from './AddUserForm';
 import UserList from './UserList';
+import * as selectors from '../../../modules/admin';
 
 type ManageUsersPageComponentProps = {
   actions: typeof actions,
   success: boolean,
-  error: ErrorMessage,
+  error?: { message?: string },
   users: { users: UserWithEvaluations[], newEvaluations: (EvaluationViewModel & { success: boolean, message: string })[] },
   matrices: { templates: TemplateViewModel[] },
 };
@@ -95,6 +97,8 @@ class ManageUsersPageComponent extends React.Component<ManageUsersPageComponentP
   }
 
   render() {
+    const { error } = this.props;
+
     return (
       <Grid>
         <Row>
@@ -105,7 +109,6 @@ class ManageUsersPageComponent extends React.Component<ManageUsersPageComponentP
             newUser={this.state.newUser}
             updateNewUserState={this.updateNewUserState}
             onAddUser={this.onAddUser}
-            error={this.props.error}
           />
         </Row>
         <Row>
@@ -118,6 +121,7 @@ class ManageUsersPageComponent extends React.Component<ManageUsersPageComponentP
           </Button>
         </Row>
         <Row>
+          {error ? <Alert bsStyle="danger">Something went wrong: {error.message || 'unknown issue'}</Alert> : false}
           <UserList
             selectedUsers={this.state.selectedUsers}
             users={this.props.users.users}
@@ -149,9 +153,10 @@ class ManageUsersPageComponent extends React.Component<ManageUsersPageComponentP
 }
 
 export const ManageUsersPage = connect(
-  ({ users, matrices }) => ({
-    users,
-    matrices,
+  state => ({
+    users: state.users,
+    matrices: state.matrices,
+    error: selectors.getUserManagementError(state),
   }),
   dispatch => ({
     actions: bindActionCreators(actions, dispatch),
