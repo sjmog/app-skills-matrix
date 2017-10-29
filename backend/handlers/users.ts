@@ -1,5 +1,4 @@
 import * as Promise from 'bluebird';
-import * as validate from 'express-validation';
 import * as Joi from 'joi';
 
 import users from '../models/users/index';
