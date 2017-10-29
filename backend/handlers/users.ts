@@ -1,4 +1,6 @@
 import * as Promise from 'bluebird';
+import * as validate from 'express-validation';
+import * as Joi from 'joi';
 
 import users from '../models/users/index';
 import matrices from '../models/matrices/index';
@@ -15,6 +17,14 @@ import {
 
 const { templates, skills } = matrices;
 
+const updateUserDetailsForAllEvals = (userId, name, email) =>
+  evaluations.getByUserId(userId)
+    .then(requestedEvaluations =>
+      Promise.map(requestedEvaluations, (evaluation: Evaluation) => {
+        const changes = evaluation.updateUserDetails(name, email);
+        return evaluations.updateEvaluation(changes);
+      }));
+
 const handlerFunctions = Object.freeze({
   users: {
     create: (req, res, next) => {
@@ -30,40 +40,70 @@ const handlerFunctions = Object.freeze({
     },
   },
   user: {
-    selectMentor: (req, res, next) => {
-      const { requestedUser } = res.locals;
-      const changes = requestedUser.setMentor(req.body.mentorId);
-      if (changes.error) {
-        return res.status(400).json(changes);
-      }
-      return users.updateUser(requestedUser, changes)
-        .then(updatedUser => res.status(200).json(updatedUser.manageUserViewModel()))
-        .catch(next);
-    },
-    selectLineManager: (req, res, next) => {
-      const { requestedUser } = res.locals;
-      const changes = requestedUser.setLineManager(req.body.lineManagerId);
-      if (changes.error) {
-        return res.status(400).json(changes);
-      }
-      return users.updateUser(requestedUser, changes)
-        .then(updatedUser => res.status(200).json(updatedUser.manageUserViewModel()))
-        .catch(next);
-    },
-    selectTemplate: (req, res, next) => {
-      const { requestedUser } = res.locals;
+    selectMentor: {
+      handle: (req, res, next) => {
+        const { requestedUser } = res.locals;
+        const changes = requestedUser.setMentor(req.body.mentorId);
 
-      Promise.try(() => templates.getById(req.body.templateId))
-        .then((template) => {
-          if (!template) {
-            return res.status(400).json(TEMPLATE_NOT_FOUND());
-          }
+        if (changes.error) {
+          return res.status(400).json(changes);
+        }
+        return users.updateUser(requestedUser, changes)
+          .then(updatedUser => res.status(200).json(updatedUser.manageUserViewModel()))
+          .catch(next);
+      },
+    },
+    selectLineManager: {
+      handle: (req, res, next) => {
+        const { requestedUser } = res.locals;
+        const changes = requestedUser.setLineManager(req.body.lineManagerId);
 
-          const changes = requestedUser.setTemplate(req.body.templateId);
-          return users.updateUser(requestedUser, changes)
-            .then(updatedUser => res.status(200).json(updatedUser.manageUserViewModel()));
-        })
-        .catch(next);
+        if (changes.error) {
+          return res.status(400).json(changes);
+        }
+        return users.updateUser(requestedUser, changes)
+          .then(updatedUser => res.status(200).json(updatedUser.manageUserViewModel()))
+          .catch(next);
+      },
+    },
+    selectTemplate: {
+      handle: (req, res, next) => {
+        const { requestedUser } = res.locals;
+
+        Promise.try(() => templates.getById(req.body.templateId))
+          .then((template) => {
+            if (!template) {
+              return res.status(400).json(TEMPLATE_NOT_FOUND());
+            }
+
+            const changes = requestedUser.setTemplate(req.body.templateId);
+            return users.updateUser(requestedUser, changes)
+              .then(updatedUser => res.status(200).json(updatedUser.manageUserViewModel()));
+          })
+          .catch(next);
+      },
+    },
+    updateUserDetails: {
+      middleware: [
+        validate({
+          body: {
+            name: Joi.string().required(),
+            email: Joi.string().email().required(),
+          },
+        }),
+      ],
+      handle: (req, res, next) => {
+        const { requestedUser } = res.locals;
+        const { name, email } = req.body;
+
+        Promise.try(() => requestedUser.updateUserDetails(name, email))
+          .then(changes => Promise.all([
+            users.updateUser(requestedUser, changes),
+            updateUserDetailsForAllEvals(requestedUser.id, name, email),
+          ]))
+          .then(([updatedUser]) => res.status(200).json(updatedUser.userDetailsViewModel()))
+          .catch(next);
+      },
     },
   },
   evaluations: {

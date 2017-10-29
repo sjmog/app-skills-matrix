@@ -19,6 +19,10 @@ const addNoteIdsToSkill = (noteIds, skillId, oldEval) => {
   const skillNotesLens = R.lensPath(['skills', skillIndex, 'notes']);
   return R.set(skillNotesLens, noteIds, oldEval);
 };
+const insertEvaluation = (evaluation, userId, name?: string, email?: string) => {
+  const document = { ...R.clone(evaluation), user: { id: String(userId), name, email } };
+  return evaluations.insertOne(encryptSkills(document));
+};
 
 export default {
   prepopulateUsers,
@@ -31,9 +35,10 @@ export default {
   skills,
   insertSkill: skill => skills.insertOne(Object.assign({}, skill)),
   evaluations,
-  insertEvaluation: (evaluation, userId, name?: string) => evaluations.insertOne(encryptSkills(Object.assign({}, evaluation, { user: { id: String(userId), name } }))),
+  insertEvaluation,
   getEvaluation: evaluationId => evaluations.findOne({ _id: new ObjectID(evaluationId) }).then(decryptSkills),
   getEvaluations: () => evaluations.find({}).then(e => e.toArray()).then(R.map(decryptSkills)),
+  getEvaluationsByUser: (userId: string) => evaluations.find({ 'user.id': userId }).then(e => e.toArray()).then(R.map(decryptSkills)),
   getAllActions: () => actions.find({}).then(e => e.toArray()),
   insertAction: userId => action => actions.insertOne(Object.assign({}, action, { user: { id: String(userId) } })),
   clearDb: () => Promise.all([users.remove({}), templates.remove({}), skills.remove({}), evaluations.remove({}), actions.remove({}), notes.remove({})]),
