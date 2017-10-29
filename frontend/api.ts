@@ -64,8 +64,8 @@ export default ({
       .then(getData)
       .catch(handleError);
   },
-  updateUserDetails(userId: string, updates: { name: string, email: string }): Promise<UserDetailsViewModel> {
-    return axios.post(`/skillz/users/${userId}`, { action: 'updateDetails', updates })
+  updateUserDetails(userId: string, name: string, email: string): Promise<UserDetailsViewModel> {
+    return axios.post(`/skillz/users/${userId}`, { action: 'updateUserDetails', name, email })
       .then(getData)
       .catch(handleError);
   },

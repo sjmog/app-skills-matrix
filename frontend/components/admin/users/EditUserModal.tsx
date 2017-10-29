@@ -6,8 +6,9 @@ import { actions } from '../../../modules/admin/users';
 
 type EditUserModalProps = {
   showModal: boolean
-  onClose: (e: any) => void,
-  user: {
+  onClose: () => void,
+  userId: string,
+  user?: {
     id: string,
     name?: string,
     username?: string,
@@ -33,11 +34,13 @@ class EditUserModal extends React.Component<EditUserModalProps, any> {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({
-      name: nextProps.user.name || '',
-      email: nextProps.user.email || '',
-      submitting: false,
-    });
+    if (nextProps.user) {
+      this.setState({
+        name: nextProps.user.name || '',
+        email: nextProps.user.email || '',
+        submitting: false,
+      });
+    }
   }
 
   handleChange(event) {
@@ -57,11 +60,27 @@ class EditUserModal extends React.Component<EditUserModalProps, any> {
     setTimeout(() => {
       this.setState({ submitting: false });
       this.props.update(this.props.user.id, this.state);
+      this.props.onClose();
     }, 1500);
   }
 
   render() {
     const { showModal, onClose, user, error } = this.props;
+
+    if (!user) {
+      return (
+        <div>
+          <Modal show={showModal} onHide={onClose} bsSize="large">
+            <Modal.Header closeButton>
+              <Modal.Title>No user selected</Modal.Title>
+            </Modal.Header>
+            <Modal.Footer>
+              <Button onClick={onClose}>Close</Button>
+            </Modal.Footer>
+          </Modal>
+        </div>
+      );
+    }
 
     return (
       <div>
@@ -71,33 +90,35 @@ class EditUserModal extends React.Component<EditUserModalProps, any> {
           </Modal.Header>
           <Modal.Body>
             <form onSubmit={this.handleSubmit}>
-              <FormGroup>
-                <ControlLabel>Name</ControlLabel>
-                <FormControl
-                  name="name"
-                  type="text"
-                  value={this.state.name}
-                  placeholder="Enter name"
-                  onChange={this.handleChange}
-                />
-              </FormGroup>
-              <FormGroup>
-                <ControlLabel>Email address</ControlLabel>
-                <FormControl
-                  name="email"
-                  type="text"
-                  value={this.state.email}
-                  placeholder="Enter email"
-                  onChange={this.handleChange}
-                />
-              </FormGroup>
-              <Button
-                bsStyle="primary"
-                type="submit"
-                disabled={this.state.submitting}
-              >
-                Update user details
-              </Button>
+              <div className="edit-details-form__container">
+                <FormGroup>
+                  <ControlLabel>Name</ControlLabel>
+                  <FormControl
+                    name="name"
+                    type="text"
+                    value={this.state.name}
+                    placeholder="Enter name"
+                    onChange={this.handleChange}
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <ControlLabel>Email address</ControlLabel>
+                  <FormControl
+                    name="email"
+                    type="text"
+                    value={this.state.email}
+                    placeholder="Enter email"
+                    onChange={this.handleChange}
+                  />
+                </FormGroup>
+                <Button
+                  bsStyle="primary"
+                  type="submit"
+                  disabled={this.state.submitting}
+                >
+                  Update user details
+                </Button>
+              </div>
               {error ? <Alert bsStyle="danger">Something went wrong: {error.message || 'unknown issue'}</Alert> : false}
             </form>
           </Modal.Body>
@@ -111,7 +132,8 @@ class EditUserModal extends React.Component<EditUserModalProps, any> {
 }
 
 export default connect(
-  state => ({
+  (state, { userId }) => ({
+    user: selectors.getUser(state, userId),
     error: selectors.getUserManagementError(state),
   }),
   dispatch => ({

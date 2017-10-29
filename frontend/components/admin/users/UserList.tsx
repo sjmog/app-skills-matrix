@@ -1,7 +1,9 @@
 import * as React from 'react';
 import * as R from 'ramda';
+import { connect } from 'react-redux';
 import { Table, FormGroup, FormControl, Checkbox, Button, Glyphicon } from 'react-bootstrap';
 
+import * as selectors from '../../../modules/admin';
 import UserEvaluationsModal from './UserEvaluationsModal';
 import EditUserModal from './EditUserModal';
 
@@ -55,19 +57,25 @@ function userDetailsRow(user, isSelected, onUserSelectionChange, makeSelectMento
   const { id, name, email, username } = user;
   return (
     <tr key={id}>
-      <td><Checkbox checked={Boolean(isSelected)} onChange={e => onUserSelectionChange(e, user)} /></td>
+      <td>
+        <Checkbox
+          className="user-list__checkbox"
+          checked={Boolean(isSelected)}
+          onChange={e => onUserSelectionChange(e, user)}
+        />
+      </td>
       <td>
         <Glyphicon
           glyph="edit"
           className="edit-icon"
-          onClick={() => viewEditUserModal(user)}
+          onClick={() => viewEditUserModal(id)}
         />
       </td>
       <td>{name || '-' }</td>
       <td>{username}</td>
       <td>{email}</td>
       <td>
-        <Button onClick={() => viewUserEvaluations(user)}>
+        <Button onClick={() => viewUserEvaluations(id)}>
           View evaluations
         </Button>
       </td>
@@ -91,7 +99,7 @@ type UserListProps = {
 type UserListState = {
   showEvaluationsModal: boolean,
   showEditUserModal: boolean
-  currentUser?: UserDetailsViewModel,
+  currentUser?: string,
 };
 
 class UserList extends React.Component<UserListProps, UserListState> {
@@ -108,17 +116,17 @@ class UserList extends React.Component<UserListProps, UserListState> {
     this.hideEditUserModal = this.hideEditUserModal.bind(this);
   }
 
-  viewUserEvaluations(user) {
+  viewUserEvaluations(userId: string) {
     this.setState({
       showEvaluationsModal: true,
-      currentUser: user,
+      currentUser: userId,
     });
   }
 
-  viewEditUserModal(user) {
+  viewEditUserModal(userId: string) {
     this.setState({
       showEditUserModal: true,
-      currentUser: user,
+      currentUser: userId,
     });
   }
 
@@ -139,10 +147,8 @@ class UserList extends React.Component<UserListProps, UserListState> {
   render() {
     const { users, templates, selectedUsers, onUserSelectionChange, onSelectMentor, onSelectLineManager, onSelectTemplate } = this.props;
     const makeSelectTemplateComponent = R.curry(selectTemplate)(templates, onSelectTemplate);
-    const sortedUsers = R.sortBy<UserDetailsViewModel>(R.prop('name'), users);
-
-    const makeSelectMentorComponent = R.curry(selectMentor)(sortedUsers, onSelectMentor);
-    const makeSelectLineManagerComponent = R.curry(selectLineManager)(sortedUsers, onSelectLineManager);
+    const makeSelectMentorComponent = R.curry(selectMentor)(users, onSelectMentor);
+    const makeSelectLineManagerComponent = R.curry(selectLineManager)(users, onSelectLineManager);
 
     return (
       <div>
@@ -161,7 +167,7 @@ class UserList extends React.Component<UserListProps, UserListState> {
           </tr>
           </thead>
           <tbody>
-          {sortedUsers.map(user =>
+          {users.map(user =>
             userDetailsRow(
               user,
               R.contains(user.id, selectedUsers),
@@ -176,16 +182,20 @@ class UserList extends React.Component<UserListProps, UserListState> {
         <EditUserModal
           showModal={this.state.showEditUserModal}
           onClose={this.hideEditUserModal}
-          user={this.state.currentUser || {}}
+          userId={this.state.currentUser || null}
         />
         <UserEvaluationsModal
           showModal={this.state.showEvaluationsModal}
           onClose={this.hideUserEvaluations}
-          user={this.state.currentUser || {}}
+          userId={this.state.currentUser || null}
         />
       </div>
     );
   }
 }
 
-export default UserList;
+export default connect(
+  (state, { userId }) => ({
+    users: selectors.getSortedUsers(state),
+  }),
+)(UserList);

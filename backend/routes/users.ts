@@ -8,10 +8,6 @@ import { UNKNOWN_ACTION } from '../handlers/errors';
 
 const { users, user, evaluations } = <any>userHandler;
 
-// TODO: Roll this out to other routes(s)
-// TODO: Update evaluations
-// TODO: Close modal on update/look at clearing error after a timeout?
-
 const actionSpecificMiddleware = (req, res, next) => {
   const middleware = R.path([req.body.action, 'middleware'], user) as any;
   const hasMiddleware = middleware && R.length(middleware) > 0;

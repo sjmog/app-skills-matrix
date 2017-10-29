@@ -7,3 +7,9 @@ export default combineReducers({ users, matrices });
 
 export const getUserManagementError = ({ users }) =>
   fromUsers.getUserManagementError(users);
+
+export const getUser = ({ users }, userId: string) =>
+  fromUsers.getUser(users, userId);
+
+export const getSortedUsers = ({ users }) =>
+  fromUsers.getSortedUsers(users);

@@ -49,8 +49,8 @@ function selectTemplate(templateId, user) {
     .catch(err => dispatch(userUpdateFailure(err)));
 }
 
-function updateUserDetails(userId, updates) {
-  return dispatch => api.updateUserDetails(userId, updates)
+function updateUserDetails(userId, { name, email }) {
+  return dispatch => api.updateUserDetails(userId, name, email)
     .then(user => dispatch(userUpdateSuccess(user)))
     .catch(err => dispatch(userUpdateFailure(err)));
 }
@@ -68,7 +68,7 @@ const handleUserUpdateSuccess = (state, action) =>
   Object.assign({},
     state,
     {
-      users: R.map(user => (user.id === action.payload.id ? action.payload : user), state.users),
+      users: R.map(user => (user.id === action.payload.id ? R.merge(user, action.payload) : user), state.users),
       success: true,
       error: null,
     });
@@ -86,5 +86,13 @@ export default handleActions({
   [startEvaluationFailure]: handleEvaluationEvent,
 }, { users: [] });
 
+const getUsers = (state): UserDetailsViewModel[] => R.prop('users', state);
+
 export const getUserManagementError = state =>
     R.prop('error', state);
+
+export const getUser = (state, userId: string) =>
+  R.find(R.propEq('id', userId))(getUsers(state));
+
+export const getSortedUsers = state =>
+  R.sortBy(R.prop('name'), getUsers(state));
