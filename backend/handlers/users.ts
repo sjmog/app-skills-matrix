@@ -13,6 +13,7 @@ import {
   TEMPLATE_NOT_FOUND,
   USER_HAS_NO_TEMPLATE,
   USER_HAS_NO_MENTOR,
+  INVALID_USER_UPDATE_REQUESTED,
 } from './errors';
 
 const { templates, skills } = matrices;
@@ -84,23 +85,25 @@ const handlerFunctions = Object.freeze({
       },
     },
     updateUserDetails: {
-      middleware: [
-        validate({
-          body: {
-            name: Joi.string().required(),
-            email: Joi.string().email().required(),
-          },
-        }),
-      ],
       handle: (req, res, next) => {
         const { requestedUser } = res.locals;
-        const { name, email } = req.body;
+        const updateScehma = Joi.object().keys({
+          name: Joi.string().required(),
+          email: Joi.string().email().required(),
+        }).required().unknown();
 
-        Promise.try(() => requestedUser.updateUserDetails(name, email))
-          .then(changes => Promise.all([
-            users.updateUser(requestedUser, changes),
-            updateUserDetailsForAllEvals(requestedUser.id, name, email),
-          ]))
+        const { error, value: validUpdate } = updateScehma.validate(req.body);
+
+        if (error) {
+          return res.status(400).json(INVALID_USER_UPDATE_REQUESTED());
+        }
+
+        const { name, email } = validUpdate;
+
+        return Promise.all([
+          users.updateUser(requestedUser, requestedUser.updateUserDetails(name, email)),
+          updateUserDetailsForAllEvals(requestedUser.id, name, email),
+        ])
           .then(([updatedUser]) => res.status(200).json(updatedUser.userDetailsViewModel()))
           .catch(next);
       },
