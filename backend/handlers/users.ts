@@ -5,7 +5,6 @@ import users from '../models/users/index';
 import matrices from '../models/matrices/index';
 import { newEvaluation, Evaluation } from '../models/evaluations/evaluation';
 import evaluations from '../models/evaluations/index';
-import createHandler from './createHandler';
 import sendMail from '../services/email/index';
 import {
   USER_EXISTS,
@@ -86,12 +85,12 @@ const handlerFunctions = Object.freeze({
     updateUserDetails: {
       handle: (req, res, next) => {
         const { requestedUser } = res.locals;
-        const updateScehma = Joi.object().keys({
+        const updateSchema = Joi.object().keys({
           name: Joi.string().required(),
           email: Joi.string().email().required(),
         }).required().unknown();
 
-        const { error, value: validUpdate } = updateScehma.validate(req.body);
+        const { error, value: validUpdate } = updateSchema.validate(req.body);
 
         if (error) {
           return res.status(400).json(INVALID_USER_UPDATE_REQUESTED());
@@ -138,4 +137,4 @@ const handlerFunctions = Object.freeze({
   },
 });
 
-export default createHandler(handlerFunctions);
+export default handlerFunctions;

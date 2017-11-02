@@ -1,8 +1,7 @@
 import * as Promise from 'bluebird';
 import * as validate from 'express-validation';
 import * as Joi from 'joi';
-import createHandler, { Locals } from './createHandler';
-import { ensureLoggedIn, getRequestedEvaluation, getUserPermissions } from '../middlewares/auth';
+import { ensureLoggedIn, getRequestedEvaluation, getUserPermissions, Locals } from '../middlewares/auth';
 
 import evaluations from '../models/evaluations/index';
 import { Evaluation, EvaluationUpdate } from '../models/evaluations/evaluation';
@@ -64,24 +63,17 @@ const buildAggregateViewModel = (evaluation: Evaluation, retrievedNotes: Notes, 
 
 const handlerFunctions = Object.freeze({
   evaluation: {
-    retrieve: {
-      middleware: [
-        ensureLoggedIn,
-        getRequestedEvaluation,
-        getUserPermissions,
-      ],
-      handle: (req, res, next) => {
-        const { user, permissions, requestedEvaluation, evaluationUser } = <Locals>res.locals;
+    retrieve: (req, res, next) => {
+      const { user, permissions, requestedEvaluation, evaluationUser } = <Locals>res.locals;
 
-        return permissions.viewEvaluation()
-          .then(requestedEvaluation.getNoteIds)
-          .then(notes.getNotes)
-          .then(retrievedNotes =>
-            users.getUsersById(retrievedNotes.getUserIds())
-              .then(retrievedUsers => buildAggregateViewModel(requestedEvaluation, retrievedNotes, retrievedUsers, user, evaluationUser)))
-          .then(viewModel => res.status(200).json(viewModel))
-          .catch(next);
-      },
+      return permissions.viewEvaluation()
+        .then(requestedEvaluation.getNoteIds)
+        .then(notes.getNotes)
+        .then(retrievedNotes =>
+          users.getUsersById(retrievedNotes.getUserIds())
+            .then(retrievedUsers => buildAggregateViewModel(requestedEvaluation, retrievedNotes, retrievedUsers, user, evaluationUser)))
+        .then(viewModel => res.status(200).json(viewModel))
+        .catch(next);
     },
     updateSkillStatus: {
       middleware: [
@@ -260,4 +252,4 @@ const handlerFunctions = Object.freeze({
   },
 });
 
-export default createHandler(handlerFunctions);
+export default handlerFunctions;
