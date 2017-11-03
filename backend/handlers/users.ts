@@ -1,19 +1,28 @@
 import * as Promise from 'bluebird';
+import * as Joi from 'joi';
 
 import users from '../models/users/index';
 import matrices from '../models/matrices/index';
 import { newEvaluation, Evaluation } from '../models/evaluations/evaluation';
 import evaluations from '../models/evaluations/index';
-import createHandler from './createHandler';
 import sendMail from '../services/email/index';
 import {
   USER_EXISTS,
   TEMPLATE_NOT_FOUND,
   USER_HAS_NO_TEMPLATE,
   USER_HAS_NO_MENTOR,
+  INVALID_USER_UPDATE_REQUESTED,
 } from './errors';
 
 const { templates, skills } = matrices;
+
+const updateUserDetailsForAllEvals = (userId, name, email) =>
+  evaluations.getByUserId(userId)
+    .then(requestedEvaluations =>
+      Promise.map(requestedEvaluations, (evaluation: Evaluation) => {
+        const changes = evaluation.updateUserDetails(name, email);
+        return evaluations.updateEvaluation(changes);
+      }));
 
 const handlerFunctions = Object.freeze({
   users: {
@@ -30,40 +39,72 @@ const handlerFunctions = Object.freeze({
     },
   },
   user: {
-    selectMentor: (req, res, next) => {
-      const { requestedUser } = res.locals;
-      const changes = requestedUser.setMentor(req.body.mentorId);
-      if (changes.error) {
-        return res.status(400).json(changes);
-      }
-      return users.updateUser(requestedUser, changes)
-        .then(updatedUser => res.status(200).json(updatedUser.manageUserViewModel()))
-        .catch(next);
-    },
-    selectLineManager: (req, res, next) => {
-      const { requestedUser } = res.locals;
-      const changes = requestedUser.setLineManager(req.body.lineManagerId);
-      if (changes.error) {
-        return res.status(400).json(changes);
-      }
-      return users.updateUser(requestedUser, changes)
-        .then(updatedUser => res.status(200).json(updatedUser.manageUserViewModel()))
-        .catch(next);
-    },
-    selectTemplate: (req, res, next) => {
-      const { requestedUser } = res.locals;
+    selectMentor: {
+      handle: (req, res, next) => {
+        const { requestedUser } = res.locals;
+        const changes = requestedUser.setMentor(req.body.mentorId);
 
-      Promise.try(() => templates.getById(req.body.templateId))
-        .then((template) => {
-          if (!template) {
-            return res.status(400).json(TEMPLATE_NOT_FOUND());
-          }
+        if (changes.error) {
+          return res.status(400).json(changes);
+        }
+        return users.updateUser(requestedUser, changes)
+          .then(updatedUser => res.status(200).json(updatedUser.manageUserViewModel()))
+          .catch(next);
+      },
+    },
+    selectLineManager: {
+      handle: (req, res, next) => {
+        const { requestedUser } = res.locals;
+        const changes = requestedUser.setLineManager(req.body.lineManagerId);
 
-          const changes = requestedUser.setTemplate(req.body.templateId);
-          return users.updateUser(requestedUser, changes)
-            .then(updatedUser => res.status(200).json(updatedUser.manageUserViewModel()));
-        })
-        .catch(next);
+        if (changes.error) {
+          return res.status(400).json(changes);
+        }
+        return users.updateUser(requestedUser, changes)
+          .then(updatedUser => res.status(200).json(updatedUser.manageUserViewModel()))
+          .catch(next);
+      },
+    },
+    selectTemplate: {
+      handle: (req, res, next) => {
+        const { requestedUser } = res.locals;
+
+        Promise.try(() => templates.getById(req.body.templateId))
+          .then((template) => {
+            if (!template) {
+              return res.status(400).json(TEMPLATE_NOT_FOUND());
+            }
+
+            const changes = requestedUser.setTemplate(req.body.templateId);
+            return users.updateUser(requestedUser, changes)
+              .then(updatedUser => res.status(200).json(updatedUser.manageUserViewModel()));
+          })
+          .catch(next);
+      },
+    },
+    updateUserDetails: {
+      handle: (req, res, next) => {
+        const { requestedUser } = res.locals;
+        const updateSchema = Joi.object().keys({
+          name: Joi.string().required(),
+          email: Joi.string().email().required(),
+        }).required().unknown();
+
+        const { error, value: validUpdate } = updateSchema.validate(req.body);
+
+        if (error) {
+          return res.status(400).json(INVALID_USER_UPDATE_REQUESTED());
+        }
+
+        const { name, email } = validUpdate;
+
+        return Promise.all([
+          users.updateUser(requestedUser, requestedUser.updateUserDetails(name, email)),
+          updateUserDetailsForAllEvals(requestedUser.id, name, email),
+        ])
+          .then(([updatedUser]) => res.status(200).json(updatedUser.userDetailsViewModel()))
+          .catch(next);
+      },
     },
   },
   evaluations: {
@@ -96,4 +137,4 @@ const handlerFunctions = Object.freeze({
   },
 });
 
-export default createHandler(handlerFunctions);
+export default handlerFunctions;

@@ -287,6 +287,18 @@ describe('Notes', () => {
               .set('Cookie', `${cookieName}=${normalUserOneToken}`)
               .expect(400)));
 
+      it('returns a bad request when action is invalid', () =>
+        insertEvaluation(evaluation, normalUserOneId)
+          .then(({ insertedId }) => {
+            evaluationId = insertedId;
+          })
+          .then(() =>
+            request(app)
+              .post(`${prefix}/evaluations/${evaluationId}`)
+              .send({ ...validAddNoteSubmission, action: 'INVALID' })
+              .set('Cookie', `${cookieName}=${normalUserOneToken}`)
+              .expect(400)));
+
     });
   });
 

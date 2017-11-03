@@ -75,6 +75,7 @@ export type Evaluation = {
   getMentorReviewCompleteEmail: (user: User) => Email,
   findSkill: (skillId: number) => Skill | null,
   updateSkill: (skillId: number, status: string, isSubject: boolean, isMentor: boolean, isLineManager: boolean) => ErrorMessage | EvaluationUpdate,
+  updateUserDetails: (name: string, email: string) => EvaluationUpdate,
   addSkillNote: (skillId: number, note: string) => EvaluationUpdate,
   deleteSkillNote: (skillId: number, note: string) => EvaluationUpdate;
   mergePreviousEvaluation: (previousEvaluation: Evaluation) => Evaluation,
@@ -213,6 +214,17 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
         return updateSkill();
       }
       return { error: true, message: `User does not have permission to move from ${status}` };
+    },
+    updateUserDetails(name: string, email: string) {
+      return {
+        id: _id.toString(),
+        user: { ...user, name, email },
+        createdDate,
+        template,
+        skillGroups,
+        skills,
+        status,
+      };
     },
     addSkillNote(skillId: number, noteId: string) {
       return {

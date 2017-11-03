@@ -1,8 +1,11 @@
 import * as React from 'react';
 import * as R from 'ramda';
-import { Table, FormGroup, FormControl, Checkbox, Button } from 'react-bootstrap';
+import { connect } from 'react-redux';
+import { Table, FormGroup, FormControl, Checkbox, Button, Glyphicon } from 'react-bootstrap';
 
+import * as selectors from '../../../modules/admin';
 import UserEvaluationsModal from './UserEvaluationsModal';
+import EditUserModal from './EditUserModal';
 
 import './users.scss';
 
@@ -50,16 +53,29 @@ const selectTemplate = (templates, onSelectTemplate, user) => (
   </FormGroup>
 );
 
-function userDetailsRow(user, isSelected, onUserSelectionChange, makeSelectMentorComponent, makeSelectTemplateComponent, makeSelectLineManagerComponent, viewUserEvaluations) {
+function userDetailsRow(user, isSelected, onUserSelectionChange, makeSelectMentorComponent, makeSelectTemplateComponent, makeSelectLineManagerComponent, viewUserEvaluations, viewEditUserModal) {
   const { id, name, email, username } = user;
   return (
     <tr key={id}>
-      <td><Checkbox checked={Boolean(isSelected)} onChange={e => onUserSelectionChange(e, user)} /></td>
+      <td>
+        <Checkbox
+          className="user-list__checkbox"
+          checked={Boolean(isSelected)}
+          onChange={e => onUserSelectionChange(e, user)}
+        />
+      </td>
+      <td>
+        <Glyphicon
+          glyph="edit"
+          className="edit-icon"
+          onClick={() => viewEditUserModal(id)}
+        />
+      </td>
+      <td>{name || '-' }</td>
       <td>{username}</td>
-      <td>{name}</td>
       <td>{email}</td>
       <td>
-        <Button onClick={() => viewUserEvaluations(user)}>
+        <Button onClick={() => viewUserEvaluations(id)}>
           View evaluations
         </Button>
       </td>
@@ -81,42 +97,58 @@ type UserListProps = {
 };
 
 type UserListState = {
-  showModal: boolean,
-  currentUser?: UserDetailsViewModel,
+  showEvaluationsModal: boolean,
+  showEditUserModal: boolean
+  currentUser?: string,
 };
 
 class UserList extends React.Component<UserListProps, UserListState> {
   constructor(props) {
     super(props);
     this.state = {
-      showModal: false,
+      showEvaluationsModal: false,
+      showEditUserModal: false,
     };
 
     this.viewUserEvaluations = this.viewUserEvaluations.bind(this);
+    this.viewEditUserModal = this.viewEditUserModal.bind(this);
     this.hideUserEvaluations = this.hideUserEvaluations.bind(this);
+    this.hideEditUserModal = this.hideEditUserModal.bind(this);
   }
 
-  viewUserEvaluations(user) {
+  viewUserEvaluations(userId: string) {
     this.setState({
-      showModal: true,
-      currentUser: user,
+      showEvaluationsModal: true,
+      currentUser: userId,
+    });
+  }
+
+  viewEditUserModal(userId: string) {
+    this.setState({
+      showEditUserModal: true,
+      currentUser: userId,
     });
   }
 
   hideUserEvaluations() {
     this.setState({
       currentUser: null,
-      showModal: false,
+      showEvaluationsModal: false,
+    });
+  }
+
+  hideEditUserModal() {
+    this.setState({
+      currentUser: null,
+      showEditUserModal: false,
     });
   }
 
   render() {
     const { users, templates, selectedUsers, onUserSelectionChange, onSelectMentor, onSelectLineManager, onSelectTemplate } = this.props;
     const makeSelectTemplateComponent = R.curry(selectTemplate)(templates, onSelectTemplate);
-    const sortedUsers = R.sortBy<UserDetailsViewModel>(R.prop('name'), users);
-
-    const makeSelectMentorComponent = R.curry(selectMentor)(sortedUsers, onSelectMentor);
-    const makeSelectLineManagerComponent = R.curry(selectLineManager)(sortedUsers, onSelectLineManager);
+    const makeSelectMentorComponent = R.curry(selectMentor)(users, onSelectMentor);
+    const makeSelectLineManagerComponent = R.curry(selectLineManager)(users, onSelectLineManager);
 
     return (
       <div>
@@ -124,6 +156,7 @@ class UserList extends React.Component<UserListProps, UserListState> {
           <thead>
           <tr>
             <th>Select</th>
+            <th>Edit</th>
             <th>Name</th>
             <th>Username</th>
             <th>Email</th>
@@ -134,7 +167,7 @@ class UserList extends React.Component<UserListProps, UserListState> {
           </tr>
           </thead>
           <tbody>
-          {sortedUsers.map(user =>
+          {users.map(user =>
             userDetailsRow(
               user,
               R.contains(user.id, selectedUsers),
@@ -142,17 +175,27 @@ class UserList extends React.Component<UserListProps, UserListState> {
               makeSelectMentorComponent,
               makeSelectTemplateComponent,
               makeSelectLineManagerComponent,
-              this.viewUserEvaluations))}
+              this.viewUserEvaluations,
+              this.viewEditUserModal))}
           </tbody>
         </Table>
+        <EditUserModal
+          showModal={this.state.showEditUserModal}
+          onClose={this.hideEditUserModal}
+          userId={this.state.currentUser || null}
+        />
         <UserEvaluationsModal
-          showModal={this.state.showModal}
+          showModal={this.state.showEvaluationsModal}
           onClose={this.hideUserEvaluations}
-          user={this.state.currentUser || {}}
+          userId={this.state.currentUser || null}
         />
       </div>
     );
   }
 }
 
-export default UserList;
+export default connect(
+  (state, { userId }) => ({
+    users: selectors.getSortedUsers(state),
+  }),
+)(UserList);

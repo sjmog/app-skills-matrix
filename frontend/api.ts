@@ -64,6 +64,11 @@ export default ({
       .then(getData)
       .catch(handleError);
   },
+  updateUserDetails(userId: string, name: string, email: string): Promise<UserDetailsViewModel> {
+    return axios.post(`/skillz/users/${userId}`, { action: 'updateUserDetails', name, email })
+      .then(getData)
+      .catch(handleError);
+  },
   retrieveEvaluation(evaluationId): Promise<HydratedEvaluationViewModel> {
     return axios.get(`/skillz/evaluations/${evaluationId}`)
       .then(getData)

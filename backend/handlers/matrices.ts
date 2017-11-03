@@ -2,7 +2,6 @@ import * as Promise from 'bluebird';
 import * as R from 'ramda';
 
 import matrices from '../models/matrices/index';
-import createHandler from './createHandler';
 import { INVALID_LEVEL_OR_CATEGORY, TEMPLATE_NOT_FOUND } from './errors';
 import { Skill } from '../models/matrices/skill';
 
@@ -115,4 +114,4 @@ const handlerFunctions = Object.freeze({
   })
 ;
 
-export default createHandler(handlerFunctions);
+export default handlerFunctions;

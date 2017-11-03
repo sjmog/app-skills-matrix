@@ -19,3 +19,5 @@ export const USER_NOT_ADMIN = () => ({ message: 'You must be an admin user to ma
 export const MUST_BE_NOTE_AUTHOR = () => ({ message: 'Only the author of a note can delete it' });
 export const NOTE_NOT_FOUND = () => ({ message: 'Note not found' });
 export const NOT_AUTHORIZED_TO_VIEW_TASKS = () => ({ message: `You can't see another user's tasks` });
+export const UNKNOWN_ACTION = () => ({ message: 'Unknown action requested' });
+export const INVALID_USER_UPDATE_REQUESTED = () => ({ message: 'Invalid update attempted. Name cannot be empty and email must be valid.' })

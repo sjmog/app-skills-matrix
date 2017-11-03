@@ -1,7 +1,6 @@
 import { Response, Request, NextFunction } from 'express';
 
-import createHandler, { Locals } from './createHandler';
-
+import { Locals } from '../middlewares/auth';
 import actions from '../models/actions/index';
 
 const handlerFunctions = Object.freeze({
@@ -19,4 +18,4 @@ const handlerFunctions = Object.freeze({
   },
 });
 
-export default createHandler(handlerFunctions);
+export default handlerFunctions;

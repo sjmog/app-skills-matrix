@@ -1,9 +1,13 @@
 import * as Promise from 'bluebird';
+import { ObjectID } from 'bson';
 
 import auth from '../models/auth';
 import users from '../models/users';
 import evaluations from '../models/evaluations';
-import permissions from '../models/users/permissions';
+import permissions, { Permissions } from '../models/users/permissions';
+import { User } from '../models/users/user';
+import { Evaluation } from '../models/evaluations/evaluation';
+
 import {
   EVALUATION_NOT_FOUND,
   INVALID_EVALUATION_ID,
@@ -12,7 +16,13 @@ import {
   MUST_BE_LOGGED_IN,
   USER_NOT_FOUND,
 } from '../handlers/errors';
-import { ObjectID } from 'bson';
+
+export type Locals = {
+  evaluationUser?: User,
+  requestedEvaluation?: Evaluation,
+  user?: User,
+  permissions?: Permissions,
+};
 
 export const populateUser = (req, res, next) =>
   (req.cookies[auth.cookieName]

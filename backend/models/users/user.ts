@@ -35,6 +35,7 @@ export type User = {
   setMentor: (newMentorId: string) => ErrorMessage | { mentorId: string, modifiedDate: Date },
   setLineManager: (newLineManagerId: string) => ErrorMessage | { lineManagerId: string, modifiedDate: Date },
   setTemplate: (newTemplateId: string) => { templateId: string, modifiedDate: Date },
+  updateUserDetails: (name: string, email: string) => { name: string, email: string },
   toString: () => string,
 };
 
@@ -92,6 +93,9 @@ const user = ({ _id, name, email, username, templateId, mentorId, lineManagerId,
   },
   setTemplate(newTemplateId: string) {
     return { templateId: newTemplateId, modifiedDate: new Date() };
+  },
+  updateUserDetails(name: string, email: string) {
+    return { name, email, modifiedDate: new Date() };
   },
   toString() {
     return JSON.stringify(this);

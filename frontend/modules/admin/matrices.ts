@@ -136,7 +136,7 @@ const handleFetchTemplateFailure = (state, action) => Object.assign({}, state, {
     success: false,
   },
 });
-export const reducers = handleActions({
+export default handleActions({
   [addTemplateSuccess]: handleAddTemplateSuccess,
   [addTemplateFailure]: (state, action) => Object.assign({}, state, {
     templateAddResult: {
