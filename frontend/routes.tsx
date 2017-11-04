@@ -3,7 +3,6 @@ import { Router, Route, IndexRoute, browserHistory } from 'react-router';
 
 import UserApp from './components/user/App';
 import AdminApp from './components/admin/App';
-import AdminDashboard from './components/admin/Dashboard';
 import { DashboardPage as UserDashboard } from './components/user/dashboard/Dashboard';
 import { ManageUsersPage } from './components/admin/users/ManageUsersPage';
 import { ManageMatricesPage } from './components/admin/matrices/ManageMatricesPage';
@@ -14,8 +13,7 @@ import { ActionPage } from './components/user/actions/ActionPage';
 export const adminRoutes = (
   <Router history={browserHistory}>
     <Route path="/admin" component={AdminApp}>
-      <IndexRoute component={AdminDashboard} />
-      <Route path="/admin/dashboard" component={AdminDashboard} />
+      <IndexRoute component={ManageUsersPage} />
       <Route path="/admin/users" component={ManageUsersPage} />
       <Route path="/admin/matrices" component={ManageMatricesPage} />
       <Route path="/admin/matrices/templates/:templateId" component={TemplatePage} />

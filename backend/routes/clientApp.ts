@@ -6,7 +6,7 @@ const noCacheHeaders = ['Cache-Control', 'no-cache, private, no-store, must-reva
 
 export default (app) => {
   app.get('/admin*', ensureAdmin, (req, res, next) => {
-    Promise.try(() => adminClientState())
+    Promise.try(() => adminClientState(res.locals.user))
       .then((fetchedClientState) => {
         res.set(...noCacheHeaders);
         res.render('index', {

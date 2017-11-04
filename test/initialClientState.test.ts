@@ -305,6 +305,17 @@ describe('initial client state', () => {
         .then((res) => {
           expect(getInitialState(res.text)).to.have.property('matrices');
           expect(getInitialState(res.text)).to.have.property('users');
+          expect(getInitialState(res.text)).to.have.property('user');
+        }));
+
+    it('returns initial state with logged in user details', () =>
+      request(app)
+        .get('/admin')
+        .set('Cookie', `${cookieName}=${adminToken}`)
+        .expect(200)
+        .then((res) => {
+          expect(getInitialState(res.text).user.username).to.eql('dmorgantini');
+          expect(getInitialState(res.text).user.id).to.eql(adminUserId);
         }));
 
     it('returns initial state with all templates', () =>

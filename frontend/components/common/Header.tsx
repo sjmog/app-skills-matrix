@@ -1,30 +1,38 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Nav, Navbar, Glyphicon } from 'react-bootstrap';
+import { Navbar, Nav, NavItem, Glyphicon } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
-import * as selectors from '../../modules/user';
-import { gitHubAuth } from '../common/constants/index';
-
+import { gitHubAuth } from './constants';
 import './header.scss';
 
-type HeaderComponentProps = {
-  username: string,
-  feedbackUrl?: string,
+type HeaderProps = {
+  username?: string,
+  brandLink: string,
+  links?: { name: string, path: string }[],
 };
 
-const HeaderComponent = ({ username }: HeaderComponentProps) => (
+const Header = ({ username, brandLink, links }: HeaderProps) => (
   <Navbar inverse collapseOnSelect>
     <Navbar.Header>
       <Navbar.Brand>
-        <a href="/">
-          <Glyphicon glyph="equalizer" />
+        <a href={brandLink}>
+          <Glyphicon glyph="equalizer"/>
           {' SKILLS MATRIX'}
         </a>
       </Navbar.Brand>
       <Navbar.Toggle />
     </Navbar.Header>
     <Navbar.Collapse>
+      <Nav>
+        {
+          links && links.map(({ name, path }) => (
+            <LinkContainer key={path} to={path} activeClassName="active">
+              <NavItem>{name}</NavItem>
+            </LinkContainer>
+          ))
+        }
+      </Nav>
       <Nav pullRight>
         {
           username
@@ -35,12 +43,6 @@ const HeaderComponent = ({ username }: HeaderComponentProps) => (
     </Navbar.Collapse>
   </Navbar>
 );
-
-const Header = connect(
-  state => ({
-    username: selectors.getLoggedInUsername(state),
-  }),
-)(HeaderComponent);
 
 export default Header;
 

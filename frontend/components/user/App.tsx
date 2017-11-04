@@ -1,10 +1,10 @@
 import * as React from 'react';
 
-import Header from './Header';
+import UserHeader from './UserHeader';
 
 const Full = ({ children }) => (
   <div className="app">
-    <Header />
+    <UserHeader />
     <div className="app-body">
       <main className="main">
         <div className="container-fluid">
