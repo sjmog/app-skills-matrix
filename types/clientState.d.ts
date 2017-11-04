@@ -5,6 +5,7 @@ type MatricesInitialState = {
 };
 
 type AdminClientState = {
+  user?: UserDetailsViewModel,
   users: {
     users: UserWithEvaluations[],
     newEvaluations: any[],

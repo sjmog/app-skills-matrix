@@ -22,12 +22,6 @@ export const getLoggedInUsername = ({ user }) =>
 export const getLoggedInUserId = ({ user }) =>
   fromUser.getLoggedInUserId(user);
 
-export const getFeedbackUrlForLatestEval = ({ user }) =>
-  fromUser.getFeedbackUrlForLatestEval(user);
-
-export const getObjectivesUrlForLatestEval = ({ user }) =>
-  fromUser.getObjectivesUrlForLatestEval(user);
-
 /* EVALUATION SELECTORS */
 
 export const getCurrentEvaluation = ({ evaluation }) =>

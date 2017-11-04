@@ -83,12 +83,13 @@ const augmentWithEvaluations = (users): Promise<UserWithEvaluations[]> =>
         .then(evaluations => evaluations.map(evaluation => evaluation.adminMetadataViewModel()))
         .then(evaluations => Object.assign({}, user.manageUserViewModel(), { evaluations })));
 
-export const adminClientState = (): Promise<AdminClientState> =>
+export const adminClientState = (user?: User): Promise<AdminClientState> =>
   Promise.all([userCollection.getAll(), templates.getAll()])
     .then(([allUsers = [], allTemplates = []]) =>
       augmentWithEvaluations(allUsers)
         .then(users => (
           {
+            user:  user ? user.userDetailsViewModel() : null,
             users: {
               users,
               newEvaluations: [],
