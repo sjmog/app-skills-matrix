@@ -74,11 +74,14 @@ const handleUserUpdateSuccess = (state, action) =>
     });
 
 const handleActionFailure = (state, action) => Object.assign({}, state, { error: action.payload, success: false });
-
 const handleEvaluationEvent = (state, action) => Object.assign({}, state, { newEvaluations: [].concat(state.newEvaluations, action.payload) });
 
 export default handleActions({
-  [addUserSuccess]: (state, action) => Object.assign({}, state, { users: [].concat(state.users, action.payload), success: true, error: null }),
+  [addUserSuccess]: (state, action) => Object.assign({}, state, {
+    users: [].concat(state.users, action.payload),
+    success: true,
+    error: null,
+  }),
   [addUserFailure]: handleActionFailure,
   [userUpdateSuccess]: handleUserUpdateSuccess,
   [userUpdateFailure]: handleActionFailure,

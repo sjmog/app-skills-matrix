@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Modal, Button } from 'react-bootstrap';
+import { Modal, Button, Alert } from 'react-bootstrap';
 
 import UserEvaluationsList from './UserEvaluationsList';
 import * as selectors from '../../../modules/admin';
@@ -14,9 +14,10 @@ type UserEvaluationsModalProps = {
     username?: string,
     evaluations?: EvaluationMetadataViewModel[],
   },
+  statusUpdateError: null | string,
 };
 
-const UserEvaluationsModal = ({ showModal, onClose, user }: UserEvaluationsModalProps) => {
+const UserEvaluationsModal = ({ showModal, onClose, user, userId, statusUpdateError }: UserEvaluationsModalProps) => {
   if (!user) {
     return (
       <div>
@@ -39,10 +40,8 @@ const UserEvaluationsModal = ({ showModal, onClose, user }: UserEvaluationsModal
           <Modal.Title>{user.name || user.username}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {user.evaluations && user.evaluations.length
-            ? <UserEvaluationsList evaluations={user.evaluations}/>
-            : <div>This user has no evaluations</div>
-          }
+          <UserEvaluationsList userId={userId} />
+          { statusUpdateError ? <Alert bsStyle="danger">{`Something went wrong: ${statusUpdateError}`}</Alert> : false }
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={onClose}>Close</Button>
@@ -50,10 +49,11 @@ const UserEvaluationsModal = ({ showModal, onClose, user }: UserEvaluationsModal
       </Modal>
     </div>
   );
-}
+};
 
 export default connect(
   (state, { userId }) => ({
     user: selectors.getUser(state, userId),
+    statusUpdateError: selectors.getStatusUpdateError(state),
   }),
 )(UserEvaluationsModal);

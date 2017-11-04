@@ -44,4 +44,9 @@ export default {
       .then(res => res.toArray())
       .then(res => res.map(e => evaluation(decrypt(e))));
   },
+  getAll(): Promise<Evaluation[]> {
+    return evaluationsCollection.find()
+      .then(res => res.toArray())
+      .then(res => res.map(e => evaluation(decrypt(e))));
+  },
 };

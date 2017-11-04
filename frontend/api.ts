@@ -69,6 +69,10 @@ export default ({
       .then(getData)
       .catch(handleError);
   },
+  updateEvaluationStatus(evaluationId: string, status: string): Promise<any> {
+    return axios.post(`/skillz/evaluations/${evaluationId}`, { action: 'updateEvaluationStatus', status })
+      .catch(handleError);
+  },
   retrieveEvaluation(evaluationId): Promise<HydratedEvaluationViewModel> {
     return axios.get(`/skillz/evaluations/${evaluationId}`)
       .then(getData)
