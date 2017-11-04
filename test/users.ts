@@ -225,7 +225,7 @@ describe('users', () => {
   });
 
   describe('POST /users/:userId { action: updateUserDetails }', () => {
-    it('allows an admin to the details of a user', () =>
+    it('allows an admin to update the details of a user', () =>
       request(app)
         .post(`${prefix}/users/${normalUserId}`)
         .send({ name: 'UPDATED_NAME', email: 'updated@email.com', action: 'updateUserDetails' })

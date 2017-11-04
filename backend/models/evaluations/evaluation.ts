@@ -81,6 +81,7 @@ export type Evaluation = {
   mergePreviousEvaluation: (previousEvaluation: Evaluation) => Evaluation,
   moveToNextStatus: (isSubject: boolean, isMentor: boolean, isLineManager: boolean) => ErrorMessage | EvaluationUpdate,
   getNoteIds: () => string[];
+  updateStatus: (newStatus: string) => ErrorMessage | EvaluationUpdate,
 };
 
 const arrayToKeyedObject = <T extends { id: string | number }>(evaluationId: string, arr: T[]) =>
@@ -301,6 +302,21 @@ const evaluation = ({ _id, user, createdDate, template, skillGroups, status, ski
     getNoteIds() {
       const notes = R.map(R.prop('notes'), skills);
       return R.flatten(R.reject(R.isNil, notes));
+    },
+    updateStatus(newStatus) {
+      if (STATUS[newStatus]) {
+        return {
+          id: _id.toString(),
+          user,
+          createdDate,
+          template,
+          skillGroups,
+          skills,
+          status: newStatus,
+        };
+      }
+
+      return { error: true, message: `Attempted to update evaluation with invalid status (${status})` };
     },
   });
 };

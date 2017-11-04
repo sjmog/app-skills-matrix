@@ -249,6 +249,27 @@ const handlerFunctions = Object.freeze({
               (err.status && err.data) ? res.status(err.status).json(err.data) : next(err));
         },
     },
+    updateEvaluationStatus: {
+      middleware: [
+        ensureLoggedIn,
+        getRequestedEvaluation,
+        getUserPermissions,
+      ],
+      handle: (req, res, next) => {
+        const { status } = req.body;
+        const { permissions, requestedEvaluation } = <Locals>res.locals;
+        const update = requestedEvaluation.updateStatus(status);
+
+        if (update.error) {
+          return res.status(400).json(update);
+        }
+
+        return permissions.admin()
+          .then(() => evaluations.updateEvaluation(<EvaluationUpdate>update))
+          .then(() => res.sendStatus(204))
+          .catch(next);
+      },
+    },
   },
 });
 

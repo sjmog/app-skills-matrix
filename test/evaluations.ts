@@ -1,6 +1,8 @@
 import * as request from 'supertest';
 import { expect } from 'chai';
 import * as R from 'ramda';
+import * as Promise from 'bluebird';
+import { ObjectID } from 'mongodb';
 
 import app from '../backend/app';
 import templateData from './fixtures/templates';
@@ -14,7 +16,7 @@ import { newNote } from '../backend/models/notes/note';
 
 const { sign, cookieName } = auth;
 
-const [evaluation] = evaluationsFixture;
+const [stubEvaluation] = evaluationsFixture;
 const [action] = actionsFixture;
 const {
   prepopulateUsers,
@@ -45,6 +47,7 @@ let adminUserId;
 let normalUserOneId;
 let normalUserTwoId;
 
+let evaluation;
 let evaluationId;
 let noteId;
 
@@ -52,6 +55,7 @@ describe('evaluations', () => {
   beforeEach(() =>
     clearDb()
       .then(() => {
+        evaluation = R.clone(stubEvaluation);
         evaluationId = null;
         noteId = null;
       })
@@ -854,6 +858,104 @@ describe('evaluations', () => {
         .send({ action: 'complete' })
         .set('Cookie', `${cookieName}=${normalUserOneToken}`)
         .expect(404));
+  });
+
+  describe('POST /evaluations/:evaluationId { action: updateEvaluationStatus }', () => {
+    it('allows an admin to update the status of an evaluation', () =>
+      insertEvaluation({ ...evaluation, status: STATUS.NEW }, normalUserOneId)
+        .then(({ insertedId }) => {
+          evaluationId = insertedId;
+        })
+        .then(() =>
+          request(app)
+            .post(`${prefix}/evaluations/${evaluationId}`)
+            .send({ action: 'updateEvaluationStatus', status: STATUS.COMPLETE })
+            .set('Cookie', `${cookieName}=${adminToken}`)
+            .expect(204))
+        .then(() => getEvaluation(evaluationId))
+        .then((evaluation) => {
+          expect(evaluation.status).to.equal(STATUS.COMPLETE);
+        }));
+
+    it('only updates the requested evaluation', () => {
+      const evaluationOneId = new ObjectID();
+      const evaluationTwoId = new ObjectID();
+
+      return Promise.all([
+        insertEvaluation({ ...evaluation, _id: evaluationOneId, status: STATUS.NEW }, normalUserOneId),
+        insertEvaluation({ ...evaluation, _id: evaluationTwoId, status: STATUS.NEW }, normalUserOneId),
+      ])
+        .then(() =>
+          request(app)
+            .post(`${prefix}/evaluations/${evaluationOneId}`)
+            .send({ action: 'updateEvaluationStatus', status: STATUS.COMPLETE })
+            .set('Cookie', `${cookieName}=${adminToken}`)
+            .expect(204))
+        .then(() => Promise.all([
+          getEvaluation(String(evaluationOneId)),
+          getEvaluation(String(evaluationTwoId)),
+        ]))
+        .then(([evaluationOne, evaluationTwo]) => {
+          expect(evaluationOne.status).to.equal(STATUS.COMPLETE);
+          expect(evaluationTwo.status).to.equal(STATUS.NEW);
+        });
+    });
+
+    it('returns not found when an evaluation does not exist', () =>
+      request(app)
+        .post(`${prefix}/evaluations/${new ObjectID()}`)
+        .send({ action: 'updateEvaluationStatus', status: STATUS.COMPLETE })
+        .set('Cookie', `${cookieName}=${adminToken}`)
+        .expect(404));
+
+    it('returns unauthorised when the user is not logged in', () =>
+      insertEvaluation({ ...evaluation, status: STATUS.NEW }, normalUserOneId)
+        .then(({ insertedId }) => {
+          evaluationId = insertedId;
+        })
+        .then(() =>
+          request(app)
+            .post(`${prefix}/evaluations/${evaluationId}`)
+            .send({ action: 'updateEvaluationStatus', status: STATUS.COMPLETE })
+            .expect(401)));
+
+    [
+      () => ({
+        desc: 'invalid status',
+        token: adminToken,
+        body: { action: 'updateEvaluationStatus', status: 'INVALID' },
+        expect: 400,
+      }),
+      () => ({
+        desc: 'invalid action',
+        token: adminToken,
+        body: { action: 'INVALID', status: STATUS.COMPLETE },
+        expect: 400,
+      }),
+      () => ({
+        desc: 'no status provided',
+        token: adminToken,
+        body: { action: 'updateEvaluationStatus' },
+        expect: 400,
+      }),
+      () => ({
+        desc: 'user not admin',
+        token: normalUserOneToken,
+        body: { action: 'updateEvaluationStatus', status: STATUS.COMPLETE },
+        expect: 403,
+      }),
+    ].forEach(test =>
+      it(`handles error cases '${test().desc}'`, () =>
+        insertEvaluation({ ...evaluation, status: STATUS.NEW }, normalUserOneId)
+          .then(({ insertedId }) => {
+            evaluationId = insertedId;
+          })
+          .then(() =>
+            request(app)
+              .post(`${prefix}/evaluations/${evaluationId}`)
+              .send(test().body)
+              .set('Cookie', `${cookieName}=${test().token}`)
+              .expect(test().expect))));
   });
 });
 
