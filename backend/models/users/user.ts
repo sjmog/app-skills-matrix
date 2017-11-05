@@ -23,7 +23,7 @@ export type User = {
   mentorId: string,
   lineManagerId: string,
   email: string,
-  isAdmin: () => boolean,
+  isAdmin: boolean,
   manageUserViewModel: () => UserDetailsViewModel, // TODO: combine these
   userDetailsViewModel: () => UserDetailsViewModel,
   feedbackData: () => UserFeedback,
@@ -39,68 +39,71 @@ export type User = {
   toString: () => string,
 };
 
-const user = ({ _id, name, email, username, templateId, mentorId, lineManagerId, avatarUrl }: UnhyrdatedUser): User => ({
-  id: _id.toString(),
-  name,
-  username,
-  templateId,
-  mentorId,
-  lineManagerId,
-  email,
-  isAdmin(): boolean {
-    return auth.isAdmin(email);
-  },
-  manageUserViewModel() {
-    return ({ id: _id.toString(), username, name, avatarUrl, email, mentorId, lineManagerId, templateId });
-  },
-  feedbackData() {
-    return ({ id: _id.toString(), name: name || username, mentorId });
-  },
-  signingData() {
-    return ({ id: _id.toString(), username });
-  },
-  evaluationData() {
-    return ({ id: _id.toString(), name: name || username, email });
-  },
-  userDetailsViewModel() {
-    return {
-      id: _id.toString(),
-      name,
-      username,
-      avatarUrl,
-      email,
-      mentorId,
-      lineManagerId,
-      templateId,
-    };
-  },
-  hasTemplate: Boolean(templateId),
-  hasMentor: Boolean(mentorId),
-  hasLineManager: Boolean(lineManagerId),
-  setMentor(newMentorId: string) {
-    if (newMentorId === _id.toString()) {
-      return { error: true, message: `User '${newMentorId}' can not mentor themselves` };
-    }
+const user = ({ _id, name, email, username, templateId, mentorId, lineManagerId, avatarUrl }: UnhyrdatedUser): User => {
+  const isAdmin = auth.isAdmin(email);
 
-    return { mentorId: newMentorId, modifiedDate: new Date() };
-  },
-  setLineManager(newLineManagerId: string) {
-    if (newLineManagerId === _id.toString()) {
-      return { error: true, message: `User '${newLineManagerId}' can not manage themselves` };
-    }
+  return ({
+    id: _id.toString(),
+    name,
+    username,
+    templateId,
+    mentorId,
+    lineManagerId,
+    email,
+    isAdmin,
+    manageUserViewModel() {
+      return ({ id: _id.toString(), username, name, avatarUrl, email, mentorId, lineManagerId, templateId, isAdmin  });
+    },
+    feedbackData() {
+      return ({ id: _id.toString(), name: name || username, mentorId });
+    },
+    signingData() {
+      return ({ id: _id.toString(), username });
+    },
+    evaluationData() {
+      return ({ id: _id.toString(), name: name || username, email });
+    },
+    userDetailsViewModel() {
+      return {
+        id: _id.toString(),
+        name,
+        username,
+        avatarUrl,
+        email,
+        mentorId,
+        lineManagerId,
+        templateId,
+        isAdmin,
+      };
+    },
+    hasTemplate: Boolean(templateId),
+    hasMentor: Boolean(mentorId),
+    hasLineManager: Boolean(lineManagerId),
+    setMentor(newMentorId: string) {
+      if (newMentorId === _id.toString()) {
+        return { error: true, message: `User '${newMentorId}' can not mentor themselves` };
+      }
 
-    return { lineManagerId: newLineManagerId, modifiedDate: new Date() };
-  },
-  setTemplate(newTemplateId: string) {
-    return { templateId: newTemplateId, modifiedDate: new Date() };
-  },
-  updateUserDetails(name: string, email: string) {
-    return { name, email, modifiedDate: new Date() };
-  },
-  toString() {
-    return JSON.stringify(this);
-  },
-});
+      return { mentorId: newMentorId, modifiedDate: new Date() };
+    },
+    setLineManager(newLineManagerId: string) {
+      if (newLineManagerId === _id.toString()) {
+        return { error: true, message: `User '${newLineManagerId}' can not manage themselves` };
+      }
+
+      return { lineManagerId: newLineManagerId, modifiedDate: new Date() };
+    },
+    setTemplate(newTemplateId: string) {
+      return { templateId: newTemplateId, modifiedDate: new Date() };
+    },
+    updateUserDetails(name: string, email: string) {
+      return { name, email, modifiedDate: new Date() };
+    },
+    toString() {
+      return JSON.stringify(this);
+    },
+  });
+};
 
 export default user;
 export const newUser = (name: string, email: string, avatarUrl: string, username: string) => ({

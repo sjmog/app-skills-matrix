@@ -56,7 +56,7 @@ const buildAggregateViewModel = (evaluation: Evaluation, retrievedNotes: Notes, 
     return augment(evaluation.lineManagerEvaluationViewModel());
   }
 
-  if (reqUser.isAdmin()) {
+  if (reqUser.isAdmin) {
     return augment(evaluation.adminEvaluationViewModel());
   }
 };

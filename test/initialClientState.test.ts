@@ -94,6 +94,7 @@ describe('initial client state', () => {
               email: 'user@magic.com',
               name: 'User Magic',
               id: normalUserOneId,
+              isAdmin: false,
               templateId: 'eng-nodejs',
               username: 'magic',
             },
@@ -259,6 +260,7 @@ describe('initial client state', () => {
                 name: 'David Morgantini',
                 username: 'dmorgantini',
                 id: adminUserId,
+                isAdmin: true,
               };
 
               expect(getInitialState(res.text).user.mentorDetails).to.deep.equal(expectedMentor);
@@ -292,6 +294,7 @@ describe('initial client state', () => {
                 avatarUrl: 'https://www.tes.com/logo.svg',
                 email: 'user@magic.com',
                 id: normalUserOneId,
+                isAdmin: false,
                 mentorId: adminUserId,
                 name: 'User Magic',
                 templateId: 'eng-nodejs',
@@ -351,6 +354,7 @@ describe('initial client state', () => {
             {
               email: 'dmorgantini@gmail.com',
               id: adminUserId,
+              isAdmin: true,
               name: 'David Morgantini',
               username: 'dmorgantini',
               avatarUrl: 'https://www.tes.com/logo.svg',
@@ -358,6 +362,7 @@ describe('initial client state', () => {
             {
               email: 'user@magic.com',
               id: normalUserOneId,
+              isAdmin: false,
               name: 'User Magic',
               username: 'magic',
               templateId: 'eng-nodejs',
@@ -366,6 +371,7 @@ describe('initial client state', () => {
             {
               email: 'user@dragon-riders.com',
               id: normalUserTwoId,
+              isAdmin: false,
               name: 'User Dragon Rider',
               username: 'dragon-riders',
               avatarUrl: 'https://www.tes.com/logo.svg',

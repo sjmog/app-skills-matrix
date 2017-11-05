@@ -22,6 +22,9 @@ export const getLoggedInUsername = ({ user }) =>
 export const getLoggedInUserId = ({ user }) =>
   fromUser.getLoggedInUserId(user);
 
+export const getLoggedInUserAdminStatus = ({ user }) =>
+  fromUser.getLoggedInUserAdminStatus(user);
+
 /* EVALUATION SELECTORS */
 
 export const getCurrentEvaluation = ({ evaluation }) =>

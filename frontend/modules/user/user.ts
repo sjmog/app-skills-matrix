@@ -19,3 +19,6 @@ export const getFeedbackUrlForLatestEval = (state: UserDetailsViewModel): string
 
 export const getObjectivesUrlForLatestEval = (state: UserDetailsViewModel): string =>
   getUrl('objectivesUrl', state);
+
+export const getLoggedInUserAdminStatus = (state: UserDetailsViewModel): boolean =>
+  R.path(['userDetails', 'isAdmin'], state);
