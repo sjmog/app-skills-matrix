@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import reducer, { actionTypes } from '../../../../../../frontend/modules/admin/evaluations';
+import { constants as userActionTypes } from '../../../../../../frontend/modules/admin/users';
 
 describe('Evaluations reducer', () => {
   describe('STATUS_UPDATE_SUCCESS', () => {
@@ -311,6 +312,146 @@ describe('Evaluations reducer', () => {
         errors: {
           STATUS_UPDATE_FAILURE: 'AN ERROR',
         },
+      });
+    });
+  });
+
+  describe('START_EVALUATION_SUCCESS', () => {
+    it('adds an evaluation to state', () => {
+      const state = {
+        entities: {},
+        errors: {},
+      };
+
+      const action = {
+        type: userActionTypes.START_EVALUATION_SUCCESS,
+        payload: { id: 'EVAL_1', status: 'NEW' },
+      };
+
+      expect(reducer(state, action)).to.eql({
+        entities: {
+          EVAL_1: { id: 'EVAL_1', status: 'NEW' },
+        },
+        errors: {},
+      });
+    });
+
+    it('replaces any evaluations that existed with the same id', () => {
+      const state = {
+        entities: {
+          EVAL_1: { id: 'EVAL_1', status: 'OLD' },
+        },
+        errors: {},
+      };
+
+      const action = {
+        type: userActionTypes.START_EVALUATION_SUCCESS,
+        payload: { id: 'EVAL_1', status: 'NEW' },
+      };
+
+      expect(reducer(state, action)).to.eql({
+        entities: {
+          EVAL_1: { id: 'EVAL_1', status: 'NEW' },
+        },
+        errors: {},
+      });
+    });
+
+    it('does not modify state when the payload is malformed', () => {
+      const state = {
+        entities: {},
+        errors: {},
+      };
+
+      const action = {
+        type: userActionTypes.START_EVALUATION_SUCCESS,
+        payload: { NO_ID: true },
+      };
+
+      expect(reducer(state, action)).to.eql({
+        entities: {},
+        errors: {},
+      });
+    });
+
+    it('does not alter other parts of state', () => {
+      const state = {
+        entities: {},
+        errors: {
+          ERROR: true,
+        },
+      };
+
+      const action = {
+        type: userActionTypes.START_EVALUATION_SUCCESS,
+        payload: { id: 'EVAL_1', status: 'NEW' },
+      };
+
+      expect(reducer(state, action)).to.eql({
+        entities: {
+          EVAL_1: { id: 'EVAL_1', status: 'NEW' },
+        },
+        errors: {
+          ERROR: true,
+        },
+      });
+    });
+
+    it('adds an evaluation entity when entities is empty', () => {
+      const state = {
+        entities: undefined,
+        errors: {},
+      };
+
+      const action = {
+        type: userActionTypes.START_EVALUATION_SUCCESS,
+        payload: { id: 'EVAL_1', status: 'NEW' },
+      };
+
+      expect(reducer(state, action)).to.eql({
+        entities: {
+          EVAL_1: { id: 'EVAL_1', status: 'NEW' },
+        },
+        errors: {},
+      });
+    });
+
+    it('adds an evaluation entity when entities does not exist', () => {
+      const state = {
+        errors: {},
+      };
+
+      const action = {
+        type: userActionTypes.START_EVALUATION_SUCCESS,
+        payload: { id: 'EVAL_1', status: 'NEW' },
+      };
+
+      expect(reducer(state, action)).to.eql({
+        entities: {
+          EVAL_1: { id: 'EVAL_1', status: 'NEW' },
+        },
+        errors: {},
+      });
+    });
+
+    it('does not modify state when the payload is empty', () => {
+      const state = {
+        entities: {
+          EVAL_1: { id: 'EVAL_1', status: 'OLD' },
+        },
+        errors: {},
+      };
+
+      const action = {
+        type: userActionTypes.START_EVALUATION_SUCCESS,
+        payload: undefined,
+      };
+
+      expect(reducer(state, action)).to.eql({
+        entities: {
+          EVAL_1: { id: 'EVAL_1', status: 'OLD' },
+        },
+        errors: {},
       });
     });
   });

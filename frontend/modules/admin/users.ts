@@ -16,7 +16,7 @@ const addUserSuccess = createAction(constants.ADD_USER_SUCCESS);
 const addUserFailure = createAction(constants.ADD_USER_FAILURE);
 const userUpdateSuccess = createAction(constants.USER_UPDATE_SUCCESS);
 const userUpdateFailure = createAction(constants.USER_UPDATE_FAILURE);
-const startEvaluationSuccess = createAction(constants.START_EVALUATION_SUCCESS);
+export const startEvaluationSuccess = createAction(constants.START_EVALUATION_SUCCESS);
 const startEvaluationFailure = createAction(constants.START_EVALUATION_FAILURE);
 
 function startEvaluation(userId) {

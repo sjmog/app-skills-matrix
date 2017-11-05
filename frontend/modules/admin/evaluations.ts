@@ -2,6 +2,7 @@ import { handleActions, createAction } from 'redux-actions';
 import * as isPlainObject from 'is-plain-object';
 import * as R from 'ramda';
 import * as keymirror from 'keymirror';
+import { startEvaluationSuccess } from './users';
 
 import api from '../../api';
 import { sortNewestToOldest } from '../utils';
@@ -65,6 +66,14 @@ export default handleActions({
     return isPlainObject(state.errors)
       ? R.set(errLens, errMsg, state)
       : R.set(errLens, errMsg, { ...state, errors: initialState.errors });
+  },
+  [startEvaluationSuccess]: (state: EvaluationState, action) => {
+    const evaluationId = R.path(['payload', 'id'], action) as any;
+
+    if (!evaluationId) return state;
+
+    const entityLens = R.lensPath(['entities', evaluationId]);
+    return R.set(entityLens, action.payload, state);
   },
 }, initialState);
 

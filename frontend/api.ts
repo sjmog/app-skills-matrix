@@ -24,7 +24,7 @@ export default ({
       .then(getData)
       .catch(handleError);
   },
-  startEvaluation(userId: string): Promise<EvaluationViewModel> {
+  startEvaluation(userId: string): Promise<EvaluationMetadataViewModel> {
     return axios.post(`/skillz/users/${userId}/evaluations`, { action: 'create' })
       .then(getData)
       .catch(handleError);

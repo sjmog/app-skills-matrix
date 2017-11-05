@@ -13,7 +13,7 @@ type ManageUsersPageComponentProps = {
   actions: typeof actions,
   success: boolean,
   error?: { message?: string },
-  users: { users: UserWithEvaluations[], newEvaluations: (EvaluationViewModel & { success: boolean, message: string })[] },
+  users: { users: UserWithEvaluations[], newEvaluations: (EvaluationMetadataViewModel & { success: boolean, message: string })[] },
   matrices: { templates: TemplateViewModel[] },
 };
 
