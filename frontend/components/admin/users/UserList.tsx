@@ -80,13 +80,13 @@ function userDetailsRow(user, isSelected, onUserSelectionChange, makeSelectMento
 }
 
 type UserListProps = {
-  users: UserWithEvaluations[],
+  users: UserDetailsViewModel[],
   templates: TemplateViewModel[],
   selectedUsers: string[],
-  onUserSelectionChange: (e: any, user: UserWithEvaluations) => void,
-  onSelectMentor: (e: any, user: UserWithEvaluations) => void,
-  onSelectLineManager: (e: any, user: UserWithEvaluations) => void,
-  onSelectTemplate: (e: any, user: UserWithEvaluations) => void,
+  onUserSelectionChange: (e: any, user: UserDetailsViewModel) => void,
+  onSelectMentor: (e: any, user: UserDetailsViewModel) => void,
+  onSelectLineManager: (e: any, user: UserDetailsViewModel) => void,
+  onSelectTemplate: (e: any, user: UserDetailsViewModel) => void,
 };
 
 type UserListState = {

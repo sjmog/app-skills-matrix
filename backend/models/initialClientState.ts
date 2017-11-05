@@ -75,14 +75,6 @@ const getReportData = (userId: string)  =>
       },
       { users: [], evaluations: [] }));
 
-const augmentWithEvaluations = (users): Promise<UserWithEvaluations[]> =>
-  Promise.map(
-    users,
-    (user: User) =>
-      getEvaluations(user.id)
-        .then(evaluations => evaluations.map(evaluation => evaluation.adminMetadataViewModel()))
-        .then(evaluations => Object.assign({}, user.manageUserViewModel(), { evaluations })));
-
 export const adminClientState = (user?: User): Promise<AdminClientState> =>
   Promise.all([
     userCollection.getAll(),

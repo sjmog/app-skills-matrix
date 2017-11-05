@@ -13,7 +13,7 @@ type ManageUsersPageComponentProps = {
   actions: typeof actions,
   success: boolean,
   error?: { message?: string },
-  users: { users: UserWithEvaluations[], newEvaluations: (EvaluationMetadataViewModel & { success: boolean, message: string })[] },
+  users: { users: UserDetailsViewModel[], newEvaluations: (EvaluationMetadataViewModel & { success: boolean, message: string })[] },
   matrices: { templates: TemplateViewModel[] },
 };
 
@@ -58,7 +58,7 @@ class ManageUsersPageComponent extends React.Component<ManageUsersPageComponentP
     this.setState({ selectedUsers: [] });
   }
 
-  onUserSelectionChange(e: any, user: UserWithEvaluations) {
+  onUserSelectionChange(e: any, user: UserDetailsViewModel) {
     const checked = e.target.checked;
     let selectedUsers;
     if (checked) {
