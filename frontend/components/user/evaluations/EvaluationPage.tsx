@@ -16,6 +16,7 @@ import { actionCreators as matrixFilterActionCreators } from '../../../modules/u
 import Evaluation from './evaluation/Evaluation';
 import EvaluationPageHeader from './EvaluationPageHeader';
 import Matrix from '../matrix/Matrix';
+import Legend from '../matrix/Legend';
 
 import './evaluation.scss';
 
@@ -113,13 +114,11 @@ class EvaluationPageComponent extends React.Component<EvaluationPageComponentPro
         </div>
         <div className="evaluation-grid__item">
           <Row>
-            <h4>Legend</h4>
-            <p role="button" className="skill--legend skill--attained state--icon--ATTAINED" onClick={() => this.updateFilter(evaluationId, matrixSkillsStatusFilter(SKILL_STATUS.ATTAINED))}>Attained</p>
-            <p className="skill--legend skill--newly-attained state--icon--ATTAINED">Newly attained</p>
-            <p className="skill--legend skill--objective state--icon--OBJECTIVE">Objective</p>
-            <p className="skill--legend skill--feedback state--icon--FEEDBACK">Feedback</p>
-            <p className="skill--legend skill--not-attained state--icon--NOT_ATTAINED">Not attained</p>
-            <p className="skill--legend skill--new state--icon--NEW">New skill</p>
+            <Legend
+              evaluationId={evaluationId}
+              updateFilter={this.updateFilter}
+              matrixSkillsStatusFilter={matrixSkillsStatusFilter}
+            />
           </Row>
           <Row>
             <Col md={20}>
