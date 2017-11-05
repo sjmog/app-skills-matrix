@@ -19,7 +19,7 @@ MAIL_PROVIDER=ses                                       # mail provider (optiona
 MAIL_DOMAIN=mailgun_domain                              # mail gun domain name (required if MAIL_PROVIDER=mailgun)
 MAIL_API_KEY=mailgun_api                                # mail gun api key (required if MAIL_PROVIDER=mailgun)
 SES_REGION=ses_region                                   # ses region (required if MAIL_PROVIDER=ses) for ses to work, your host must have access to the AWS api
-ADMIN_EMAILS=["email@me.com"]                           # email addresses of the admin users (must be JSON!)
+ADMIN_EMAILS="email@me.com email@you.com"               # email addresses of the admin users (must be JSON!)
 
 λ npm run start-dev
 ```
@@ -37,7 +37,7 @@ GITHUB_SECRET=MySecret
 JWT_SECRET=MyJWTSecret
 HOST=http://localhost:3000                              
 ENCRYPTION_PASSWORD="also not secret"  
-ADMIN_EMAILS=["email@me.com"]            
+ADMIN_EMAILS="dmorgantini@gmail.com"  # required cause of tests ¯\_(ツ)_/¯            
 λ npm run test               #To run all the test with fancy coloured output
 ```
 Make sure to use a different database for testing, as tests will clean the database.
