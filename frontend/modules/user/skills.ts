@@ -16,6 +16,8 @@ export const SKILL_STATUS = keymirror({
   OBJECTIVE: null,
 });
 
+export const NEWLY_ATTAINED = 'NEWLY_ATTAINED';
+
 export const EVALUATION_VIEW = keymirror({
   MENTOR: null,
   SUBJECT: null,
@@ -138,6 +140,18 @@ export const hasNotes = (state, skillUid: string): boolean =>
 
 const hasStatus = (status: string) =>
   (skill): boolean => R.path(['status', 'current'], skill) === status;
+
+const isNewlyAttained = () =>
+    (skill): boolean => R.path(['status', 'current'], skill) === SKILL_STATUS.ATTAINED && (R.path(['status', 'previous'], skill) === SKILL_STATUS.NOT_ATTAINED || !R.path(['status', 'previous'], skill));
+
+export const getNewlyAttainedSkills = (state, skillUids: string[]): string[] => {
+  if (!R.is(Array, skillUids) || skillUids.length === 0) {
+      return [];
+  }
+
+  const skills = R.pickBy((val, key) => skillUids.indexOf(key) >= 0, R.path(['entities'], state));
+  return R.keys(skills).length > 0 ? R.keys(R.pickBy(isNewlyAttained(), skills)) : [];
+};
 
 export const getSkillsWithCurrentStatus = (state, status: string, skillUids: string[]): string[] => {
   if (!R.is(Array, skillUids) || skillUids.length === 0) {

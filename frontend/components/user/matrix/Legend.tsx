@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-import { SKILL_STATUS } from '../../../modules/user/skills';
+import { SKILL_STATUS, NEWLY_ATTAINED } from '../../../modules/user/skills';
 
 type LegendProps = {
     evaluationId: string,
@@ -14,7 +14,7 @@ const Legend = ({ evaluationId, updateFilter, matrixSkillsStatusFilter }: Legend
       <div>
         <h4>Legend</h4>
         <p role="button" className="skill--legend skill--attained state--icon--ATTAINED" onClick={() => updateFilter(evaluationId, SKILL_STATUS.ATTAINED, matrixSkillsStatusFilter(SKILL_STATUS.ATTAINED))}>Attained</p>
-        <p role="button" className="skill--legend skill--newly-attained state--icon--ATTAINED" onClick={() => updateFilter(evaluationId, SKILL_STATUS.ATTAINED, matrixSkillsStatusFilter(SKILL_STATUS.ATTAINED))}>Newly attained</p>
+        <p role="button" className="skill--legend skill--newly-attained state--icon--ATTAINED" onClick={() => updateFilter(evaluationId, NEWLY_ATTAINED, matrixSkillsStatusFilter(NEWLY_ATTAINED))}>Newly attained</p>
         <p role="button" className="skill--legend skill--objective state--icon--OBJECTIVE" onClick={() => updateFilter(evaluationId, SKILL_STATUS.OBJECTIVE, matrixSkillsStatusFilter(SKILL_STATUS.OBJECTIVE))}>Objective</p>
         <p role="button" className="skill--legend skill--feedback state--icon--FEEDBACK" onClick={() => updateFilter(evaluationId, SKILL_STATUS.FEEDBACK, matrixSkillsStatusFilter(SKILL_STATUS.FEEDBACK))}>Feedback</p>
         <p role="button" className="skill--legend skill--not-attained state--icon--NOT_ATTAINED" onClick={() => updateFilter(evaluationId, SKILL_STATUS.NOT_ATTAINED, matrixSkillsStatusFilter(SKILL_STATUS.NOT_ATTAINED))}>Not attained</p>

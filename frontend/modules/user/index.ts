@@ -69,6 +69,9 @@ export const hasNotes = ({ entities: { skills } }, skillUid: string) =>
 export const getSkillsWithCurrentStatus = ({ entities: { skills } }, status, skillUids: string[]) =>
   fromSkills.getSkillsWithCurrentStatus(skills, status, skillUids);
 
+export const getNewlyAttainedSkills = ({ entities: { skills } }, skillUids: string[]) =>
+    fromSkills.getNewlyAttainedSkills(skills, skillUids);
+
 export const getSkillNames = ({ entities: { skills } }, skillUids: string[]) =>
   fromSkills.getSkillNames(skills, skillUids);
 

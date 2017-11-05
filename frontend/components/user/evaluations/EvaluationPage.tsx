@@ -10,7 +10,7 @@ import {
   EVALUATION_STATUS,
   EVALUATION_FETCH_STATUS,
 } from '../../../modules/user/evaluations';
-import { actionCreators as skillsActionCreators } from '../../../modules/user/skills';
+import { actionCreators as skillsActionCreators, NEWLY_ATTAINED } from '../../../modules/user/skills';
 import { actionCreators as matrixFilterActionCreators } from '../../../modules/user/ui/matrixFilters';
 
 import Evaluation from './evaluation/Evaluation';
@@ -159,7 +159,8 @@ export const EvaluationPage = connect(
       matrixSkillsStatusFilter: (skillStatus) => {
         const isFiltered = selectors.getIsFiltered(state, evalId, skillStatus);
         const skillUids = selectors.getSkillUids(state, evalId);
-        return isFiltered ? skillUids : selectors.getSkillsWithCurrentStatus(state, skillStatus, skillUids);
+        if (isFiltered) return skillUids;
+        return skillStatus === NEWLY_ATTAINED ? selectors.getNewlyAttainedSkills(state, skillUids) : selectors.getSkillsWithCurrentStatus(state, skillStatus, skillUids);
       },
     });
   },
