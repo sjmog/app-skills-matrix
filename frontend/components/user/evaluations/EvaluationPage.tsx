@@ -10,7 +10,7 @@ import {
   EVALUATION_STATUS,
   EVALUATION_FETCH_STATUS,
 } from '../../../modules/user/evaluations';
-import { actionCreators as skillsActionCreators, SKILL_STATUS } from '../../../modules/user/skills';
+import { actionCreators as skillsActionCreators } from '../../../modules/user/skills';
 import { actionCreators as matrixFilterActionCreators } from '../../../modules/user/ui/matrixFilters';
 
 import Evaluation from './evaluation/Evaluation';
@@ -69,10 +69,10 @@ class EvaluationPageComponent extends React.Component<EvaluationPageComponentPro
     return skillActions.updateSkillStatus(view, evaluationId, skillId, newSkillStatus, skillUid);
   }
 
-  updateFilter(evaluationId, idsToShow) {
+  updateFilter(evaluationId, filter, idsToShow) {
     const { matrixFilterActions } = this.props;
 
-    return matrixFilterActions.updateFilter(evaluationId, idsToShow);
+    return matrixFilterActions.updateFilter(evaluationId, filter, idsToShow);
   }
 
   render() {
@@ -157,7 +157,7 @@ export const EvaluationPage = connect(
       skillGroups: selectors.getSkillGroups(state, evalId),
       view: selectors.getView(state, evalId),
       matrixSkillsStatusFilter: (skillStatus) => {
-        const isFiltered = selectors.getIsFiltered(state, evalId);
+        const isFiltered = selectors.getIsFiltered(state, evalId, skillStatus);
         const skillUids = selectors.getSkillUids(state, evalId);
         return isFiltered ? skillUids : selectors.getSkillsWithCurrentStatus(state, skillStatus, skillUids);
       },

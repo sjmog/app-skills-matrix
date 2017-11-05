@@ -12,11 +12,11 @@ export const actionTypes = keymirror({
 
 const updateSkillFilter = createAction(
     actionTypes.UPDATE_SKILL_FILTER,
-    (evaluationId, skillsToDisplay) => ({ evaluationId, skillsToDisplay }),
+    (evaluationId, filter, skillsToDisplay) => ({ evaluationId, filter, skillsToDisplay }),
 );
 
-function updateFilter(evaluationId, skillsToDisplay) {
-    return dispatch => dispatch(updateSkillFilter(evaluationId, skillsToDisplay));
+function updateFilter(evaluationId, filter, skillsToDisplay) {
+    return dispatch => dispatch(updateSkillFilter(evaluationId, filter, skillsToDisplay));
 }
 
 export const actionCreators = {
@@ -25,11 +25,11 @@ export const actionCreators = {
 
 export const getSkillsToDisplay = (state, evaluationId) => state.hasOwnProperty(evaluationId) ? state[evaluationId] : [];
 
-export const getIsFiltered = (state, evaluationId) => state.isFiltered;
+export const getIsFiltered = (state, evaluationId, skillStatus) => state.isFiltered && state.isFiltered === skillStatus;
 
 export default handleActions({
-    [updateSkillFilter]: (state, { payload: { evaluationId, skillsToDisplay } }) =>
-        ({ [evaluationId]: skillsToDisplay, isFiltered: !state.isFiltered }),
+    [updateSkillFilter]: (state, { payload: { evaluationId, filter, skillsToDisplay } }) =>
+        ({ [evaluationId]: skillsToDisplay, isFiltered: state.isFiltered !== filter ? filter : false }),
     [evaluationsActions.retrieveEvaluationSuccess]: (state, { payload: { id, skillUids } }) =>
         ({ [id]: skillUids, isFiltered: false }),
 }, initialState);

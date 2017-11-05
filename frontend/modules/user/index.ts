@@ -158,5 +158,5 @@ export const getSelectedReport = ({ ui: { reportEvaluations } }) =>
 export const getSkillsToDisplay = ({ ui: { matrixFilters } }, evalId) =>
     fromMatrixFilters.getSkillsToDisplay(matrixFilters, evalId);
 
-export const getIsFiltered = ({ ui: { matrixFilters } }, evalId) =>
-    fromMatrixFilters.getIsFiltered(matrixFilters, evalId);
+export const getIsFiltered = ({ ui: { matrixFilters } }, evalId, skillStatus) =>
+    fromMatrixFilters.getIsFiltered(matrixFilters, evalId, skillStatus);
