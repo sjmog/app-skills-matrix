@@ -16,7 +16,7 @@ import { actionCreators as matrixFilterActionCreators } from '../../../modules/u
 import Evaluation from './evaluation/Evaluation';
 import EvaluationPageHeader from './EvaluationPageHeader';
 import Matrix from '../matrix/Matrix';
-import Legend from '../matrix/Legend';
+import Filters from '../matrix/Filters';
 
 import './evaluation.scss';
 
@@ -38,6 +38,7 @@ type EvaluationPageComponentProps = {
   skillActions: typeof skillsActionCreators,
   matrixFilterActions: typeof matrixFilterActionCreators,
   matrixSkillsStatusFilter: (string) => string[],
+  currentFilter: string,
 };
 
 const loadEvaluation = ({ params: { evaluationId }, fetchStatus, evalActions }) => {
@@ -76,7 +77,7 @@ class EvaluationPageComponent extends React.Component<EvaluationPageComponentPro
   }
 
   render() {
-    const { error, levels, categories, status, skillGroups, view, params: { evaluationId }, fetchStatus, matrixSkillsStatusFilter } = this.props;
+    const { error, levels, categories, status, skillGroups, view, params: { evaluationId }, fetchStatus, matrixSkillsStatusFilter, currentFilter } = this.props;
 
     if (error) {
       return (
@@ -114,11 +115,15 @@ class EvaluationPageComponent extends React.Component<EvaluationPageComponentPro
         </div>
         <div className="evaluation-grid__item">
           <Row>
-            <Legend
-              evaluationId={evaluationId}
-              updateFilter={this.updateFilter}
-              matrixSkillsStatusFilter={matrixSkillsStatusFilter}
+            <Filters
+                evaluationId={evaluationId}
+                updateFilter={this.updateFilter}
+                getMatrixSkillsStatusFilter={matrixSkillsStatusFilter}
+                currentFilter={currentFilter}
             />
+            <div>
+              <p className="skill--legend skill--new state--icon--NEW">New skill</p>
+            </div>
           </Row>
           <Row>
             <Col md={20}>
@@ -157,11 +162,13 @@ export const EvaluationPage = connect(
       skillGroups: selectors.getSkillGroups(state, evalId),
       view: selectors.getView(state, evalId),
       matrixSkillsStatusFilter: (skillStatus) => {
-        const isFiltered = selectors.getIsFiltered(state, evalId, skillStatus);
+        const currentFilter = selectors.getCurrentFilter(state, evalId);
+        const isFiltered = currentFilter && currentFilter === skillStatus;
         const skillUids = selectors.getSkillUids(state, evalId);
         if (isFiltered) return skillUids;
         return skillStatus === NEWLY_ATTAINED ? selectors.getNewlyAttainedSkills(state, skillUids) : selectors.getSkillsWithCurrentStatus(state, skillStatus, skillUids);
       },
+      currentFilter: selectors.getCurrentFilter(state, evalId),
     });
   },
   dispatch => ({

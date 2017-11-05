@@ -3,7 +3,7 @@ import * as keymirror from 'keymirror';
 import { actions as evaluationsActions } from '../evaluations';
 
 const initialState = {
-    isFiltered: false,
+    currentFilter: null,
 };
 
 export const actionTypes = keymirror({
@@ -25,11 +25,11 @@ export const actionCreators = {
 
 export const getSkillsToDisplay = (state, evaluationId) => state.hasOwnProperty(evaluationId) ? state[evaluationId] : [];
 
-export const getIsFiltered = (state, evaluationId, skillStatus) => state.isFiltered && state.isFiltered === skillStatus;
+export const getCurrentFilter = (state, evaluationId) => state.currentFilter;
 
 export default handleActions({
     [updateSkillFilter]: (state, { payload: { evaluationId, filter, skillsToDisplay } }) =>
-        ({ [evaluationId]: skillsToDisplay, isFiltered: state.isFiltered !== filter ? filter : false }),
+        ({ [evaluationId]: skillsToDisplay, currentFilter: state.currentFilter !== filter ? filter : null }),
     [evaluationsActions.retrieveEvaluationSuccess]: (state, { payload: { id, skillUids } }) =>
-        ({ [id]: skillUids, isFiltered: false }),
+        ({ [id]: skillUids, currentFilter: null }),
 }, initialState);

@@ -40,11 +40,26 @@ dd {
   margin-bottom: 0;
 }
 
-.skill--legend {
+.skill--filters {
   border: solid 1px #ddd;
   padding: 10px;
   margin-left: 1px;
   display: inline-block;
+}
+
+.skill--filters--selected {
+  border: solid 1px #000;
+}
+
+.skill--filters::before {
+  margin-right: 5px;
+}
+
+.skill--legend {
+  padding: 10px;
+  margin-left: 1px;
+  display: inline-block;
+  float: right;
 }
 
 .skill--legend::before {
