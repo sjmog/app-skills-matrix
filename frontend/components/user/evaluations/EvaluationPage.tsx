@@ -115,15 +115,15 @@ class EvaluationPageComponent extends React.Component<EvaluationPageComponentPro
         </div>
         <div className="evaluation-grid__item">
           <Row>
+            <div className="skill--legend--container">
+              <p className="skill--legend skill--new state--icon--NEW">New skill</p>
+            </div>
             <Filters
                 evaluationId={evaluationId}
                 updateFilter={this.updateFilter}
                 getMatrixSkillsStatusFilter={matrixSkillsStatusFilter}
                 currentFilter={currentFilter}
             />
-            <div>
-              <p className="skill--legend skill--new state--icon--NEW">New skill</p>
-            </div>
           </Row>
           <Row>
             <Col md={20}>
