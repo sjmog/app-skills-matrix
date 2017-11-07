@@ -141,8 +141,8 @@ export const hasNotes = (state, skillUid: string): boolean =>
 const hasStatus = (status: string) =>
   (skill): boolean => R.path(['status', 'current'], skill) === status;
 
-const isNewlyAttained = () =>
-    (skill): boolean => R.path(['status', 'current'], skill) === SKILL_STATUS.ATTAINED && (R.path(['status', 'previous'], skill) === SKILL_STATUS.NOT_ATTAINED || !R.path(['status', 'previous'], skill));
+const isNewlyAttained =
+    (skill): boolean => R.path(['status', 'current'], skill) === SKILL_STATUS.ATTAINED && R.path(['status', 'previous'], skill) !== SKILL_STATUS.ATTAINED;
 
 const getSkills = (state, skillUids: string[], predicate: (skill) => boolean): string[] => {
     if (!R.is(Array, skillUids) || skillUids.length === 0) {
@@ -153,7 +153,7 @@ const getSkills = (state, skillUids: string[], predicate: (skill) => boolean): s
     return R.keys(skills).length > 0 ? R.keys(R.pickBy(predicate, skills)) : [];
 };
 
-export const getNewlyAttainedSkills = (state, skillUids: string[]): string[] => getSkills(state, skillUids, isNewlyAttained());
+export const getNewlyAttainedSkills = (state, skillUids: string[]): string[] => getSkills(state, skillUids, isNewlyAttained);
 
 export const getSkillsWithCurrentStatus = (state, status: string, skillUids: string[]): string[] => getSkills(state, skillUids, hasStatus(status));
 
@@ -167,4 +167,4 @@ const getSkillName = (state, uid) => {
 export const getSkillNames = (state, skillUids: string[]) => {
   if (!Array.isArray(skillUids)) return null;
   return R.map(uid => getSkillName(state, uid), skillUids);
-};
+};\
