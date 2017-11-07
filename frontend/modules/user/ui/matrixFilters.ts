@@ -2,6 +2,11 @@ import { createAction, handleActions } from 'redux-actions';
 import * as keymirror from 'keymirror';
 import { actions as evaluationsActions } from '../evaluations';
 
+type MatrixFiltersState = {
+    currentFilter: string,
+    evaluationId: string[],
+};
+
 const initialState = {
     currentFilter: null,
 };
@@ -23,13 +28,13 @@ export const actionCreators = {
     updateFilter,
 };
 
-export const getSkillsToDisplay = (state, evaluationId) => state.hasOwnProperty(evaluationId) ? state[evaluationId] : [];
+export const getSkillsToDisplay = (state: MatrixFiltersState, evaluationId) => state.hasOwnProperty(evaluationId) ? state[evaluationId] : [];
 
-export const getCurrentFilter = (state, evaluationId) => state.currentFilter;
+export const getCurrentFilter = (state: MatrixFiltersState, evaluationId) => state.currentFilter;
 
 export default handleActions({
-    [updateSkillFilter]: (state, { payload: { evaluationId, filter, skillsToDisplay } }) =>
+    [updateSkillFilter]: (state: MatrixFiltersState, { payload: { evaluationId, filter, skillsToDisplay } }) =>
         ({ [evaluationId]: skillsToDisplay, currentFilter: state.currentFilter !== filter ? filter : null }),
-    [evaluationsActions.retrieveEvaluationSuccess]: (state, { payload: { id, skillUids } }) =>
+    [evaluationsActions.retrieveEvaluationSuccess]: (state: MatrixFiltersState, { payload: { id, skillUids } }) =>
         ({ [id]: skillUids, currentFilter: null }),
 }, initialState);
