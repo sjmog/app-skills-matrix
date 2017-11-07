@@ -40,8 +40,8 @@ const Skill = ({ skillUid, skill, viewSkillDetails, isBeingEvaluated, hasNotes, 
   const currentStateLabel = `The current state of this skill is: ${currentStateStatus[1]}`;
   const shouldDisplay = Boolean(skillsToDisplay.find(id => id === skillUid));
 
-  return shouldDisplay ? (
-    <div aria-hidden role="button" className={`skill--card ${statusClass} ${beingEvaluatedClass} previous--${skill.status.previous}`} onClick={() => viewSkillDetails(skillUid)}>
+  return (
+    <div aria-hidden role="button" className={`skill--card ${statusClass} ${beingEvaluatedClass} previous--${skill.status.previous} ${shouldDisplay ? '' : 'hide--skill'}`} onClick={() => viewSkillDetails(skillUid)}>
       {
         hasNotes
           ? <div className={'skill-card--notes'}>
@@ -59,7 +59,7 @@ const Skill = ({ skillUid, skill, viewSkillDetails, isBeingEvaluated, hasNotes, 
         <ReactTooltip place="top" id={`skill-${skillUid}-current`} type="dark" effect="solid">{currentStateLabel}</ReactTooltip>
       </div>
     </div>
-  ) : false;
+  );
 };
 
 export default connect((state, { skillUid, evaluationId }) => ({
