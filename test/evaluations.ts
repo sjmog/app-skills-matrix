@@ -871,7 +871,7 @@ describe('evaluations', () => {
             .post(`${prefix}/evaluations/${evaluationId}`)
             .send({ action: 'updateEvaluationStatus', status: STATUS.COMPLETE })
             .set('Cookie', `${cookieName}=${adminToken}`)
-            .expect(204))
+            .expect(200))
         .then(() => getEvaluation(evaluationId))
         .then((evaluation) => {
           expect(evaluation.status).to.equal(STATUS.COMPLETE);
@@ -890,7 +890,7 @@ describe('evaluations', () => {
             .post(`${prefix}/evaluations/${evaluationOneId}`)
             .send({ action: 'updateEvaluationStatus', status: STATUS.COMPLETE })
             .set('Cookie', `${cookieName}=${adminToken}`)
-            .expect(204))
+            .expect(200))
         .then(() => Promise.all([
           getEvaluation(String(evaluationOneId)),
           getEvaluation(String(evaluationTwoId)),

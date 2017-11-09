@@ -266,7 +266,7 @@ const handlerFunctions = Object.freeze({
 
         return permissions.admin()
           .then(() => evaluations.updateEvaluation(<EvaluationUpdate>update))
-          .then(() => res.sendStatus(204))
+          .then(updatedEvaluation => res.status(200).json(updatedEvaluation.adminMetadataViewModel()))
           .catch(next);
       },
     },

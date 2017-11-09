@@ -19,7 +19,7 @@ export const actionTypes = keymirror({
 
 const evaluationStatusUpdateSuccess = createAction(
   actionTypes.STATUS_UPDATE_SUCCESS,
-  (evaluationId, status) => ({ evaluationId, status }),
+  evaluation => evaluation,
 );
 
 const evaluationStatusUpdateFailure = createAction(
@@ -28,7 +28,7 @@ const evaluationStatusUpdateFailure = createAction(
 
 function updateEvaluationStatus(evaluationId, status) {
   return dispatch => api.updateEvaluationStatus(evaluationId, status)
-    .then(() => dispatch(evaluationStatusUpdateSuccess(evaluationId, status)))
+    .then(evaluation => dispatch(evaluationStatusUpdateSuccess(evaluation)))
     .catch(err => dispatch(evaluationStatusUpdateFailure(err)));
 }
 
@@ -43,19 +43,17 @@ export const initialState = {
 
 export default handleActions({
   [evaluationStatusUpdateSuccess]: (state: EvaluationState, action) => {
-    const evaluationId = R.path(['payload', 'evaluationId'], action) as string;
-    const status = R.path(['payload', 'status'], action) as string;
-    const evaluationInState = R.path(['entities', evaluationId], state);
+    const evaluationId = R.path(['payload', 'id'], action) as string;
 
-    if (!evaluationInState || !status) return state;
+    if (!evaluationId) return state;
 
-    const statusLens = R.lensPath(['entities', evaluationId, 'status']);
+    const evaluationLens = R.lensPath(['entities', evaluationId]);
     const errsLens = R.lensPath(['errors']);
     const actionType = evaluationStatusUpdateFailure().type;
 
     return R.compose(
       R.set(errsLens, R.omit([actionType], state.errors)),
-      R.set(statusLens, status),
+      R.set(evaluationLens, action.payload),
     )(state);
   },
   [evaluationStatusUpdateFailure]: (state: EvaluationState, action) => {

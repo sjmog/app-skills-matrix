@@ -4,22 +4,45 @@ import { constants as userActionTypes } from '../../../../../../frontend/modules
 
 describe('Evaluations reducer', () => {
   describe('STATUS_UPDATE_SUCCESS', () => {
-    it('updates the status of an evaluation', () => {
+    it('replaces an existing evaluation', () => {
       const state = {
         entities: {
-          EVAL_1: { status: 'OLD' },
+          EVAL_1: { id: 'EVAL_1', status: 'OLD' },
         },
         errors: {},
       };
 
       const action = {
         type: actionTypes.STATUS_UPDATE_SUCCESS,
-        payload: { evaluationId: 'EVAL_1', status: 'NEW' },
+        payload: { id: 'EVAL_1', status: 'NEW' },
       };
 
       expect(reducer(state, action)).to.eql({
         entities: {
-          EVAL_1: { status: 'NEW' },
+          EVAL_1: { id: 'EVAL_1', status: 'NEW' },
+        },
+        errors: {},
+      });
+    });
+
+    it('does not modify evaluations that have not been updated', () => {
+      const state = {
+        entities: {
+          EVAL_1: { id: 'EVAL_1', status: 'OLD' },
+          EVAL_2: { id: 'EVAL_2', status: 'OLD' },
+        },
+        errors: {},
+      };
+
+      const action = {
+        type: actionTypes.STATUS_UPDATE_SUCCESS,
+        payload: { id: 'EVAL_1', status: 'NEW' },
+      };
+
+      expect(reducer(state, action)).to.eql({
+        entities: {
+          EVAL_1: { id: 'EVAL_1', status: 'NEW' },
+          EVAL_2: { id: 'EVAL_2', status: 'OLD' },
         },
         errors: {},
       });
@@ -28,7 +51,7 @@ describe('Evaluations reducer', () => {
     it('clears existing errors that resulted from STATUS_UPDATE_FAILURE actions', () => {
       const state = {
         entities: {
-          EVAL_1: { status: 'OLD' },
+          EVAL_1: { id: 'EVAL_1', status: 'OLD' },
         },
 
         errors: {
@@ -38,12 +61,12 @@ describe('Evaluations reducer', () => {
       };
       const action = {
         type: actionTypes.STATUS_UPDATE_SUCCESS,
-        payload: { evaluationId: 'EVAL_1', status: 'NEW' },
+        payload: { id: 'EVAL_1', status: 'NEW' },
       };
 
       expect(reducer(state, action)).to.eql({
         entities: {
-          EVAL_1: { status: 'NEW' },
+          EVAL_1: { id: 'EVAL_1', status: 'NEW' },
         },
 
         errors: {
@@ -52,7 +75,7 @@ describe('Evaluations reducer', () => {
       });
     });
 
-    it('does not update state when the evaluation is missing', () => {
+    it('updates state when the evaluation is missing', () => {
       const state = {
         entities: {},
         errors: {},
@@ -60,95 +83,20 @@ describe('Evaluations reducer', () => {
 
       const action = {
         type: actionTypes.STATUS_UPDATE_SUCCESS,
-        payload: { evaluationId: 'EVAL_MISSING', status: 'NEW' },
-      };
-
-      expect(reducer(state, action)).to.eql({
-        entities: {},
-        errors: {},
-      });
-    });
-
-    it('sets a status when an evaluation does not have one', () => {
-      const state = {
-        entities: {
-          EVAL_1: {},
-        },
-        errors: {},
-      };
-
-      const action = {
-        type: actionTypes.STATUS_UPDATE_SUCCESS,
-        payload: { evaluationId: 'EVAL_1', status: 'NEW' },
+        payload: { id: 'EVAL_MISSING', status: 'NEW' },
       };
 
       expect(reducer(state, action)).to.eql({
         entities: {
-          EVAL_1: { status: 'NEW' },
+          EVAL_MISSING: { id: 'EVAL_MISSING', status: 'NEW' },
         },
         errors: {},
       });
     });
 
-    it('only updates the value of status', () => {
+    it('does not modify state when the action payload is missing id', () => {
       const state = {
-        entities: {
-          EVAL_1: {
-            status: 'OLD',
-            NOT_STATUS: true,
-          },
-        },
-        errors: {},
-      };
-
-      const action = {
-        type: actionTypes.STATUS_UPDATE_SUCCESS,
-        payload: { evaluationId: 'EVAL_1', status: 'NEW' },
-      };
-
-      expect(reducer(state, action)).to.eql({
-        entities: {
-          EVAL_1: {
-            status: 'NEW',
-            NOT_STATUS: true,
-          },
-        },
-        errors: {},
-      });
-    });
-
-    it('does not modify state when the action payload is missing status', () => {
-      const state = {
-        entities: {
-          EVAL_1: {
-            status: 'OLD',
-          },
-        },
-        errors: {},
-      };
-
-      const action = {
-        type: actionTypes.STATUS_UPDATE_SUCCESS,
-        payload: { evaluationId: 'EVAL_1', NOT_STATUS: true },
-      };
-
-      expect(reducer(state, action)).to.eql({
-        entities: {
-          EVAL_1: {
-            status: 'OLD',
-          },
-        },
-        errors: {},
-      });
-    });
-
-    it('does not modify state when the action payload is missing evaluationId', () => {
-      const state = {
-        entities: {
-          EVAL_1: {
-            status: 'OLD',
-          },
-        },
+        entities: { EVAL_1: { id: 'EVAL_1', status: 'OLD' } },
         errors: {},
       };
 
@@ -159,9 +107,7 @@ describe('Evaluations reducer', () => {
 
       expect(reducer(state, action)).to.eql({
         entities: {
-          EVAL_1: {
-            status: 'OLD',
-          },
+          EVAL_1: { id: 'EVAL_1', status: 'OLD' },
         },
         errors: {},
       });
@@ -170,9 +116,7 @@ describe('Evaluations reducer', () => {
     it('does not modify state when the action payload empty', () => {
       const state = {
         entities: {
-          EVAL_1: {
-            status: 'OLD',
-          },
+          EVAL_1: { id: 'EVAL_1', status: 'OLD' },
         },
         errors: {},
       };
@@ -184,26 +128,28 @@ describe('Evaluations reducer', () => {
 
       expect(reducer(state, action)).to.eql({
         entities: {
-          EVAL_1: {
-            status: 'OLD',
-          },
+          EVAL_1: { id: 'EVAL_1', status: 'OLD' },
         },
         errors: {},
       });
     });
 
-    it('does not modify state when entities is malformed', () => {
+    it('adds an evaluation to state when entities is malformed', () => {
       const state = {
         entities: undefined,
+        errors: {},
       };
 
       const action = {
         type: actionTypes.STATUS_UPDATE_SUCCESS,
-        payload: { evaluationId: 'EVAL_1', NOT_STATUS: true },
+        payload: { id: 'EVAL_1', NOT_STATUS: true },
       };
 
       expect(reducer(state, action)).to.eql({
-        entities: undefined,
+        entities: {
+          EVAL_1: { id: 'EVAL_1', NOT_STATUS: true },
+        },
+        errors: {},
       });
     });
   });

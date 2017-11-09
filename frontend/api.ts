@@ -69,8 +69,9 @@ export default ({
       .then(getData)
       .catch(handleError);
   },
-  updateEvaluationStatus(evaluationId: string, status: string): Promise<any> {
+  updateEvaluationStatus(evaluationId: string, status: string): Promise<EvaluationMetadataViewModel> {
     return axios.post(`/skillz/evaluations/${evaluationId}`, { action: 'updateEvaluationStatus', status })
+      .then(getData)
       .catch(handleError);
   },
   retrieveEvaluation(evaluationId): Promise<HydratedEvaluationViewModel> {
