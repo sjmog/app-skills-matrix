@@ -16,7 +16,7 @@ const addUserSuccess = createAction(constants.ADD_USER_SUCCESS);
 const addUserFailure = createAction(constants.ADD_USER_FAILURE);
 const userUpdateSuccess = createAction(constants.USER_UPDATE_SUCCESS);
 const userUpdateFailure = createAction(constants.USER_UPDATE_FAILURE);
-const startEvaluationSuccess = createAction(constants.START_EVALUATION_SUCCESS);
+export const startEvaluationSuccess = createAction(constants.START_EVALUATION_SUCCESS);
 const startEvaluationFailure = createAction(constants.START_EVALUATION_FAILURE);
 
 function startEvaluation(userId) {
@@ -74,11 +74,14 @@ const handleUserUpdateSuccess = (state, action) =>
     });
 
 const handleActionFailure = (state, action) => Object.assign({}, state, { error: action.payload, success: false });
-
 const handleEvaluationEvent = (state, action) => Object.assign({}, state, { newEvaluations: [].concat(state.newEvaluations, action.payload) });
 
 export default handleActions({
-  [addUserSuccess]: (state, action) => Object.assign({}, state, { users: [].concat(state.users, action.payload), success: true, error: null }),
+  [addUserSuccess]: (state, action) => Object.assign({}, state, {
+    users: [].concat(state.users, action.payload),
+    success: true,
+    error: null,
+  }),
   [addUserFailure]: handleActionFailure,
   [userUpdateSuccess]: handleUserUpdateSuccess,
   [userUpdateFailure]: handleActionFailure,

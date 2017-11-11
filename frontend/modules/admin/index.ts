@@ -3,8 +3,9 @@ import { combineReducers } from 'redux';
 import users, * as fromUsers from './users';
 import user, * as fromUser from './user';
 import matrices from './matrices';
+import evaluations, * as fromEvaluations from './evaluations';
 
-export default combineReducers({ user, users, matrices });
+export default combineReducers({ user, users, matrices, evaluations });
 
 /* USERS SELECTORS */
 
@@ -21,3 +22,14 @@ export const getSortedUsers = ({ users }) =>
 
 export const getLoggedInUsername = ({ user }) =>
   fromUser.getLoggedInUsername(user);
+
+/* EVALUATIONS SELECTORS */
+
+export const getSortedEvaluationsByUserId = ({ evaluations }, userId: string) =>
+  fromEvaluations.getSortedEvaluationsByUserId(evaluations, userId);
+
+export const getEvaluationStatus = ({ evaluations }, evaluationId: string) =>
+  fromEvaluations.getEvaluationStatus(evaluations,  evaluationId);
+
+export const getStatusUpdateError = ({ evaluations }) =>
+  fromEvaluations.getStatusUpdateError(evaluations);

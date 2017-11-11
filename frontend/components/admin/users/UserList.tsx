@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as R from 'ramda';
 import { connect } from 'react-redux';
-import { Table, FormGroup, FormControl, Checkbox, Button, Glyphicon } from 'react-bootstrap';
+import { Table, FormControl, Button, Glyphicon } from 'react-bootstrap';
 
 import * as selectors from '../../../modules/admin';
 import UserEvaluationsModal from './UserEvaluationsModal';
@@ -10,70 +10,63 @@ import EditUserModal from './EditUserModal';
 import './users.scss';
 
 const selectMentor = (users, onSelectMentor, user) => (
-  <FormGroup controlId="selectMentor">
-    <FormControl
-      componentClass="select"
-      placeholder="choose mentor"
-      value={user.mentorId || 'default'}
-      onChange={e => onSelectMentor(e, user)}
-    >
-      <option disabled value="default">Select...</option>
-      {users.filter(u => u.email !== user.email).map(user =>
-        <option key={user.id} value={user.id}>{user.name || user.username}</option>)}
-    </FormControl>
-  </FormGroup>
+  <FormControl
+    componentClass="select"
+    placeholder="choose mentor"
+    value={user.mentorId || 'default'}
+    onChange={e => onSelectMentor(e, user)}
+  >
+    <option disabled value="default">Select...</option>
+    {users.filter(u => u.email !== user.email).map(user =>
+      <option key={user.id} value={user.id}>{user.name || user.username}</option>)}
+  </FormControl>
 );
 
 const selectLineManager = (users, onSelectLineManager, user) => (
-  <FormGroup controlId="selectLineManager">
-    <FormControl
-      componentClass="select"
-      placeholder="choose line manager"
-      value={user.lineManagerId || 'default'}
-      onChange={e => onSelectLineManager(e, user)}
-    >
-      <option disabled value="default">Select...</option>
-      {users.filter(u => u.email !== user.email).map(user =>
-        <option key={user.id} value={user.id}>{user.name || user.username}</option>)}
-    </FormControl>
-  </FormGroup>
+  <FormControl
+    componentClass="select"
+    placeholder="choose line manager"
+    value={user.lineManagerId || 'default'}
+    onChange={e => onSelectLineManager(e, user)}
+  >
+    <option disabled value="default">Select...</option>
+    {users.filter(u => u.email !== user.email).map(user =>
+      <option key={user.id} value={user.id}>{user.name || user.username}</option>)}
+  </FormControl>
 );
 
 const selectTemplate = (templates, onSelectTemplate, user) => (
-  <FormGroup controlId="selectMentor">
-    <FormControl
-      componentClass="select"
-      placeholder="choose template"
-      value={user.templateId || 'default'}
-      onChange={e => onSelectTemplate(e, user)}
-    >
-      <option disabled value="default">Select...</option>
-      {templates.map(template => <option key={template.id} value={template.id}>{template.name}</option>)}
-    </FormControl>
-  </FormGroup>
+  <FormControl
+    componentClass="select"
+    placeholder="choose template"
+    value={user.templateId || 'default'}
+    onChange={e => onSelectTemplate(e, user)}
+  >
+    <option disabled value="default">Select...</option>
+    {templates.map(template => <option key={template.id} value={template.id}>{template.name}</option>)}
+  </FormControl>
 );
 
 function userDetailsRow(user, isSelected, onUserSelectionChange, makeSelectMentorComponent, makeSelectTemplateComponent, makeSelectLineManagerComponent, viewUserEvaluations, viewEditUserModal) {
   const { id, name, email, username } = user;
   return (
     <tr key={id}>
-      <td>
-        <Checkbox
-          className="user-list__checkbox"
+      <td className="users-list__cell">
+        <input
+          type="checkbox"
           checked={Boolean(isSelected)}
-          onChange={e => onUserSelectionChange(e, user)}
-        />
+          onChange={e => onUserSelectionChange(e, user)} />
       </td>
-      <td>
+      <td className="users-list__cell">
         <Glyphicon
           glyph="edit"
           className="edit-icon"
           onClick={() => viewEditUserModal(id)}
         />
       </td>
-      <td>{name || '-' }</td>
-      <td>{username}</td>
-      <td>{email}</td>
+      <td className="users-list__cell">{name || '-'}</td>
+      <td className="users-list__cell">{username}</td>
+      <td className="users-list__cell">{email}</td>
       <td>
         <Button onClick={() => viewUserEvaluations(id)}>
           View evaluations
@@ -87,13 +80,13 @@ function userDetailsRow(user, isSelected, onUserSelectionChange, makeSelectMento
 }
 
 type UserListProps = {
-  users: UserWithEvaluations[],
+  users: UserDetailsViewModel[],
   templates: TemplateViewModel[],
   selectedUsers: string[],
-  onUserSelectionChange: (e: any, user: UserWithEvaluations) => void,
-  onSelectMentor: (e: any, user: UserWithEvaluations) => void,
-  onSelectLineManager: (e: any, user: UserWithEvaluations) => void,
-  onSelectTemplate: (e: any, user: UserWithEvaluations) => void,
+  onUserSelectionChange: (e: any, user: UserDetailsViewModel) => void,
+  onSelectMentor: (e: any, user: UserDetailsViewModel) => void,
+  onSelectLineManager: (e: any, user: UserDetailsViewModel) => void,
+  onSelectTemplate: (e: any, user: UserDetailsViewModel) => void,
 };
 
 type UserListState = {

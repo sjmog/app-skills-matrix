@@ -24,7 +24,7 @@ export default ({
       .then(getData)
       .catch(handleError);
   },
-  startEvaluation(userId: string): Promise<EvaluationViewModel> {
+  startEvaluation(userId: string): Promise<EvaluationMetadataViewModel> {
     return axios.post(`/skillz/users/${userId}/evaluations`, { action: 'create' })
       .then(getData)
       .catch(handleError);
@@ -66,6 +66,11 @@ export default ({
   },
   updateUserDetails(userId: string, name: string, email: string): Promise<UserDetailsViewModel> {
     return axios.post(`/skillz/users/${userId}`, { action: 'updateUserDetails', name, email })
+      .then(getData)
+      .catch(handleError);
+  },
+  updateEvaluationStatus(evaluationId: string, status: string): Promise<EvaluationMetadataViewModel> {
+    return axios.post(`/skillz/evaluations/${evaluationId}`, { action: 'updateEvaluationStatus', status })
       .then(getData)
       .catch(handleError);
   },

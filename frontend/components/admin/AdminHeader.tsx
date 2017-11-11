@@ -15,6 +15,7 @@ const AdminHeader = ({ username }: AdminHeaderProps) => (
     links={[
       { name: 'Users', path: '/admin/users' },
       { name: 'Matrices', path: '/admin/matrices' },
+      { name: 'Exit admin tool', path: '/', standardLink: true },
     ]}
   />
 );

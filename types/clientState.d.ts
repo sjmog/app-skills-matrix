@@ -1,5 +1,3 @@
-type UserWithEvaluations = UserDetailsViewModel & { evaluations: EvaluationMetadataViewModel[] };
-
 type MatricesInitialState = {
   templates: TemplateViewModel[],
 };
@@ -7,7 +5,7 @@ type MatricesInitialState = {
 type AdminClientState = {
   user?: UserDetailsViewModel,
   users: {
-    users: UserWithEvaluations[],
+    users: UserDetailsViewModel[],
     newEvaluations: any[],
   },
   matrices: MatricesInitialState,

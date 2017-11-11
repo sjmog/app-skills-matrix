@@ -130,7 +130,7 @@ const handlerFunctions = Object.freeze({
         .then((newEval: Evaluation) => {
           sendMail(newEval.newEvaluationEmail())
             .catch(console.error);
-          res.status(201).json(newEval.adminEvaluationViewModel());
+          res.status(201).json(newEval.adminMetadataViewModel());
         })
         .catch(next);
     },

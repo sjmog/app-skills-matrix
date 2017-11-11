@@ -1,60 +1,65 @@
 import * as React from 'react';
-import { Table, Button } from 'react-bootstrap';
+import { Table, Button, Panel } from 'react-bootstrap';
+import { connect } from 'react-redux';
 import * as moment from 'moment';
 
-import EvaluationStatusLabel from '../../common/EvaluationStatusLabel';
+import * as selectors from '../../../modules/admin';
+import EvaluationStatusSelector from  './EvaluationStatusSelector';
 
 import '../../user/dashboard/evaluationsList.scss';
 
 type UserEvaluationsListProps = {
-  evaluations: {
-    id: string,
-    createdDate: Date,
-    template: TemplateViewModel,
-    status: string,
-    evaluationUrl: string,
-    feedbackUrl: string,
-    objectivesUrl: string,
-  }[],
+  userId: string,
+  evaluations: EvaluationMetadataViewModel[],
 };
 
-const UserEvaluationsList = ({ evaluations }: UserEvaluationsListProps) => (
-  <Table responsive className="evaluations-list">
-    <thead>
-    <tr>
-      <th>Date</th>
-      <th>Type</th>
-      <th>Status</th>
-      <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    {
+const UserEvaluationsList = ({ evaluations }: UserEvaluationsListProps) => {
+  if (evaluations.length === 0) {
+    return (<p>User has no evaluations</p>);
+  }
+
+  return (
+    <Table responsive className="evaluations-list">
+      <thead>
+      <tr>
+        <th>Date</th>
+        <th>Type</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      {
         evaluations.map(({ id, createdDate, template, status, evaluationUrl, feedbackUrl, objectivesUrl }) =>
           (<tr key={id}>
             <td>{moment(createdDate).format('D MMM YYYY')}</td>
             <td>{template.name}</td>
             <td>
-              <EvaluationStatusLabel status={status} />
+              <EvaluationStatusSelector evaluationId={id}/>
             </td>
             <td>
               <div>
                 <Button href={evaluationUrl} className="action-btn">
-                View
+                  View
                 </Button>
                 <Button href={feedbackUrl} className="action-btn">
-                Feedback
+                  Feedback
                 </Button>
                 <Button href={objectivesUrl} className="action-btn">
-                Objectives
+                  Objectives
                 </Button>
               </div>
             </td>
           </tr>),
         )
       }
-    </tbody>
-  </Table>
-);
+      </tbody>
+    </Table>
+  );
+};
 
-export default UserEvaluationsList;
+export default connect(
+  (state, { userId }) => ({
+    evaluations: selectors.getSortedEvaluationsByUserId(state, userId),
+  }),
+)(UserEvaluationsList);

@@ -1,6 +1,7 @@
 import * as request from 'supertest';
 import { expect } from 'chai';
 import * as moment from 'moment';
+import * as R from 'ramda';
 
 import app from '../backend/app';
 import helpers from './helpers';
@@ -13,7 +14,7 @@ import { ObjectID } from 'bson';
 const { sign, cookieName } = auth;
 const { prepopulateUsers, users, insertTemplate, assignTemplate, clearDb, insertSkill, insertEvaluation, assignMentor, assignLineManager } = helpers;
 const [template] = templatesFixture;
-const [evaluation] = evaluationsFixture;
+const [stubEvaluation] = evaluationsFixture;
 
 const beforeNow = moment().subtract(1, 'days').toDate();
 const now = moment().toDate();
@@ -27,11 +28,16 @@ let normalUserTwoId;
 const getInitialState = str => JSON.parse(str.match(/REDUX_STATE=(.*)/)[0].substr(12));
 
 describe('initial client state', () => {
+  let evaluation;
+
   beforeEach(() =>
     clearDb()
       .then(() => prepopulateUsers())
       .then(() => insertTemplate(template))
       .then(() => skillsFixture.map(insertSkill))
+      .then(() => {
+        evaluation = R.clone(stubEvaluation);
+      })
       .then(() =>
         Promise.all([
           users.findOne({ email: 'dmorgantini@gmail.com' }),
@@ -88,6 +94,7 @@ describe('initial client state', () => {
               email: 'user@magic.com',
               name: 'User Magic',
               id: normalUserOneId,
+              isAdmin: false,
               templateId: 'eng-nodejs',
               username: 'magic',
             },
@@ -253,6 +260,7 @@ describe('initial client state', () => {
                 name: 'David Morgantini',
                 username: 'dmorgantini',
                 id: adminUserId,
+                isAdmin: true,
               };
 
               expect(getInitialState(res.text).user.mentorDetails).to.deep.equal(expectedMentor);
@@ -286,6 +294,7 @@ describe('initial client state', () => {
                 avatarUrl: 'https://www.tes.com/logo.svg',
                 email: 'user@magic.com',
                 id: normalUserOneId,
+                isAdmin: false,
                 mentorId: adminUserId,
                 name: 'User Magic',
                 templateId: 'eng-nodejs',
@@ -305,6 +314,7 @@ describe('initial client state', () => {
         .then((res) => {
           expect(getInitialState(res.text)).to.have.property('matrices');
           expect(getInitialState(res.text)).to.have.property('users');
+          expect(getInitialState(res.text)).to.have.property('evaluations');
           expect(getInitialState(res.text)).to.have.property('user');
         }));
 
@@ -344,26 +354,26 @@ describe('initial client state', () => {
             {
               email: 'dmorgantini@gmail.com',
               id: adminUserId,
+              isAdmin: true,
               name: 'David Morgantini',
               username: 'dmorgantini',
-              evaluations: [],
               avatarUrl: 'https://www.tes.com/logo.svg',
             },
             {
               email: 'user@magic.com',
               id: normalUserOneId,
+              isAdmin: false,
               name: 'User Magic',
               username: 'magic',
               templateId: 'eng-nodejs',
-              evaluations: [],
               avatarUrl: 'https://www.tes.com/logo.svg',
             },
             {
               email: 'user@dragon-riders.com',
               id: normalUserTwoId,
+              isAdmin: false,
               name: 'User Dragon Rider',
               username: 'dragon-riders',
-              evaluations: [],
               avatarUrl: 'https://www.tes.com/logo.svg',
             },
           ];
@@ -371,17 +381,18 @@ describe('initial client state', () => {
           expect(getInitialState(res.text).users.users).to.deep.equal(expectedUsers);
         }));
 
-    it('returns initial state with all users and their evaluations (newest to oldest)', () => {
-      let oldEvaluationId;
-      let newEvaluationId;
+    it('returns initial state with all evaluations', () => {
+      let evaluationOneId;
+      let evaluationTwoId;
 
-      return insertEvaluation(Object.assign({}, evaluation, { createdDate: beforeNow, _id: new ObjectID() }), normalUserOneId)
+      return insertEvaluation({ ...evaluation, _id: new ObjectID() }, normalUserOneId)
         .then(({ insertedId }) => {
-          oldEvaluationId = String(insertedId);
+          evaluationOneId = String(insertedId);
         })
-        .then(() => insertEvaluation(Object.assign({}, evaluation, { createdDate: now, _id: new ObjectID() }), normalUserOneId))
+        .then(() =>
+          insertEvaluation({ ...evaluation, _id: new ObjectID() }, normalUserOneId)
         .then(({ insertedId }) => {
-          newEvaluationId = String(insertedId);
+          evaluationTwoId = String(insertedId);
         })
         .then(() =>
           request(app)
@@ -389,31 +400,21 @@ describe('initial client state', () => {
             .set('Cookie', `${cookieName}=${adminToken}`)
             .expect(200)
             .then((res) => {
-              const [userOne, userTwo, userThree] = getInitialState(res.text).users.users;
+              const evaluations = getInitialState(res.text).evaluations.entities;
+              const evaluationOne = evaluations[evaluationOneId];
+              const evaluaitonTwo = evaluations[evaluationTwoId];
 
-              expect(userOne.evaluations).to.eql([]);
-              expect(userThree.evaluations).to.eql([]);
+              expect(evaluationOne).to.have.property('createdDate');
+              expect(evaluationOne.evaluationUrl).to.equal(`/evaluations/${evaluationOneId}`);
+              expect(evaluationOne.feedbackUrl).to.equal(`/evaluations/${evaluationOneId}/feedback`);
+              expect(evaluationOne.objectivesUrl).to.equal(`/evaluations/${evaluationOneId}/objectives`);
+              expect(evaluationOne.id).to.equal(evaluationOneId);
+              expect(evaluationOne.status).to.equal('NEW');
+              expect(evaluationOne.template.name).to.equal('Node JS Dev');
+              expect(evaluationOne.view).to.equal('ADMIN');
 
-              const [firstEvaluation, secondEvaluation] = userTwo.evaluations;
-
-              expect(firstEvaluation.createdDate).to.equal(now.toISOString());
-              expect(firstEvaluation.evaluationUrl).to.equal(`/evaluations/${newEvaluationId}`);
-              expect(firstEvaluation.feedbackUrl).to.equal(`/evaluations/${newEvaluationId}/feedback`);
-              expect(firstEvaluation.objectivesUrl).to.equal(`/evaluations/${newEvaluationId}/objectives`);
-              expect(firstEvaluation.id).to.equal(newEvaluationId);
-              expect(firstEvaluation.status).to.equal('NEW');
-              expect(firstEvaluation.template.name).to.equal('Node JS Dev');
-              expect(firstEvaluation.view).to.equal('ADMIN');
-
-              expect(secondEvaluation.createdDate).to.equal(beforeNow.toISOString());
-              expect(secondEvaluation.evaluationUrl).to.equal(`/evaluations/${oldEvaluationId}`);
-              expect(secondEvaluation.feedbackUrl).to.equal(`/evaluations/${oldEvaluationId}/feedback`);
-              expect(secondEvaluation.objectivesUrl).to.equal(`/evaluations/${oldEvaluationId}/objectives`);
-              expect(secondEvaluation.id).to.equal(oldEvaluationId);
-              expect(secondEvaluation.status).to.equal('NEW');
-              expect(secondEvaluation.template.name).to.equal('Node JS Dev');
-              expect(secondEvaluation.view).to.equal('ADMIN');
-            }));
+              expect(evaluaitonTwo.id).to.equal(evaluationTwoId);
+            })));
     });
   });
 });

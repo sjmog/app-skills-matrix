@@ -75,24 +75,23 @@ const getReportData = (userId: string)  =>
       },
       { users: [], evaluations: [] }));
 
-const augmentWithEvaluations = (users): Promise<UserWithEvaluations[]> =>
-  Promise.map(
-    users,
-    (user: User) =>
-      getEvaluations(user.id)
-        .then(evaluations => evaluations.map(evaluation => evaluation.adminMetadataViewModel()))
-        .then(evaluations => Object.assign({}, user.manageUserViewModel(), { evaluations })));
-
 export const adminClientState = (user?: User): Promise<AdminClientState> =>
-  Promise.all([userCollection.getAll(), templates.getAll()])
-    .then(([allUsers = [], allTemplates = []]) =>
-      augmentWithEvaluations(allUsers)
-        .then(users => (
+  Promise.all([
+    userCollection.getAll(),
+    templates.getAll(),
+    evaluationCollection.getAll(),
+  ])
+    .then(([allUsers = [], allTemplates = [], allEvaluations = []]) =>
+      getEvaluations(allUsers)
+        .then(evaluations => (
           {
             user:  user ? user.userDetailsViewModel() : null,
             users: {
-              users,
+              users: R.map(user => user.manageUserViewModel(), allUsers),
               newEvaluations: [],
+            },
+            evaluations: {
+              entities: arrayToKeyedObject(R.map(domainEvaluation => domainEvaluation.adminMetadataViewModel(), allEvaluations)),
             },
             matrices: {
               templates: R.map(domainTemplate => domainTemplate.viewModel(), allTemplates),

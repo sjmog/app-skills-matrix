@@ -7,6 +7,7 @@ type UserDetailsViewModel = {
   mentorId: string,
   lineManagerId: string,
   templateId: string,
+  isAdmin: boolean,
 };
 
 type NormalizedUsers = { [id: string]: UserDetailsViewModel };

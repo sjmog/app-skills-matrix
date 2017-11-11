@@ -33,7 +33,7 @@ const permissionError = (error: ErrorMessage) => Promise.reject({ status: 403, d
  */
 const permissions = (loggedInUser: User, requestUser: User): Permissions => {
   const loggedIn = Boolean(loggedInUser);
-  const isAdmin = loggedIn && loggedInUser.isAdmin();
+  const isAdmin = loggedIn && loggedInUser.isAdmin;
   const isMentor = loggedIn && loggedInUser.id === requestUser.mentorId;
   const isLineManager = loggedIn && loggedInUser.id === requestUser.lineManagerId;
   const isUser = loggedIn && loggedInUser.id === requestUser.id;
