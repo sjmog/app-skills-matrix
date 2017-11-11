@@ -161,3 +161,5 @@ export default handleActions({
   [retrieveTemplateFailure]: handleFetchTemplateFailure,
 }, { });
 
+export const getTemplateAddResult = state =>
+  R.prop('templateAddResult', state) || {};

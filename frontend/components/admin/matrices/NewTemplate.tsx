@@ -2,14 +2,19 @@ import * as React from 'react';
 import * as R from 'ramda';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Button, ControlLabel, Form, FormControl, FormGroup, Row } from 'react-bootstrap';
+import { Button, ControlLabel, Form, FormControl, FormGroup, Alert } from 'react-bootstrap';
+
 import { actions } from '../../../modules/admin/matrices';
+import * as selectors from '../../../modules/admin';
+
 import EditableList from './EditableList';
 
 type NewTemplateComponentProps = {
   actions: typeof actions,
-  success: boolean,
-  error: ErrorMessage,
+  addTemplateResult: {
+    success: boolean,
+    error: ErrorMessage,
+  },
 };
 
 const FieldGroup = ({ id, label = '', ...props }) =>
@@ -61,7 +66,9 @@ class NewTemplateComponent extends React.Component<NewTemplateComponentProps, { 
   }
 
   render() {
+    const { error, success } = this.props.addTemplateResult;
     const { template } = this.state;
+
     return (
       <div>
         <Form onSubmit={this.onAddTemplate}>
@@ -95,13 +102,21 @@ class NewTemplateComponent extends React.Component<NewTemplateComponentProps, { 
             onUpdate={levels => this.updateTemplateState({ target: { name: 'levels', value: levels } })}
           />
           <Button bsStyle="primary" type="submit">Create Template</Button>
+          { success ? <Alert bsStyle="success">Template successfully created</Alert> : null }
+          {
+            error
+              ? <Alert bsStyle="danger">{`Unable to create new template${error.message ? ': ' + error.message : ''}`}</Alert>
+              : null
+          }
         </Form>
       </div>);
   }
 }
 
 export const NewTemplate = connect(
-  state => state.matrices.templateAddResult || {},
+  state => ({
+    addTemplateResult: selectors.getTemplateAddResult(state),
+  }),
   dispatch => ({
     actions: bindActionCreators(actions, dispatch),
   }),
