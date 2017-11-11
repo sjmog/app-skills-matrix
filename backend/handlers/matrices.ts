@@ -1,24 +1,43 @@
 import * as Promise from 'bluebird';
 import * as R from 'ramda';
+import * as Joi from 'joi';
 
 import matrices from '../models/matrices/index';
-import { INVALID_LEVEL_OR_CATEGORY, TEMPLATE_NOT_FOUND } from './errors';
+import { INVALID_LEVEL_OR_CATEGORY, TEMPLATE_NOT_FOUND, INVALID_TEMPLATE_UPDATE } from './errors';
 import { Skill } from '../models/matrices/skill';
 
 const { templates, skills } = matrices;
 
+const templateSaveSchema = Joi.object().keys({
+  id: Joi.string().required(),
+  name: Joi.string().required(),
+  version: Joi.number().required(),
+  categories: Joi.array().items(Joi.string().required()).required(),
+  levels: Joi.array().items(Joi.string().required()).required(),
+  skillGroups: Joi.array().items(Joi.object().keys({
+    category: Joi.string().required(),
+    level: Joi.string().required(),
+    skills: Joi.array().required(),
+  })).min(1).required(),
+}).required().unknown();
+
 const handlerFunctions = Object.freeze({
     templates: {
       save: (req, res, next) => {
-        // TODO - validation eh?
-        const template = req.body.template;
-        Promise.try(() => templates.getById(template.id))
-          .then(retrievedTemplate =>
-            (retrievedTemplate
-              ? templates.updateTemplate(retrievedTemplate, template)
-              : templates.addTemplate(template)))
-          .then(t => res.status(201).json(t.viewModel()))
-          .catch(next);
+        Promise.try(() => {
+          const { error, value: validTemplate } = templateSaveSchema.validate(req.body.template);
+          if (error) throw ({ status: 400, data: INVALID_TEMPLATE_UPDATE() });
+
+          return validTemplate;
+        })
+          .then(validTemplateSubmission => templates.getById(validTemplateSubmission.id)
+            .then(retrievedTemplate =>
+              (retrievedTemplate
+                ? templates.updateTemplate(retrievedTemplate, validTemplateSubmission)
+                : templates.addTemplate(validTemplateSubmission)))
+            .then(t => res.status(201).json(t.viewModel())))
+          .catch(err =>
+            (err.status && err.data) ? res.status(err.status).json(err.data) : next(err));
       },
       retrieve: (req, res, next) => {
         Promise.try(() => templates.getById(req.params.templateId))

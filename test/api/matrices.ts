@@ -91,6 +91,21 @@ describe('matrices', () => {
           expect(updatedTemplate.skillGroups.length).to.equal(0);
         }));
 
+    it('responds with bad request when data to be saved is not valid', () => {
+     const invalidTemplate = {
+       id: null,
+       name: '',
+       categories: 'INVALID',
+       levels: { invalid: true },
+     };
+
+     return request(app)
+       .post(`${prefix}/templates`)
+       .send({ action: 'save', template: invalidTemplate })
+       .set('Cookie', `${cookieName}=${adminToken}`)
+       .expect(400);
+    });
+
     const errorCases =
       [
         () => ({

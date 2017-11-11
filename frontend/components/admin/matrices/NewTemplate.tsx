@@ -23,19 +23,21 @@ const FieldGroup = ({ id, label = '', ...props }) =>
     <FormControl name={id} {...props} />
   </FormGroup>);
 
+const initialState = {
+  template: {
+    name: '',
+    id: '',
+    version: 1,
+    categories: [],
+    levels: [],
+    skillGroups: [],
+  },
+};
+
 class NewTemplateComponent extends React.Component<NewTemplateComponentProps, { template: UnhydratedTemplate }> {
   constructor(props) {
     super(props);
-    this.state = {
-      template: {
-        name: '',
-        id: '',
-        version: 1,
-        categories: [],
-        levels: [],
-        skillGroups: [],
-      },
-    };
+    this.state = R.clone(initialState);
     this.updateTemplateState = this.updateTemplateState.bind(this);
     this.onAddTemplate = this.onAddTemplate.bind(this);
   }
@@ -61,8 +63,9 @@ class NewTemplateComponent extends React.Component<NewTemplateComponentProps, { 
       }, template.levels);
     }, template.categories);
     template.skillGroups = skillGroups;
+
+    this.setState(R.clone(initialState));
     this.props.actions.addTemplate(template);
-    // TODO: Error handling & clearing the form
   }
 
   render() {
@@ -102,7 +105,7 @@ class NewTemplateComponent extends React.Component<NewTemplateComponentProps, { 
             onUpdate={levels => this.updateTemplateState({ target: { name: 'levels', value: levels } })}
           />
           <Button bsStyle="primary" type="submit">Create Template</Button>
-          { success ? <Alert bsStyle="success">Template successfully created</Alert> : null }
+          {success ? <Alert bsStyle="success">Template successfully created</Alert> : null}
           {
             error
               ? <Alert bsStyle="danger">{`Unable to create new template${error.message ? ': ' + error.message : ''}`}</Alert>
