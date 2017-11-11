@@ -3,7 +3,7 @@ import * as R from 'ramda';
 import * as Joi from 'joi';
 
 import matrices from '../models/matrices/index';
-import { INVALID_LEVEL_OR_CATEGORY, TEMPLATE_NOT_FOUND, INVALID_TEMPLATE_UPDATE } from './errors';
+import { INVALID_LEVEL_OR_CATEGORY, TEMPLATE_NOT_FOUND, INVALID_TEMPLATE_UPDATE, DUPLICATE_TEMPLATE } from './errors';
 import { Skill } from '../models/matrices/skill';
 
 const { templates, skills } = matrices;
@@ -31,13 +31,15 @@ const handlerFunctions = Object.freeze({
           return validTemplate;
         })
           .then(validTemplateSubmission => templates.getById(validTemplateSubmission.id)
-            .then(retrievedTemplate =>
-              (retrievedTemplate
-                ? templates.updateTemplate(retrievedTemplate, validTemplateSubmission)
-                : templates.addTemplate(validTemplateSubmission)))
+            .then((retrievedTemplate) => {
+              if (retrievedTemplate) {
+                throw ({ status: 400, data: DUPLICATE_TEMPLATE() });
+              }
+
+              return templates.addTemplate(validTemplateSubmission);
+            })
             .then(t => res.status(201).json(t.viewModel())))
-          .catch(err =>
-            (err.status && err.data) ? res.status(err.status).json(err.data) : next(err));
+          .catch(err => (err.status && err.data) ? res.status(err.status).json(err.data) : next(err));
       },
       retrieve: (req, res, next) => {
         Promise.try(() => templates.getById(req.params.templateId))

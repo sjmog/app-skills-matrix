@@ -74,7 +74,7 @@ describe('matrices', () => {
           expect(newTemplate.skillGroups[0].category).to.equal('Dragon Slaying');
         }));
 
-    it('updates an existing template with the same id', () =>
+    it('returns bad request when a template exists with the same ID', () =>
       insertTemplate(Object.assign({}, sampleTemplate))
         .then(() =>
           request(app)
@@ -84,12 +84,7 @@ describe('matrices', () => {
               template: Object.assign({}, sampleTemplate, { name: 'new name', skillGroups: [] }),
             })
             .set('Cookie', `${cookieName}=${adminToken}`)
-            .expect(201))
-        .then(() => templates.findOne({ id: 'eng-nodejs' }))
-        .then((updatedTemplate) => {
-          expect(updatedTemplate.name).to.deep.equal('new name');
-          expect(updatedTemplate.skillGroups.length).to.equal(0);
-        }));
+            .expect(400)));
 
     it('responds with bad request when data to be saved is not valid', () => {
      const invalidTemplate = {

@@ -22,3 +22,4 @@ export const NOT_AUTHORIZED_TO_VIEW_TASKS = () => ({ message: `You can't see ano
 export const UNKNOWN_ACTION = () => ({ message: 'Unknown action requested' });
 export const INVALID_USER_UPDATE_REQUESTED = () => ({ message: 'Invalid update attempted. Name cannot be empty and email must be valid.' });
 export const INVALID_TEMPLATE_UPDATE = () => ({ message: 'Please provide an ID, name, categories and levels.' });
+export const DUPLICATE_TEMPLATE = () => ({ message: 'A matrix with this ID already exists. Please provide an alternative.' });
