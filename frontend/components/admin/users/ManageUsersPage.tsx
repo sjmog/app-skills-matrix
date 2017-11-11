@@ -5,7 +5,6 @@ import { Grid, Row, Button, Alert } from 'react-bootstrap';
 import * as R from 'ramda';
 
 import { actions } from '../../../modules/admin/users';
-import AddUserForm from './AddUserForm';
 import UserList from './UserList';
 import * as selectors from '../../../modules/admin';
 
@@ -102,25 +101,6 @@ class ManageUsersPageComponent extends React.Component<ManageUsersPageComponentP
     return (
       <Grid>
         <Row>
-          <h1 className="header">Users</h1>
-        </Row>
-        <Row>
-          <AddUserForm
-            newUser={this.state.newUser}
-            updateNewUserState={this.updateNewUserState}
-            onAddUser={this.onAddUser}
-          />
-        </Row>
-        <Row>
-          <Button
-            bsStyle="primary"
-            disabled={this.state.selectedUsers.length === 0}
-            onClick={this.onStartEvaluation}
-          >
-            Start evaluation
-          </Button>
-        </Row>
-        <Row>
           {error ? <Alert bsStyle="danger">Something went wrong: {error.message || 'unknown issue'}</Alert> : false}
           <UserList
             selectedUsers={this.state.selectedUsers}
@@ -131,6 +111,15 @@ class ManageUsersPageComponent extends React.Component<ManageUsersPageComponentP
             onSelectLineManager={this.onSelectLineManager}
             onUserSelectionChange={this.onUserSelectionChange}
           />
+        </Row>
+        <Row>
+          <Button
+            bsStyle="primary"
+            disabled={this.state.selectedUsers.length === 0}
+            onClick={this.onStartEvaluation}
+          >
+            Start evaluation
+          </Button>
         </Row>
         <Row>
           <ul>

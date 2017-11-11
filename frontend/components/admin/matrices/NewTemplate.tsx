@@ -64,39 +64,38 @@ class NewTemplateComponent extends React.Component<NewTemplateComponentProps, { 
     const { template } = this.state;
     return (
       <div>
-        <Row>
-          <Form onSubmit={this.onAddTemplate}>
-            <FieldGroup
-              id="id"
-              type="text"
-              label="id"
-              value={template.id || ''}
-              onChange={this.updateTemplateState}
-              placeholder="id"
-            />
-            <FieldGroup
-              id="name"
-              type="text"
-              label="Name"
-              value={template.name || ''}
-              onChange={this.updateTemplateState}
-              placeholder="name"
-            />
-            <EditableList
-              title="Categories"
-              placeholder="Category"
-              array={template.categories || []}
-              onUpdate={categories => this.updateTemplateState({ target: { name: 'categories', value: categories } })}
-            />
-            <EditableList
-              title="Levels"
-              placeholder="Level"
-              array={template.levels || []}
-              onUpdate={levels => this.updateTemplateState({ target: { name: 'levels', value: levels } })}
-            />
-            <Button bsStyle="primary" type="submit">Add Template</Button>
-          </Form>
-        </Row>
+        <Form onSubmit={this.onAddTemplate}>
+          <FieldGroup
+            id="id"
+            type="text"
+            label="ID"
+            value={template.id || ''}
+            onChange={this.updateTemplateState}
+          />
+          <FieldGroup
+            id="name"
+            type="text"
+            label="Template name"
+            value={template.name || ''}
+            onChange={this.updateTemplateState}
+          />
+          <EditableList
+            title="Categories"
+            addBtnName="Add category"
+            placeholder="Category name"
+            array={template.categories || []}
+            onUpdate={categories => this.updateTemplateState({ target: { name: 'categories', value: categories } })}
+          />
+          <EditableList
+            title="Levels"
+            addBtnName="Add Level"
+            infoText="Levels should be provided in descending order, from highest to lowest."
+            placeholder="Level name"
+            array={template.levels || []}
+            onUpdate={levels => this.updateTemplateState({ target: { name: 'levels', value: levels } })}
+          />
+          <Button bsStyle="primary" type="submit">Create Template</Button>
+        </Form>
       </div>);
   }
 }

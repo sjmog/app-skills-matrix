@@ -59,7 +59,7 @@ function userDetailsRow(user, isSelected, onUserSelectionChange, makeSelectMento
       </td>
       <td className="users-list__cell">
         <Glyphicon
-          glyph="edit"
+          glyph="pencil"
           className="edit-icon"
           onClick={() => viewEditUserModal(id)}
         />
