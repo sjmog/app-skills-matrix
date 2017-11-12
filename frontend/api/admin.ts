@@ -1,9 +1,11 @@
 import axios from 'axios';
-
-const handleError = (error): Promise<ErrorMessage> => Promise.reject(error.response ? error.response.data : { error: true, message: error.message });
-const getData = response => response.data;
+import { getData, handleError } from './index';
 
 export default ({
+  adminUpdateSkillStatus(evaluationId, skillId, status): Promise<any> {
+    return axios.post(`/skillz/evaluations/${evaluationId}`, { action: 'adminUpdateSkillStatus', skillId, status })
+      .catch(handleError);
+  },
   saveUser({ name, email, username }): Promise<UserDetailsViewModel> {
     return axios.post('/skillz/users', { action: 'create', name, email, username })
       .then(getData)
@@ -71,39 +73,6 @@ export default ({
   },
   updateEvaluationStatus(evaluationId: string, status: string): Promise<EvaluationMetadataViewModel> {
     return axios.post(`/skillz/evaluations/${evaluationId}`, { action: 'updateEvaluationStatus', status })
-      .then(getData)
-      .catch(handleError);
-  },
-  retrieveEvaluation(evaluationId): Promise<HydratedEvaluationViewModel> {
-    return axios.get(`/skillz/evaluations/${evaluationId}`)
-      .then(getData)
-      .catch(handleError);
-  },
-  updateSkillStatus(evaluationId: string, skillId: string, status): Promise<any> {
-    return axios.post(`/skillz/evaluations/${evaluationId}`, { action: 'updateSkillStatus', skillId, status })
-      .catch(handleError);
-  },
-  adminUpdateSkillStatus(evaluationId, skillId, status): Promise<any> {
-    return axios.post(`/skillz/evaluations/${evaluationId}`, { action: 'adminUpdateSkillStatus', skillId, status })
-      .catch(handleError);
-  },
-  evaluationComplete(evaluationId): Promise<EvaluationMetadataViewModel> {
-    return axios.post(`/skillz/evaluations/${evaluationId}`, { action: 'complete' })
-      .then(getData)
-      .catch(handleError);
-  },
-  addNote(evaluationId, skillId, note): Promise<NoteViewModel> {
-    return axios.post(`/skillz/evaluations/${evaluationId}`, { action: 'addNote', skillId, note })
-      .then(getData)
-      .catch(handleError);
-  },
-  deleteNote(evaluationId, skillId, noteId): Promise<any> {
-    return axios.post(`/skillz/evaluations/${evaluationId}`, { action: 'deleteNote', skillId, noteId })
-      .then(getData)
-      .catch(handleError);
-  },
-  retrieveTasks(userId): Promise<TaskViewModel[]> {
-    return axios.get(`/skillz/tasks/${userId}`)
       .then(getData)
       .catch(handleError);
   },
