@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
-import { ensureLoggedIn, getRequestedEvaluation, getUserPermissions } from '../middlewares/auth';
-import evaluationsHandler from '../handlers/evaluations';
+import { ensureLoggedIn, getRequestedEvaluation, getUserPermissions } from '../../middlewares/auth';
+import evaluationsHandler from '../../handlers/evaluations';
 import createJUPHandler from './createJUPHandler';
 
 const { evaluation, evaluations } = <any>evaluationsHandler;

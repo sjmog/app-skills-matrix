@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
-import actionHandler from '../handlers/actions';
-import { ensureLoggedIn, getRequestedUser, getUserPermissions } from '../middlewares/auth';
+import actionHandler from '../../handlers/actions';
+import { ensureLoggedIn, getRequestedUser, getUserPermissions } from '../../middlewares/auth';
 
 const { actions } = <any>actionHandler;
 

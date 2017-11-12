@@ -1,10 +1,10 @@
 import * as express from 'express';
 
-import users from './users';
-import matrices from './matrices';
-import evaluations from './evaluations';
-import actions from './actions';
-import tasks from './tasks';
+import users from './api/users';
+import matrices from './api/matrices';
+import evaluations from './api/evaluations';
+import actions from './api/actions';
+import tasks from './api/tasks';
 import clientApp from './clientApp';
 import auth from './auth';
 

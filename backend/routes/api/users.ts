@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
-import { ensureAdmin, getRequestedUser } from '../middlewares/auth';
-import userHandler from '../handlers/users';
+import { ensureAdmin, getRequestedUser } from '../../middlewares/auth';
+import userHandler from '../../handlers/users';
 import createJUPHandler from './createJUPHandler';
 
 const { users, user, evaluations } = <any>userHandler;

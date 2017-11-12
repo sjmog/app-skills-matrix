@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
-import tasksHandler from '../handlers/tasks';
-import { ensureLoggedIn, getRequestedUser, getUserPermissions } from '../middlewares/auth';
+import tasksHandler from '../../handlers/tasks';
+import { ensureLoggedIn, getRequestedUser, getUserPermissions } from '../../middlewares/auth';
 
 const { find } = <any>tasksHandler;
 

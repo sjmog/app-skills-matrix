@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
-import { ensureAdmin } from '../middlewares/auth';
-import matricesHandler from '../handlers/matrices';
+import { ensureAdmin } from '../../middlewares/auth';
+import matricesHandler from '../../handlers/matrices';
 import createJUPHandler from './createJUPHandler';
 
 const { templates, skills } = <any>matricesHandler;

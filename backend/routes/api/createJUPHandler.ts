@@ -1,6 +1,6 @@
 import * as R from 'ramda';
 import * as compose from 'composable-middleware';
-import { UNKNOWN_ACTION } from '../handlers/errors';
+import { UNKNOWN_ACTION } from '../../handlers/errors';
 
 const actionSpecificMiddleware = model =>
   (req, res, next) => {
