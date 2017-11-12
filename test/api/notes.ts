@@ -4,13 +4,13 @@ import * as moment from 'moment';
 import * as R from 'ramda';
 import { ObjectID } from 'mongodb';
 
-import app from '../backend/app';
-import templateData from './fixtures/templates';
-import skillsFixture from './fixtures/skills';
-import evaluationsFixture from './fixtures/evaluations';
-import actionsFixture from './fixtures/actions';
-import auth from '../backend/models/auth';
-import helpers from './helpers';
+import app from '../../backend/app';
+import templateData from '../fixtures/templates';
+import skillsFixture from '../fixtures/skills';
+import evaluationsFixture from '../fixtures/evaluations';
+import actionsFixture from '../fixtures/actions';
+import auth from '../../backend/models/auth';
+import helpers from '../helpers';
 
 const { sign, cookieName } = auth;
 

@@ -3,11 +3,11 @@ import { expect } from 'chai';
 import * as Promise from 'bluebird';
 import { ObjectID } from 'mongodb';
 
-import app from '../backend/app';
-import evaluationsFixture from './fixtures/evaluations';
-import auth from '../backend/models/auth';
-import helpers from './helpers';
-import { STATUS } from '../backend/models/evaluations/evaluation';
+import app from '../../backend/app';
+import evaluationsFixture from '../fixtures/evaluations';
+import auth from '../../backend/models/auth';
+import helpers from '../helpers';
+import { STATUS } from '../../backend/models/evaluations/evaluation';
 
 const { sign, cookieName } = auth;
 const [evaluationOne, evaluationTwo, evaluationThree] = evaluationsFixture;

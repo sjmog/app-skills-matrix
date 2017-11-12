@@ -1,12 +1,12 @@
 import * as request from 'supertest';
 import { expect } from 'chai';
 
-import app from '../backend/app';
-import helpers from './helpers';
-import auth from '../backend/models/auth';
-import templateFixture from './fixtures/templates';
-import skillsFixture from './fixtures/skills';
-import evaluationFixture from './fixtures/evaluations';
+import app from '../../backend/app';
+import helpers from '../helpers';
+import auth from '../../backend/models/auth';
+import templateFixture from '../fixtures/templates';
+import skillsFixture from '../fixtures/skills';
+import evaluationFixture from '../fixtures/evaluations';
 
 const { sign, cookieName } = auth;
 const { prepopulateUsers, users, insertTemplate, clearDb, insertSkill, insertEvaluation, assignMentor, assignLineManager, getEvaluations, skillStatus } = helpers;

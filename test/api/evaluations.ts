@@ -4,15 +4,15 @@ import * as R from 'ramda';
 import * as Promise from 'bluebird';
 import { ObjectID } from 'mongodb';
 
-import app from '../backend/app';
-import templateData from './fixtures/templates';
-import skillsFixture from './fixtures/skills';
-import evaluationsFixture from './fixtures/evaluations';
-import actionsFixture from './fixtures/actions';
-import { STATUS } from '../backend/models/evaluations/evaluation';
-import auth from '../backend/models/auth';
-import helpers from './helpers';
-import { newNote } from '../backend/models/notes/note';
+import app from '../../backend/app';
+import templateData from '../fixtures/templates';
+import skillsFixture from '../fixtures/skills';
+import evaluationsFixture from '../fixtures/evaluations';
+import actionsFixture from '../fixtures/actions';
+import { STATUS } from '../../backend/models/evaluations/evaluation';
+import auth from '../../backend/models/auth';
+import helpers from '../helpers';
+import { newNote } from '../../backend/models/notes/note';
 
 const { sign, cookieName } = auth;
 

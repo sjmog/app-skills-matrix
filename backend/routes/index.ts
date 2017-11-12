@@ -6,7 +6,7 @@ import evaluations from './api/evaluations';
 import actions from './api/actions';
 import tasks from './api/tasks';
 import clientApp from './clientApp';
-import auth from './auth';
+import auth from './github';
 
 const apiRoutes = [
   users,

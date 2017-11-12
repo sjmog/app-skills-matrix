@@ -2,10 +2,10 @@ import * as request from 'supertest';
 import * as Promise from 'bluebird';
 import { expect } from 'chai';
 
-import app from '../backend/app';
-import helpers from './helpers';
-import auth from '../backend/models/auth';
-import actions from './fixtures/actions';
+import app from '../../backend/app';
+import helpers from '../helpers';
+import auth from '../../backend/models/auth';
+import actions from '../fixtures/actions';
 
 const { sign, cookieName } = auth;
 const { prepopulateUsers, users, clearDb, insertAction, assignMentor } = helpers;

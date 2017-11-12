@@ -2,12 +2,12 @@ import * as request from 'supertest';
 import { expect } from 'chai';
 import { ObjectID } from 'mongodb';
 
-import app from '../backend/app';
-import helpers from './helpers';
-import templateFixture from './fixtures/templates';
-import auth from '../backend/models/auth';
-import evaluationsFixture from './fixtures/evaluations';
-import database from '../backend/database';
+import app from '../../backend/app';
+import helpers from '../helpers';
+import templateFixture from '../fixtures/templates';
+import auth from '../../backend/models/auth';
+import evaluationsFixture from '../fixtures/evaluations';
+import database from '../../backend/database';
 
 const evaluations: any = database.collection('evaluations');
 

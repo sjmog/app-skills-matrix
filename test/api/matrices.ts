@@ -3,11 +3,11 @@ import { expect } from 'chai';
 import * as Promise from 'bluebird';
 import * as R from 'ramda';
 
-import app from '../backend/app';
-import auth from '../backend/models/auth';
-import helpers from './helpers';
-import templateFixture from './fixtures/templates';
-import skillsFixture from './fixtures/skills';
+import app from '../../backend/app';
+import auth from '../../backend/models/auth';
+import helpers from '../helpers';
+import templateFixture from '../fixtures/templates';
+import skillsFixture from '../fixtures/skills';
 
 const { users, templates, skills, prepopulateUsers, insertTemplate, insertSkill, clearDb } = helpers;
 const { sign, cookieName } = auth;
