@@ -9,27 +9,28 @@ type LevelProps = {
   skillGroups: NormalizedSkillGroups,
   skills: UnhydratedTemplateSkill[],
   viewSkillDetails: (level: string, category: string, skill: UnhydratedTemplateSkill) => void,
-  onAddSkill: (level: string, category: string, existingSkillId: number) => void,
+  viewAddExistingSkill: (level: string, category: string) => void,
+  onAddSkill: (level: string, category: string, existingSkillId?: string) => void,
 };
 
-const Level = ({ categories, levelName, skillGroups, skills, viewSkillDetails, onAddSkill }: LevelProps) =>
-  (
-    <tr>
-      <td>{<strong>{levelName}</strong>}</td>
-      {
-        categories.map(
-          categoryName => (
-            <SkillGroup
-              key={categoryName}
-              skillGroup={getSkillGroup(levelName, categoryName, skillGroups)}
-              skills={skills}
-              viewSkillDetails={viewSkillDetails}
-              onAddSkill={onAddSkill}
-            />
-          ),
-        )
-      }
-    </tr>
-  );
+const Level = ({ categories, levelName, skillGroups, skills, viewSkillDetails, viewAddExistingSkill, onAddSkill }: LevelProps) => (
+  <tr>
+    <td>{<strong>{levelName}</strong>}</td>
+    {
+      categories.map(
+        categoryName => (
+          <SkillGroup
+            key={categoryName}
+            skillGroup={getSkillGroup(levelName, categoryName, skillGroups)}
+            skills={skills}
+            viewSkillDetails={viewSkillDetails}
+            viewAddExistingSkill={viewAddExistingSkill}
+            onAddSkill={onAddSkill}
+          />
+        ),
+      )
+    }
+  </tr>
+);
 
 export default Level;
