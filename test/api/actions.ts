@@ -1,6 +1,7 @@
 import * as request from 'supertest';
 import * as Promise from 'bluebird';
 import { expect } from 'chai';
+import fixtureUsers from '../fixtures/users';
 
 import app from '../../backend/app';
 import helpers from '../helpers';
@@ -8,29 +9,19 @@ import auth from '../../backend/models/auth';
 import actions from '../fixtures/actions';
 
 const { sign, cookieName } = auth;
-const { prepopulateUsers, users, clearDb, insertAction, assignMentor } = helpers;
+const { magic, dragonrider } = fixtureUsers;
+const { prepopulateUsers, clearDb, insertAction, assignMentor } = helpers;
 const prefix = '/skillz';
 
-let normalUserOneToken;
-let normalUserTwoToken;
-let normalUserOneId;
-let normalUserTwoId;
+const normalUserOneToken = sign({ username: magic.username, id: magic._id.toString() });
+const normalUserTwoToken = sign({ username: dragonrider.username, id: dragonrider._id.toString() });
+const normalUserOneId = magic._id.toString();
+const normalUserTwoId = dragonrider._id.toString();
 
 describe('actions', () => {
   beforeEach(() =>
     clearDb()
-      .then(() => prepopulateUsers())
-      .then(() =>
-        Promise.all([
-          users.findOne({ email: 'user@magic.com' }),
-          users.findOne({ email: 'user@dragon-riders.com' }),
-        ])
-          .then(([normalUserOne, normalUserTwo]) => {
-            normalUserOneToken = sign({ username: normalUserOne.username, id: normalUserOne._id });
-            normalUserTwoToken = sign({ username: normalUserTwo.username, id: normalUserTwo._id });
-            normalUserOneId = normalUserOne._id.toString();
-            normalUserTwoId = normalUserTwo._id.toString();
-          })));
+      .then(() => prepopulateUsers()));
 
   describe('GET /users/:userId/actions', () => {
     it('should return a list of all the user`s actions', () =>

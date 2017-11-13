@@ -4,23 +4,21 @@ import * as moment from 'moment';
 import * as R from 'ramda';
 import { ObjectID } from 'mongodb';
 
+import fixtureUsers from '../fixtures/users';
 import app from '../../backend/app';
 import templateData from '../fixtures/templates';
 import skillsFixture from '../fixtures/skills';
 import evaluationsFixture from '../fixtures/evaluations';
-import actionsFixture from '../fixtures/actions';
 import auth from '../../backend/models/auth';
 import helpers from '../helpers';
 
+const { dmorgantini, magic, dragonrider } = fixtureUsers;
 const { sign, cookieName } = auth;
 
 const [evaluation] = evaluationsFixture;
-const [action] = actionsFixture;
 const {
   prepopulateUsers,
-  users,
   assignMentor,
-  evaluations,
   insertTemplate,
   clearDb,
   insertSkill,
@@ -36,12 +34,11 @@ const {
 
 const prefix = '/skillz';
 
-let adminToken;
-let normalUserOneToken;
-let normalUserTwoToken;
-let adminUserId;
-let normalUserOneId;
-let normalUserTwoId;
+const normalUserOneToken = sign({ username: magic.username, id: magic._id.toString() });
+const normalUserTwoToken = sign({ username: dragonrider.username, id: dragonrider._id.toString() });
+const normalUserOneId = magic._id.toString();
+const normalUserTwoId = dragonrider._id.toString();
+const adminToken = sign({ username: dmorgantini.username, id: dmorgantini._id.toString() });
 
 let evaluationId;
 let noteId;
@@ -52,20 +49,6 @@ describe('Notes', () => {
       .then(() => prepopulateUsers())
       .then(() => insertTemplate(templateData[0]))
       .then(() => skillsFixture.map(insertSkill))
-      .then(() =>
-        Promise.all([
-          users.findOne({ email: 'dmorgantini@gmail.com' }),
-          users.findOne({ email: 'user@magic.com' }),
-          users.findOne({ email: 'user@dragon-riders.com' }),
-        ])
-          .then(([adminUser, normalUserOne, normalUserTwo]) => {
-            normalUserOneToken = sign({ username: normalUserOne.username, id: normalUserOne._id });
-            normalUserTwoToken = sign({ username: normalUserTwo.username, id: normalUserTwo._id });
-            adminToken = sign({ username: adminUser.username, id: adminUser._id });
-            normalUserOneId = String(normalUserOne._id);
-            normalUserTwoId = String(normalUserTwo._id);
-            adminUserId = String(adminUser._id);
-          }))
       .then(() => {
         evaluationId = null;
         noteId = null;

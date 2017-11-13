@@ -1,6 +1,7 @@
 import * as request from 'supertest';
 import { expect } from 'chai';
 
+import fixtureUsers from '../fixtures/users';
 import app from '../../backend/app';
 import helpers from '../helpers';
 import auth from '../../backend/models/auth';
@@ -8,17 +9,18 @@ import templateFixture from '../fixtures/templates';
 import skillsFixture from '../fixtures/skills';
 import evaluationFixture from '../fixtures/evaluations';
 
+const { dmorgantini, magic, dragonrider } = fixtureUsers;
 const { sign, cookieName } = auth;
-const { prepopulateUsers, users, insertTemplate, clearDb, insertSkill, insertEvaluation, assignMentor, assignLineManager, getEvaluations, skillStatus } = helpers;
+const { prepopulateUsers, insertTemplate, clearDb, insertSkill, insertEvaluation, assignMentor, assignLineManager, getEvaluations, skillStatus } = helpers;
 const [, completedEvaluation] = evaluationFixture;
 
 const prefix = '/skillz';
 
-let adminToken;
-let normalUserOneToken;
-let adminUserId;
-let normalUserOneId;
-let normalUserTwoId;
+const normalUserOneToken = sign({ username: magic.username, id: magic._id.toString() });
+const normalUserOneId = magic._id.toString();
+const normalUserTwoId = dragonrider._id.toString();
+const adminToken = sign({ username: dmorgantini.username, id: dmorgantini._id.toString() });
+const adminUserId = String(dmorgantini._id);
 
 describe('userEvaluations', () => {
   beforeEach(() =>
@@ -26,19 +28,6 @@ describe('userEvaluations', () => {
       .then(() => prepopulateUsers())
       .then(() => insertTemplate(templateFixture[0]))
       .then(() => skillsFixture.map(insertSkill))
-      .then(() =>
-        Promise.all([
-          users.findOne({ email: 'dmorgantini@gmail.com' }),
-          users.findOne({ email: 'user@magic.com' }),
-          users.findOne({ email: 'user@dragon-riders.com' }),
-        ])
-          .then(([adminUser, normalUserOne, normalUserTwo]) => {
-            normalUserOneToken = sign({ username: normalUserOne.username, id: normalUserOne._id });
-            adminToken = sign({ username: adminUser.username, id: adminUser._id });
-            normalUserOneId = normalUserOne._id;
-            normalUserTwoId = normalUserTwo._id;
-            adminUserId = adminUser._id;
-          }))
       .then(() => assignMentor(normalUserOneId, normalUserTwoId))
       .then(() => assignLineManager(normalUserOneId, normalUserTwoId)));
 

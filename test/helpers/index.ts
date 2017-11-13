@@ -13,7 +13,7 @@ const evaluations: any = database.collection('evaluations');
 const actions: any = database.collection('actions');
 const notes: any = database.collection('notes');
 
-const prepopulateUsers = () => users.remove({}).then(() => users.insertMany(usersData));
+const prepopulateUsers = () => users.remove({}).then(() => users.insertMany(R.values(usersData)));
 const addNoteIdsToSkill = (noteIds, skillId, oldEval) => {
   const skillIndex = R.findIndex(R.propEq('id', skillId), oldEval.skills);
   const skillNotesLens = R.lensPath(['skills', skillIndex, 'notes']);

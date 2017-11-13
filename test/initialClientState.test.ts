@@ -3,6 +3,7 @@ import { expect } from 'chai';
 import * as moment from 'moment';
 import * as R from 'ramda';
 
+import fixtureUsers from './fixtures/users';
 import app from '../backend/app';
 import helpers from './helpers';
 import auth from '../backend/models/auth';
@@ -11,19 +12,20 @@ import skillsFixture from './fixtures/skills';
 import evaluationsFixture from './fixtures/evaluations';
 import { ObjectID } from 'bson';
 
+const { dmorgantini, magic, dragonrider } = fixtureUsers;
 const { sign, cookieName } = auth;
-const { prepopulateUsers, users, insertTemplate, assignTemplate, clearDb, insertSkill, insertEvaluation, assignMentor, assignLineManager } = helpers;
+const { prepopulateUsers, insertTemplate, assignTemplate, clearDb, insertSkill, insertEvaluation, assignMentor, assignLineManager } = helpers;
 const [template] = templatesFixture;
 const [stubEvaluation] = evaluationsFixture;
 
 const beforeNow = moment().subtract(1, 'days').toDate();
 const now = moment().toDate();
 
-let adminToken;
-let normalUserOneToken;
-let adminUserId;
-let normalUserOneId;
-let normalUserTwoId;
+const normalUserOneToken = sign({ username: magic.username, id: magic._id.toString() });
+const normalUserOneId = magic._id.toString();
+const normalUserTwoId = dragonrider._id.toString();
+const adminToken = sign({ username: dmorgantini.username, id: dmorgantini._id.toString() });
+const adminUserId = String(dmorgantini._id);
 
 const getInitialState = str => JSON.parse(str.match(/REDUX_STATE=(.*)/)[0].substr(12));
 
@@ -37,20 +39,7 @@ describe('initial client state', () => {
       .then(() => skillsFixture.map(insertSkill))
       .then(() => {
         evaluation = R.clone(stubEvaluation);
-      })
-      .then(() =>
-        Promise.all([
-          users.findOne({ email: 'dmorgantini@gmail.com' }),
-          users.findOne({ email: 'user@magic.com' }),
-          users.findOne({ email: 'user@dragon-riders.com' }),
-        ])
-          .then(([adminUser, normalUserOne, normalUserTwo]) => {
-            normalUserOneToken = sign({ username: normalUserOne.username, id: normalUserOne._id });
-            adminToken = sign({ username: adminUser.username, id: adminUser._id });
-            normalUserOneId = String(normalUserOne._id);
-            normalUserTwoId = String(normalUserTwo._id);
-            adminUserId = String(adminUser._id);
-          })));
+      }));
 
   describe('normal user', () => {
     it('returns HTML with a script tag containing initial state', () =>
@@ -74,7 +63,7 @@ describe('initial client state', () => {
           expect(userOneEntity.username).to.equal('magic');
 
           const userTwoEntity = entities.users.entities[normalUserTwoId];
-          expect(userTwoEntity.username).to.equal('dragon-riders');
+          expect(userTwoEntity.username).to.equal('dragon-rider');
 
           const adminUserEntity = entities.users.entities[adminUserId];
           expect(adminUserEntity.username).to.equal('dmorgantini');
@@ -373,7 +362,7 @@ describe('initial client state', () => {
               id: normalUserTwoId,
               isAdmin: false,
               name: 'User Dragon Rider',
-              username: 'dragon-riders',
+              username: 'dragon-rider',
               avatarUrl: 'https://www.tes.com/logo.svg',
             },
           ];

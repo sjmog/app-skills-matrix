@@ -1,13 +1,16 @@
 import { ObjectID } from 'mongodb';
+import users from './users';
+
+const user = {
+  id: users.dmorgantini._id.toString(),
+  name: users.dmorgantini.name,
+  email: users.dmorgantini.email,
+};
 
 export default [
   {
     _id: new ObjectID(),
-    user: {
-      id: 'user_id',
-      name: 'Jake',
-      email: 'jake@hello.com',
-    },
+    user,
     createdDate: new Date(),
     status: 'NEW',
     template: {
@@ -295,11 +298,7 @@ export default [
   },
   {
     _id: new ObjectID(),
-    user: {
-      id: 'user_id',
-      name: 'Jake',
-      email: 'jake@hello.com',
-    },
+    user,
     createdDate: new Date(),
     status: 'NEW',
     template: {
@@ -439,11 +438,7 @@ export default [
   },
   {
     _id: new ObjectID(),
-    user: {
-      id: 'user_id',
-      name: 'Jake',
-      email: 'jake@hello.com',
-    },
+    user,
     createdDate: new Date(),
     status: 'NEW',
     template: {

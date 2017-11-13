@@ -2,15 +2,14 @@ import * as request from 'supertest';
 import { expect } from 'chai';
 import { ObjectID } from 'mongodb';
 
+import fixtureUsers from '../fixtures/users';
 import app from '../../backend/app';
 import helpers from '../helpers';
 import templateFixture from '../fixtures/templates';
 import auth from '../../backend/models/auth';
 import evaluationsFixture from '../fixtures/evaluations';
-import database from '../../backend/database';
 
-const evaluations: any = database.collection('evaluations');
-
+const { dmorgantini, magic } = fixtureUsers;
 const [evaluationOne, evaluationTwo] = evaluationsFixture;
 const { sign, cookieName } = auth;
 const { prepopulateUsers, users, insertEvaluation, insertTemplate, getEvaluationsByUser, clearDb } = helpers;
@@ -20,23 +19,15 @@ const prefix = '/skillz';
 
 const templateId = 'eng-nodejs';
 
-let adminToken;
-let normalUserToken;
-let adminUserId;
-let normalUserId;
+const normalUserToken = sign({ username: magic.username, id: magic._id.toString() });
+const normalUserId = magic._id.toString();
+const adminToken = sign({ username: dmorgantini.username, id: dmorgantini._id.toString() });
+const adminUserId = String(dmorgantini._id);
 
 describe('users', () => {
   beforeEach(() =>
     clearDb()
-      .then(prepopulateUsers)
-      .then(() =>
-        Promise.all([users.findOne({ email: 'dmorgantini@gmail.com' }), users.findOne({ email: 'user@magic.com' })])
-          .then(([adminUser, normalUser]) => {
-            adminToken = sign({ username: adminUser.username, id: adminUser._id });
-            normalUserToken = sign({ username: normalUser.username, id: normalUser._id });
-            normalUserId = String(normalUser._id);
-            adminUserId = String(adminUser._id);
-          })));
+      .then(prepopulateUsers));
 
   describe('POST /users', () => {
     it('should let admin create users', () =>

@@ -3,20 +3,20 @@ import { expect } from 'chai';
 import * as Promise from 'bluebird';
 import { ObjectID } from 'mongodb';
 
+import fixtureUsers from '../fixtures/users';
 import app from '../../backend/app';
 import evaluationsFixture from '../fixtures/evaluations';
 import auth from '../../backend/models/auth';
 import helpers from '../helpers';
 import { STATUS } from '../../backend/models/evaluations/evaluation';
 
+const { dmorgantini, magic, dragonrider } = fixtureUsers;
 const { sign, cookieName } = auth;
 const [evaluationOne, evaluationTwo, evaluationThree] = evaluationsFixture;
 const {
   prepopulateUsers,
-  users,
   assignMentor,
   assignLineManager,
-  evaluations,
   clearDb,
   insertEvaluation,
 } = helpers;
@@ -24,12 +24,11 @@ const {
 
 const prefix = '/skillz';
 
-let userOneId;
-let userOneToken;
-let userTwoId;
-let userTwoToken;
-let userThreeId;
-let userThreeToken;
+const userOneToken = sign({ username: magic.username, id: magic._id.toString() });
+const userTwoToken = sign({ username: dragonrider.username, id: dragonrider._id.toString() });
+const userOneId = magic._id.toString();
+const userTwoId = dragonrider._id.toString();
+const userThreeId = String(dmorgantini._id);
 
 let evaluationId;
 
@@ -37,20 +36,6 @@ describe('Tasks', () => {
   beforeEach(() =>
     clearDb()
       .then(() => prepopulateUsers())
-      .then(() =>
-        Promise.all([
-          users.findOne({ email: 'user@magic.com' }),
-          users.findOne({ email: 'user@dragon-riders.com' }),
-          users.findOne({ email: 'dmorgantini@gmail.com' }),
-        ])
-          .then(([userOne, userTwo, userThree]) => {
-            userOneToken = sign({ username: userOne.username, id: userOne._id });
-            userTwoToken = sign({ username: userTwo.username, id: userTwo._id });
-            userThreeToken = sign({ username: userThree.username, id: userThree._id });
-            userOneId = String(userOne._id);
-            userTwoId = String(userTwo._id);
-            userThreeId = String(userThree._id);
-          }))
       .then(() => {
         evaluationId = null;
       }));

@@ -1,7 +1,10 @@
+import users from './users';
+
 export default [
   {
     type : 'FEEDBACK',
     user : {
+      id: users.magic._id,
       name : 'User Magic',
       mentorId : null,
     },
@@ -19,6 +22,7 @@ export default [
   {
     type : 'FEEDBACK',
     user : {
+      id: users.magic._id,
       name : 'User Magic',
       mentorId : null,
     },
@@ -36,6 +40,7 @@ export default [
   {
     type : 'OBJECTIVE',
     user : {
+      id: users.magic._id,
       name : 'User Magic',
       mentorId : null,
     },

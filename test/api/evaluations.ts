@@ -3,6 +3,7 @@ import { expect } from 'chai';
 import * as R from 'ramda';
 import * as Promise from 'bluebird';
 import { ObjectID } from 'mongodb';
+import fixtureUsers from '../fixtures/users';
 
 import app from '../../backend/app';
 import templateData from '../fixtures/templates';
@@ -15,12 +16,12 @@ import helpers from '../helpers';
 import { newNote } from '../../backend/models/notes/note';
 
 const { sign, cookieName } = auth;
+const { dmorgantini, magic, dragonrider } = fixtureUsers;
 
 const [stubEvaluation] = evaluationsFixture;
 const [action] = actionsFixture;
 const {
   prepopulateUsers,
-  users,
   assignMentor,
   assignLineManager,
   evaluations,
@@ -40,12 +41,12 @@ const { NEW, SELF_EVALUATION_COMPLETE, MENTOR_REVIEW_COMPLETE, COMPLETE } = STAT
 
 const prefix = '/skillz';
 
-let adminToken;
-let normalUserOneToken;
-let normalUserTwoToken;
-let adminUserId;
-let normalUserOneId;
-let normalUserTwoId;
+const normalUserOneToken = sign({ username: magic.username, id: magic._id.toString() });
+const normalUserTwoToken = sign({ username: dragonrider.username, id: dragonrider._id.toString() });
+const normalUserOneId = magic._id.toString();
+const normalUserTwoId = dragonrider._id.toString();
+const adminToken = sign({ username: dmorgantini.username, id: dmorgantini._id.toString() });
+const adminUserId = String(dmorgantini._id);
 
 let evaluation;
 let evaluationId;
@@ -61,21 +62,7 @@ describe('evaluations', () => {
       })
       .then(() => prepopulateUsers())
       .then(() => insertTemplate(templateData[0]))
-      .then(() => skillsFixture.map(insertSkill))
-      .then(() =>
-        Promise.all([
-          users.findOne({ email: 'dmorgantini@gmail.com' }),
-          users.findOne({ email: 'user@magic.com' }),
-          users.findOne({ email: 'user@dragon-riders.com' }),
-        ])
-          .then(([adminUser, normalUserOne, normalUserTwo]) => {
-            normalUserOneToken = sign({ username: normalUserOne.username, id: normalUserOne._id });
-            normalUserTwoToken = sign({ username: normalUserTwo.username, id: normalUserTwo._id });
-            adminToken = sign({ username: adminUser.username, id: adminUser._id });
-            normalUserOneId = String(normalUserOne._id);
-            normalUserTwoId = String(normalUserTwo._id);
-            adminUserId = String(adminUser._id);
-          })));
+      .then(() => skillsFixture.map(insertSkill)));
 
   describe('GET /evaluation/:evaluationId', () => {
     it('allows a user to retrieve their evaluation', () =>
@@ -180,7 +167,7 @@ describe('evaluations', () => {
           expect(body.users[normalUserOneId].username).to.equal('magic');
           expect(body.users[normalUserOneId].avatarUrl).to.equal('https://www.tes.com/logo.svg');
 
-          expect(body.users[normalUserTwoId].username).to.equal('dragon-riders');
+          expect(body.users[normalUserTwoId].username).to.equal('dragon-rider');
         });
     });
 

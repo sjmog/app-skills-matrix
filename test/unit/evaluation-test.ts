@@ -6,12 +6,14 @@ import user from '../../backend/models/users/user';
 import template from '../../backend/models/matrices/template';
 import skills from '../../backend/models/matrices/skills';
 import fixtureEvaluations from '../fixtures/evaluations';
+import fixtureUsers from '../fixtures/users';
 import fixtureSkills from '../fixtures/skills';
 import fixtureTemplates from '../fixtures/templates';
 
+const { dmorgantini } = fixtureUsers;
 const [expectedInitialEvaluation, completedEvaluation, expectedMergedEvaluation] = fixtureEvaluations;
 
-const testUser = user({ _id: 'user_id', name: 'Jake', username: 'Jake', email: 'jake@hello.com', mentorId: '123', lineManagerId: '123', templateId: '123', avatarUrl: 'abc' });
+const testUser = user({ _id: dmorgantini._id.toString(), name: dmorgantini.name, username: dmorgantini.username, email: dmorgantini.email, mentorId: '123', lineManagerId: '123', templateId: '123', avatarUrl: 'abc' });
 const testTemplate = template(fixtureTemplates[0] as any);
 const testSkills = skills(fixtureSkills);
 

@@ -3,32 +3,27 @@ import { expect } from 'chai';
 import * as Promise from 'bluebird';
 import * as R from 'ramda';
 
+import fixtureUsers from '../fixtures/users';
 import app from '../../backend/app';
 import auth from '../../backend/models/auth';
 import helpers from '../helpers';
 import templateFixture from '../fixtures/templates';
 import skillsFixture from '../fixtures/skills';
 
-const { users, templates, skills, prepopulateUsers, insertTemplate, insertSkill, clearDb } = helpers;
+const { templates, skills, prepopulateUsers, insertTemplate, insertSkill, clearDb } = helpers;
+const { dmorgantini, magic } = fixtureUsers;
 const { sign, cookieName } = auth;
 const [sampleTemplate] = templateFixture;
 const [sampleSkill] = skillsFixture;
 
 const prefix = '/skillz/matrices';
-
-let adminToken;
-let normalUserToken;
+const normalUserToken = sign({ username: magic.username, id: magic._id.toString() });
+const adminToken = sign({ username: dmorgantini.username, id: dmorgantini._id.toString() });
 
 describe('matrices', () => {
   beforeEach(() =>
     clearDb()
-      .then(prepopulateUsers)
-      .then(() =>
-        Promise.all([users.findOne({ email: 'dmorgantini@gmail.com' }), users.findOne({ email: 'user@magic.com' })])
-          .then(([adminUser, normalUser]) => {
-            adminToken = sign({ username: adminUser.username, id: adminUser._id });
-            normalUserToken = sign({ username: normalUser.username, id: normalUser._id });
-          })));
+      .then(prepopulateUsers));
 
   describe('GET /matrices/template', () => {
     it('gets the template by id', () => insertTemplate(Object.assign({}, sampleTemplate))
