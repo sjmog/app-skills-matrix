@@ -169,7 +169,7 @@ class SkillDetailsModal extends React.Component<SkillDetailsModalProps, { skill:
                 <Button bsStyle="primary" onClick={this.replaceSkill}>
                   Update and force re-evaluation</Button>
                 <Button bsStyle="danger" onClick={this.removeSkill} className="skill-details__action-btn--right">
-                  Remove from matrix</Button>
+                  Remove from template</Button>
               </ButtonToolbar>
             </FormGroup>
           </Modal.Body>
