@@ -9,8 +9,6 @@ type SkillDetailsModalProps = {
   onAddSkill: (level: string, category: string, existingSkillId?: string) => void,
 };
 
-// TODO: check if string gets sent to server
-// TODO: fix props
 class AddExistingSkillModal extends React.Component<SkillDetailsModalProps, { value: string }> {
   constructor(props) {
     super(props);
