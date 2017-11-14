@@ -21,7 +21,7 @@ type MatrixProps = {
 };
 
 type MatrixState = {
-  showModal: null | string,
+  showModal?: string,
   skill: UnhydratedTemplateSkill,
   level: string,
   category: string,
@@ -82,7 +82,7 @@ class Matrix extends React.Component<MatrixProps, MatrixState> {
           <thead className="matrix-table__head">
           <tr>
             <th>{' '}</th>
-            {categories.map(categoryName => (<th className="matrix__col-heading" key={categoryName}>{categoryName}</th>))}
+            {categories.map(categoryName => (<th key={categoryName}>{categoryName}</th>))}
           </tr>
           </thead>
           <tbody className="matrix-table__body">

@@ -1,15 +1,15 @@
 import * as React from 'react';
 import { Modal, Button, FormGroup, ControlLabel, FormControl, Form } from 'react-bootstrap';
 
-type SkillDetailsModalProps = {
+type AddExistingSkillModalProps = {
   showModal: boolean,
   closeModal: () => void,
-  level?: string,
+  level: string,
   category: string,
   onAddSkill: (level: string, category: string, existingSkillId?: string) => void,
 };
 
-class AddExistingSkillModal extends React.Component<SkillDetailsModalProps, { value: string }> {
+class AddExistingSkillModal extends React.Component<AddExistingSkillModalProps, { value: string }> {
   constructor(props) {
     super(props);
     this.state = { value: '' };

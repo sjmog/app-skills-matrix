@@ -17,6 +17,12 @@ const panels = keymirror({
   IMPORT_TEMPLATE: null,
 });
 
+const componentMap = {
+  [panels.NEW_TEMPLATE]: <NewTemplate />,
+  [panels.IMPORT_SKILLS]: <SaveSkill />,
+  [panels.IMPORT_TEMPLATE]: <SaveTemplate />,
+};
+
 class MatricesActions extends React.Component<any> {
   constructor(props) {
     super(props);
@@ -58,9 +64,7 @@ class MatricesActions extends React.Component<any> {
           </ToggleButton>
         </ToggleButtonGroup>
         <Panel className="matrices-actions__panel">
-          {openPanel === panels.NEW_TEMPLATE ? <NewTemplate/> : null}
-          {openPanel === panels.IMPORT_SKILLS ? <SaveSkill/> : null}
-          {openPanel === panels.IMPORT_TEMPLATE ? <SaveTemplate/> : null}
+          { componentMap[openPanel] }
         </Panel>
       </div>
     );
