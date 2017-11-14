@@ -8,10 +8,9 @@ type LevelProps = {
   levelName: string,
   skillGroups: NormalizedSkillGroups,
   viewSkillDetails: (skillUid: string) => void,
-  evaluationId: string,
 };
 
-const Level = ({ categories, levelName, skillGroups, viewSkillDetails, evaluationId }: LevelProps) =>
+const Level = ({ categories, levelName, skillGroups, viewSkillDetails }: LevelProps) =>
   (
     <tr>
       <td>{<strong>{levelName}</strong>}</td>
@@ -22,7 +21,6 @@ const Level = ({ categories, levelName, skillGroups, viewSkillDetails, evaluatio
               key={categoryName}
               skillGroup={getSkillGroup(levelName, categoryName, skillGroups)}
               viewSkillDetails={viewSkillDetails}
-              evaluationId={evaluationId}
             />
           ),
         )

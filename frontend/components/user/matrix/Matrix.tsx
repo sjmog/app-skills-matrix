@@ -61,7 +61,6 @@ class Matrix extends React.Component<MatrixProps, any> {
                   levelName={levelName}
                   skillGroups={skillGroups}
                   viewSkillDetails={this.viewSkillDetails}
-                  evaluationId={evaluationId}
                 />
               ))
             }

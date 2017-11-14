@@ -6,10 +6,9 @@ import Skill from './Skill';
 type SkillGroupProps = {
   skillGroup: UnhydratedSkillGroup,
   viewSkillDetails: (skillUid: string) => void,
-  evaluationId: string,
 };
 
-const SkillGroup = ({ skillGroup, viewSkillDetails, evaluationId }: SkillGroupProps) => {
+const SkillGroup = ({ skillGroup, viewSkillDetails }: SkillGroupProps) => {
   const skills = R.reverse(skillGroup.skills);
 
   return (
@@ -22,7 +21,6 @@ const SkillGroup = ({ skillGroup, viewSkillDetails, evaluationId }: SkillGroupPr
                 key={skillUid}
                 skillUid={skillUid}
                 viewSkillDetails={viewSkillDetails}
-                evaluationId={evaluationId}
               />
             ),
           )

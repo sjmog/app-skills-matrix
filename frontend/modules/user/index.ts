@@ -8,10 +8,9 @@ import users, * as fromUsers from './users';
 import tasks, * as fromTasks from './tasks';
 import menteeEvaluations, * as fromMenteeEvaluations from './ui/menteeEvaluations';
 import reportEvaluations, * as fromReportEvaluations from './ui/reportEvaluations';
-import matrixFilters, * as fromMatrixFilters from './ui/matrixFilters';
 
 const entities = combineReducers({ evaluations, skills, notes, users, tasks });
-const ui = combineReducers({ menteeEvaluations, reportEvaluations, matrixFilters });
+const ui = combineReducers({ menteeEvaluations, reportEvaluations });
 
 export default combineReducers({ user, entities, ui, evaluation });
 
@@ -65,9 +64,6 @@ export const hasNotes = ({ entities: { skills } }, skillUid: string) =>
 
 export const getSkillsWithCurrentStatus = ({ entities: { skills } }, status, skillUids: string[]) =>
   fromSkills.getSkillsWithCurrentStatus(skills, status, skillUids);
-
-export const getNewlyAttainedSkills = ({ entities: { skills } }, skillUids: string[]) =>
-    fromSkills.getNewlyAttainedSkills(skills, skillUids);
 
 export const getSkillNames = ({ entities: { skills } }, skillUids: string[]) =>
   fromSkills.getSkillNames(skills, skillUids);
@@ -152,11 +148,3 @@ export const getSelectedMentee = ({ ui: { menteeEvaluations } }) =>
 
 export const getSelectedReport = ({ ui: { reportEvaluations } }) =>
   fromReportEvaluations.getSelectedUser(reportEvaluations);
-
-/* MATRIX FILTER SELECTORS */
-
-export const getSkillsToDisplay = ({ ui: { matrixFilters } }, evalId) =>
-    fromMatrixFilters.getSkillsToDisplay(matrixFilters, evalId);
-
-export const getCurrentFilter = ({ ui: { matrixFilters } }, evalId) =>
-    fromMatrixFilters.getCurrentFilter(matrixFilters, evalId);

@@ -10,13 +10,11 @@ import {
   EVALUATION_STATUS,
   EVALUATION_FETCH_STATUS,
 } from '../../../modules/user/evaluations';
-import { actionCreators as skillsActionCreators, NEWLY_ATTAINED } from '../../../modules/user/skills';
-import { actionCreators as matrixFilterActionCreators } from '../../../modules/user/ui/matrixFilters';
+import { actionCreators as skillsActionCreators } from '../../../modules/user/skills';
 
 import Evaluation from './evaluation/Evaluation';
 import EvaluationPageHeader from './EvaluationPageHeader';
 import Matrix from '../matrix/Matrix';
-import Filters from '../matrix/Filters';
 
 import './evaluation.scss';
 
@@ -36,9 +34,6 @@ type EvaluationPageComponentProps = {
   fetchStatus: boolean,
   evalActions: typeof evaluationsActionCreators,
   skillActions: typeof skillsActionCreators,
-  matrixFilterActions: typeof matrixFilterActionCreators,
-  matrixSkillsStatusFilter: (string) => string[],
-  currentFilter: string,
 };
 
 const loadEvaluation = ({ params: { evaluationId }, fetchStatus, evalActions }) => {
@@ -52,12 +47,10 @@ class EvaluationPageComponent extends React.Component<EvaluationPageComponentPro
     super(props);
 
     this.updateSkillStatus = this.updateSkillStatus.bind(this);
-    this.updateFilter = this.updateFilter.bind(this);
   }
 
   componentDidMount() {
     loadEvaluation(this.props);
-
   }
 
   componentWillReceiveProps(nextProps) {
@@ -70,14 +63,8 @@ class EvaluationPageComponent extends React.Component<EvaluationPageComponentPro
     return skillActions.updateSkillStatus(view, evaluationId, skillId, newSkillStatus, skillUid);
   }
 
-  updateFilter(evaluationId, filter, idsToShow) {
-    const { matrixFilterActions } = this.props;
-
-    return matrixFilterActions.updateFilter(evaluationId, filter, idsToShow);
-  }
-
   render() {
-    const { error, levels, categories, status, skillGroups, view, params: { evaluationId }, fetchStatus, matrixSkillsStatusFilter, currentFilter } = this.props;
+    const { error, levels, categories, status, skillGroups, view, params: { evaluationId }, fetchStatus } = this.props;
 
     if (error) {
       return (
@@ -115,15 +102,13 @@ class EvaluationPageComponent extends React.Component<EvaluationPageComponentPro
         </div>
         <div className="evaluation-grid__item">
           <Row>
-            <div className="skill--legend--container">
-              <p className="skill--legend skill--new state--icon--NEW">New skill</p>
-            </div>
-            <Filters
-                evaluationId={evaluationId}
-                updateFilter={this.updateFilter}
-                getMatrixSkillsStatusFilter={matrixSkillsStatusFilter}
-                currentFilter={currentFilter}
-            />
+            <h4>Legend</h4>
+            <p className="skill--legend skill--attained state--icon--ATTAINED">Attained</p>
+            <p className="skill--legend skill--newly-attained state--icon--ATTAINED">Newly attained</p>
+            <p className="skill--legend skill--objective state--icon--OBJECTIVE">Objective</p>
+            <p className="skill--legend skill--feedback state--icon--FEEDBACK">Feedback</p>
+            <p className="skill--legend skill--not-attained state--icon--NOT_ATTAINED">Not attained</p>
+            <p className="skill--legend skill--new state--icon--NEW">New skill</p>
           </Row>
           <Row>
             <Col md={20}>
@@ -161,19 +146,10 @@ export const EvaluationPage = connect(
       categories: selectors.getCategories(state, evalId),
       skillGroups: selectors.getSkillGroups(state, evalId),
       view: selectors.getView(state, evalId),
-      matrixSkillsStatusFilter: (skillStatus) => {
-        const currentFilter = selectors.getCurrentFilter(state, evalId);
-        const isFiltered = currentFilter && currentFilter === skillStatus;
-        const skillUids = selectors.getSkillUids(state, evalId);
-        if (isFiltered) return skillUids;
-        return skillStatus === NEWLY_ATTAINED ? selectors.getNewlyAttainedSkills(state, skillUids) : selectors.getSkillsWithCurrentStatus(state, skillStatus, skillUids);
-      },
-      currentFilter: selectors.getCurrentFilter(state, evalId),
     });
   },
   dispatch => ({
     evalActions: bindActionCreators(evaluationsActionCreators, dispatch),
     skillActions: bindActionCreators(skillsActionCreators, dispatch),
-    matrixFilterActions: bindActionCreators(matrixFilterActionCreators, dispatch),
   }),
 )(EvaluationPageComponent);

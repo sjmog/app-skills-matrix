@@ -16,8 +16,6 @@ export const SKILL_STATUS = keymirror({
   OBJECTIVE: null,
 });
 
-export const NEWLY_ATTAINED = 'NEWLY_ATTAINED';
-
 export const EVALUATION_VIEW = keymirror({
   MENTOR: null,
   SUBJECT: null,
@@ -141,21 +139,14 @@ export const hasNotes = (state, skillUid: string): boolean =>
 const hasStatus = (status: string) =>
   (skill): boolean => R.path(['status', 'current'], skill) === status;
 
-const isNewlyAttained =
-    (skill): boolean => R.path(['status', 'current'], skill) === SKILL_STATUS.ATTAINED && R.path(['status', 'previous'], skill) !== SKILL_STATUS.ATTAINED;
+export const getSkillsWithCurrentStatus = (state, status: string, skillUids: string[]): string[] => {
+  if (!R.is(Array, skillUids) || skillUids.length === 0) {
+    return [];
+  }
 
-const getSkills = (state, skillUids: string[], predicate: (skill) => boolean): string[] => {
-    if (!R.is(Array, skillUids) || skillUids.length === 0) {
-        return [];
-    }
-
-    const skills = R.pickBy((val, key) => skillUids.indexOf(key) >= 0, R.path(['entities'], state));
-    return R.keys(skills).length > 0 ? R.keys(R.pickBy(predicate, skills)) : [];
+  const skills = R.pickBy((val, key) => skillUids.indexOf(key) >= 0, R.path(['entities'], state));
+  return R.keys(skills).length > 0 ? R.keys(R.pickBy(hasStatus(status), skills)) : [];
 };
-
-export const getNewlyAttainedSkills = (state, skillUids: string[]): string[] => getSkills(state, skillUids, isNewlyAttained);
-
-export const getSkillsWithCurrentStatus = (state, status: string, skillUids: string[]): string[] => getSkills(state, skillUids, hasStatus(status));
 
 const getSkillName = (state, uid) => {
   const skill = getSkill(state, uid);
