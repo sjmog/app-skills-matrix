@@ -1,38 +1,28 @@
 import * as React from 'react';
-import { Row, Table } from 'react-bootstrap';
+import { Panel, ListGroup, ListGroupItem, Glyphicon } from 'react-bootstrap';
 import { Link } from 'react-router';
 
-const templateDetailsRow = (template: TemplateViewModel) => {
-  const { id, name } = template;
-  return (
-    <tr key={id}>
-      <td>{name}</td>
-      <td>
-        <Link to={{
-          pathname: `/admin/matrices/templates/${id}`,
-        }}
-        >
-          Modify
-        </Link>
-      </td>
-    </tr>);
-};
+import './template-list.scss';
 
-const TemplateList = ({ templates }: { templates: TemplateViewModel[]}) =>
-  (
-    <Row>
-      <Table responsive bordered>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          { templates.map(template => templateDetailsRow(template)) }
-        </tbody>
-      </Table>
-    </Row>
-  );
+const templateRow = ({ id, name }) =>
+  <Link
+    to={`/admin/matrices/templates/${id}`}
+    className="list-group-item"
+    key={id}>
+    {name}
+    <Glyphicon glyph="pencil" className="template-list__edit-icon" />
+  </Link>;
+
+const TemplateList = ({ templates }: { templates: TemplateViewModel[] }) =>
+  <Panel header={<p>Templates</p>} bsStyle="primary" className="template-list__panel">
+    <ListGroup fill>
+      {
+        templates && templates.length > 0
+          ? templates.map(templateRow)
+          : <ListGroupItem key="No templates">No templates</ListGroupItem>
+      }
+    </ListGroup>
+  </Panel>
+;
 
 export default TemplateList;

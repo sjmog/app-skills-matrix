@@ -1,9 +1,11 @@
 import * as React from 'react';
 import * as R from 'ramda';
 import { Table } from 'react-bootstrap';
+import * as keymirror from 'keymirror';
 
 import Level from './Level';
 import SkillDetailsModal from './SkillDetailsModal';
+import AddExistingSkillModal from './AddExistingSkillModal';
 
 import '../../common/matrix.scss';
 
@@ -15,46 +17,60 @@ type MatrixProps = {
   onModifySkill: (skill: UnhydratedTemplateSkill) => void,
   onReplaceSkill: (level: string, category: string, skill: UnhydratedTemplateSkill) => void,
   onRemoveSkill: (level: string, category: string, skill: UnhydratedTemplateSkill) => void,
-  onAddSkill: (level: string, category: string, existingSkillId: number) => void,
+  onAddSkill: (level: string, category: string, existingSkillId?: string) => void,
 };
 
 type MatrixState = {
-  showModal: boolean,
-  currentSkill: {
-    skill: UnhydratedTemplateSkill,
-    level: string,
-    category: string,
-  },
+  showModal?: string,
+  skill: UnhydratedTemplateSkill,
+  level: string,
+  category: string,
 };
+
+const modals = keymirror({
+  EDIT_SKILL: null,
+  ADD_EXISTING_SKILL: null,
+});
 
 class Matrix extends React.Component<MatrixProps, MatrixState> {
   constructor(props) {
     super(props);
 
     this.state = {
-      showModal: false,
-      currentSkill: null,
+      showModal: null,
+      skill: null,
+      level: null,
+      category: null,
     };
 
     this.viewSkillDetails = this.viewSkillDetails.bind(this);
-    this.hideSkillDetails = this.hideSkillDetails.bind(this);
+    this.viewAddExistingSkill = this.viewAddExistingSkill.bind(this);
+    this.closeModal = this.closeModal.bind(this);
   }
 
   viewSkillDetails(level, category, skill) {
     this.setState({
-      showModal: true,
-      currentSkill: {
-        skill: R.clone(skill),
-        level,
-        category,
-      },
+      showModal: modals.EDIT_SKILL,
+      skill: R.clone(skill),
+      level,
+      category,
     });
   }
 
-  hideSkillDetails() {
+  viewAddExistingSkill(level, category) {
     this.setState({
-      currentSkill: null,
-      showModal: false,
+      showModal: modals.ADD_EXISTING_SKILL,
+      level,
+      category,
+    });
+  }
+
+  closeModal() {
+    this.setState({
+      showModal: null,
+      skill: null,
+      level: null,
+      category: null,
     });
   }
 
@@ -79,6 +95,7 @@ class Matrix extends React.Component<MatrixProps, MatrixState> {
                 skillGroups={skillGroups}
                 skills={skills}
                 viewSkillDetails={this.viewSkillDetails}
+                viewAddExistingSkill={this.viewAddExistingSkill}
                 onAddSkill={onAddSkill}
               />
             ))
@@ -86,14 +103,21 @@ class Matrix extends React.Component<MatrixProps, MatrixState> {
           </tbody>
         </Table>
         <SkillDetailsModal
-          showModal={this.state.showModal}
-          onClose={this.hideSkillDetails}
-          skill={this.state.currentSkill && this.state.currentSkill.skill}
-          level={this.state.currentSkill && this.state.currentSkill.level}
-          category={this.state.currentSkill && this.state.currentSkill.category}
+          showModal={this.state.showModal === modals.EDIT_SKILL}
+          onClose={this.closeModal}
+          skill={this.state.skill}
+          level={this.state.level}
+          category={this.state.category}
           onModifySkill={this.props.onModifySkill}
           onReplaceSkill={this.props.onReplaceSkill}
           onRemoveSkill={this.props.onRemoveSkill}
+        />
+        <AddExistingSkillModal
+          showModal={this.state.showModal === modals.ADD_EXISTING_SKILL}
+          closeModal={this.closeModal}
+          level={this.state.level}
+          category={this.state.category}
+          onAddSkill={onAddSkill}
         />
       </div>
     );

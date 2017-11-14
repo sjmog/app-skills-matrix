@@ -74,7 +74,7 @@ describe('matrices', () => {
           expect(newTemplate.skillGroups[0].category).to.equal('Dragon Slaying');
         }));
 
-    it('updates an existing template with the same id', () =>
+    it('returns bad request when a template exists with the same ID', () =>
       insertTemplate(Object.assign({}, sampleTemplate))
         .then(() =>
           request(app)
@@ -84,12 +84,22 @@ describe('matrices', () => {
               template: Object.assign({}, sampleTemplate, { name: 'new name', skillGroups: [] }),
             })
             .set('Cookie', `${cookieName}=${adminToken}`)
-            .expect(201))
-        .then(() => templates.findOne({ id: 'eng-nodejs' }))
-        .then((updatedTemplate) => {
-          expect(updatedTemplate.name).to.deep.equal('new name');
-          expect(updatedTemplate.skillGroups.length).to.equal(0);
-        }));
+            .expect(400)));
+
+    it('responds with bad request when data to be saved is not valid', () => {
+     const invalidTemplate = {
+       id: null,
+       name: '',
+       categories: 'INVALID',
+       levels: { invalid: true },
+     };
+
+     return request(app)
+       .post(`${prefix}/templates`)
+       .send({ action: 'save', template: invalidTemplate })
+       .set('Cookie', `${cookieName}=${adminToken}`)
+       .expect(400);
+    });
 
     const errorCases =
       [
@@ -145,6 +155,48 @@ describe('matrices', () => {
             expect(newTemplate.skillGroups[5].skills.length).to.equal(2);
             expect(newTemplate.skillGroups[5].skills).to.contain(99);
           })));
+
+    it('removes an existing skill from its source group and adds it to the specified target', () => {
+      const groupOneSkillsLens = R.lensPath(['skillGroups', 0, 'skills']);
+      const groupTwoSkillsLens = R.lensPath(['skillGroups', 1, 'skills']);
+
+      const template = R.compose(
+        R.set(groupOneSkillsLens, [4, 5]),
+        R.set(groupTwoSkillsLens, [6]),
+      )(sampleTemplate);
+
+      return Promise.all([Promise.map(skillsFixture, insertSkill), insertTemplate(Object.assign({}, template))])
+        .then(() => request(app)
+          .post(`${prefix}/templates/eng-nodejs`)
+          .send({ action: 'addSkill', level: 'Expert', category: 'Dragon Slaying', existingSkillId: 5 })
+          .set('Cookie', `${cookieName}=${adminToken}`)
+          .expect(200)
+          .then(() => templates.findOne({ id: 'eng-nodejs' }))
+          .then((newTemplate) => {
+            const groupOneSkills = R.view(groupOneSkillsLens, newTemplate);
+            const groupTwoSkills = R.view(groupTwoSkillsLens, newTemplate);
+
+            expect(groupOneSkills).to.eql([4]);
+            expect(groupTwoSkills).to.eql([6, 5]);
+          }));
+    });
+
+    it('does not add a duplicate skill if it already exists in the target skill group', () => {
+      const skillsLens = R.lensPath(['skillGroups', 0, 'skills']);
+      const template = R.set(skillsLens, [4, 5], sampleTemplate);
+
+      return Promise.all([Promise.map(skillsFixture, insertSkill), insertTemplate(Object.assign({}, template))])
+        .then(() => request(app)
+          .post(`${prefix}/templates/eng-nodejs`)
+          .send({ action: 'addSkill', level: 'Novice', category: 'Dragon Slaying', existingSkillId: 5 })
+          .set('Cookie', `${cookieName}=${adminToken}`)
+          .expect(200)
+          .then(() => templates.findOne({ id: 'eng-nodejs' }))
+          .then((newTemplate) => {
+            const skills = R.view(skillsLens, newTemplate);
+            expect(skills).to.eql([4, 5]);
+          }));
+    });
 
     const errorCases =
       [

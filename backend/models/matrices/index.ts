@@ -46,7 +46,7 @@ export default {
       return skillsCollection.findOne({ id })
         .then(res => (res ? skill(res) : null));
     },
-    addNewSkill(values = { name: 'Placeholder', type: 'skill', criteria: '', questions: [] }): Promise<Skill> {
+    addNewSkill(values = { name: '** New skill **', type: 'skill', criteria: '', questions: [] }): Promise<Skill> {
       // poor man's autoincrement is susceptible to race conditions
       return skillsCollection.findOne({}, { sort: [['id', 'descending']] })
         .then(((res) => {

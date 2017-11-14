@@ -1,5 +1,16 @@
 import * as React from 'react';
-import { Button, FormControl, FormGroup, Glyphicon, InputGroup, Panel } from 'react-bootstrap';
+import {
+  Button,
+  ControlLabel,
+  FormControl,
+  FormGroup,
+  Glyphicon,
+  ButtonToolbar,
+  OverlayTrigger,
+  Popover,
+} from 'react-bootstrap';
+
+import './editable-list.scss';
 
 const moveItem = (arr, fromIndex, toIndex) => arr.splice(toIndex, 0, arr.splice(fromIndex, 1)[0]);
 
@@ -33,39 +44,48 @@ type EditableListProps = {
   placeholder: string,
   array: string[],
   onUpdate: (array: string[]) => void,
+  addBtnName: string,
+  infoText?: string,
 };
 
-const EditableList = ({ title, placeholder, array, onUpdate }: EditableListProps) => (<Panel header={<h3>{title}</h3>}>
-    {array.map((c, index) =>
-      (<FormGroup key={`${placeholder}_${index}`}>
-        <InputGroup>
-          <FormControl name={`${placeholder}_${index}`}
-                       type="text"
-                       value={c}
-                       onChange={(e: any) => onUpdate(updateItem(array, e.target.value, index))}
-                       placeholder={placeholder}
-          />
-          <InputGroup.Button>
-            <Button onClick={() => onUpdate(moveItemUp(array, index))}>
-              <Glyphicon glyph="arrow-up" />
-            </Button>
-          </InputGroup.Button>
-          <InputGroup.Button>
-            <Button onClick={() => onUpdate(moveItemDown(array, index))}>
-              <Glyphicon glyph="arrow-down" />
-            </Button>
-          </InputGroup.Button>
-          <InputGroup.Button>
-            <Button onClick={() => onUpdate(removeItem(array, index))}>
-              <Glyphicon glyph="minus" />
-            </Button>
-          </InputGroup.Button>
-        </InputGroup>
-      </FormGroup>))}
-    <Button bsStyle="primary" onClick={() => onUpdate(addItem(array))}>
-      <Glyphicon glyph="plus" /></Button>
-  </Panel>
+const tooltip = text => (
+  <OverlayTrigger trigger={['hover', 'focus']} placement="right" overlay={<Popover>{text}</Popover>}>
+    <Glyphicon glyph="info-sign"/>
+  </OverlayTrigger>
+);
 
+const EditableList = ({ title, addBtnName, placeholder, array, onUpdate, infoText }: EditableListProps) => (
+  <FormGroup>
+    <ControlLabel>{title}{' '}{infoText ? tooltip(infoText) : null}</ControlLabel>
+    {
+      array.map((c, index) => (
+        <div key={`${placeholder}_${index}`}className="editable-list__row">
+          <FormControl
+            className="editable-list__row-input"
+            name={`${placeholder}_${index}`}
+            type="text"
+            value={c}
+            onChange={(e: any) => onUpdate(updateItem(array, e.target.value, index))}
+            placeholder={placeholder}
+          />
+          <ButtonToolbar className="editable-list__row-btn-toolbar">
+            <Button onClick={() => onUpdate(moveItemUp(array, index))}>
+              <Glyphicon glyph="arrow-up"/>
+            </Button>
+            <Button onClick={() => onUpdate(moveItemDown(array, index))}>
+              <Glyphicon glyph="arrow-down"/>
+            </Button>
+            <Button onClick={() => onUpdate(removeItem(array, index))}>
+              <Glyphicon glyph="remove"/>
+            </Button>
+          </ButtonToolbar>
+        </div>
+      ))
+    }
+    <Button onClick={() => onUpdate(addItem(array))} block>
+      <Glyphicon glyph="plus"/>{' '}{addBtnName}
+    </Button>
+  </FormGroup>
 );
 
 export default EditableList;

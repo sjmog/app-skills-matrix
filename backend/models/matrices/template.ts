@@ -19,9 +19,21 @@ export type Template = {
   hasCategory: (category: string) => boolean,
 };
 
-
 const getSkillGroup = (level: string, category: string, skillGroups: UnhydratedSkillGroup[]) =>
   R.find((group: UnhydratedSkillGroup) => (group.level === level && group.category === category), skillGroups);
+
+const upsert = (xs, x) =>  R.contains(x, xs) ? xs : R.concat(xs, [x]);
+
+const updateSkillGroups = (skillId: number, targetLevel: string, targetCategory: string, skillGroups: UnhydratedSkillGroup[]): UnhydratedSkillGroup[] =>
+  R.map((skillGroup) => {
+    const skillsLens = R.lensPath(['skills']);
+    const skills = R.prop('skills', skillGroup) as number[];
+    const isTarget = R.propEq('level', targetLevel, skillGroup) && R.propEq('category', targetCategory, skillGroup);
+
+    return isTarget
+      ? R.set(skillsLens, upsert(skills, skillId), skillGroup)
+      : R.set(skillsLens, R.reject(R.equals(skillId), skills), skillGroup);
+  })(skillGroups) as any;
 
 const template = ({ id, name, version, categories, levels, skillGroups }: UnhydratedTemplate): Template => Object.freeze({
   id,
@@ -62,9 +74,8 @@ const template = ({ id, name, version, categories, levels, skillGroups }: Unhydr
     return { skills, skillGroups: newSkillGroups };
   },
   addSkill(level, category, skillId) {
-    const skillGroup = getSkillGroup(level, category, skillGroups);
-    skillGroup.skills.push(skillId);
-    return template({ id, name, version, categories, levels, skillGroups });
+    const updatedSkillGroups = updateSkillGroups(skillId, level, category, skillGroups);
+    return template({ id, name, version, categories, levels, skillGroups: updatedSkillGroups });
   },
   replaceSkill(level, category, oldId, newId) {
     const skillGroup = getSkillGroup(level, category, skillGroups);

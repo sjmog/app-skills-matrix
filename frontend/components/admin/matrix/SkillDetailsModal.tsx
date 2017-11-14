@@ -2,12 +2,16 @@ import * as React from 'react';
 import {
   Modal,
   Button,
-  Form,
   FormGroup,
   FormControl,
   Glyphicon,
-  ControlLabel, Panel, InputGroup,
+  ControlLabel,
+  ButtonToolbar,
+  OverlayTrigger,
+  Popover,
 } from 'react-bootstrap';
+
+import Questions from './Questions';
 
 type SkillDetailsModalProps = {
   showModal: boolean,
@@ -20,12 +24,27 @@ type SkillDetailsModalProps = {
   onRemoveSkill: (level: string, category: string, skill: UnhydratedTemplateSkill) => void,
 };
 
-const FieldGroup = ({ id, label = '', ...props }) =>
-  (<FormGroup>
+const FieldGroup = ({ id, label = '', ...props }) => (
+  <FormGroup>
     {label && <ControlLabel>{label}</ControlLabel>}
     <FormControl name={id} {...props} />
-  </FormGroup>);
+  </FormGroup>
+);
 
+const SkillTypeTooltip = () => (
+  <OverlayTrigger
+    trigger={['hover', 'focus']}
+    placement="right"
+    overlay={
+      <Popover>
+        Users are asked to re-evaluate behaviours for every evaluation they undertake.
+        This is different to skills, which never require re-evaluation once attained.
+      </Popover>
+    }
+  >
+    <Glyphicon glyph="info-sign"/>
+  </OverlayTrigger>
+);
 
 class SkillDetailsModal extends React.Component<SkillDetailsModalProps, { skill: UnhydratedTemplateSkill, level: string, category: string }> {
   constructor(props) {
@@ -102,18 +121,10 @@ class SkillDetailsModal extends React.Component<SkillDetailsModalProps, { skill:
       <div>
         <Modal show={showModal} onHide={this.closeModel}>
           <Modal.Header closeButton>
-            <Modal.Title>Skill Details</Modal.Title>
+            <Modal.Title>Skill ID: {skill.id}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Form>
-              <FormGroup>
-                <ControlLabel>id</ControlLabel>
-                <FormControl.Static>{skill.id}</FormControl.Static>
-              </FormGroup>
-              <FormGroup>
-                <ControlLabel>version</ControlLabel>
-                <FormControl.Static>{skill.version}</FormControl.Static>
-              </FormGroup>
+            <FormGroup>
               <FieldGroup
                 id="name"
                 type="text"
@@ -128,10 +139,9 @@ class SkillDetailsModal extends React.Component<SkillDetailsModalProps, { skill:
                 label="Criteria"
                 value={skill.criteria || ''}
                 onChange={this.updateSkillState}
-                placeholder="criteria"
               />
               <FormGroup>
-                <ControlLabel>Type</ControlLabel>
+                <ControlLabel>Type <SkillTypeTooltip/></ControlLabel>
                 <FormControl
                   componentClass="select"
                   name="type"
@@ -144,37 +154,24 @@ class SkillDetailsModal extends React.Component<SkillDetailsModalProps, { skill:
                 </FormControl>
               </FormGroup>
 
-              <Panel header={<h3>Questions</h3>}>
-                {skill.questions ?
-                  skill.questions.map((q, index) =>
-                    (<FormGroup key={`question_${index}`}>
-                      <InputGroup>
-                        <FormControl name={`question_${index}`}
-                                     key={`question_${index}`}
-                                     type="text"
-                                     value={q.title}
-                                     onChange={(e: any) => this.updateQuestion(e.target.value, index)}
-                                     placeholder="Question"
-                        />
-                        <InputGroup.Button>
-                          <Button onClick={() => this.removeQuestion(index)}>
-                            <Glyphicon glyph="minus" />
-                          </Button>
-                        </InputGroup.Button>
-                      </InputGroup>
-                    </FormGroup>)) :
-                  false}
-                <Button bsStyle="primary" onClick={this.addQuestion}>
-                  <Glyphicon glyph="plus" /></Button>
-              </Panel>
-
-              <Button bsStyle="primary" onClick={this.updateSkill}>
-                Clarify Skill</Button>
-              <Button bsStyle="primary" onClick={this.replaceSkill}>
-                Replace Skill</Button>
-              <Button bsStyle="danger" onClick={this.removeSkill}>
-                Remove Skill</Button>
-            </Form>
+              <FormGroup>
+                <ControlLabel>Questions</ControlLabel>
+                {
+                  skill.questions
+                    ? <Questions questions={skill.questions} update={this.updateQuestion} remove={this.removeQuestion}/>
+                    : false
+                }
+                <Button onClick={this.addQuestion} block><Glyphicon glyph="plus"/>{' '}Add question</Button>
+              </FormGroup>
+              <ButtonToolbar>
+                <Button bsStyle="primary" onClick={this.updateSkill}>
+                  Update</Button>
+                <Button bsStyle="primary" onClick={this.replaceSkill}>
+                  Update and force re-evaluation</Button>
+                <Button bsStyle="danger" onClick={this.removeSkill} className="skill-details__action-btn--right">
+                  Remove from template</Button>
+              </ButtonToolbar>
+            </FormGroup>
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={this.closeModel}>Close</Button>

@@ -2,7 +2,7 @@ import { combineReducers } from 'redux';
 
 import users, * as fromUsers from './users';
 import user, * as fromUser from './user';
-import matrices from './matrices';
+import matrices, * as fromMatrices from './matrices';
 import evaluations, * as fromEvaluations from './evaluations';
 
 export default combineReducers({ user, users, matrices, evaluations });
@@ -33,3 +33,8 @@ export const getEvaluationStatus = ({ evaluations }, evaluationId: string) =>
 
 export const getStatusUpdateError = ({ evaluations }) =>
   fromEvaluations.getStatusUpdateError(evaluations);
+
+/* MATRICES SELECTORS */
+
+export const getTemplateAddResult = ({ matrices }) =>
+  fromMatrices.getTemplateAddResult(matrices);
