@@ -167,4 +167,4 @@ const getSkillName = (state, uid) => {
 export const getSkillNames = (state, skillUids: string[]) => {
   if (!Array.isArray(skillUids)) return null;
   return R.map(uid => getSkillName(state, uid), skillUids);
-};\
+};
