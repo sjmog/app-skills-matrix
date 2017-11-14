@@ -30,6 +30,7 @@ class AddExistingSkillModal extends React.Component<SkillDetailsModalProps, { va
     const { value } = this.state;
 
     onAddSkill(level, category, value);
+    this.setState({ value: '' });
     closeModal();
   }
 
