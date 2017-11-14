@@ -12,6 +12,7 @@ type SkillProps = {
   viewSkillDetails: (skillUid: string) => void,
   isBeingEvaluated: boolean,
   hasNotes: boolean,
+  skillsToDisplay: string[],
 };
 
 const skillState = (status) => {
@@ -31,15 +32,16 @@ const skillState = (status) => {
   }
 };
 
-const Skill = ({ skillUid, skill, viewSkillDetails, isBeingEvaluated, hasNotes }: SkillProps) => {
+const Skill = ({ skillUid, skill, viewSkillDetails, isBeingEvaluated, hasNotes, skillsToDisplay }: SkillProps) => {
   const statusClass = skill.status ? skillColour(skill.status.current, skill.status.previous, 'skill') : '';
   const beingEvaluatedClass = isBeingEvaluated ? 'skill--current' : false;
 
   const currentStateStatus = skillState(skill.status.current);
   const currentStateLabel = `The current state of this skill is: ${currentStateStatus[1]}`;
+  const shouldDisplay = Boolean(skillsToDisplay.find(id => id === skillUid));
 
   return (
-    <div aria-hidden role="button" className={`skill--card ${statusClass} ${beingEvaluatedClass} previous--${skill.status.previous}`} onClick={() => viewSkillDetails(skillUid)}>
+    <div aria-hidden role="button" className={`skill--card ${statusClass} ${beingEvaluatedClass} previous--${skill.status.previous} ${shouldDisplay ? '' : 'hide--skill'}`} onClick={() => viewSkillDetails(skillUid)}>
       {
         hasNotes
           ? <div className={'skill-card--notes'}>
@@ -60,8 +62,9 @@ const Skill = ({ skillUid, skill, viewSkillDetails, isBeingEvaluated, hasNotes }
   );
 };
 
-export default connect((state, { skillUid }) => ({
-  skill: selectors.getSkill(state, skillUid),
-  isBeingEvaluated: selectors.getCurrentSkillUid(state) === skillUid,
-  hasNotes: selectors.hasNotes(state, skillUid),
+export default connect((state, { skillUid, evaluationId }) => ({
+    skill: selectors.getSkill(state, skillUid),
+    isBeingEvaluated: selectors.getCurrentSkillUid(state) === skillUid,
+    hasNotes: selectors.hasNotes(state, skillUid),
+    skillsToDisplay: selectors.getSkillsToDisplay(state, evaluationId),
 }))(Skill);
