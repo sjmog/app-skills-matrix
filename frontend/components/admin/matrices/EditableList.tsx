@@ -59,7 +59,7 @@ const EditableList = ({ title, addBtnName, placeholder, array, onUpdate, infoTex
     <ControlLabel>{title}{' '}{infoText ? tooltip(infoText) : null}</ControlLabel>
     {
       array.map((c, index) => (
-        <div className="editable-list__row">
+        <div key={`${placeholder}_${index}`}className="editable-list__row">
           <FormControl
             className="editable-list__row-input"
             name={`${placeholder}_${index}`}

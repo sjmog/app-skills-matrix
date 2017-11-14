@@ -31,7 +31,6 @@ const FieldGroup = ({ id, label = '', ...props }) => (
   </FormGroup>
 );
 
-// TODO: May want to extract this.
 const SkillTypeTooltip = () => (
   <OverlayTrigger
     trigger={['hover', 'focus']}
