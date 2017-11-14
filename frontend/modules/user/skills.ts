@@ -139,7 +139,10 @@ export const hasNotes = (state, skillUid: string): boolean =>
   R.length(notesForSkill(skillUid, state)) > 0;
 
 const hasStatus = (status: string) =>
-  (skill): boolean => R.path(['status', 'current'], skill) === status;
+  (skill): boolean => {
+  const skillStatus = R.path(['status', 'current'], skill);
+  return skillStatus  === status || status === SKILL_STATUS.NOT_ATTAINED && !skillStatus;
+};
 
 const isNewlyAttained =
     (skill): boolean => R.path(['status', 'current'], skill) === SKILL_STATUS.ATTAINED && R.path(['status', 'previous'], skill) !== SKILL_STATUS.ATTAINED;
