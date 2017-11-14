@@ -156,6 +156,48 @@ describe('matrices', () => {
             expect(newTemplate.skillGroups[5].skills).to.contain(99);
           })));
 
+    it('removes an existing skill from its source group and adds it to the specified target', () => {
+      const groupOneSkillsLens = R.lensPath(['skillGroups', 0, 'skills']);
+      const groupTwoSkillsLens = R.lensPath(['skillGroups', 1, 'skills']);
+
+      const template = R.compose(
+        R.set(groupOneSkillsLens, [4, 5]),
+        R.set(groupTwoSkillsLens, [6]),
+      )(sampleTemplate);
+
+      return Promise.all([Promise.map(skillsFixture, insertSkill), insertTemplate(Object.assign({}, template))])
+        .then(() => request(app)
+          .post(`${prefix}/templates/eng-nodejs`)
+          .send({ action: 'addSkill', level: 'Expert', category: 'Dragon Slaying', existingSkillId: 5 })
+          .set('Cookie', `${cookieName}=${adminToken}`)
+          .expect(200)
+          .then(() => templates.findOne({ id: 'eng-nodejs' }))
+          .then((newTemplate) => {
+            const groupOneSkills = R.view(groupOneSkillsLens, newTemplate);
+            const groupTwoSkills = R.view(groupTwoSkillsLens, newTemplate);
+
+            expect(groupOneSkills).to.eql([4]);
+            expect(groupTwoSkills).to.eql([6, 5]);
+          }));
+    });
+
+    it('does not add a duplicate skill if it already exists in the target skill group', () => {
+      const skillsLens = R.lensPath(['skillGroups', 0, 'skills']);
+      const template = R.set(skillsLens, [4, 5], sampleTemplate);
+
+      return Promise.all([Promise.map(skillsFixture, insertSkill), insertTemplate(Object.assign({}, template))])
+        .then(() => request(app)
+          .post(`${prefix}/templates/eng-nodejs`)
+          .send({ action: 'addSkill', level: 'Novice', category: 'Dragon Slaying', existingSkillId: 5 })
+          .set('Cookie', `${cookieName}=${adminToken}`)
+          .expect(200)
+          .then(() => templates.findOne({ id: 'eng-nodejs' }))
+          .then((newTemplate) => {
+            const skills = R.view(skillsLens, newTemplate);
+            expect(skills).to.eql([4, 5]);
+          }));
+    });
+
     const errorCases =
       [
         () => ({
